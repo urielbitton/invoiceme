@@ -5,17 +5,15 @@ html, body {
 }    
   
 :root { 
-  --primary: #3273a8;
-  --lightPrimary: #3273a878;
-  --extraLightPrimary: #3273a822;
-  --secondary: #64A4AF;
-  --lightSecondary: #64a4af78;
-  --extraLightSecondary: #64a4af22;
+  --primary: #009dff;
+  --lightPrimary: #78d4ff;
+  --extraLightPrimary: #dbf4ff;
+  --secondary: #BAB69B;
   --bg: #eeeef4;
   --grayText: #696e93;
   --primaryShadow: 0 3px 6px 1px rgba(252, 3, 74, 0.05);
   --morphShadow: 0 0 12px 2px rgba(6, 107, 238, 0.05);
-  --primaryGradient: linear-gradient(130deg, var(--primary) 0%, var(--secondary) 100%);
+  --primaryGradient: linear-gradient(130deg, var(--primary) 0%, var(--lightPrimary) 100%);
   --shadow: 0 5px 10px rgba(0,0,0,0.1);
   --cardShadow: 0 0 2px 1px rgba(0,0,0,0.06);
   --cardShadowHover: 0 3px 8px 3px rgba(0,0,0,0.1);

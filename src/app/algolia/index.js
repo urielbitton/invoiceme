@@ -9,5 +9,4 @@ export const algoliaSearchClient = algoliasearch(
 )
 
 
-export const usersIndex = algoliaSearchClient.initIndex('users_index')
-export const propertiesIndex = algoliaSearchClient.initIndex('properties_index')
+export const invoicesIndex = algoliaSearchClient.initIndex('invoices_index')
