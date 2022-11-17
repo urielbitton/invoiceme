@@ -1,0 +1,71 @@
+.app-pagination {
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.app-pagination .pagination-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.app-pagination .pagination-box {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.app-pagination .pagination-box.hidden {
+  display: none;
+}
+.app-pagination .pagination-box h6,
+.app-pagination .pagination-box i {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  transition: all 0.2s;
+}
+.app-pagination .pagination-box.enabled:hover,
+.app-pagination .pagination-box.number-box:hover,
+.app-pagination .pagination-box.active {
+  background: var(--primary);
+}
+.app-pagination .pagination-box.enabled:hover h6,
+.app-pagination .pagination-box.enabled:hover i,
+.app-pagination .pagination-box.number-box:hover h6,
+.app-pagination .pagination-box.active h6,
+.app-pagination .pagination-box.active i {
+  color: #fff;
+}
+.app-pagination .pagination-box.disabled {
+  cursor: default;
+  background: #eee;
+}
+
+.app-pagination .appSelect {
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: auto;
+}
+.app-pagination .appSelect select {
+  width: auto;
+  height: 35px;
+  padding: 5px;
+  font-size: 13px;
+}
+.app-pagination .appSelect h6 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--grayText);
+  white-space: nowrap;
+}

@@ -1,0 +1,20 @@
+.autosize-textarea-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.autosize-textarea-container > textarea {
+  width: 100%;
+  background: var(--inputBg);
+  border: none;
+  resize: none;
+  padding: 10px 45px 10px 15px;
+  height: auto;
+  transition: all 0.1s;
+}
+.autosize-textarea-container > textarea::-webkit-scrollbar {
+  display: none;
+}
+.autosize-textarea-container.no-emojis > textarea {
+  padding-right: 10px;
+}

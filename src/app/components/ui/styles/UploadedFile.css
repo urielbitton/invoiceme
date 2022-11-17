@@ -1,0 +1,85 @@
+.file-box {
+  width: 80px;
+  height: 100px;
+}
+.file-box.long {
+  width: auto;
+}
+.file-box img {
+  width: 80px;
+  height: 100%;
+  border-radius: 10px;
+}
+.file-box .close-container {
+  position: absolute;
+  top: 0px;
+  right: -10px;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.2s;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.file-box .close-container:hover {
+  background: #d9d9d9;
+}
+.uploaded-img-box .close-container i,
+.file-box .close-container i {
+  font-size: 17px;
+  color: #333;
+}
+.file-box .video-cover {
+  width: 80px;
+  height: 100%;
+  border-radius: 10px;
+  background: #000;
+}
+.file-box .video-cover video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.file-box .file-cover {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 5px;
+  background: #f1f1f1;
+  padding: 8px;
+  max-width: 150px;
+}
+.file-box .file-cover .icon-container {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  background: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-box .file-cover .texts {
+  display: flex;
+  flex-direction: column;
+}
+.file-box .file-cover h6 {
+  font-size: 12px;
+  color: #333
+}
+.file-box .file-cover small {
+  color: #aaa;
+  font-weight: 600;
+  font-size: 10px;
+}
+.file-box .file-cover .close-container {
+  position: relative;
+  top: auto;
+  right: auto;
+  box-shadow: none;
+}

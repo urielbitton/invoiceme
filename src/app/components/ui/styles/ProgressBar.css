@@ -1,0 +1,35 @@
+.progress-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+.progress-bar-container > h5 {
+  font-size: 15px;
+  color: #444;
+  font-weight: 600;
+}
+.progress-bar-container .progress-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+.progress-bar-container .progress-bar-wrapper {
+  height: 6px;
+  border-radius: 40px;
+  overflow: hidden;
+  background: var(--lightPrimary);
+  width: 100%;
+}
+.progress-bar-container .progress-bar {
+  height: 100%;
+  background: var(--darkPrimary);
+  transition: width 0.5s ease-in-out;
+  border-radius: 40px;
+}
+.progress-bar-container span {
+  font-size: 14px;
+  color: var(--grayText);
+}

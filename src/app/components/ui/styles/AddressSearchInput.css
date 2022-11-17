@@ -1,0 +1,64 @@
+.address-search-input .dropdownContainer {
+  position: absolute;
+  top: 68px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  z-index: 10;
+  border-radius: 5px;
+  box-shadow: var(--shadow);
+  background: #fff;
+}
+.address-search-input .dropdownContainer::-webkit-scrollbar {
+  display: none;
+}
+.address-search-input .dropdownContainer:hover::-webkit-scrollbar {
+  display: block;
+}
+.address-search-input .dropdownContainer span {
+  font-size: 15px;
+  color: var(--graytext);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.address-search-input input {
+  padding-left: 30px;
+}
+.address-search-input .map-icon {
+  position: absolute;
+  top: 13px;
+  left: 10px;
+  color: #777;
+}
+
+.address-search-input .result-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 15px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.address-search-input .result-row:hover {
+  background: #f5f5f5;
+}
+.address-search-input .icon-container {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background: #eee;
+  transition: all 0.2s;
+}
+.address-search-input .icon-container i {
+  font-size: 16px;
+  color: #444;
+}
+.address-search-input .result-row:hover .icon-container {
+  background: #fff;
+}

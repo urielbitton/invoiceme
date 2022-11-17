@@ -1,0 +1,245 @@
+.login-page {
+  display: flex;
+}
+.login-page.standalone {
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin: 50px auto;
+}
+.login-page.standalone .login-info {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 30px;
+}
+.login-page .login-info {
+  padding: 10px 20px;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.login-page .login-info .container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.login-page .login-info img.logo {
+  width: 40px;
+}
+.login-page .login-info .container .site-title {
+  font-size: 15px;
+  color: var(--grayText);
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+.login-page .login-info .container > h4 {
+  font-size: 30px;
+  color: var(--darkText);
+}
+.login-page .login-info .container > h6 {
+  font-size: 15px;
+  color: var(--grayText);
+  font-weight: 600;
+  margin-top: 5px;
+}
+.login-page .social-logins {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.login-page .social-logins .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: calc(50% - 15px);
+  gap: 10px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.login-page .social-logins .btn:hover {
+  background: var(--primary);
+}
+.login-page .social-logins .btn span {
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.login-page .social-logins .btn:hover span {
+  color: #fff;
+}
+.login-page .social-logins .btn img {
+  width: 20px;
+}
+.login-page .login-info .sep-alt {
+  margin: 25px 0;
+  color: var(--grayText);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.login-page .login-info .sep-alt span {
+  white-space: nowrap;
+}
+.login-page .login-info .sep-alt hr {
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+}
+.login-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.login-page form label h6 {
+  font-size: 13px;
+  color: var(--grayText);
+}
+.login-page .login-info .email-error {
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 600;
+}
+.login-page .login-info .appInput {
+  margin-top: 10px;
+}
+.login-page .login-info .password-input input {
+  padding-right: 30px;
+}
+.login-page .login-info .password-input i {
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  color: var(--grayText);
+  cursor: pointer;
+}
+.login-page .login-info input {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  border-radius: 0;
+  font-size: 15px;
+  background: none;
+}
+.login-page .login-info input:focus {
+  border-color: var(--primary);
+}
+.login-page .login-info input[type="checkbox"] {
+  border: none;
+}
+.login-page .login-info .login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.login-page .login-info .login-options label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.login-page .login-info .login-options label input {
+  width: 30px;
+}
+.login-page .login-info .login-options label span {
+  font-size: 14px;
+  color: #555;
+}
+.login-page .login-info .login-options a {
+  font-size: 14px;
+  color: #555;
+}
+.login-page .login-info button.submit-btn {
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  font-size: 16px;
+  box-shadow: var(--primaryShadow);
+}
+.login-page .login-info button.submit-btn i {
+  transition: all 0.3s;
+  left: 0;
+}
+.login-page .login-info button.submit-btn:hover i {
+  left: 8px;
+}
+.login-page .login-info .no-account-text {
+  font-weight: 700;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.login-page .login-info .no-account-text h6 {
+  text-decoration: underline;
+  color: var(--primary);
+  margin-left: 5px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.login-page .double-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 30px;
+}
+
+.back-home-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--grayText);
+  margin-top: 20px;
+}
+.back-home-link:hover,
+.back-home-link:hover a {
+  color: #111;
+  text-decoration: underline;
+}
+.back-home-link a {
+  color: var(--grayText);
+}
+.back-home-link i {
+  margin-right: 10px;
+}
+
+@media (max-width: 1200px) {
+  .login-page .login-cover {
+    display: none;
+  }
+  .login-page .login-info {
+    width: 100%;
+    flex-basis: 100%;
+  }
+  
+}
+
+@media (max-width: 550px) {
+  .login-page .login-info .container {
+    width: 100%;
+  }
+  .login-page .login-info {
+    padding: 20px;
+  }
+  .login-page .double-row {
+    grid-template-columns: auto;
+    grid-gap: 0px;
+  }
+}

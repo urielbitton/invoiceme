@@ -1,0 +1,57 @@
+.app-select-toolbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+.app-select-toolbar .left,
+.app-select-toolbar .right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.app-select-toolbar .left h5 {
+  font-size: 15px;
+  color: #444;
+  font-weight: 600;
+}
+.app-select-toolbar .appSelect {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.app-select-toolbar select {
+  padding: 8px;
+  font-size: 14px;
+}
+.app-select-toolbar .appSelect h6 {
+  font-size: 13px;
+  color: #444;
+  font-weight: 600;
+}
+.app-select-toolbar .appInput h5 {
+  font-size: 15px;
+  color: #444;
+  font-weight: 600;
+}
+.app-select-toolbar .appInput i {
+  position: absolute;
+  top: 3px;
+  right: 10px;
+  z-index: 10;
+  color: #aaa;
+}
+.app-select-toolbar .appInput input {
+  width: 300px;
+  padding: 9px 10px;
+  padding-right: 35px;
+  font-size: 14px;
+}
+.app-select-toolbar .appInput input:focus {
+  border-color: var(--primary);
+}

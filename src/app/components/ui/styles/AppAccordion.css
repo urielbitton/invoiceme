@@ -1,0 +1,69 @@
+.app-accordion {
+  border: 1px solid #e5e5e5;
+  transition: all 0.3s;
+}
+.app-accordion header {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px;
+  cursor: pointer;
+  background: #f5f5f5;
+  border-left: 4px solid transparent;
+  transition: all 0.2s;
+}
+.app-accordion.open header {
+  border-left: 4px solid var(--primary);
+}
+.app-accordion header h5 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #444;
+  transition: all 0.2s;
+}
+.app-accordion header small {
+  color: var(--grayText)
+}
+.app-accordion.open header h5 {
+  color: var(--primary);
+}
+.app-accordion header .action-btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+.app-accordion header .action-btns i {
+  font-size: 28px;
+  color: #444;
+  transition: all 0.3s;
+}
+.app-accordion header .action-btns i:hover {
+  color: var(--primary);
+}
+.app-accordion header i.down {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+.app-accordion.active header {
+  background: var(--primary);
+}
+.app-accordion.active header h5,
+.app-accordion.active header i {
+  color: #fff;
+}
+.app-accordion .content {
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+  overflow: hidden;
+  overflow-y: overlay;
+}
+.app-accordion .content::-webkit-scrollbar {
+  display: none;
+}
+.app-accordion .content:hover::-webkit-scrollbar {
+  display: block;
+}

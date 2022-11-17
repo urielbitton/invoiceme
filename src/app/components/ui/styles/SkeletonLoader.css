@@ -1,0 +1,61 @@
+.skeleton-loader {
+  background: #f1f1f1;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 20px;
+  animation: fade 1.4s infinite;
+}
+.skeleton-loader > div {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.skeleton-loader .rect {
+  height: 20px;
+  background: #eee;
+  animation: rectFade 2s infinite;
+}
+.skeleton-loader .rect1 {
+  width: 100%;
+}
+.skeleton-loader .rect2 {
+  width: 75%;
+}
+.skeleton-loader .rect-img {
+  height: 120px;
+  width: 100%;
+  border-radius: 10px;
+  background: #eee;
+  animation: rectFade 2s infinite;
+}
+
+@keyframes fade {
+  0% {background: #f1f1f1}
+  50% {background: #e5e5e5}
+  100% {background: #f1f1f1}
+}
+@keyframes rectFade {
+  0% {background: #eee}
+  50% {background: #ddd}
+  100% {background: #eee}
+}
+
+.dark-app .skeleton-loader {
+  animation: darkFade 1.4s infinite;
+}
+@keyframes darkFade {
+  0% {background: var(--dark2)}
+  50% {background: var(--dark1)}
+  100% {background: var(--dark2)}
+}
+.dark-app .skeleton-loader .rect,
+.dark-app .skeleton-loader .rect-img {
+  animation: darkRectFade 2s infinite;
+}
+@keyframes darkRectFade {
+  0% {background: #111}
+  50% {background: #151515}
+  100% {background: #111}
+}

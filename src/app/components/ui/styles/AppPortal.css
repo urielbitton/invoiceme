@@ -1,0 +1,14 @@
+.app-portal {
+  
+}
+
+.app-tooltip {
+  position: fixed;
+  z-index: 99000;
+  background: green;
+  opacity: 0.8;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  min-width: 200px;
+}

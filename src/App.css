@@ -1,0 +1,169 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Nunito';
+}    
+  
+:root { 
+  --primary: #3273a8;
+  --lightPrimary: #3273a878;
+  --extraLightPrimary: #3273a822;
+  --secondary: #64A4AF;
+  --lightSecondary: #64a4af78;
+  --extraLightSecondary: #64a4af22;
+  --bg: #eeeef4;
+  --grayText: #696e93;
+  --primaryShadow: 0 3px 6px 1px rgba(252, 3, 74, 0.05);
+  --morphShadow: 0 0 12px 2px rgba(6, 107, 238, 0.05);
+  --primaryGradient: linear-gradient(130deg, var(--primary) 0%, var(--secondary) 100%);
+  --shadow: 0 5px 10px rgba(0,0,0,0.1);
+  --cardShadow: 0 0 2px 1px rgba(0,0,0,0.06);
+  --cardShadowHover: 0 3px 8px 3px rgba(0,0,0,0.1);
+  --navbarHeight: 70px;
+  --sidebarWidth: 220px;
+  --siteGridWidth: 1350px;
+}  
+
+* {
+  position: relative;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.site-grid {
+  width: var(--siteGridWidth);
+  margin: 0 auto;
+}
+.spacer {
+  height: 50px;
+}
+img {
+  object-fit: cover;
+  max-width: 100%;
+}
+button {
+  outline: none;
+  user-select: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 40px;
+  transition: all 0.2s;
+  padding: 10px 15px;
+  font-size: 14px;
+  color: #fff;
+  background: var(--primary);
+}
+button:active {
+  transform: scale(0.97)
+}
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: auto;
+}
+a { 
+  text-decoration: none;
+  color: #111;
+}
+.linkable {
+  cursor: pointer;
+}
+a.linkable:hover {
+  text-decoration: underline;
+}
+input, select, textarea {
+  padding: 10px;
+  border: 1px solid #e5e5e5;
+  width: 100%;
+  outline: none;
+  font-size: 15px;
+  border-radius: 10px;
+  transition: all 0.3s;
+  font-family: inherit;
+} 
+input:-webkit-autofill, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset;
+  box-shadow: 0 0 0 30px white inset;
+}
+input::placeholder, textarea::placeholder {
+  color: #bbb;
+}
+input:disabled {
+  background: #f1f1f1
+}
+iframe {
+  border-radius: 10px;
+}
+hr {
+  border: none;
+}
+.capitalize {
+  text-transform: capitalize
+}
+.uppercase {
+  text-transform: uppercase
+}
+.underline {
+  text-decoration: underline;
+  cursor: pointer;
+}
+.bold {
+  font-weight: 700;
+}
+.commoninput h6 {
+  cursor: auto;
+}
+.wysiwyg {
+  white-space: pre-wrap;
+}
+
+
+.error-boundary {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.error-boundary h1 {
+  font-size: 40px;
+  color: #111;
+}
+.error-boundary h6 {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 40px;
+}
+.error-boundary img {
+  width: 400px;
+}
+.error-boundary button {
+  padding: 15px 25px;
+  font-size: 16px;
+  color: #fff;
+  background: var(--primary);
+}
+.error-boundary button:hover {
+  filter: brightness(110%);
+  box-shadow: 0 6px 10px #0088ff2f;
+}
+.error-boundary button i {
+  margin-right: 8px;
+}
+
+
+@media (max-width: 1370px) {
+  .site-grid {
+    width: 95%;
+    padding: 0;
+  }
+}
+
+@media (max-width: 1080px) {
+  .site-grid {
+    width: 97%;
+  }
+}

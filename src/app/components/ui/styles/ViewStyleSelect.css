@@ -1,0 +1,36 @@
+.view-style-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  height: 40px;
+  border-radius: 5px;
+  background: #e9e9e9;
+}
+.view-style-select h6 {
+  font-size: 13px;
+  color: var(--grayText);
+}
+.view-style-select .icon-container {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.view-style-select .icon-container:hover {
+  background: #fff;
+}
+.view-style-select .icon-container i {
+  color: var(--grayText);
+  font-size: 18px;
+}
+.view-style-select .icon-container.active {
+  background: var(--primary);
+}
+.view-style-select .icon-container.active i {
+  color: #fff;
+}

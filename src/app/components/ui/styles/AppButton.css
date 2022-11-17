@@ -1,0 +1,109 @@
+
+.appButton.iconBtn {
+  padding: 10px 13px;
+}
+.appButton.iconBtn i {
+  font-size: 16px;
+}
+
+.appButton i.leftIcon:not(.no-text) {
+  margin-right: 10px;
+}
+.appButton i.rightIcon:not(.no-text) {
+  margin-left: 10px;
+}
+
+.appButton.primaryBtn {
+  background: var(--primary);
+  color: #fff;
+}
+.appButton.primaryBtn:hover{
+  filter: brightness(105%);
+}
+
+.appButton.secondaryBtn:hover,
+.appButton.gradientBtn:hover {
+  filter: brightness(110%);
+}
+.appButton.secondaryBtn {
+  border-color: var(--secondary);
+  background: var(--secondary);
+  color: #fff;
+}
+.appButton.secondaryGrayBtn {
+  background: #ddd;
+  border-color: #ddd;
+  color: var(--grayText);
+}
+.appButton.secondaryGrayBtn:hover {
+  background: #ccc;
+}
+
+.appButton.gradientBtn {
+  background: var(--primaryGradient);
+}
+
+.appButton.grayBtn {
+  color: #333;
+  background: #e9e9e9;
+  font-size: 13px;
+  border-radius: 5px;
+}
+.appButton.grayBtn:hover {
+  background: #e1e1e1;
+}
+
+.appButton.outlineBtn {
+  border: 1px solid var(--grayText);
+  color: var(--grayText);
+  background: transparent;
+}
+.appButton.outlineBtn:hover {
+  background: var(--grayText);
+  color: #fff;
+}
+
+.appButton.invertedBtn {
+  color: #333;
+  background: transparent;
+}
+.appButton.invertedBtn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+.appButton.invertedBtn.secondary:hover {
+  background: var(--secondary);
+  color: #fff;
+}
+
+.appButton.invertedBtn.black {
+  color: #333;
+  background: transparent;
+}
+.appButton.invertedBtn.black:hover {
+  background: #111;
+  color: #fff;
+}
+
+.appButton.ternaryBtn {
+  background: var(--ternary);
+}
+
+.appButton.disabled {
+  background: #ddd;
+  border-color: #ddd;
+  color: var(--grayText);
+  pointer-events: none;
+}
+
+.appButton.black {
+  background: #111;
+  color: #fff;
+}
+.appButton.black:hover {
+  background: #222;
+}
+.appButton.black.disabled {
+  background: #ddd;
+  color: #333;
+}

@@ -1,0 +1,68 @@
+.avatar-uploader {
+  width: 150px;
+  height: 150px;
+  min-width: 100px;
+  border: 2px solid #fff;
+  background: #fff;
+  border-radius: 100%;
+  cursor: pointer;
+}
+.avatar-uploader img {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  transition: all 0.2s;
+}
+.avatar-uploader:hover img {
+  filter: brightness(0.85);
+}
+.avatar-uploader label {
+  position: absolute;
+  bottom: 6px;
+  right: 5px;
+  width: 28px;
+  height: 28px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+.avatar-uploader label i {
+  font-size: 16px;
+  color: var(--grayText);
+}
+.avatar-uploader .avatar-icon {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+.avatar-uploader .avatar-icon:hover {
+  background: #f1f1f1;
+}
+.avatar-uploader .avatar-icon i {
+  font-size: 16px;
+  color: var(--primary);
+}
+.avatar-uploader .avatar-icon.save-icon {
+  bottom: 35px;
+  right: -10px;
+}
+.avatar-uploader .avatar-icon.cancel-icon {
+  bottom: 68px;
+  right: -15px;
+}
+.avatar-uploader .avatar-icon.cancel-icon i {
+  color: var(--grayText)
+}

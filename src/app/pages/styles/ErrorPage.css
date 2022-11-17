@@ -1,0 +1,36 @@
+.error-page {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transition: filter 2.5s;
+  padding: 40px;
+}
+.error-page.gray {
+  filter: grayscale();
+}
+.error-page img {
+  width: 400px;
+}
+.error-page h1 {
+  font-size: 4rem;
+  color: #444;
+  font-weight: 600;
+  line-height: 1;
+  filter: drop-shadow(0 20px 14px rgba(0,0,0,0.2));
+  margin-top: 20px;
+}
+.error-page h6 {
+  font-size: 20px;
+  color: #777;
+  font-weight: 500;
+  margin-top: 20px
+}
+.error-page button {
+  margin-top: 30px;
+  padding: 15px 20px;
+}
+.error-page button i {
+  margin-right: 10px;
+}

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "checkJs": true,
+    "jsx": "react", 
+    "lib": [
+      "es2021",
+      "dom"
+    ],
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": ["node_modules", "**/node_modules/*"],
+  "rules": {
+    "react/jsx-max-depth": [
+      "error",
+      {
+        "max": 5
+      }
+    ]
+  }
+}

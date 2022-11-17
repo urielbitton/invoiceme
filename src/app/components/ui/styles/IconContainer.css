@@ -1,0 +1,21 @@
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.icon-container.inverted:hover {
+  filter: none;
+  background: #f5f5f5
+}
+.icon-container:hover {
+  filter: brightness(0.92);
+}
+.icon-container.no-hover:hover {
+  filter: brightness(1);
+}
+.icon-container.round {
+  border-radius: 100%;
+}
