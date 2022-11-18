@@ -15,15 +15,11 @@ export default function AppButton(props) {
       ${
         buttonType === 'grayBtn' ? 'grayBtn' : 
         buttonType === 'secondaryBtn' ? 'secondaryBtn' : 
-        buttonType === 'secondaryGrayBtn' ? 'secondaryGrayBtn' :
         buttonType === 'gradientBtn' ? 'gradientBtn' : 
         buttonType === 'redBtn' ? 'redBtn' :
         buttonType === 'outlineBtn' ? 'outlineBtn' :
         buttonType === 'invertedBtn' ? 'invertedBtn' :
-        buttonType === 'invertedBtn secondary' ? 'invertedBtn secondary' :
-        buttonType === 'invertedBtn black' ? 'invertedBtn black' :
-        buttonType === 'black' ? 'black' :
-        buttonType === 'ternaryBtn' ? 'ternaryBtn' :
+        buttonType === 'white' ? 'white' :
         'primaryBtn'
       }
       ${disabled ? 'disabled' : ''}

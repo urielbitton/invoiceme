@@ -1,6 +1,6 @@
 .dropdown-button .dropdown-menu {
   position: absolute;
-  top: 36px;
+  top: 40px;
   right: 0;
   min-width: 200px;
   background: #fff;
@@ -36,4 +36,22 @@
 }
 .dropdown-button .dropdown-menu h6 a {
   color: var(--grayText);
+}
+
+.dropdown-button .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  border-radius: 5px;
+}
+.dropdown-button .dropdown-item:hover {
+  background: var(--primary);
+}
+.dropdown-button .dropdown-item:hover i,
+.dropdown-button .dropdown-item:hover span {
+  color: #fff;
 }

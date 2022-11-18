@@ -54,13 +54,13 @@
 }
 
 .appButton.outlineBtn {
-  border: 1px solid var(--grayText);
-  color: var(--grayText);
+  border: 1px solid #fff;
+  color: #fff;
   background: transparent;
 }
 .appButton.outlineBtn:hover {
-  background: var(--grayText);
-  color: #fff;
+  background: #fff;
+  color: #000;
 }
 
 .appButton.invertedBtn {
@@ -71,23 +71,6 @@
   background: var(--primary);
   color: #fff;
 }
-.appButton.invertedBtn.secondary:hover {
-  background: var(--secondary);
-  color: #fff;
-}
-
-.appButton.invertedBtn.black {
-  color: #333;
-  background: transparent;
-}
-.appButton.invertedBtn.black:hover {
-  background: #111;
-  color: #fff;
-}
-
-.appButton.ternaryBtn {
-  background: var(--ternary);
-}
 
 .appButton.disabled {
   background: #ddd;
@@ -96,14 +79,14 @@
   pointer-events: none;
 }
 
-.appButton.black {
-  background: #111;
-  color: #fff;
+.appButton.white {
+  background: #fff;
+  color: #000;
 }
-.appButton.black:hover {
-  background: #222;
+.appButton.white:hover {
+  background: #f5f5f5;
 }
-.appButton.black.disabled {
+.appButton.white.disabled {
   background: #ddd;
   color: #333;
 }

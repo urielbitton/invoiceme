@@ -1,11 +1,34 @@
 import React, { useEffect } from 'react'
 import './styles/DropdownButton.css'
 import AppButton from "./AppButton"
+import { Link } from "react-router-dom"
 
 export default function DropdownButton(props) {
 
-  const { children, leftIcon, rightIcon, buttonType, label,
-    showMenu, setShowMenu, preventCloseOnClick } = props
+  const { items, leftIcon, rightIcon, buttonType, label,
+    showMenu, setShowMenu, preventCloseOnClick, className='' } = props
+
+  const itemsList = items.map((item, index) => {
+    return (
+      !item.url ?
+      <div 
+        key={index} 
+        onClick={() => item.onClick()}
+        className="dropdown-item"
+      >
+        <i className={item.icon}></i>
+        <span>{item.label}</span>
+      </div> :
+      <Link
+        key={index}
+        to={item.url}
+        className="dropdown-item"
+      >
+        <i className={item.icon}></i>
+        <span>{item.label}</span>
+      </Link>
+    )
+  })
 
   useEffect(() => {
     if(showMenu) {
@@ -26,9 +49,10 @@ export default function DropdownButton(props) {
         leftIcon={leftIcon}
         rightIcon={rightIcon}
         buttonType={buttonType}
+        className={className}
       />
       <div className={`dropdown-menu ${showMenu ? 'show' : ''}`}>
-        {children}
+        {itemsList}
       </div>
     </div>
   )

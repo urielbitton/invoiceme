@@ -1,50 +1,32 @@
 export const menuLinks = [
   {
-    name: 'News Feed',
+    name: 'Home',
     url: '/',
     icon: 'fas fa-home-lg-alt',
-    color: 'primary',
   },
   {
-    name: 'Gallery',
-    url: '/gallery',
-    icon: 'fas fa-photo-video',
-    color: 'purple',
+    name: 'Invoices',
+    url: '/invoices',
+    icon: 'fas fa-file-invoice-dollar',
   },
   {
-    name: 'Clips',
-    url: '/clips',
-    icon: 'fas fa-play',
-    color: 'orange',
+    name: 'Estimates',
+    url: '/estimates',
+    icon: 'fas fa-file-invoice',
   },
   {
-    name: 'Events',
-    url: '/events',
-    icon: 'fas fa-calendar-alt',
-    color: 'red',
+    name: 'Contacts',
+    url: '/contacts',
+    icon: 'fas fa-address-book',
   },
   {
-    name: 'Messages',
-    url: '/messages/users',
-    icon: 'fas fa-comment',
-    color: 'primary',
+    name: 'Payments',
+    url: '/payments',
+    icon: 'fas fa-credit-card',
   },
   {
-    name: 'Saved',
-    url: '/saved',
-    icon: 'fas fa-bookmark',
-    color: 'sunrise'
-  },
-  {
-    name: 'Memories',
-    url: '/memories',
-    icon: 'fas fa-history',
-    color: 'bluePurp',
-  },
-  {
-    name: 'Apps',
-    url: '/apps',
-    icon: 'fas fa-shapes',
-    color: 'green',
-  },
+    name: 'Settings',
+    url: '/settings',
+    icon: 'fas fa-cog',
+  }
 ]
