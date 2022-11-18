@@ -8,7 +8,7 @@ import Navbar from "app/components/layout/Navbar"
 
 export default function AppContainer() {
 
-  const { darkMode, isPageLoading } = useContext(StoreContext)
+  const { darkMode, pageLoading } = useContext(StoreContext)
 
   return (
     <div className={`app-container ${ darkMode ? "dark-app" : "" }`}>
@@ -17,7 +17,7 @@ export default function AppContainer() {
         <Navbar />
         <RoutesContainer />
       </div>
-      <PageLoader loading={isPageLoading} />
+      <PageLoader loading={pageLoading} />
     </div>
   )
 }

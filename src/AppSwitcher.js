@@ -1,15 +1,18 @@
-import PageLoader from "app/components/ui/PageLoader"
+import AuthSwitch from "app/auth/AuthSwitch"
+import AppLoadingPage from "app/components/ui/AppLoadingPage"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
 import AppContainer from "./app/containers/AppContainer"
 
 export default function AppSwitcher() {
 
-  const { myUser } = useContext(StoreContext)
+  const { user, myUser } = useContext(StoreContext)
 
   return (
-    myUser !== null ?
+    user ?
     <AppContainer /> :
-    <PageLoader loading />
+    myUser === null ?
+    <AppLoadingPage /> :
+    <AuthSwitch />
   )
 }

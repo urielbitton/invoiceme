@@ -21,17 +21,17 @@
 .app-loading-page .logo-container {
   width: 150px;
   height: 150px;
-  border-radius: 100%;
+  border-radius: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
   background: var(--primary);
-  box-shadow: 0 8px 10px 5px rgba(151, 212, 230, 0.4);
+  box-shadow: 0 8px 10px 5px rgba(23, 143, 255, 0.4);
   overflow: hidden;
 }
 .app-loading-page .logo-container img {
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 80%;
   object-fit: contain;
   opacity: 0.9;
 }

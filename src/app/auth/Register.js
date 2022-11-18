@@ -9,10 +9,9 @@ import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import firebase from "firebase"
 
-export default function Register({ standalone }) {
+export default function Register() {
 
-  const { loggingAuth, setLoggingAuth, setMyUser,
-    photoURLPlaceholder } = useContext(StoreContext)
+  const { setMyUser, photoURLPlaceholder } = useContext(StoreContext)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -125,7 +124,7 @@ export default function Register({ standalone }) {
       auth.createUserWithEmailAndPassword(email.replaceAll(' ', ''), password.replaceAll(' ', ''))
         .then(() => {
           auth.onAuthStateChanged(user => {
-            if (user && loggingAuth === 'signup') {
+            if (user) {
               completeRegistration(user, authMode)
             }
             else {
@@ -162,10 +161,6 @@ export default function Register({ standalone }) {
   useEffect(() => {
     clearErrors()
   }, [])
-
-  useEffect(() => {
-    setLoggingAuth('signup')
-  },[])
 
   return (
     <div className="login-page register-page">
@@ -230,23 +225,20 @@ export default function Register({ standalone }) {
               />
             </div>
             <h6 className="email-error">{passError}</h6>
-            {loggingAuth === 'signin' ?
-              <div className="login-options">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => {
-                      setRememberMe(e.target.checked)
-                      clearAuthState(e.target.checked)
-                    }}
-                  />
-                  <span>Remember Me</span>
-                </label>
-                <Link to="/forgot-password" className="linkable">Forgot password?</Link>
-              </div> :
-              <div style={{ height: 20 }} />
-            }
+            <div className="login-options">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => {
+                    setRememberMe(e.target.checked)
+                    clearAuthState(e.target.checked)
+                  }}
+                />
+                <span>Remember Me</span>
+              </label>
+              <Link to="/forgot-password" className="linkable">Forgot password?</Link>
+            </div>
             <button
               className="submit-btn"
               onClick={(e) => handleSubmit(e)}
@@ -254,19 +246,12 @@ export default function Register({ standalone }) {
               Create Account
               {!loading ? <i className="fal fa-arrow-right" /> : <i className="fas fa-spinner fa-spin" />}
             </button>
-            {
-              !standalone ?
-                <small className="no-account-text">
-                  Already have an account?
-                  <h6 onClick={() => setLoggingAuth('signin')}>Login</h6>
-                </small> :
-                <Link
-                  to="/login"
-                  className="no-account-text"
-                >
-                  <h6>Login</h6>
-                </Link>
-            }
+            <Link
+              to="/login"
+              className="no-account-text"
+            >
+              <h6>Login</h6>
+            </Link>
           </form>
         </div>
       </div>

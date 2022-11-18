@@ -20,7 +20,7 @@
   width: 250px;
 }
 .navbar .topbar .appInput input {
-  width: 170px;
+  width: 120px;
   border: 1px solid rgba(255,255,255,0.4);
   border-radius: 40px;
   padding: 8px 15px;
@@ -59,19 +59,107 @@
 .navbar .topbar .right .icon-container:hover {
   background: rgba(255,255,255,0.1);
 }
-.navbar .topbar .right .profile-container {
+.navbar .profile-container {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
   padding: 2px 5px;
   border-radius: 40px;
   user-select: none;
 }
-.navbar .topbar .right .profile-container:hover {
+.navbar .profile-container:hover {
   background: rgba(255,255,255,0.15);
 }
-.navbar .topbar .right .profile-container i {
+.navbar .profile-container .clickable-profile {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.navbar .profile-container .clickable-profile > i {
+  color: #fff
+}
+.navbar .profile-dropdown {
+  min-width: 200px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: var(--shadow);
+  z-index: 100;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  visibility: hidden;
+  opacity: 0;
+  padding: 5px;
+  transition: all 0.2s;
+}
+.navbar .profile-dropdown.show {
+  visibility: visible;
+  opacity: 1;
+  top: 40px;
+}
+.navbar .profile-dropdown a,
+.navbar .profile-dropdown h6 {
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--grayText);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.navbar .profile-dropdown a i,
+.navbar .profile-dropdown h6 i {
+  color: var(--grayText);
+}
+.navbar .profile-dropdown a:hover,
+.navbar .profile-dropdown h6:hover {
+  background: var(--primary);
   color: #fff;
+}
+.navbar .profile-dropdown a:hover i,
+.navbar .profile-dropdown h6:hover i {
+  color: #fff;
+}
+
+.navbar .shape {
+  position: absolute;
+  top: 0;
+  z-index: -1;
+  border-radius: 20px;
+}
+.navbar .shape1 {
+  width: 200px;
+  height: 160px;
+  top: 0;
+  left: 100px;
+  background: rgba(255,255,255,0.03);
+  transform: rotate(30deg);
+}
+.navbar .shape2 {
+  width: 120px;
+  height: 120px;
+  top: -50px;
+  right: 100px;
+  background: rgba(255,255,255,0.06);
+  transform: rotate(-120deg);
+}
+.navbar .shape3 {
+  width: 200px;
+  height: 200px;
+  top: 70px;
+  right: 300px;
+  background: rgba(255,255,255,0.04);
+  transform: rotate(60deg);
+}
+.navbar .shape4 {
+  width: 130px;
+  height: 130px;
+  top: -80px;
+  left: 400px;
+  background: rgba(255,255,255,0.05);
+  transform: rotate(200deg);
 }

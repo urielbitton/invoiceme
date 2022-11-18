@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   gap: 40px;
-  padding: 10px 25px;
+  padding: 10px 20px;
 }
 .sidebar .logo {
   display: flex;
@@ -52,7 +52,7 @@
 }
 
 .sidebar .bottom {
-  padding: 10px 25px;
+  padding: 10px 20px;
   padding-bottom: 15px;
 }
 .sidebar .bottom button {

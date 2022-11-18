@@ -9,11 +9,10 @@ const StoreContextProvider = ({children}) => {
  
   const user = auth.currentUser
   const [myUser, setMyUser] = useState(null) 
-  const [loggingAuth, setLoggingAuth] = useState(false)
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkmode') === "true" ? true : false)
   const [contentScrollBottom, setContentScrollBottom] = useState(false)
   const [windowIsFocused, setWindowIsFocused] = useState(false)
-  const [isPageLoading, setIsPageLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(false)
   const myUserID = user?.uid
   const myUserImg = myUser?.photoURL
   const myUserName = `${myUser?.firstName} ${myUser?.lastName}`
@@ -23,11 +22,10 @@ const StoreContextProvider = ({children}) => {
   useEffect(() => {
     auth.onAuthStateChanged(user => {
       if(user) {
-        setLoggingAuth(false)
         getUserByID(user.uid, setMyUser)
       }
       else {
-        setMyUser(undefined)
+        setMyUser({})
       }
     })
   },[user])
@@ -49,8 +47,7 @@ const StoreContextProvider = ({children}) => {
 
   return <StoreContext.Provider value={{ 
     user, myUser, setMyUser, myUserID, myUserImg, myUserName,
-    loggingAuth, setLoggingAuth, 
-    isPageLoading, setIsPageLoading,
+    pageLoading, setPageLoading,
     darkMode, setDarkMode,
     percentFormat,
     contentScrollBottom, setContentScrollBottom, 

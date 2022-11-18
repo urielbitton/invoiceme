@@ -6,7 +6,7 @@ export default function InstantSearches({ children }) {
   return (
     <>
       <InstantSearch
-        indexName="users_index"
+        indexName="invoices_index"
         searchClient={algoliaSearchClient}
       >
         {children}

@@ -7,22 +7,22 @@ import { useNavigate } from "react-router-dom"
 
 export default function ResetPassword() {
 
-  const { user, setIsPageLoading } = useContext(StoreContext)
+  const { user, setPageLoading } = useContext(StoreContext)
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
  
   const handleReset = () => {
     if(password.length > 5) {
-      setIsPageLoading(true)
+      setPageLoading(true)
       user.updatePassword(password)
       .then(() => {
-        setIsPageLoading(false)
+        setPageLoading(false)
         navigate('/')
       })
       .catch(error => {
         console.log(error)
         window.alert('An error occured while changing your password. Please try again later.')
-        setIsPageLoading(false)
+        setPageLoading(false)
       })
     }
   }
