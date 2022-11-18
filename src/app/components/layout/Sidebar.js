@@ -34,7 +34,8 @@ export default function Sidebar() {
       <div className="bottom">
         <AppButton
           label="Upgrade to Business"
-          rightIcon="far fa-rocket"
+          leftIcon="far fa-rocket"
+          url="/upgrade"
         />
       </div>
     </div>

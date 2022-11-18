@@ -2,7 +2,7 @@ export const menuLinks = [
   {
     name: 'Home',
     url: '/',
-    icon: 'fas fa-home-lg-alt',
+    icon: 'fas fa-th-large',
   },
   {
     name: 'Invoices',

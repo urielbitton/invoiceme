@@ -15,6 +15,7 @@
 }
 .icon-container.no-hover:hover {
   filter: brightness(1);
+  cursor: default;
 }
 .icon-container.round {
   border-radius: 100%;

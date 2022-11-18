@@ -22,6 +22,7 @@ const StoreContextProvider = ({children}) => {
 
   const [navItem1, setNavItem1] = useState(null)
   const [navItem2, setNavItem2] = useState(null)
+  const [navItem3, setNavItem3] = useState(null)
   const [navItemInfo, setNavItemInfo] = useState(null)
 
   useEffect(() => {
@@ -58,7 +59,8 @@ const StoreContextProvider = ({children}) => {
     contentScrollBottom, setContentScrollBottom, 
     photoURLPlaceholder,
     windowIsFocused,
-    navItem1, setNavItem1, navItem2, setNavItem2, navItemInfo, setNavItemInfo
+    navItem1, setNavItem1, navItem2, setNavItem2, navItemInfo, 
+    navItem3, setNavItem3, setNavItemInfo
   }}>
     {children}
   </StoreContext.Provider>

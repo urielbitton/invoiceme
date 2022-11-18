@@ -6,12 +6,12 @@ import { AppInput } from "../ui/AppInputs"
 import Avatar from "../ui/Avatar"
 import DropdownButton from "../ui/DropdownButton"
 import IconContainer from "../ui/IconContainer"
+import NavBottomBar from "./NavBottomBar"
 import './styles/Navbar.css'
 
 export default function Navbar() {
 
-  const { setPageLoading, myUserImg, myMemberType,
-    navItem1, navItem2, navItemInfo } = useContext(StoreContext)
+  const { setPageLoading, myUserImg, myMemberType } = useContext(StoreContext)
   const [showButtonMenu, setShowButtonMenu] = useState(false)
   const [openProfileMenu, setOpenProfileMenu] = useState(false)
 
@@ -103,48 +103,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <div className="bottombar">
-        <div className="left">
-          {
-            navItem1 &&
-            <div className="nav-item nav-item-1">
-              <IconContainer
-                icon={navItem1.icon}
-                iconColor="#fff"
-                dimensions="40px"
-                bgColor="var(--primary)"
-              />
-              <div className="texts">
-                <h3>{navItem1.label}</h3>
-                <h6>{navItem1.subLabel}</h6>
-              </div>
-            </div>
-          }
-          {
-            navItem2 &&
-            <div className="nav-item nav-item-2">
-              <IconContainer
-                icon={navItem1.icon}
-                iconColor="#fff"
-                dimensions="40px"
-                bgColor="var(--primary)"
-              />
-              <div className="texts">
-                <h3>{navItem1.label}</h3>
-                <h6>{navItem1.subLabel}</h6>
-              </div>
-            </div>
-          }
-        </div>
-        <div className="right">
-          {
-            navItemInfo &&
-            <div className="nav-item-info">
-
-            </div>
-          }
-        </div>
-      </div>
+      <NavBottomBar />
       <div className="shape shape1" />
       <div className="shape shape2" />
       <div className="shape shape3" />

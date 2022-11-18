@@ -5,12 +5,13 @@ export default function IconContainer(props) {
 
   const { bgColor, icon, iconColor, iconSize="16px",
     dimensions="35px", round=true, noHover,
-    inverted, onClick } = props
+    inverted, onClick, tooltip } = props
 
   return (
     <div 
       className={`icon-container ${round ? "round" : ""} ${noHover ? "no-hover" : ""} ${inverted ? "inverted" : ""}`}
       onClick={(e) => onClick && onClick(e)}
+      title={tooltip}
       style={{ backgroundColor: bgColor, width: dimensions, height: dimensions }}
     >
       <i 

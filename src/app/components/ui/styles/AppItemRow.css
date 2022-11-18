@@ -1,0 +1,34 @@
+.app-item-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  height: 55px;
+  background: #fff;
+  box-shadow: var(--cardShadow);
+  border-radius: 5px;
+  width: 100%;
+  transition: all 0.2s;
+}
+.app-item-row:hover {
+  box-shadow: var(--cardShadowHover);
+}
+.app-item-row div.row-item {
+  font-size: 14px;
+  font-weight: 600;
+  flex-basis: 25%;
+}
+.app-item-row div.row-item h6 {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.app-item-row .actions-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.app-item-row .actions-row i {
+  color: var(--primary);
+}
