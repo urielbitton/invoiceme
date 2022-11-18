@@ -10,7 +10,8 @@ import './styles/Navbar.css'
 
 export default function Navbar() {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, myUserImg, myMemberType,
+    navItem1, navItem2, navItemInfo } = useContext(StoreContext)
   const [showButtonMenu, setShowButtonMenu] = useState(false)
   const [openProfileMenu, setOpenProfileMenu] = useState(false)
 
@@ -18,7 +19,7 @@ export default function Navbar() {
     if (openProfileMenu) {
       window.onclick = () => setOpenProfileMenu(false)
     }
-  }, [openProfileMenu]) 
+  }, [openProfileMenu])
 
   return (
     <nav className="navbar">
@@ -58,7 +59,7 @@ export default function Navbar() {
             dimensions="30px"
           />
           <div className="profile-container">
-            <div 
+            <div
               className="clickable-profile"
               onClick={(e) => {
                 setOpenProfileMenu(prev => !prev)
@@ -66,7 +67,7 @@ export default function Navbar() {
               }}
             >
               <Avatar
-                img="https://i.imgur.com/0xERjh8.jpg"
+                img={myUserImg}
                 dimensions="30px"
                 alt="profile"
                 border="1.5px solid #fff"
@@ -82,20 +83,67 @@ export default function Navbar() {
                 <i className="fas fa-user-circle" />
                 <span>My Account</span>
               </Link>
-              <Link to="/upgrade">
-                <i className="fas fa-rocket" />
-                <span>Upgrade To Pro</span>
-              </Link>
+              {
+                myMemberType !== 'business' &&
+                <Link to="/upgrade">
+                  <i className="fas fa-rocket" />
+                  <span>Upgrade</span>
+                </Link>
+              }
               <h6 onClick={() => signOut(setPageLoading)}>
                 <i className="fas fa-sign-out" />
                 <span>Sign Out</span>
               </h6>
+              <hr />
+              <div className="info">
+                <span>Account Type:</span>
+                <span className="capitalize value">{myMemberType}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="bottom">
+      <div className="bottombar">
+        <div className="left">
+          {
+            navItem1 &&
+            <div className="nav-item nav-item-1">
+              <IconContainer
+                icon={navItem1.icon}
+                iconColor="#fff"
+                dimensions="40px"
+                bgColor="var(--primary)"
+              />
+              <div className="texts">
+                <h3>{navItem1.label}</h3>
+                <h6>{navItem1.subLabel}</h6>
+              </div>
+            </div>
+          }
+          {
+            navItem2 &&
+            <div className="nav-item nav-item-2">
+              <IconContainer
+                icon={navItem1.icon}
+                iconColor="#fff"
+                dimensions="40px"
+                bgColor="var(--primary)"
+              />
+              <div className="texts">
+                <h3>{navItem1.label}</h3>
+                <h6>{navItem1.subLabel}</h6>
+              </div>
+            </div>
+          }
+        </div>
+        <div className="right">
+          {
+            navItemInfo &&
+            <div className="nav-item-info">
 
+            </div>
+          }
+        </div>
       </div>
       <div className="shape shape1" />
       <div className="shape shape2" />

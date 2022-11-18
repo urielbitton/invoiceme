@@ -3,7 +3,7 @@ import './styles/Auth.css'
 import { StoreContext } from 'app/store/store'
 import { auth } from 'app/firebase/fire'
 import { AppInput } from 'app/components/ui/AppInputs'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { clearAuthState, setDB } from 'app/services/CrudDB'
 import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
@@ -22,6 +22,7 @@ export default function Register() {
   const [emailError, setEmailError] = useState('')
   const [passError, setPassError] = useState('')
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   const clearErrors = () => {
     setEmailError('')
@@ -39,21 +40,22 @@ export default function Register() {
       email: authMode === 'plain' ? email : authMode === 'google' ? res.additionalUserInfo.profile.email : res.email,
       photoURL: authMode === 'facebook' ? res.picture.data.url : photoURLPlaceholder,
       address: '',
-      location: null,
       phone: '',
       password,
       city: '',
       region: '',
       country: '',
-      aboutMe: '',
+      invoicesNum: 0,
+      estimatesNum: 0,
+      contactsNum: 0,
+      paymentsNum: 0,
       userID: user.uid,
       dateJoined: new Date(),
-      userTypes: ['renter'],
-      activeUserType: 'renter'
+      memberType: 'basic',
     })
       .then(() => {
         setDB(`users/${user.uid}/notifications`, 'welcome', {
-          notificationID: 'wellcome',
+          notificationID: 'welcome',
           dateCreated: new Date(),
           icon: 'fas fa-house-user',
           isRead: false,
@@ -61,6 +63,7 @@ export default function Register() {
           url: '/',
           img: '',
         })
+        navigate('/')
         setLoading(false)
       })
       .catch(err => {

@@ -33,7 +33,7 @@ export default function Sidebar() {
       </div>
       <div className="bottom">
         <AppButton
-          label="Upgrade to Pro"
+          label="Upgrade to Business"
           rightIcon="far fa-rocket"
         />
       </div>

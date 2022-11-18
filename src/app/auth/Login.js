@@ -18,7 +18,6 @@ export default function Login() {
   const [passError, setPassError] = useState('')
   const [rememberMe, setRememberMe] = useState(true)
   const [loading, setLoading] = useState(false)
-  console.log(user)
  
   const handleLogin = () => {
     setLoading(true)
@@ -151,7 +150,7 @@ export default function Login() {
               {!loading ? <i className="fal fa-arrow-right" /> : <i className="fas fa-spinner fa-spin" />}
             </button>
             <Link
-              to="/signup"
+              to="/register"
               className="no-account-text"
             >
               <h6>Create An Account</h6>

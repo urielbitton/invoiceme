@@ -81,7 +81,7 @@
   color: #fff
 }
 .navbar .profile-dropdown {
-  min-width: 200px;
+  min-width: 180px;
   background: #fff;
   border-radius: 5px;
   box-shadow: var(--shadow);
@@ -89,6 +89,8 @@
   position: absolute;
   top: 50px;
   right: 0;
+  display: flex;
+  flex-direction: column;
   visibility: hidden;
   opacity: 0;
   padding: 5px;
@@ -123,6 +125,29 @@
 .navbar .profile-dropdown a:hover i,
 .navbar .profile-dropdown h6:hover i {
   color: #fff;
+}
+.navbar .profile-dropdown hr {
+  width: 90%;
+  height: 1px;
+  align-self: center;
+  margin: 3px 0;
+  background: #eee;
+}
+.navbar .profile-dropdown .info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  cursor: default;
+}
+.navbar .profile-dropdown .info span.value {
+  font-size: 12px;
+  font-weight: 700;
+}
+.navbar .profile-dropdown .info span {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--grayText);
 }
 
 .navbar .shape {
@@ -162,4 +187,17 @@
   left: 400px;
   background: rgba(255,255,255,0.05);
   transform: rotate(200deg);
+}
+
+.navbar .bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+.navbar .bottombar > .left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }

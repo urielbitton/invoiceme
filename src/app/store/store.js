@@ -16,8 +16,13 @@ const StoreContextProvider = ({children}) => {
   const myUserID = user?.uid
   const myUserImg = myUser?.photoURL
   const myUserName = `${myUser?.firstName} ${myUser?.lastName}`
+  const myMemberType = myUser?.memberType
   const photoURLPlaceholder = 'https://firebasestorage.googleapis.com/v0/b/familia-app-1f5a8.appspot.com/o/admin%2Fprofile-placeholder.png?alt=media'
   const percentFormat = new Intl.NumberFormat('en-CA', {style: 'percent'})
+
+  const [navItem1, setNavItem1] = useState(null)
+  const [navItem2, setNavItem2] = useState(null)
+  const [navItemInfo, setNavItemInfo] = useState(null)
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
@@ -46,13 +51,14 @@ const StoreContextProvider = ({children}) => {
   },[])
 
   return <StoreContext.Provider value={{ 
-    user, myUser, setMyUser, myUserID, myUserImg, myUserName,
+    user, myUser, setMyUser, myUserID, myUserImg, myUserName, myMemberType,
     pageLoading, setPageLoading,
     darkMode, setDarkMode,
     percentFormat,
     contentScrollBottom, setContentScrollBottom, 
     photoURLPlaceholder,
     windowIsFocused,
+    navItem1, setNavItem1, navItem2, setNavItem2, navItemInfo, setNavItemInfo
   }}>
     {children}
   </StoreContext.Provider>
