@@ -18,7 +18,6 @@ export default function AppItemRow(props) {
           <input
             type="checkbox"
             checked={item}
-            readOnly
           /> :
           <h6>{item}</h6>
         }

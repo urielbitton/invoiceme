@@ -1,4 +1,9 @@
 .invoices-page {
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+}
+.invoices-content {
+  width: 100%;
+  margin-top: 30px;
 }

@@ -8,6 +8,6 @@
 }
 
 .main-content {
-  width: 100%;
+  width: calc(100vw - var(--sidebarWidth));
   height: 100%;
 }

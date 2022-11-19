@@ -18,6 +18,8 @@
   font-size: 14px;
   font-weight: 600;
   flex-basis: 25%;
+  display: flex;
+  align-items: center;
 }
 .app-item-row .row-item h6 {
   font-size: 12px;
