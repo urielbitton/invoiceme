@@ -2,7 +2,7 @@ import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
 import IconContainer from "../ui/IconContainer"
 
-export default function NavBottomBar() { 
+export default function NavBottomBar() {
 
   const { navItem1, navItem2, navItem3, navItemInfo } = useContext(StoreContext)
 

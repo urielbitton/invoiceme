@@ -14,14 +14,17 @@
 .app-item-row:hover {
   box-shadow: var(--cardShadowHover);
 }
-.app-item-row div.row-item {
+.app-item-row .row-item {
   font-size: 14px;
   font-weight: 600;
   flex-basis: 25%;
 }
-.app-item-row div.row-item h6 {
+.app-item-row .row-item h6 {
   font-size: 12px;
   font-weight: 600;
+}
+.app-item-row .row-item input {
+  width: 13px;
 }
 
 .app-item-row .actions-row {

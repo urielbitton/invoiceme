@@ -104,10 +104,12 @@ export default function Navbar() {
         </div>
       </div>
       <NavBottomBar />
-      <div className="shape shape1" />
-      <div className="shape shape2" />
-      <div className="shape shape3" />
-      <div className="shape shape4" />
+      <div className="shapes-container">
+        <div className="shape shape1" />
+        <div className="shape shape2" />
+        <div className="shape shape3" />
+        <div className="shape shape4" />
+      </div>
     </nav>
   )
 }

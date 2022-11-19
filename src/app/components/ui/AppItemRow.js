@@ -29,7 +29,7 @@ export default function AppItemRow(props) {
   return (
     <div className="app-item-row">
       {itemsRender}
-      <div className="actions-row">
+      <div className="actions-row row-item">
         {actions}
       </div>
     </div>
