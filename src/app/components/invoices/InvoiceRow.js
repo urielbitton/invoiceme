@@ -1,11 +1,27 @@
+import { deleteDB } from "app/services/CrudDB"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
+import { formatCurrency } from "app/utils/generalUtils"
 import React from 'react'
+import { useNavigate } from "react-router-dom"
 import AppItemRow from "../ui/AppItemRow"
 import IconContainer from "../ui/IconContainer"
 
 export default function InvoiceRow(props) {
 
-  const { title, invoiceNumber, total, items, invoiceTo, dateCreated, isPaid } = props.invoice
+  const { invoiceID, title, invoiceNumber, total, items, invoiceTo, 
+    dateCreated, isPaid, currency, invoiceOwnerID } = props.invoice
+  const navigate = useNavigate()
+
+  const deleteInvoice = () => {
+    const confirm = window.confirm("Are you sure you want to delete this invoice?")
+    if (confirm) {
+      deleteDB(`users/${invoiceOwnerID}/invoices`, invoiceID)
+      .then(() => {
+        window.alert("Invoice deleted.")
+      })
+      .catch(err => console.log(err))
+    }
+  }
 
   return (
     <AppItemRow
@@ -13,18 +29,18 @@ export default function InvoiceRow(props) {
       item2={title}
       item3={invoiceTo.name}
       item4={items.length}
-      item5={total}
+      item5={`${currency?.symbol}${formatCurrency(total)}`}
       item6={convertClassicDate(convertAlgoliaDate(dateCreated))}
       item7={isPaid}
       actions={
         <>
           <IconContainer
             icon="fas fa-eye"
-            tooltip="View"
+            tooltip="View Invoice"
             dimensions="23px"
             inverted
             iconSize="13px"
-            onClick={() => alert('view invoice')}
+            onClick={() => navigate(`/invoices/${invoiceID}`)}
           />
           <IconContainer
             icon="fas fa-pen"
@@ -32,7 +48,7 @@ export default function InvoiceRow(props) {
             dimensions="23px"
             inverted
             iconSize="13px"
-            onClick={() => alert('edit invoice')}
+            onClick={() => navigate(`/invoices/${invoiceID}?edit=true`)}
           />
           <IconContainer
             icon="fas fa-trash"
@@ -40,7 +56,7 @@ export default function InvoiceRow(props) {
             dimensions="23px"
             inverted
             iconSize="13px"
-            onClick={() => alert('delete invoice')}
+            onClick={() => deleteInvoice()}
           />
         </>
       }

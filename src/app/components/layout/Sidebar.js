@@ -1,6 +1,6 @@
 import React from 'react'
 import './styles/Sidebar.css'
-import logo from 'app/assets/images/logo.png'
+import logo from 'app/assets/images/logo2.png'
 import { menuLinks } from "app/data/menuLinks"
 import { NavLink } from "react-router-dom"
 import AppButton from "../ui/AppButton"

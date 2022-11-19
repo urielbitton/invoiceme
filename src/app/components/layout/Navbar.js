@@ -11,7 +11,7 @@ import './styles/Navbar.css'
 
 export default function Navbar() {
 
-  const { setPageLoading, myUserImg, myMemberType } = useContext(StoreContext)
+  const { setPageLoading, myUserImg, myMemberType, pageScrolled } = useContext(StoreContext)
   const [showButtonMenu, setShowButtonMenu] = useState(false)
   const [openProfileMenu, setOpenProfileMenu] = useState(false)
 
@@ -22,7 +22,7 @@ export default function Navbar() {
   }, [openProfileMenu])
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${pageScrolled ? 'compact-nav' : ''}`}>
       <div className="topbar">
         <div className="left">
           <AppInput

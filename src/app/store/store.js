@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useEffect, useRef, useState } from 'react'
 import { auth } from 'app/firebase/fire'
 import { getUserByID } from "app/services/userServices"
 
@@ -19,11 +19,11 @@ const StoreContextProvider = ({children}) => {
   const myMemberType = myUser?.memberType
   const photoURLPlaceholder = 'https://firebasestorage.googleapis.com/v0/b/familia-app-1f5a8.appspot.com/o/admin%2Fprofile-placeholder.png?alt=media'
   const percentFormat = new Intl.NumberFormat('en-CA', {style: 'percent'})
-
   const [navItem1, setNavItem1] = useState(null)
   const [navItem2, setNavItem2] = useState(null)
   const [navItem3, setNavItem3] = useState(null)
   const [navItemInfo, setNavItemInfo] = useState(null)
+  const [pageScrolled, setPageScrolled] = useState(0)
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
@@ -60,7 +60,8 @@ const StoreContextProvider = ({children}) => {
     photoURLPlaceholder,
     windowIsFocused,
     navItem1, setNavItem1, navItem2, setNavItem2, navItemInfo, 
-    navItem3, setNavItem3, setNavItemInfo
+    navItem3, setNavItem3, setNavItemInfo,
+    pageScrolled, setPageScrolled
   }}>
     {children}
   </StoreContext.Provider>

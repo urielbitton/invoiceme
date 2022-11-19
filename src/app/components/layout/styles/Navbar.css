@@ -9,6 +9,14 @@
   flex-direction: column;
   padding: 10px 20px;
   justify-content: space-between;
+  transition: all 0.3s;
+}
+.navbar.compact-nav {
+  height: var(--navbarHeightCompact)
+}
+.navbar.compact-nav .bottombar {
+  visibility: hidden;
+  opacity: 0;
 }
 
 .navbar .topbar {
@@ -155,6 +163,7 @@
   align-items: center;
   width: 100%;
   gap: 20px;
+  transition: all 0.2s;
 }
 .navbar .bottombar .nav-items {
   display: flex;
