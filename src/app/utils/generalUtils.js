@@ -167,3 +167,9 @@ export const generateOrderID = () => {
     `-${(scrambledTimestamp.slice(10,13))}${Math.floor(Math.random() * 1000)}`
   return orderID
 }
+
+export const calculatePriceTotal = (subtotal, taxPercent, quantity) => {
+  const tax = subtotal * taxPercent
+  const total = (subtotal + tax) * quantity
+  return total
+}

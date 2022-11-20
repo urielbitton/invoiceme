@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function NewEstimate() {
+export default function NewEstimatePage() {
   return (
     <div>NewEstimate</div>
   )

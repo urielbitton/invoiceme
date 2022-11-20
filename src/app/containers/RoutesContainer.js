@@ -11,10 +11,10 @@ import SettingsPage from "app/pages/SettingsPage"
 import UpgradePage from "app/pages/UpgradePage"
 import MyProfilePage from "app/pages/MyProfilePage"
 import MyAccountPage from "app/pages/MyAccountPage"
-import NewInvoice from "app/pages/NewInvoice"
-import NewEstimate from "app/pages/NewEstimate"
-import NewContact from "app/pages/NewContact"
-import NewPament from "app/pages/NewPament"
+import NewInvoicePage from "app/pages/NewInvoicePage"
+import NewEstimatePage from "app/pages/NewEstimatePage"
+import NewContactPage from "app/pages/NewContactPage"
+import NewPaymentPage from "app/pages/NewPaymentPage"
 import InvoicePage from "app/pages/InvoicePage"
 
 export default function RoutesContainer() {
@@ -25,13 +25,13 @@ export default function RoutesContainer() {
         <Route index element={<HomePage />} />
         <Route path="invoices" element={<InvoicesPage />} />
         <Route path="/invoices/:invoiceID" element={<InvoicePage />} />
-        <Route path="invoices/new" element={<NewInvoice />} />
+        <Route path="invoices/new" element={<NewInvoicePage />} />
         <Route path="estimates" element={<EstimatesPage />} />
-        <Route path="estimates/new" element={<NewEstimate />} />
+        <Route path="estimates/new" element={<NewEstimatePage />} />
         <Route path="contacts" element={<ContactsPage />} />
-        <Route path="contacts/new" element={<NewContact />} />
+        <Route path="contacts/new" element={<NewContactPage />} />
         <Route path="payments" element={<PaymentsPage />} />
-        <Route path="paments/new" element={<NewPament />} />
+        <Route path="paments/new" element={<NewPaymentPage />} />
         <Route path="my-profile" element={<MyProfilePage />} />
         <Route path="my-account" element={<MyAccountPage />} />
         <Route path="settings" element={<SettingsPage />} />

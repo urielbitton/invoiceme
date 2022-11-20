@@ -7,8 +7,8 @@ html, body {
 :root { 
   --primary: #178fff;
   --primaryRgb: rgba(23, 143, 255, 0.2);
-  --lightPrimary: #78d4ff;
-  --extraLightPrimary: #dbf4ff;
+  --lightPrimary: #9fd1ff;
+  --extraLightPrimary: #e4f2ff;
   --secondary: #BAB69B;
   --bg: #f8f8ff;
   --grayText: #696e93;
@@ -79,7 +79,7 @@ input, select, textarea {
   border-radius: 5px;
   width: 100%;
   outline: none;
-  font-size: 15px;
+  font-size: 14px;
   transition: all 0.3s;
   font-family: inherit;
 } 

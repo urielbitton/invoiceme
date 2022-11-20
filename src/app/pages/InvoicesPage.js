@@ -46,6 +46,11 @@ export default function InvoicesPage() {
     setNavItem1({ label: "Total Invoices", icon: 'fas fa-file-invoice-dollar', value: myUser?.invoicesNum })
     setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: 0 })
     setNavItem3({ label: "Invoices Paid", icon: 'fas fa-receipt', value: '0/1' })
+    return () => {
+      setNavItem1(null)
+      setNavItem2(null)
+      setNavItem3(null)
+    }
   },[myUser])
 
   return (

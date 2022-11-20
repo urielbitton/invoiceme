@@ -34,6 +34,7 @@ export default function DropdownButton(props) {
     if(showMenu !== null) {
       window.onclick = () => setShowMenu(null)
     }
+    return () => window.onclick = null
   },[showMenu])
 
   return (

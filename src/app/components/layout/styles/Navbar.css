@@ -161,13 +161,10 @@
 
 .navbar .bottombar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   gap: 20px;
   transition: all 0.2s;
-}
-.navbar .bottombar.reverse {
-  flex-direction: row-reverse;
 }
 .navbar .bottombar .go-back {
   color: #fff;
@@ -222,8 +219,8 @@
 }
 .navbar .bottombar .nav-item-info {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-end;
+  gap: 20px;
 }
 
 .navbar .shapes-container {

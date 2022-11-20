@@ -18,6 +18,7 @@ export default function Navbar() {
     if (showMenu !== null) {
       window.onclick = () => setShowMenu(null)
     }
+    return () => window.onclick = null
   }, [showMenu])
 
   return (
