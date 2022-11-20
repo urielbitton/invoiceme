@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 900px;
   padding-bottom: 20px;
+  width: 900px;
 }
 .new-invoice-page .page-content {
   width: 100%;
@@ -174,6 +174,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
+  width: 100%;
 }
 .new-invoice-page .invoice-contact .appInput i {
   top: 12px;
@@ -194,11 +195,41 @@
 .new-invoice-page .contacts-search-results {
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 20px 10px;
   border-radius: 5px;
   border: 1px solid var(--inputBorderColor);
   width: 100%;
 }
+.new-invoice-page .contacts-search-results .contact-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+}
+.new-invoice-page .contacts-search-results .contact-row h6 {
+  flex-basis: 20%;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
+.new-invoice-page .contacts-search-results .contact-row > i {
+  font-size: 16px;
+  color: var(--darkGrayText);
+}
+.new-invoice-page .contacts-search-results .contact-row button {
+  background: var(--extraLightPrimary);
+  color: var(--primary);
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+.new-invoice-page .contacts-search-results .contact-row button:hover {
+  filter: brightness(1);
+}
+.new-invoice-page .contacts-search-results .contact-row button.selected-contact-btn {
+  background: var(--primary);
+  color: #fff;
+}
+
 
 .new-invoice-page .btn-group {
   margin-top: 50px;

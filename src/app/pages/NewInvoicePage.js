@@ -1,10 +1,13 @@
+import { contactsIndex } from "app/algolia"
+import AddContactModal from "app/components/contacts/AddContactModal"
 import AppButton from "app/components/ui/AppButton"
-import { AppInput, AppSelect, AppSwitch, AppTextarea } from "app/components/ui/AppInputs"
+import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import AppTable from "app/components/ui/AppTable"
 import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
-import { getRandomDocID } from "app/services/CrudDB"
+import { useInstantSearch } from "app/hooks/searchHooks"
+import { getRandomDocID, setDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
 import { calculatePriceTotal, formatCurrency } from "app/utils/generalUtils"
@@ -36,11 +39,47 @@ export default function NewInvoicePage() {
   const [pageNum, setPageNum] = useState(0)
   const [numOfHits, setNumOfHits] = useState(0)
   const [hitsPerPage, setHitsPerPage] = useState(10)
+  const [showContactModal, setShowContactModal] = useState(false)
+  const [contactName, setContactName] = useState("")
+  const [contactEmail, setContactEmail] = useState("")
+  const [contactPhone, setContactPhone] = useState("")
+  const [contactAddress, setContactAddress] = useState("")
+  const [contactCity, setContactCity] = useState("")
+  const [contactRegion, setContactRegion] = useState("")
+  const [contactCountry, setContactCountry] = useState("")
+  const [contactPostcode, setContactPostcode] = useState("")
+  const [contactAddFavorite, setContactAddFavorite] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [contactsLoading, setContactsLoading] = useState(false)
+  const [selectedContactID, setSelectedContactID] = useState(null)
   const filters = `ownerID: ${myUserID}`
   const navigate = useNavigate()
   const calculatedSubtotal = invoiceItems.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
-  const calculatedTotal = invoiceItems.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate/100)) * item.quantity)), 0)
+  const calculatedTotal = invoiceItems.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedItemTotal = calculatePriceTotal(itemPrice, itemTaxRate / 100, itemQuantity)
+
+  const allowAddContact = contactName.length > 0 && 
+    contactEmail.length > 0 &&
+    contactPhone.length > 0 &&
+    contactAddress.length > 0 &&
+    contactCity.length > 0 &&
+    contactRegion.length > 0 &&
+    contactCountry.length > 0 &&
+    contactPostcode.length > 0
+
+  const contacts = useInstantSearch(
+    query,
+    searchResults,
+    setSearchResults,
+    contactsIndex,
+    filters,
+    setNumOfHits,
+    setNumOfPages,
+    pageNum,
+    hitsPerPage,
+    setContactsLoading,
+    false
+  )
 
   const statusOptions = [
     { value: 'unpaid', label: 'Unpaid' },
@@ -100,22 +139,22 @@ export default function NewInvoicePage() {
         {
           editItemID === item.itemID &&
           <>
-          <IconContainer
-            dimensions="24px"
-            onClick={() => saveItem(item.itemID)}
-            icon="fas fa-check"
-            iconColor="var(--primary)"
-            iconSize="13px"
-            tooltip="Save Item"
-          />
-          <IconContainer
-            dimensions="24px"
-            onClick={() => cancelItem()}
-            icon="far fa-times"
-            iconColor="var(--primary)"
-            iconSize="15px"
-            tooltip="Cancel"
-          />
+            <IconContainer
+              dimensions="24px"
+              onClick={() => saveItem(item.itemID)}
+              icon="fas fa-check"
+              iconColor="var(--primary)"
+              iconSize="13px"
+              tooltip="Save Item"
+            />
+            <IconContainer
+              dimensions="24px"
+              onClick={() => cancelItem()}
+              icon="far fa-times"
+              iconColor="var(--primary)"
+              iconSize="15px"
+              tooltip="Cancel"
+            />
           </>
         }
         {
@@ -140,6 +179,26 @@ export default function NewInvoicePage() {
           </>
         }
       </div>
+    </div>
+  })
+
+  const contactsList = contacts?.map((contact, index) => {
+    return <div
+      key={index}
+      className={`contact-row ${contact.contactID === selectedContactID ? 'selected' : ''}`}
+    >
+      <i className="fas fa-id-badge"/>
+      <h6>{contact.name}</h6>
+      <h6>{contact.email}</h6>
+      <h6>{contact.phone}</h6>
+      <h6>{contact.address}</h6>
+      <h6>{contact.city}, {contact.region}, {contact.country}</h6>
+      <AppButton
+        label={selectedContactID !== contact.contactID ? 'Select' : 'Selected'}
+        onClick={() => setSelectedContactID(contact.contactID)}
+        className="selected-contact-btn"
+        rightIcon={selectedContactID === contact.contactID ? 'far fa-check' : ''}
+      />
     </div>
   })
 
@@ -235,9 +294,45 @@ export default function NewInvoicePage() {
     }
     clearInvoiceItemInputs()
   }
-  
-  const addContact = () => {
 
+  const addContact = () => {
+    if(!allowAddContact) return alert("Please fill in all fields")
+    setLoading(true)
+    const contactsPath = `users/${myUserID}/contacts`
+    const docID = getRandomDocID(contactsPath)
+    const contactData = {
+      name: contactName,
+      email: contactEmail,
+      phone: contactPhone,
+      address: contactAddress,
+      city: contactCity,
+      region: contactRegion,
+      country: contactCountry,
+      postcode: contactPostcode,
+      isFavorite: contactAddFavorite,
+      contactID: docID,
+      dateAdded: new Date(),
+      ownerID: myUserID
+    }
+    setDB(contactsPath, docID, contactData)
+    .then(() => {
+      setInvoiceContact(contactData)
+      setContactName("")
+      setContactEmail("")
+      setContactPhone("")
+      setContactAddress("")
+      setContactCity("")
+      setContactRegion("")
+      setContactCountry("")
+      setContactPostcode("")
+      setContactAddFavorite(false)
+      setShowContactModal(false)
+      setLoading(false)
+    })
+    .catch(err => {
+      setLoading(false)
+      console.log(err)
+    })
   }
 
   const createInvoice = () => {
@@ -372,31 +467,27 @@ export default function NewInvoicePage() {
             placeholder="Search Contact"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            iconleft={query.length ? 
-              <i 
-                className="fal fa-times" 
+            iconleft={query.length ?
+              <i
+                className="fal fa-times"
                 onClick={() => {
                   setQuery('')
                   setSearchResults([])
                 }}
-              /> : 
-              <i className="fal fa-search"/>
+              /> :
+              <i className="fal fa-search" />
             }
           />
-          <div className="contacts-search-results">
-            
-          </div>
-          <AppTable
-            headers={[
-              'Name',
-              'Email',
-              'Phone',
-              'Address',
-              'Add Contact',
-              'Edit'
-            ]}
-            rows={invoiceContact ? [invoiceContact] : []}
+          <AppButton
+            label="Add New Contact"
+            onClick={() => setShowContactModal(true)}
           />
+          {
+            query.length > 0 && searchResults.length > 0 &&
+            <div className="contacts-search-results">
+              {contactsList}
+            </div>
+          }
         </div>
       </div>
       <div className="btn-group">
@@ -405,6 +496,30 @@ export default function NewInvoicePage() {
           onClick={createInvoice}
         />
       </div>
+      <AddContactModal
+        showModal={showContactModal}
+        setShowModal={setShowContactModal}
+        name={contactName}
+        email={contactEmail}
+        phone={contactPhone}
+        address={contactAddress}
+        city={contactCity}
+        region={contactRegion}
+        postcode={contactPostcode}
+        country={contactCountry}
+        addToFavorites={contactAddFavorite}
+        setName={setContactName}
+        setEmail={setContactEmail}
+        setPhone={setContactPhone}
+        setAddress={setContactAddress}
+        setCity={setContactCity}
+        setRegion={setContactRegion}
+        setPostcode={setContactPostcode}
+        setCountry={setContactCountry}
+        setAddToFavorites={setContactAddFavorite}
+        createContact={() => addContact()}
+        loading={loading}
+      />
     </div>
   )
 }

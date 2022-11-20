@@ -68,8 +68,8 @@
   background: transparent;
 }
 .appButton.invertedBtn:hover {
-  background: var(--primary);
-  color: #fff;
+  background: var(--extraLightPrimary);
+  color: var(--primary);
 }
 
 .appButton.disabled {
