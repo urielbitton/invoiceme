@@ -1,0 +1,60 @@
+.app-select-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+.app-select-bar .select-item {
+  display: flex;
+  align-items: center;
+}
+.app-select-bar .select-item h6 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grayText);
+}
+.app-select-bar .select-item h6 span.bold {
+  font-weight: 900;
+}
+.app-select-bar .select-item .commonInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-select-bar .select-item .commonInput i.fa-search {
+  z-index: 10;
+  left: 5px;
+  transform: translateY(-50%);
+  top: 50%;
+  font-size: 13px;
+  color: #aaa;
+}
+.app-select-bar .select-item .commonInput i.fa-times {
+  z-index: 10;
+  right: 5px;
+  transform: translateY(-50%);
+  top: 50%;
+  font-size: 15px;
+  color: #aaa;
+  cursor: pointer;
+}
+.app-select-bar .select-item select,
+.app-select-bar .select-item input {
+  padding: 5px 0;
+  border: none;
+  font-size: 13px;
+  background: none;
+  border-bottom: 1px solid #ccc;
+  width: 200px;
+  border-radius: 0;
+}
+.app-select-bar .select-item input {
+  padding-left: 25px;
+}
+.app-select-bar .select-item select:focus,
+.app-select-bar .select-item input:focus {
+  border-bottom: 1px solid var(--primary);
+}
+.app-select-bar .select-item input:focus + i.fa-search {
+  color: var(--primary);
+}

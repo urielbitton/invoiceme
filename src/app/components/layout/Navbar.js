@@ -11,18 +11,17 @@ import './styles/Navbar.css'
 
 export default function Navbar() {
 
-  const { setPageLoading, myUserImg, myMemberType, pageScrolled } = useContext(StoreContext)
-  const [showButtonMenu, setShowButtonMenu] = useState(false)
-  const [openProfileMenu, setOpenProfileMenu] = useState(false)
+  const { setPageLoading, myUserImg, myMemberType } = useContext(StoreContext)
+  const [showMenu, setShowMenu] = useState(null)
 
   useEffect(() => {
-    if (openProfileMenu) {
-      window.onclick = () => setOpenProfileMenu(false)
+    if (showMenu !== null) {
+      window.onclick = () => setShowMenu(null)
     }
-  }, [openProfileMenu])
+  }, [showMenu])
 
   return (
-    <nav className={`navbar ${pageScrolled ? 'compact-nav' : ''}`}>
+    <nav className="navbar">
       <div className="topbar">
         <div className="left">
           <AppInput
@@ -34,8 +33,8 @@ export default function Navbar() {
           <DropdownButton
             label="Create New"
             iconRight="fal fa-plus"
-            showMenu={showButtonMenu}
-            setShowMenu={setShowButtonMenu}
+            showMenu={showMenu === 'show'}
+            setShowMenu={setShowMenu}
             className="create-new-btn"
             buttonType="outlineBtn"
             rightIcon="fal fa-chevron-down"
@@ -62,7 +61,7 @@ export default function Navbar() {
             <div
               className="clickable-profile"
               onClick={(e) => {
-                setOpenProfileMenu(prev => !prev)
+                setShowMenu(prev => prev === 'profile' ? null : 'profile')
                 e.stopPropagation()
               }}
             >
@@ -74,7 +73,7 @@ export default function Navbar() {
               />
               <i className="fal fa-angle-down" />
             </div>
-            <div className={`profile-dropdown ${openProfileMenu ? 'show' : ''}`}>
+            <div className={`profile-dropdown ${showMenu === 'profile' ? 'show' : ''}`}>
               <Link to="/my-profile">
                 <i className="fas fa-user" />
                 <span>My Profile</span>

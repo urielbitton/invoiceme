@@ -1,0 +1,84 @@
+.new-invoice-page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 900px;
+}
+.new-invoice-page .page-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 50px;
+}
+.new-invoice-page form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px 30px;
+  margin-top: 20px;
+  width: 100%;
+}
+.new-invoice-page form .commonInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.new-invoice-page form .commonInput.date-input input {
+  display: block;
+  flex-direction: row;
+}
+.new-invoice-page form .commonInput input,
+.new-invoice-page form .commonInput select {
+  height: 37px;
+}
+.new-invoice-page form .commonInput input,
+.new-invoice-page form .commonInput select,
+.new-invoice-page form .commonInput textarea {
+  border-color: var(--inputBorderColor);
+}
+.new-invoice-page form .appTextarea {
+  grid-column: 1/-1;
+}
+.new-invoice-page form textarea {
+  resize: vertical;
+  min-height: 90px;
+  max-height: 150px;
+}
+.new-invoice-page form .commonInput h6 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--darkGrayText);
+}
+.new-invoice-page form .tax-rates {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+}
+
+.new-invoice-page .invoice-items {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.new-invoice-page .invoice-items h4 {
+  color: var(--darkGrayText);
+}
+
+.new-invoice-page .invoice-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.navbar .bottombar .nav-item-info > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navbar .bottombar .nav-item-info > div h6.numbers {
+  font-size: 15px;
+  color: #fff;
+  font-weight: 500;
+}

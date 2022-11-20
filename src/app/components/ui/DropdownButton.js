@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 export default function DropdownButton(props) {
 
   const { items, leftIcon, rightIcon, buttonType, label,
-    showMenu, setShowMenu, preventCloseOnClick, className='' } = props
+    showMenu, setShowMenu, className='' } = props
 
   const itemsList = items.map((item, index) => {
     return (
@@ -31,8 +31,8 @@ export default function DropdownButton(props) {
   })
 
   useEffect(() => {
-    if(showMenu) {
-      window.onclick = () => setShowMenu(false)
+    if(showMenu !== null) {
+      window.onclick = () => setShowMenu(null)
     }
   },[showMenu])
 
@@ -41,7 +41,7 @@ export default function DropdownButton(props) {
       className="dropdown-button"
       onClick={(e) => {
         e.stopPropagation()
-        setShowMenu(prev => preventCloseOnClick ? true : !prev)
+        setShowMenu(prev => prev === 'show' ? null : 'show')
       }}
     >
       <AppButton

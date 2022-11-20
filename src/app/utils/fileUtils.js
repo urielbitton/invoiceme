@@ -1,3 +1,5 @@
+import jsPDF from "jspdf"
+
 function setLoadingDef(num) {}
 
 export const fileTypeConverter = (string) => {
@@ -142,4 +144,31 @@ new Promise((resolve, reject) => {
     resolve(encoded);
   };
   reader.onerror = (error) => reject(error);
-});
+})
+
+export const convertDocToFileObject = (doc, filename) => {
+  let file = new File([doc], doc.name || filename, {type: doc.type})
+  return file
+}
+
+export const generatePDFFromHTML = (html) => {
+  const doc = new jsPDF('p', 'pt', 'a4');
+  return doc.html(html).then(() => {
+    return doc
+  })
+}
+
+export const generateAndDownloadPDFFromHTML = (html, fileName) => {
+  const doc = new jsPDF('p', 'pt', 'a4');
+  return doc.html(html).then(() => {
+    doc.save(fileName)
+  })
+}
+
+export const saveHTMLToPDFAsBlob = (html, filename) => {
+  return generatePDFFromHTML(html)
+  .then((doc) => {
+    const file = convertDocToFileObject(doc.output('blob'), filename)
+    return file
+  })
+}

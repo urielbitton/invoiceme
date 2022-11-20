@@ -16,7 +16,8 @@
     "@sendgrid/mail": "^7.7.0",
     "algoliasearch": "^4.11.0",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^4.0.2"
+    "firebase-functions": "^4.1.0",
+    "twilio": "^3.83.3"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"

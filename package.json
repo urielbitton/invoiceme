@@ -8,6 +8,7 @@
     "algoliasearch": "^4.11.0",
     "date-fns": "^2.29.2",
     "firebase": "^8.9.1",
+    "jspdf": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",

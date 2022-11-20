@@ -16,21 +16,11 @@ import NewEstimate from "app/pages/NewEstimate"
 import NewContact from "app/pages/NewContact"
 import NewPament from "app/pages/NewPament"
 import InvoicePage from "app/pages/InvoicePage"
-import { StoreContext } from "app/store/store"
 
 export default function RoutesContainer() {
 
-  const { pageScrolled, setPageScrolled } = useContext(StoreContext)
-
-  const onScroll = (e) => {
-    e.target.scrollTop > 150 ? setPageScrolled(true) : setPageScrolled(false)
-  }
-
   return (
-    <div 
-      className={`routes-container ${pageScrolled ? 'scrolled' : ''}`}
-      onScroll={(e) => onScroll(e)}
-    >
+    <div className="routes-container">
       <Routes>
         <Route index element={<HomePage />} />
         <Route path="invoices" element={<InvoicesPage />} />

@@ -6,8 +6,11 @@
   grid-column: 1/-1;
   gap: 20px;
   flex-wrap: wrap;
-  margin-bottom: 30px;
-  margin-top: 5px;
+}
+.page-title-bar.has-border {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
 }
 .page-title-bar .left {
   display: flex;
@@ -15,8 +18,9 @@
   gap: 3px;
 }
 .page-title-bar .left h1 {
-  font-size: 22px;
-  color: #444;
+  font-size: 21px;
+  color: var(--darkGrayText);
+  font-weight: 600;
 }
 .page-title-bar .left h1 i {
   margin-right: 12px;

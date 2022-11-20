@@ -4,18 +4,17 @@ import './styles/AppInputs.css'
 
 export function AppInput(props) {
  
-  const { label, className, iconleft, iconright, title, googlestylelabel, value } = props
+  const { label, className, iconleft, iconright, title } = props
   
   return ( 
     <label 
-      className={`appInput commonInput ${className ?? ""} ${googlestylelabel ? "googlestyle" : ""} ${value?.length ? "hasValue" : ""}`}
+      className={`appInput commonInput ${className ?? ""}`}
       title={title ?? ""}
     > 
-      { iconleft }
       { label && <h6>{label}</h6> }
       <input {...props} />
-      { googlestylelabel && <h6 className="googlestylelabel">{googlestylelabel}</h6> }
       { iconright }
+      { iconleft }
     </label>
   )   
 }     

@@ -59,7 +59,8 @@ export default function NavBottomBar() {
       {
         navItemInfo &&
         <div className="nav-item-info">
-
+          <div>{navItemInfo.label}</div>
+          <div>{navItemInfo.sublabel}</div>
         </div>
       }
     </div>

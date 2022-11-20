@@ -7,3 +7,21 @@
   width: 100%;
   margin-top: 30px;
 }
+
+.invoices-content .no-results {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+.invoices-content .no-results img {
+  width: 220px;
+}
+.invoices-content .no-results h5 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--grayText);
+}

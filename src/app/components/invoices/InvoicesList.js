@@ -8,12 +8,11 @@ import InvoiceRow from "./InvoiceRow"
 
 export default function InvoicesList(props) {
 
-  const { setPageLoading, myUserID } = useContext(StoreContext)
+  const { setPageLoading } = useContext(StoreContext)
   const { query, searchResults, setSearchResults, filters, 
-    setNumOfHits, setNumOfPages, pageNum, hitsPerPage, showAll } = props
-  const limitsNum = 10
-  const [invoicesLimit, setInvoicesLimit] = useState(limitsNum)
-  const dbInvoices = useInvoices(myUserID, invoicesLimit)
+    setNumOfHits, setNumOfPages, pageNum, hitsPerPage, showAll, 
+    dbInvoices } = props
+
 
   const invoices = useInstantSearch(
     query,
@@ -47,6 +46,8 @@ export default function InvoicesList(props) {
     )
   })
 
+  
+
   return (
     <div className="invoices-list">
       <AppTable
@@ -62,7 +63,6 @@ export default function InvoicesList(props) {
         ]}
         rows={query.length ? invoicesList : dbInvoicesList}
       />
-      <div style={{height: 1000}}/>
     </div>
   )
 }

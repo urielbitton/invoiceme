@@ -12,14 +12,15 @@ html, body {
   --secondary: #BAB69B;
   --bg: #f8f8ff;
   --grayText: #696e93;
+  --darkGrayText: #3a3f5c;
   --primaryShadow: 0 10px 12px 1px var(--primaryRgb);
   --morphShadow: 0 0 12px 2px rgba(6, 107, 238, 0.05);
   --primaryGradient: linear-gradient(130deg, var(--primary) 0%, var(--lightPrimary) 100%);
+  --inputBorderColor: #d5dcee;
   --shadow: 0 5px 10px rgba(0,0,0,0.1);
   --cardShadow: 0 0px 2px rgba(0,0,0,0.06);
   --cardShadowHover: 0 2px 4px 1px rgba(0,0,0,0.1);
-  --navbarHeight: 130px;
-  --navbarHeightCompact: 55px;
+  --navbarHeight: 120px;
   --sidebarWidth: 220px;
   --siteGridWidth: 1350px;
 }  
@@ -73,12 +74,12 @@ a.linkable:hover {
   text-decoration: underline;
 }
 input, select, textarea {
-  padding: 10px;
+  padding: 7px 10px;
   border: 1px solid #e5e5e5;
+  border-radius: 5px;
   width: 100%;
   outline: none;
   font-size: 15px;
-  border-radius: 10px;
   transition: all 0.3s;
   font-family: inherit;
 } 
@@ -118,7 +119,6 @@ hr {
 .wysiwyg {
   white-space: pre-wrap;
 }
-
 
 .error-boundary {
   width: 100%;

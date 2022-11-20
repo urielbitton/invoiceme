@@ -3,7 +3,7 @@
   height: calc(100vh - var(--navbarHeight));
   overflow-y: auto;
   padding: 20px;
-  padding-bottom: 5px;
+  padding-bottom: 25px;
 }
 .routes-container.scrolled {
   height: calc(100vh - var(--navbarHeightCompact));
