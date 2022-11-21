@@ -2,22 +2,23 @@ import { contactsIndex } from "app/algolia"
 import AddContactModal from "app/components/contacts/AddContactModal"
 import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
+import AppPagination from "app/components/ui/AppPagination"
 import AppTable from "app/components/ui/AppTable"
 import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
 import { useInstantSearch } from "app/hooks/searchHooks"
-import { getRandomDocID, setDB } from "app/services/CrudDB"
+import { firebaseIncrement, getRandomDocID, setDB, updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
-import { calculatePriceTotal, formatCurrency } from "app/utils/generalUtils"
+import { calculatePriceTotal, formatCurrency, formatPhoneNumber, validateEmail, validatePhone } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import './styles/NewInvoicePage.css'
 
 export default function NewInvoicePage() {
 
-  const { myUserID, setNavItemInfo } = useContext(StoreContext)
+  const { myUserID, setNavItemInfo, setPageLoading } = useContext(StoreContext)
   const [invoiceName, setInvoiceName] = useState("")
   const [invoiceNumber, setInvoiceNumber] = useState("")
   const [invoiceDueDate, setInvoiceDueDate] = useState(convertDateToInputFormat(new Date()))
@@ -49,23 +50,30 @@ export default function NewInvoicePage() {
   const [contactCountry, setContactCountry] = useState("")
   const [contactPostcode, setContactPostcode] = useState("")
   const [contactAddFavorite, setContactAddFavorite] = useState(false)
+  const [addToContacts, setAddToContacts] = useState(true)
   const [loading, setLoading] = useState(false)
   const [contactsLoading, setContactsLoading] = useState(false)
-  const [selectedContactID, setSelectedContactID] = useState(null)
   const filters = `ownerID: ${myUserID}`
   const navigate = useNavigate()
   const calculatedSubtotal = invoiceItems.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = invoiceItems.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedItemTotal = calculatePriceTotal(itemPrice, itemTaxRate / 100, itemQuantity)
 
-  const allowAddContact = contactName.length > 0 && 
-    contactEmail.length > 0 &&
-    contactPhone.length > 0 &&
+  const allowAddContact = contactName.length > 0 &&
+    validateEmail(contactEmail) &&
+    validatePhone(contactPhone) &&
     contactAddress.length > 0 &&
     contactCity.length > 0 &&
     contactRegion.length > 0 &&
     contactCountry.length > 0 &&
     contactPostcode.length > 0
+
+  const allowCreateInvoice = invoiceName.length > 0 &&
+    invoiceNumber.length > 0 &&
+    invoiceDueDate.length > 0 &&
+    invoiceCurrency &&
+    invoiceItems.length > 0 &&
+    invoiceContact 
 
   const contacts = useInstantSearch(
     query,
@@ -185,19 +193,21 @@ export default function NewInvoicePage() {
   const contactsList = contacts?.map((contact, index) => {
     return <div
       key={index}
-      className={`contact-row ${contact.contactID === selectedContactID ? 'selected' : ''}`}
+      className="contact-row"
     >
-      <i className="fas fa-id-badge"/>
+      <i className="fas fa-id-badge" />
       <h6>{contact.name}</h6>
       <h6>{contact.email}</h6>
       <h6>{contact.phone}</h6>
       <h6>{contact.address}</h6>
       <h6>{contact.city}, {contact.region}, {contact.country}</h6>
       <AppButton
-        label={selectedContactID !== contact.contactID ? 'Select' : 'Selected'}
-        onClick={() => setSelectedContactID(contact.contactID)}
-        className="selected-contact-btn"
-        rightIcon={selectedContactID === contact.contactID ? 'far fa-check' : ''}
+        label="Select"
+        onClick={() => {
+          setInvoiceContact(contact)
+          setQuery("")
+          setSearchResults([])
+        }}
       />
     </div>
   })
@@ -295,8 +305,22 @@ export default function NewInvoicePage() {
     clearInvoiceItemInputs()
   }
 
+  const clearContactInfo = () => {
+    setContactName("")
+    setContactEmail("")
+    setContactPhone("")
+    setContactAddress("")
+    setContactCity("")
+    setContactRegion("")
+    setContactCountry("")
+    setContactPostcode("")
+    setContactAddFavorite(false)
+    setShowContactModal(false)
+    setLoading(false)
+  }
+
   const addContact = () => {
-    if(!allowAddContact) return alert("Please fill in all fields")
+    if (!allowAddContact) return alert("Please fill in all fields")
     setLoading(true)
     const contactsPath = `users/${myUserID}/contacts`
     const docID = getRandomDocID(contactsPath)
@@ -314,29 +338,60 @@ export default function NewInvoicePage() {
       dateAdded: new Date(),
       ownerID: myUserID
     }
-    setDB(contactsPath, docID, contactData)
-    .then(() => {
+    if (addToContacts) {
+      setDB(contactsPath, docID, contactData)
+        .then(() => {
+          setInvoiceContact(contactData)
+          clearContactInfo()
+        })
+        .catch(err => {
+          setLoading(false)
+          console.log(err)
+        })
+    }
+    else {
       setInvoiceContact(contactData)
-      setContactName("")
-      setContactEmail("")
-      setContactPhone("")
-      setContactAddress("")
-      setContactCity("")
-      setContactRegion("")
-      setContactCountry("")
-      setContactPostcode("")
-      setContactAddFavorite(false)
-      setShowContactModal(false)
-      setLoading(false)
-    })
-    .catch(err => {
-      setLoading(false)
-      console.log(err)
-    })
+      clearContactInfo()
+    }
   }
 
   const createInvoice = () => {
-
+    if(allowCreateInvoice) {
+      setPageLoading(true)
+      const path = `users/${myUserID}/invoices`
+      const docID = getRandomDocID(path)
+      const invoiceData = {
+        currency: invoiceCurrency,
+        dateCreated: new Date(),
+        dateDue: invoiceDueDate,
+        invoiceID: docID,
+        invoiceNumber,
+        invoiceOwnerID: myUserID,
+        billTo: invoiceContact,
+        isPaid: false,
+        isSent: false,
+        items: invoiceItems,
+        notes: invoiceNotes,
+        status: 'unpaid',
+        taxRate1,
+        taxRate2,
+        subtotal: calculatedSubtotal,
+        total: calculatedTotal,
+        title: invoiceName
+      }
+      setDB(path, docID, invoiceData)
+      .then(() => {
+        updateDB('users', myUserID, {
+          invoiceNum: firebaseIncrement(1) 
+        })
+        setPageLoading(false)
+        navigate('/invoices')
+      })
+      .catch(err => {
+        setPageLoading(false)
+        console.log(err)
+      })
+    } 
   }
 
   useEffect(() => {
@@ -462,7 +517,7 @@ export default function NewInvoicePage() {
           />
         </div>
         <div className="invoice-contact">
-          <h4>Invoice Contact</h4>
+          <h4>Bill To Contact</h4>
           <AppInput
             placeholder="Search Contact"
             value={query}
@@ -478,45 +533,78 @@ export default function NewInvoicePage() {
               <i className="fal fa-search" />
             }
           />
-          <AppButton
-            label="Add New Contact"
-            onClick={() => setShowContactModal(true)}
-          />
+          {
+            invoiceContact &&
+            <>
+              <h5>Selected Contact</h5>
+              <div className="contact-row selected">
+                <i className="fas fa-id-badge" />
+                <h6>{invoiceContact.name}</h6>
+                <h6>{invoiceContact.email}</h6>
+                <h6>{formatPhoneNumber(invoiceContact.phone)}</h6>
+                <h6>{invoiceContact.address}</h6>
+                <h6>{invoiceContact.city}, {invoiceContact.region}, {invoiceContact.country}</h6>
+                <IconContainer
+                  icon="fal fa-times"
+                  onClick={() => setInvoiceContact(null)}
+                  iconColor="var(--darkGrayText)"
+                  iconSize="17px"
+                />
+              </div>
+            </>
+          }
           {
             query.length > 0 && searchResults.length > 0 &&
-            <div className="contacts-search-results">
-              {contactsList}
-            </div>
+            <>
+              <h5>My Contacts</h5>
+              <div className="contacts-search-results">
+                {contactsList}
+              </div>
+              <AppPagination
+                pageNum={pageNum}
+                setPageNum={setPageNum}
+                numOfPages={numOfPages}
+                dimensions="25px"
+              />
+            </>
           }
+          <AppButton
+            label="New Contact"
+            onClick={() => setShowContactModal(true)}
+            rightIcon="fal fa-plus"
+          />
         </div>
       </div>
       <div className="btn-group">
         <AppButton
           label="Create Invoice"
           onClick={createInvoice}
+          disabled={!allowCreateInvoice}
         />
       </div>
       <AddContactModal
         showModal={showContactModal}
         setShowModal={setShowContactModal}
         name={contactName}
-        email={contactEmail}
-        phone={contactPhone}
-        address={contactAddress}
-        city={contactCity}
-        region={contactRegion}
-        postcode={contactPostcode}
-        country={contactCountry}
-        addToFavorites={contactAddFavorite}
         setName={setContactName}
+        email={contactEmail}
         setEmail={setContactEmail}
+        phone={contactPhone}
         setPhone={setContactPhone}
+        address={contactAddress}
         setAddress={setContactAddress}
+        city={contactCity}
         setCity={setContactCity}
+        region={contactRegion}
         setRegion={setContactRegion}
+        postcode={contactPostcode}
         setPostcode={setContactPostcode}
+        country={contactCountry}
         setCountry={setContactCountry}
+        addToFavorites={contactAddFavorite}
         setAddToFavorites={setContactAddFavorite}
+        addToContacts={addToContacts}
+        setAddToContacts={setAddToContacts}
         createContact={() => addContact()}
         loading={loading}
       />

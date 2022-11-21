@@ -8,7 +8,7 @@ import IconContainer from "../ui/IconContainer"
 
 export default function InvoiceRow(props) {
 
-  const { invoiceID, title, invoiceNumber, total, items, invoiceTo, 
+  const { invoiceID, title, invoiceNumber, total, items, billTo, 
     dateCreated, isPaid, currency, invoiceOwnerID } = props.invoice
   const navigate = useNavigate()
 
@@ -27,7 +27,7 @@ export default function InvoiceRow(props) {
     <AppItemRow
       item1={`#${invoiceNumber < 100 ? '0' + invoiceNumber : invoiceNumber}`}
       item2={title}
-      item3={invoiceTo.name}
+      item3={billTo.name}
       item4={items.length}
       item5={`${currency?.symbol}${formatCurrency(total)}`}
       item6={convertClassicDate(convertAlgoliaDate(dateCreated))}

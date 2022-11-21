@@ -2,12 +2,13 @@ import React from 'react'
 import { AppSelect } from "./AppInputs"
 import './styles/AppPagination.css'
 
-export default function AppPagination({pageNum, setPageNum, numOfPages}) {
+export default function AppPagination({pageNum, setPageNum, numOfPages, dimensions="35px"}) {
 
   const pagesNumRender = [...Array(numOfPages)]
   .map((num,i) => {
     return <div 
       className={`pagination-box number-box ${pageNum === i ? "active" : ""} ${i <= pageNum + 2 && i >= pageNum - 2 ? "" : "hidden"}`}
+      style={{width: dimensions, height: dimensions}}
       onClick={() => setPageNum(i)}
       key={i}
     >
@@ -24,12 +25,14 @@ export default function AppPagination({pageNum, setPageNum, numOfPages}) {
       <div className="pagination-row">
         <div 
           className={`pagination-box ${pageNum === 0 ? 'disabled' : 'enabled'}`}
+          style={{width: dimensions, height: dimensions}}
           onClick={() => setPageNum(0)}
         >
           <i className="far fa-angle-double-left" />
         </div>
         <div 
           className={`pagination-box ${pageNum === 0 ? 'disabled' : 'enabled'}`}
+          style={{width: dimensions, height: dimensions}}
           onClick={() => pageNum > 0 && setPageNum(pageNum-1)}
         >
           <i className="far fa-angle-left" />
@@ -37,12 +40,14 @@ export default function AppPagination({pageNum, setPageNum, numOfPages}) {
         {pagesNumRender}
         <div 
           className={`pagination-box ${pageNum === numOfPages-1 ? 'disabled' : 'enabled'}`}
+          style={{width: dimensions, height: dimensions}}
           onClick={() => pageNum < numOfPages-1 && setPageNum(pageNum+1)}
         >
           <i className="far fa-angle-right" />
         </div>
         <div 
           className={`pagination-box ${pageNum === numOfPages-1 ? 'disabled' : 'enabled'}`}
+          style={{width: dimensions, height: dimensions}}
           onClick={() => pageNum < numOfPages-1 && setPageNum(numOfPages-1)}
         >
           <i className="far fa-angle-double-right" />
@@ -54,6 +59,7 @@ export default function AppPagination({pageNum, setPageNum, numOfPages}) {
         onChange={(e) => setPageNum(+e.target.value)}
         value={pageNum}
         valueBased
+        containerStyles={{height: dimensions}}
       />
     </div>
   )

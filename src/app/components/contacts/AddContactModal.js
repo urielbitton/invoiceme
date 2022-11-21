@@ -10,7 +10,7 @@ export default function AddContactModal(props) {
     setName, email, setEmail, phone, setPhone, address, setAddress,
     city, setCity, region, setRegion, country, setCountry, postcode,
     setPostcode, addToFavorites, setAddToFavorites, createContact,
-    loading } = props
+    loading, addToContacts, setAddToContacts } = props
 
   return (
     <AppModal
@@ -78,6 +78,11 @@ export default function AddContactModal(props) {
           label="Add to Favorites"
           checked={addToFavorites}
           onChange={(e) => setAddToFavorites(e.target.checked)}
+        />
+        <AppSwitch
+          label="Add to Contacts"
+          checked={addToContacts}
+          onChange={(e) => setAddToContacts(e.target.checked)}
         />
       </form>
     </AppModal>

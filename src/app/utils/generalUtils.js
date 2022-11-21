@@ -26,6 +26,11 @@ export const validateEmail = (email) => {
   return re.test(String(email).toLowerCase())
 }
 
+export const validatePhone = (phone) => {
+  const re = /^\d{10}$/
+  return re.test(String(phone))
+}
+
 export const textHasURL = (text) => {
   const urlRegex = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
   return urlRegex.test(text)
