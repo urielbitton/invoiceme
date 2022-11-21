@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 export default function DropdownButton(props) {
 
   const { items, leftIcon, rightIcon, buttonType, label,
-    showMenu, setShowMenu, className='' } = props
+    showMenu, setShowMenu, className='', dropdownPosition="place-right" } = props
 
   const itemsList = items.map((item, index) => {
     return (
@@ -52,7 +52,7 @@ export default function DropdownButton(props) {
         buttonType={buttonType}
         className={className}
       />
-      <div className={`dropdown-menu ${showMenu ? 'show' : ''}`}>
+      <div className={`dropdown-menu ${showMenu ? 'show' : ''} ${dropdownPosition}`}>
         {itemsList}
       </div>
     </div>

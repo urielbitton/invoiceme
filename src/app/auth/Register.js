@@ -52,6 +52,7 @@ export default function Register() {
       userID: user.uid,
       dateJoined: new Date(),
       memberType: 'basic',
+      myBusiness: null
     })
       .then(() => {
         setDB(`users/${user.uid}/notifications`, 'welcome', {
@@ -59,9 +60,9 @@ export default function Register() {
           dateCreated: new Date(),
           icon: 'fas fa-house-user',
           isRead: false,
-          text: `Welcome to Invoice Me! We're glad you're here.`,
-          url: '/',
-          img: '',
+          title: 'Welcome to Invoice Me!',
+          text: `Welcome to Invoice Me! We're glad you're here. Click here to create your first invoice.`,
+          url: '/invoices/new',
         })
         navigate('/')
         setLoading(false)

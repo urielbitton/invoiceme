@@ -2,29 +2,71 @@
   width: 100%;
   display: flex;
   align-items: flex-start;
-  gap: 40px;
+  gap: 40px 30px;
 }
 
-.invoice-page .page-content .send-container {
-  padding: 20px;
+.invoice-page .send-container {
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
   gap: 15px;
   width: 380px;
 }
-.invoice-page .page-content .send-container > h3 {
+.invoice-page .send-container > h3 {
   font-size: 22px;
   color: var(--darkGrayText);
   margin-bottom: 10px;
 }
-.invoice-page .page-content .send-container textarea {
+.invoice-page .send-container .commonInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.invoice-page .send-container .commonInput h6 {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--darkGrayText);
+}
+.invoice-page .send-container textarea {
   resize: none;
   height: 100px;
 }
+.invoice-page .send-container .additional-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+}
+.invoice-page .send-container .additional-actions button {
+  width: 100%;
+  border: 1px solid var(--extraLightPrimary);
+  font-size: 0.8rem;
+}
+.invoice-page .send-container .additional-actions .dropdown-button .dropdown-item:hover span,
+.invoice-page .send-container .additional-actions .dropdown-button .dropdown-item:hover i {
+  color: #fff;
+}
+.invoice-page .send-container .additional-actions .dropdown-button .dropdown-item span {
+  font-size: 0.75rem;
+  color: var(--darkGrayText);
+}
+.invoice-page .send-container .additional-actions .dropdown-button .dropdown-item i {
+  color: var(--darkGrayText);
+}
+
+
 .invoice-page .page-content .paper-container {
   padding: 20px;
   background: #fff;
   display: flex;
   flex-direction: column;
   width: 820px;
+  box-shadow: var(--morphShadow);
+}
+
+
+@media (max-width: 1200px) {
+  .invoice-page .page-content {
+    flex-direction: column-reverse;
+  }
 }

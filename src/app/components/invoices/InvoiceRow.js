@@ -1,23 +1,25 @@
 import { deleteDB, firebaseIncrement, updateDB } from "app/services/CrudDB"
+import { StoreContext } from "app/store/store"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency } from "app/utils/generalUtils"
-import React from 'react'
+import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
 import AppItemRow from "../ui/AppItemRow"
 import IconContainer from "../ui/IconContainer"
 
 export default function InvoiceRow(props) {
 
+  const { myUserID } = useContext(StoreContext)
   const { invoiceID, title, invoiceNumber, total, items, invoiceTo, 
-    dateCreated, isPaid, currency, invoiceOwnerID } = props.invoice
+    dateCreated, isPaid, currency } = props.invoice
   const navigate = useNavigate()
 
   const deleteInvoice = () => {
     const confirm = window.confirm("Are you sure you want to delete this invoice?")
     if (confirm) {
-      deleteDB(`users/${invoiceOwnerID}/invoices`, invoiceID)
+      deleteDB(`users/${myUserID}/invoices`, invoiceID)
       .then(() => {
-        updateDB(`users/${invoiceOwnerID}/invoices`, invoiceID, {
+        updateDB('users', myUserID, {
           invoicesNum: firebaseIncrement(-1) 
         })
         window.alert("Invoice deleted.")

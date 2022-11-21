@@ -12,9 +12,9 @@ html, body {
   --secondary: #BAB69B;
   --bg: #f8f8ff;
   --grayText: #696e93;
-  --darkGrayText: #3a3f5c;
+  --darkGrayText: #3c4160;
   --primaryShadow: 0 10px 12px 1px var(--primaryRgb);
-  --morphShadow: 0 0 12px 2px rgba(6, 107, 238, 0.05);
+  --morphShadow: 0 0 6px 2px rgba(23, 143, 255, 0.09);
   --primaryGradient: linear-gradient(130deg, var(--primary) 0%, var(--lightPrimary) 100%);
   --inputBorderColor: #d5dcee;
   --shadow: 0 5px 10px rgba(0,0,0,0.1);

@@ -12,6 +12,10 @@
   z-index: 100;
   user-select: none;
 }
+.dropdown-button .dropdown-menu.place-left {
+  left: 0;
+  right: auto;
+}
 .dropdown-button .dropdown-menu.show {
   display: flex;
 }

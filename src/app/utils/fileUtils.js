@@ -42,7 +42,7 @@ export const fileTypePathConverter = (string) => {
     return 'other'
 }
 
-export const uploadMultipleFilesLocal = (e, maxSize, setFiles, ref, setLoading=setLoadingDef) => {
+export const uploadMultipleFilesLocal = (e, maxSize, setFiles, setLoading=setLoadingDef) => {
   setLoading(true)
   let files = e.target.files
   for(let i = 0; i < files.length; i++) {
@@ -51,7 +51,6 @@ export const uploadMultipleFilesLocal = (e, maxSize, setFiles, ref, setLoading=s
       return alert(`One or more of the uploaded files are too large. Max file size is ${maxSize/1000000} MB`)
     }
   }
-  
   let filesArray = []
   if(files) {
     for(let i = 0; i < files.length; i++) {
@@ -63,7 +62,7 @@ export const uploadMultipleFilesLocal = (e, maxSize, setFiles, ref, setLoading=s
       let reader = new FileReader()
       reader.onloadend = function() {
         setLoading(false)
-        resolve({img: reader.result, file})
+        resolve({src: reader.result, file})
       } 
       if(file) {
         reader.readAsDataURL(file)
@@ -94,13 +93,13 @@ export const convertBytesToKbMbGb = (bytes, toFixedNum=2) => {
     return bytes + ' B'
   }
   else if(bytes < 1048576) {
-    return (bytes/1024).toFixed(toFixedNum) + ' KB'
+    return (bytes/1024).toFixed(toFixedNum) + 'KB'
   }
   else if(bytes < 1073741824) {
-    return (bytes/1048576).toFixed(toFixedNum) + ' MB'
+    return (bytes/1048576).toFixed(toFixedNum) + 'MB'
   }
   else {
-    return (bytes/1073741824).toFixed(toFixedNum) + ' GB'
+    return (bytes/1073741824).toFixed(toFixedNum) + 'GB'
   }
 }
 
@@ -132,19 +131,29 @@ export async function downloadUsingFetchFromFile(file, fileName) {
   window.URL.revokeObjectURL(url)
 }
 
-export const convertFileToBase64 = (file) =>
-new Promise((resolve, reject) => {
-  const reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onload = () => {
-    let encoded = reader.result.toString().replace(/^data:(.*,)?/, "");
-    if (encoded.length % 4 > 0) {
-      encoded += "=".repeat(4 - (encoded.length % 4));
-    }
-    resolve(encoded);
-  };
-  reader.onerror = (error) => reject(error);
-})
+export const convertFilesToBase64 = (files) => {
+  const encodedFiles = []
+  return Promise.all(files.map((file,i) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        let encoded = reader.result.toString().replace(/^data:(.*,)?/, "")
+        if (encoded.length % 4 > 0) {
+          encoded += "=".repeat(4 - (encoded.length % 4))
+        }
+        encodedFiles.push(encoded)
+        if(i === files.length - 1) 
+          resolve(encoded)
+      }
+      reader.onerror = (error) => reject(error)
+    })
+  }))
+  .then(() => {
+    return encodedFiles
+  })
+  .catch(err => console.log(err))
+}       
 
 export const convertDocToFileObject = (doc, filename) => {
   let file = new File([doc], doc.name || filename, {type: doc.type})

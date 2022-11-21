@@ -15,8 +15,10 @@ import { getRandomDocID } from "app/services/CrudDB"
 import { createInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
-import { calculatePriceTotal, formatCurrency, formatPhoneNumber, 
-  validateEmail, validatePhone } from "app/utils/generalUtils"
+import {
+  calculatePriceTotal, formatCurrency, formatPhoneNumber,
+  validateEmail, validatePhone
+} from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import './styles/NewInvoicePage.css'
@@ -200,21 +202,26 @@ export default function NewInvoicePage() {
     return <ContactRow
       key={index}
       contact={contact}
-      onClick={() => {
-        setInvoiceContact({
-          name: contact.name,
-          email: contact.email,
-          phone: contact.phone,
-          address: contact.address,
-          city: contact.city,
-          region: contact.region,
-          country: contact.country,
-          postcode: contact.postcode,
-          dateAdded: new Date()
-        })
-        setQuery("")
-        setSearchResults([])
-      }}
+      actions={
+        <AppButton
+          label="Select"
+          onClick={() => {
+            setInvoiceContact({
+              name: contact.name,
+              email: contact.email,
+              phone: contact.phone,
+              address: contact.address,
+              city: contact.city,
+              region: contact.region,
+              country: contact.country,
+              postcode: contact.postcode,
+              dateAdded: new Date()
+            })
+            setQuery("")
+            setSearchResults([])
+          }}
+        />
+      }
     />
   })
 
@@ -222,21 +229,26 @@ export default function NewInvoicePage() {
     return <ContactRow
       key={index}
       contact={contact}
-      onClick={() => {
-        setInvoiceContact({
-          name: contact.name,
-          email: contact.email,
-          phone: contact.phone,
-          address: contact.address,
-          city: contact.city,
-          region: contact.region,
-          country: contact.country,
-          postcode: contact.postcode,
-          dateAdded: new Date()
-        })
-        setQuery("")
-        setSearchResults([])
-      }}
+      actions={
+        <AppButton
+          label="Select"
+          onClick={() => {
+            setInvoiceContact({
+              name: contact.name,
+              email: contact.email,
+              phone: contact.phone,
+              address: contact.address,
+              city: contact.city,
+              region: contact.region,
+              country: contact.country,
+              postcode: contact.postcode,
+              dateAdded: new Date()
+            })
+            setQuery("")
+            setSearchResults([])
+          }}
+        />
+      }
     />
   })
 
@@ -356,21 +368,21 @@ export default function NewInvoicePage() {
   }
 
   const createInvoice = () => {
-    if(!allowCreateInvoice) return alert("Please fill out all required fields.")
+    if (!allowCreateInvoice) return alert("Please fill out all required fields.")
     setPageLoading(false)
     createInvoiceService(
       myUserID, invoiceCurrency, invoiceDueDate, invoiceNumber, invoiceContact,
-      invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal, 
+      invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal,
       calculatedTotal, invoiceName
     )
-    .then(() => {
-      setPageLoading(false)
-      navigate('/invoices')
-    })
-    .catch(err => {
-      setPageLoading(false)
-      console.log(err)
-    })
+      .then(() => {
+        setPageLoading(false)
+        navigate('/invoices')
+      })
+      .catch(err => {
+        setPageLoading(false)
+        console.log(err)
+      })
   }
 
   useEffect(() => {
@@ -516,42 +528,48 @@ export default function NewInvoicePage() {
             invoiceContact &&
             <>
               <h5>Selected Contact</h5>
-              <div className="contact-row selected">
-                <i className="fas fa-id-badge" />
-                <h6>{invoiceContact.name}</h6>
-                <h6>{invoiceContact.email}</h6>
-                <h6>{formatPhoneNumber(invoiceContact.phone)}</h6>
-                <h6>{invoiceContact.address}</h6>
-                <h6>{invoiceContact.city}, {invoiceContact.region}, {invoiceContact.country}</h6>
-                <IconContainer
-                  icon="fal fa-times"
-                  onClick={() => setInvoiceContact(null)}
-                  iconColor="var(--darkGrayText)"
-                  iconSize="17px"
-                />
-              </div>
+              <ContactRow
+                contact={{
+                  name: invoiceContact.name,
+                  email: invoiceContact.email,
+                  phone: invoiceContact.phone,
+                  address: invoiceContact.address,
+                  city: invoiceContact.city,
+                  region: invoiceContact.region,
+                  country: invoiceContact.country,
+                }}
+                className="selected"
+                actions={
+                  <IconContainer
+                    icon="fal fa-times"
+                    onClick={() => setInvoiceContact(null)}
+                    iconColor="var(--darkGrayText)"
+                    iconSize="17px"
+                  />
+                }
+              />
             </>
           }
           {
             query.length > 0 && searchResults.length > 0 ?
-            <>
-              <h5>My Contacts</h5>
-              <div className="contacts-search-results">
-                {contactsList}
-              </div>
-              <AppPagination
-                pageNum={pageNum}
-                setPageNum={setPageNum}
-                numOfPages={numOfPages}
-                dimensions="25px"
-              />
-            </> :
-            <>
-              <h5>Favorite Contacts</h5>
-              <div className="contacts-search-results favorite-contacts">
-                {favoritesList}
-              </div>
-            </>
+              <>
+                <h5>My Contacts</h5>
+                <div className="contacts-search-results">
+                  {contactsList}
+                </div>
+                <AppPagination
+                  pageNum={pageNum}
+                  setPageNum={setPageNum}
+                  numOfPages={numOfPages}
+                  dimensions="25px"
+                />
+              </> :
+              <>
+                <h5>Favorite Contacts</h5>
+                <div className="contacts-search-results favorite-contacts">
+                  {favoritesList}
+                </div>
+              </>
           }
           <AppButton
             label="New Contact"

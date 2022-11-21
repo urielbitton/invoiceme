@@ -1,9 +1,16 @@
 import React from 'react'
 
-export default function DotsLoader({width=90, height=90, loading}) {
+export default function DotsLoader({dimensions="90px", loading}) {
   return (
     loading ?
-    <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" width={width} height={height} viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      xmlnsXlink="http://www.w3.org/1999/xlink" 
+      width={dimensions} 
+      height={dimensions} 
+      viewBox="0 0 100 100" 
+      preserveAspectRatio="xMidYMid"
+    >
       <g transform="translate(20 50)">
       <circle cx="0" cy="0" r="6" fill="var(--primary)">
         <animateTransform attributeName="transform" type="scale" begin="-0.375s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" values="0;1;0" keyTimes="0;0.5;1" dur="1s" repeatCount="indefinite"></animateTransform>

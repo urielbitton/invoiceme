@@ -28,15 +28,6 @@ export default function NavDropdown(props) {
       </header>
       <section onClick={() => setShowDropdown(null)}>
         {itemsRender} 
-        {itemsRender} 
-        {itemsRender} 
-        {itemsRender} 
-        {itemsRender} 
-        {itemsRender} 
-        {itemsRender} 
-        {itemsRender} 
-        {itemsRender} 
-        {itemsRender} 
       </section>
     </div>
   )

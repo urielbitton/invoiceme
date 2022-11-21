@@ -1,20 +1,24 @@
 const { functions } = require("app/firebase/fire")
-const { convertFileToBase64, saveHTMLToPDFAsBlob } = require("app/utils/fileUtils")
+const { convertFilesToBase64, saveHTMLToPDFAsBlob } = require("app/utils/fileUtils")
 
-export const sendSgEmail = (to, subject, html, file) => {
-  return convertFileToBase64(file)
-    .then((base64) => {
+export const sendSgEmail = (to, subject, html, files) => {
+  return convertFilesToBase64(files)
+    .then((base64s) => {
       return functions.httpsCallable('sendEmailWithAttachment')({
         to: to,
         from: 'info@atomicsdigital.com',
         subject: subject,
         html: html,
-        ...(file && {
-          attachment: base64,
-          filename: file.name,
-          type: file.type,
-          disposition: 'attachment'
-        })
+        ...(files.length > 0 && [
+          ...files.map((file, i) => {
+            return {
+              attachment: base64s[i],
+              filename: file.name,
+              type: file.type,
+              disposition: 'attachment'
+            }
+          })
+        ])
       })
     })
 }
@@ -23,14 +27,24 @@ export const sendMultipleSgEmails = (to, subject, html, files) => {
 
 }
 
-export const sendHtmlToEmailAsPDF = (to, subject, emailHtml, pdfHTML, filename) => {
+export const sendHtmlToEmailAsPDF = (to, subject, emailHtml, pdfHTML, filename, attachments) => {
   return saveHTMLToPDFAsBlob(pdfHTML, filename)
   .then((file) => {
     return sendSgEmail(
       to,
       subject, 
       emailHtml, 
-      file
+      [file, ...attachments]
     ) 
   })
 }
+
+//sendSgEmail(..., files) - files is an array of file objects, e.g.:
+// [
+//   {
+//     attachment: base64,
+//     filename: file.name,
+//     type: file.type,
+//     disposition: 'attachment'
+//   }
+// ]

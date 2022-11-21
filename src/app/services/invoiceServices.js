@@ -54,7 +54,7 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, in
       createNotification(
         userID,
         'Invoice Created',
-        `Invoice ${invoiceData.invoiceNumber} has been created for ${invoiceContact.name}.`,
+        `Invoice ${invoiceName} (${invoiceData.invoiceNumber}) has been created for ${invoiceContact.name}.`,
         'fas fa-file-invoice-dollar',
         `/invoices/${docID}`
       )

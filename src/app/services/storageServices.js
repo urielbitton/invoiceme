@@ -3,7 +3,7 @@ import { storage } from "app/firebase/fire"
 export const uploadMultipleFilesToFireStorage = (files, storagePath, fileNames, setUploadProgress) => {
   return new Promise((resolve, reject) => {
     if(!files?.length) return resolve([])
-    const imgURLs = []
+    const fileURLs = []
     files.forEach((file, i) => {
       const storageRef = storage.ref(storagePath)
       const uploadTask = storageRef.child(fileNames[i] || file.name).put(file)
@@ -16,9 +16,9 @@ export const uploadMultipleFilesToFireStorage = (files, storagePath, fileNames, 
       }, () => {
         uploadTask.snapshot.ref.getDownloadURL()
         .then(downloadURL => {
-          imgURLs.push({downloadURL, file})
-          if (imgURLs.length === files.length) {
-            resolve(imgURLs)
+          fileURLs.push({downloadURL, file})
+          if (fileURLs.length === files.length) {
+            resolve(fileURLs)
           }
         })
         .catch(error => {

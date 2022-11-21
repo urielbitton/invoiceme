@@ -4,7 +4,7 @@ import './styles/IconContainer.css'
 export default function IconContainer(props) {
 
   const { bgColor, icon, iconColor, iconSize="16px",
-    dimensions="35px", round = true, noHover,
+    dimensions="35px", round=true, noHover,
     inverted, onClick, tooltip, badgeValue, badgeBgColor,
     badgeTextColor, style } = props
 

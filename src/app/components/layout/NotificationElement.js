@@ -10,8 +10,7 @@ import IconContainer from "../ui/IconContainer"
 export default function NotificationElement(props) {
 
   const { myUserID } = useContext(StoreContext)
-  const { notificationID, text, dateCreated, url, isRead, icon,
-    notifImg } = props.notif
+  const { notificationID, text, dateCreated, url, isRead, icon } = props.notif
   const navigate = useNavigate()
 
   const markAsRead = () => {
