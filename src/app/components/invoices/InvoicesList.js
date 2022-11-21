@@ -1,5 +1,4 @@
 import { invoicesIndex } from "app/algolia"
-import { useInvoices } from "app/hooks/invoiceHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useState } from 'react'
@@ -12,7 +11,6 @@ export default function InvoicesList(props) {
   const { query, searchResults, setSearchResults, filters, 
     setNumOfHits, setNumOfPages, pageNum, hitsPerPage, showAll, 
     dbInvoices } = props
-
 
   const invoices = useInstantSearch(
     query,

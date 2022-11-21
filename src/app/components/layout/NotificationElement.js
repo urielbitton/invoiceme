@@ -1,31 +1,44 @@
 import React, { useContext } from 'react'
 import { truncateText } from "app/utils/generalUtils"
-import { StoreContext } from "app/store/store"
 import { convertClassicDate, getTimeAgo } from "app/utils/dateUtils"
+import { useNavigate } from "react-router-dom"
+import { updateDB } from "app/services/CrudDB"
+import { StoreContext } from "app/store/store"
+import './styles/NotificationElement.css'
+import IconContainer from "../ui/IconContainer"
 
 export default function NotificationElement(props) {
 
+  const { myUserID } = useContext(StoreContext)
   const { notificationID, text, dateCreated, url, isRead, icon,
     notifImg } = props.notif
+  const navigate = useNavigate()
+
+  const markAsRead = () => {
+    updateDB(`users/${myUserID}/notifications`, notificationID, {
+      isRead: true 
+    })
+    .then(() => {
+      navigate(url)
+    })
+    .catch(err => console.log(err))
+  }
 
   return (
     <div 
       className={`notif-element ${!isRead ? 'unread' : ''}`} 
+      onClick={() => markAsRead()}
       key={notificationID}
     >
-      <div className="notif-avatar">
-        {
-          notifImg ?
-          <>
-            <img src={notifImg} alt="avatar" />
-            <div className="icon-container">
-              <i className={icon}/>
-            </div>
-          </> :
-          <div className="icon-container-center">
-            <i className={icon}/>
-          </div>
-        }
+      <div className="left">
+        <IconContainer
+          icon={icon}
+          className="notif-icon"
+          bgColor="var(--primary)"
+          iconColor="#fff"
+          dimensions="32px"
+          iconSize="15px"
+        />
       </div>
       <div className="text-info">
         <div className="texts">

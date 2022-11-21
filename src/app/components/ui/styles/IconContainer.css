@@ -16,3 +16,19 @@
 .icon-container.round {
   border-radius: 100%;
 }
+
+.icon-container .badge-container {
+  position: absolute;
+  top: 0px;
+  right: -5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-container .badge-container small {
+  font-size: 10px;
+  font-weight: 600;
+}

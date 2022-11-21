@@ -16,6 +16,8 @@ import NewEstimatePage from "app/pages/NewEstimatePage"
 import NewContactPage from "app/pages/NewContactPage"
 import NewPaymentPage from "app/pages/NewPaymentPage"
 import InvoicePage from "app/pages/InvoicePage"
+import NotificationsPage from "app/pages/NotificationsPage"
+import MessagesPage from "app/pages/MessagesPage"
 
 export default function RoutesContainer() {
 
@@ -35,6 +37,8 @@ export default function RoutesContainer() {
         <Route path="my-profile" element={<MyProfilePage />} />
         <Route path="my-account" element={<MyAccountPage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="notifications" element={<NotificationsPage />} />
+        <Route path="messages" element={<MessagesPage />} />
         <Route path="upgrade" element={<UpgradePage />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>

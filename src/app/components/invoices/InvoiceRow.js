@@ -63,6 +63,7 @@ export default function InvoiceRow(props) {
           />
         </>
       }
+      onDoubleClick={() => navigate(`/invoices/${invoiceID}`)}
     />
   )
 }

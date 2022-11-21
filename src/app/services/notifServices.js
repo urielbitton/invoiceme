@@ -1,4 +1,4 @@
-import { auth } from "app/firebase/fire"
+import { auth, db } from "app/firebase/fire"
 import { getRandomDocID, setDB } from "./CrudDB"
 const userID = auth?.currentUser?.uid
 
@@ -13,5 +13,26 @@ export const createNotification = (title, text, icon, url) => {
     text: text,
     icon: icon,
     url: url,
+  })
+}
+
+export const getUnreadNotifications = (setNotifs) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('notifications')
+  .where('isRead', '==', false)
+  .onSnapshot(snapshot => {
+    setNotifs(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
+export const getAllNotifications = (setNotifs, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('notifications')
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setNotifs(snapshot.docs.map(doc => doc.data()))
   })
 }
