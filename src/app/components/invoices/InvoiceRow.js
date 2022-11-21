@@ -1,4 +1,4 @@
-import { deleteDB } from "app/services/CrudDB"
+import { deleteDB, firebaseIncrement, updateDB } from "app/services/CrudDB"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency } from "app/utils/generalUtils"
 import React from 'react'
@@ -8,7 +8,7 @@ import IconContainer from "../ui/IconContainer"
 
 export default function InvoiceRow(props) {
 
-  const { invoiceID, title, invoiceNumber, total, items, billTo, 
+  const { invoiceID, title, invoiceNumber, total, items, invoiceTo, 
     dateCreated, isPaid, currency, invoiceOwnerID } = props.invoice
   const navigate = useNavigate()
 
@@ -17,6 +17,9 @@ export default function InvoiceRow(props) {
     if (confirm) {
       deleteDB(`users/${invoiceOwnerID}/invoices`, invoiceID)
       .then(() => {
+        updateDB(`users/${invoiceOwnerID}/invoices`, invoiceID, {
+          invoicesNum: firebaseIncrement(-1) 
+        })
         window.alert("Invoice deleted.")
       })
       .catch(err => console.log(err))
@@ -27,7 +30,7 @@ export default function InvoiceRow(props) {
     <AppItemRow
       item1={`#${invoiceNumber < 100 ? '0' + invoiceNumber : invoiceNumber}`}
       item2={title}
-      item3={billTo.name}
+      item3={invoiceTo.name}
       item4={items.length}
       item5={`${currency?.symbol}${formatCurrency(total)}`}
       item6={convertClassicDate(convertAlgoliaDate(dateCreated))}

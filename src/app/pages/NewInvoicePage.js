@@ -7,8 +7,10 @@ import AppTable from "app/components/ui/AppTable"
 import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
+import { useFavoriteContacts } from "app/hooks/contactsHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { firebaseIncrement, getRandomDocID, setDB, updateDB } from "app/services/CrudDB"
+import { createNotification } from "app/services/notifServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
 import { calculatePriceTotal, formatCurrency, formatPhoneNumber, validateEmail, validatePhone } from "app/utils/generalUtils"
@@ -53,6 +55,7 @@ export default function NewInvoicePage() {
   const [addToContacts, setAddToContacts] = useState(true)
   const [loading, setLoading] = useState(false)
   const [contactsLoading, setContactsLoading] = useState(false)
+  const favoriteContacts = useFavoriteContacts(myUserID)
   const filters = `ownerID: ${myUserID}`
   const navigate = useNavigate()
   const calculatedSubtotal = invoiceItems.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
@@ -73,7 +76,7 @@ export default function NewInvoicePage() {
     invoiceDueDate.length > 0 &&
     invoiceCurrency &&
     invoiceItems.length > 0 &&
-    invoiceContact 
+    invoiceContact
 
   const contacts = useInstantSearch(
     query,
@@ -204,7 +207,49 @@ export default function NewInvoicePage() {
       <AppButton
         label="Select"
         onClick={() => {
-          setInvoiceContact(contact)
+          setInvoiceContact({
+            name: contact.name,
+            email: contact.email,
+            phone: contact.phone,
+            address: contact.address,
+            city: contact.city,
+            region: contact.region,
+            country: contact.country,
+            postcode: contact.postcode,
+            dateAdded: new Date()
+          })
+          setQuery("")
+          setSearchResults([])
+        }}
+      />
+    </div>
+  })
+
+  const favoritesList = favoriteContacts?.map((contact, index) => {
+    return <div
+      key={index}
+      className="contact-row"
+    >
+      <i className="fas fa-id-badge" />
+      <h6>{contact.name}</h6>
+      <h6>{contact.email}</h6>
+      <h6>{contact.phone}</h6>
+      <h6>{contact.address}</h6>
+      <h6>{contact.city}, {contact.region}, {contact.country}</h6>
+      <AppButton
+        label="Select"
+        onClick={() => {
+          setInvoiceContact({
+            name: contact.name,
+            email: contact.email,
+            phone: contact.phone,
+            address: contact.address,
+            city: contact.city,
+            region: contact.region,
+            country: contact.country,
+            postcode: contact.postcode,
+            dateAdded: new Date()
+          })
           setQuery("")
           setSearchResults([])
         }}
@@ -356,34 +401,40 @@ export default function NewInvoicePage() {
   }
 
   const createInvoice = () => {
-    if(allowCreateInvoice) {
-      setPageLoading(true)
-      const path = `users/${myUserID}/invoices`
-      const docID = getRandomDocID(path)
-      const invoiceData = {
-        currency: invoiceCurrency,
-        dateCreated: new Date(),
-        dateDue: invoiceDueDate,
-        invoiceID: docID,
-        invoiceNumber,
-        invoiceOwnerID: myUserID,
-        billTo: invoiceContact,
-        isPaid: false,
-        isSent: false,
-        items: invoiceItems,
-        notes: invoiceNotes,
-        status: 'unpaid',
-        taxRate1,
-        taxRate2,
-        subtotal: calculatedSubtotal,
-        total: calculatedTotal,
-        title: invoiceName
-      }
-      setDB(path, docID, invoiceData)
+    if (!allowCreateInvoice) return alert("Please fill in all fields.")
+    setPageLoading(true)
+    const path = `users/${myUserID}/invoices`
+    const docID = getRandomDocID(path)
+    const invoiceData = {
+      currency: invoiceCurrency,
+      dateCreated: new Date(),
+      dateDue: invoiceDueDate,
+      invoiceID: docID,
+      invoiceNumber: `INV-${invoiceNumber}`,
+      invoiceOwnerID: myUserID,
+      invoiceTo: invoiceContact,
+      isPaid: false,
+      isSent: false,
+      items: invoiceItems,
+      notes: invoiceNotes,
+      status: 'unpaid',
+      taxRate1,
+      taxRate2,
+      subtotal: calculatedSubtotal,
+      total: calculatedTotal,
+      title: invoiceName
+    }
+    setDB(path, docID, invoiceData)
       .then(() => {
         updateDB('users', myUserID, {
-          invoiceNum: firebaseIncrement(1) 
+          invoicesNum: firebaseIncrement(1)
         })
+        createNotification(
+          'Invoice Created',
+          `Invoice ${invoiceData.invoiceNumber} has been created for ${invoiceContact.name}.`,
+          'fas fa-file-invoice-dollar',
+          `/invoices/${docID}`
+        )
         setPageLoading(false)
         navigate('/invoices')
       })
@@ -391,7 +442,6 @@ export default function NewInvoicePage() {
         setPageLoading(false)
         console.log(err)
       })
-    } 
   }
 
   useEffect(() => {
@@ -422,7 +472,7 @@ export default function NewInvoicePage() {
             onChange={(e) => setInvoiceNumber(e.target.value)}
             iconleft={
               <div className="icon-container">
-                <span>INV#</span>
+                <span>INV-</span>
               </div>
             }
             className="icon-input"
@@ -554,7 +604,7 @@ export default function NewInvoicePage() {
             </>
           }
           {
-            query.length > 0 && searchResults.length > 0 &&
+            query.length > 0 && searchResults.length > 0 ?
             <>
               <h5>My Contacts</h5>
               <div className="contacts-search-results">
@@ -566,6 +616,12 @@ export default function NewInvoicePage() {
                 numOfPages={numOfPages}
                 dimensions="25px"
               />
+            </> :
+            <>
+              <h5>Favorite Contacts</h5>
+              <div className="contacts-search-results favorite-contacts">
+                {favoritesList}
+              </div>
             </>
           }
           <AppButton
