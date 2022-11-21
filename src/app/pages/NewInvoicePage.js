@@ -4,16 +4,19 @@ import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import AppPagination from "app/components/ui/AppPagination"
 import AppTable from "app/components/ui/AppTable"
+import ContactRow from "app/components/ui/ContactRow"
 import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
 import { useFavoriteContacts } from "app/hooks/contactsHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
-import { firebaseIncrement, getRandomDocID, setDB, updateDB } from "app/services/CrudDB"
-import { createNotification } from "app/services/notifServices"
+import { addContactService } from "app/services/contactsServices"
+import { getRandomDocID } from "app/services/CrudDB"
+import { createInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
-import { calculatePriceTotal, formatCurrency, formatPhoneNumber, validateEmail, validatePhone } from "app/utils/generalUtils"
+import { calculatePriceTotal, formatCurrency, formatPhoneNumber, 
+  validateEmail, validatePhone } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import './styles/NewInvoicePage.css'
@@ -194,67 +197,47 @@ export default function NewInvoicePage() {
   })
 
   const contactsList = contacts?.map((contact, index) => {
-    return <div
+    return <ContactRow
       key={index}
-      className="contact-row"
-    >
-      <i className="fas fa-id-badge" />
-      <h6>{contact.name}</h6>
-      <h6>{contact.email}</h6>
-      <h6>{contact.phone}</h6>
-      <h6>{contact.address}</h6>
-      <h6>{contact.city}, {contact.region}, {contact.country}</h6>
-      <AppButton
-        label="Select"
-        onClick={() => {
-          setInvoiceContact({
-            name: contact.name,
-            email: contact.email,
-            phone: contact.phone,
-            address: contact.address,
-            city: contact.city,
-            region: contact.region,
-            country: contact.country,
-            postcode: contact.postcode,
-            dateAdded: new Date()
-          })
-          setQuery("")
-          setSearchResults([])
-        }}
-      />
-    </div>
+      contact={contact}
+      onClick={() => {
+        setInvoiceContact({
+          name: contact.name,
+          email: contact.email,
+          phone: contact.phone,
+          address: contact.address,
+          city: contact.city,
+          region: contact.region,
+          country: contact.country,
+          postcode: contact.postcode,
+          dateAdded: new Date()
+        })
+        setQuery("")
+        setSearchResults([])
+      }}
+    />
   })
 
   const favoritesList = favoriteContacts?.map((contact, index) => {
-    return <div
+    return <ContactRow
       key={index}
-      className="contact-row"
-    >
-      <i className="fas fa-id-badge" />
-      <h6>{contact.name}</h6>
-      <h6>{contact.email}</h6>
-      <h6>{contact.phone}</h6>
-      <h6>{contact.address}</h6>
-      <h6>{contact.city}, {contact.region}, {contact.country}</h6>
-      <AppButton
-        label="Select"
-        onClick={() => {
-          setInvoiceContact({
-            name: contact.name,
-            email: contact.email,
-            phone: contact.phone,
-            address: contact.address,
-            city: contact.city,
-            region: contact.region,
-            country: contact.country,
-            postcode: contact.postcode,
-            dateAdded: new Date()
-          })
-          setQuery("")
-          setSearchResults([])
-        }}
-      />
-    </div>
+      contact={contact}
+      onClick={() => {
+        setInvoiceContact({
+          name: contact.name,
+          email: contact.email,
+          phone: contact.phone,
+          address: contact.address,
+          city: contact.city,
+          region: contact.region,
+          country: contact.country,
+          postcode: contact.postcode,
+          dateAdded: new Date()
+        })
+        setQuery("")
+        setSearchResults([])
+      }}
+    />
   })
 
   const navItemInfoRender = {
@@ -365,83 +348,29 @@ export default function NewInvoicePage() {
   }
 
   const addContact = () => {
-    if (!allowAddContact) return alert("Please fill in all fields")
-    setLoading(true)
-    const contactsPath = `users/${myUserID}/contacts`
-    const docID = getRandomDocID(contactsPath)
-    const contactData = {
-      name: contactName,
-      email: contactEmail,
-      phone: contactPhone,
-      address: contactAddress,
-      city: contactCity,
-      region: contactRegion,
-      country: contactCountry,
-      postcode: contactPostcode,
-      isFavorite: contactAddFavorite,
-      contactID: docID,
-      dateAdded: new Date(),
-      ownerID: myUserID
-    }
-    if (addToContacts) {
-      setDB(contactsPath, docID, contactData)
-        .then(() => {
-          setInvoiceContact(contactData)
-          clearContactInfo()
-        })
-        .catch(err => {
-          setLoading(false)
-          console.log(err)
-        })
-    }
-    else {
-      setInvoiceContact(contactData)
-      clearContactInfo()
-    }
+    addContactService(
+      myUserID, contactName, contactEmail, contactPhone, contactAddress,
+      contactCity, contactRegion, contactCountry, contactPostcode, contactAddFavorite,
+      addToContacts, allowAddContact, setLoading, setInvoiceContact, clearContactInfo
+    )
   }
 
   const createInvoice = () => {
-    if (!allowCreateInvoice) return alert("Please fill in all fields.")
-    setPageLoading(true)
-    const path = `users/${myUserID}/invoices`
-    const docID = getRandomDocID(path)
-    const invoiceData = {
-      currency: invoiceCurrency,
-      dateCreated: new Date(),
-      dateDue: invoiceDueDate,
-      invoiceID: docID,
-      invoiceNumber: `INV-${invoiceNumber}`,
-      invoiceOwnerID: myUserID,
-      invoiceTo: invoiceContact,
-      isPaid: false,
-      isSent: false,
-      items: invoiceItems,
-      notes: invoiceNotes,
-      status: 'unpaid',
-      taxRate1,
-      taxRate2,
-      subtotal: calculatedSubtotal,
-      total: calculatedTotal,
-      title: invoiceName
-    }
-    setDB(path, docID, invoiceData)
-      .then(() => {
-        updateDB('users', myUserID, {
-          invoicesNum: firebaseIncrement(1)
-        })
-        createNotification(
-          'Invoice Created',
-          `Invoice ${invoiceData.invoiceNumber} has been created for ${invoiceContact.name}.`,
-          'fas fa-file-invoice-dollar',
-          `/invoices/${docID}`
-        )
-        setPageLoading(false)
-        navigate('/invoices')
-      })
-      .catch(err => {
-        setPageLoading(false)
-        console.log(err)
-      })
+    if(!allowCreateInvoice) return alert("Please fill out all required fields.")
+    setPageLoading(false)
+    createInvoiceService(
+      myUserID, invoiceCurrency, invoiceDueDate, invoiceNumber, invoiceContact,
+      invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal, 
+      calculatedTotal, invoiceName
+    )
+    .then(() => {
+      setPageLoading(false)
+      navigate('/invoices')
+    })
+    .catch(err => {
+      setPageLoading(false)
+      console.log(err)
+    })
   }
 
   useEffect(() => {
@@ -661,7 +590,7 @@ export default function NewInvoicePage() {
         setAddToFavorites={setContactAddFavorite}
         addToContacts={addToContacts}
         setAddToContacts={setAddToContacts}
-        createContact={() => addContact()}
+        createContact={addContact}
         loading={loading}
       />
     </div>

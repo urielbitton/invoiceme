@@ -2,6 +2,7 @@ import React from 'react'
 import AppButton from "../ui/AppButton"
 import { AppInput, AppSwitch } from "../ui/AppInputs"
 import AppModal from "../ui/AppModal"
+import CountryStateCity from "../ui/CountryStateCity"
 import './styles/AddContactModal.css'
 
 export default function AddContactModal(props) {
@@ -54,20 +55,13 @@ export default function AddContactModal(props) {
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
-        <AppInput
-          label="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-        <AppInput
-          label="Region"
-          value={region}
-          onChange={(e) => setRegion(e.target.value)}
-        />
-        <AppInput
-          label="Country"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
+        <CountryStateCity
+          country={country}
+          setCountry={setCountry}
+          region={region}
+          setRegion={setRegion}
+          city={city}
+          setCity={setCity}
         />
         <AppInput
           label="Postal Code/Zip Code"

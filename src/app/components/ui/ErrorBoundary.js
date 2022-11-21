@@ -1,5 +1,5 @@
 import React from 'react'
-import errorBoundaryImg from '../assets/images/error-boundary.png'
+import errorBoundaryImg from 'app/assets/images/error-boundary.png'
 
 class ErrorBoundary extends React.Component {
 

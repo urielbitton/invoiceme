@@ -14,10 +14,10 @@ import './styles/Navbar.css'
 
 export default function Navbar() {
 
-  const { setPageLoading, myUserImg, myMemberType } = useContext(StoreContext)
+  const { myUserID, setPageLoading, myUserImg, myMemberType } = useContext(StoreContext)
   const [showMenu, setShowMenu] = useState(null)
-  const unreadNotifications = useUnreadNotifications()
-  const notifications = useNotifications(5)
+  const unreadNotifications = useUnreadNotifications(myUserID)
+  const notifications = useNotifications(myUserID, 5)
 
   const notificationsList = notifications?.map((notif, index) => {
     return <NotificationElement

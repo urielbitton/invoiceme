@@ -21,25 +21,30 @@ export function AppInput(props) {
 
 export function AppSelect(props) {
 
-  const { options, label, onChange, onClick, value, className, button, containerStyles } = props
+  const { options, label, onChange, onClick, value, className, button, containerStyles,
+    customValues } = props
 
   let optionsdata = options?.map((data,i) =>
     <option 
       key={i} 
       selected={data.selected} 
       disabled={data.disabled} 
-      value={data.value} 
+      value={customValues ? customValues?.map(val => data[val]) : data.value} 
     >  
       {data.name || data.label}
     </option>
   )  
   return ( 
     <label 
-      className={`appSelect commonInput ${className ?? ""}`} onClick={(e) => onClick && onClick(e)}
+      className={`appSelect commonInput ${className ?? ""}`} 
+      onClick={(e) => onClick && onClick(e)}
       style={containerStyles}
     >
       <h6>{label}</h6>
-      <select onChange={(e) => onChange(e)} value={value}>
+      <select 
+        onChange={(e) => onChange(e)} 
+        value={value}
+      >
         {optionsdata}
       </select>
       {button}
