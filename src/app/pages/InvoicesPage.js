@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import './styles/InvoicesPage.css'
 import noResultsImg from 'app/assets/images/no-results.png'
 import { useInvoices } from "app/hooks/invoiceHooks"
+import HelmetTitle from "app/components/ui/HelmetTitle"
 
 export default function InvoicesPage() {
 
@@ -55,6 +56,7 @@ export default function InvoicesPage() {
 
   return (
     <div className="invoices-page">
+      <HelmetTitle title="Invoices" />
       <AppSelectBar
         labelText1={labelText1}
         selectOptions={[

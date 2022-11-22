@@ -178,3 +178,12 @@ export const calculatePriceTotal = (subtotal, taxPercent, quantity) => {
   const total = (subtotal + tax) * quantity
   return total
 }
+
+export const printElement = (ref) => {
+  console.log(ref.current)
+  const elementToPrint = ref.current
+  const newWin = window.open("")
+  newWin.document.write(elementToPrint.outerHTML)
+  newWin.print()
+  newWin.close()
+}

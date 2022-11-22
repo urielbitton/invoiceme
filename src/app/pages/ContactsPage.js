@@ -1,5 +1,6 @@
 import AppButton from "app/components/ui/AppButton"
 import { AppInput } from "app/components/ui/AppInputs"
+import HelmetTitle from "app/components/ui/HelmetTitle"
 import { functions } from "app/firebase/fire"
 import React, { useState } from 'react'
 
@@ -25,6 +26,7 @@ export default function ContactsPage() {
 
   return (
     <div>
+      <HelmetTitle title="Contacts" />
       ContactsPage<br/><br/>
       <AppInput
         placeholder="Phone Number"

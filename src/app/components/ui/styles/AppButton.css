@@ -7,10 +7,10 @@
 }
 
 .appButton i.leftIcon:not(.no-text) {
-  margin-right: 10px;
+  margin-right: 8px;
 }
 .appButton i.rightIcon:not(.no-text) {
-  margin-left: 10px;
+  margin-left: 8px;
 }
 
 .appButton.primaryBtn {

@@ -87,6 +87,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
+  width: 100%;
 }
 .new-invoice-page .invoice-items h4 {
   color: var(--darkGrayText);

@@ -1,16 +1,42 @@
 .invoice-page .page-content {
   width: 100%;
   display: flex;
-  align-items: flex-start;
-  gap: 40px 30px;
+  gap: 40px 10px;
 }
 
 .invoice-page .send-container {
   padding: 0 20px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 15px;
   width: 380px;
+}
+.invoice-page .send-container .top {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+.invoice-page .send-container .bottom {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+  padding-top: 15px;
+  border-top: 1px solid var(--inputBorderColor);
+}
+.invoice-page .send-container .bottom button {
+  font-size: 13px;
+}
+.invoice-page .send-container .bottom .edit-invoice-btn {
+  color: var(--primary);
+}
+.invoice-page .send-container .bottom .delete-btn {
+  color: var(--red);
+}
+.invoice-page .send-container .bottom .delete-btn:hover {
+  background: var(--lightRed);
 }
 .invoice-page .send-container > h3 {
   font-size: 22px;
@@ -29,7 +55,7 @@
 }
 .invoice-page .send-container textarea {
   resize: none;
-  height: 100px;
+  height: 120px;
 }
 .invoice-page .send-container .additional-actions {
   display: grid;
@@ -48,20 +74,192 @@
 }
 .invoice-page .send-container .additional-actions .dropdown-button .dropdown-item span {
   font-size: 0.75rem;
-  color: var(--darkGrayText);
+  color: var(--grayText);
 }
 .invoice-page .send-container .additional-actions .dropdown-button .dropdown-item i {
-  color: var(--darkGrayText);
+  color: var(--grayText);
 }
 
 
-.invoice-page .page-content .paper-container {
+.invoice-page .paper-container {
   padding: 20px;
   background: #fff;
   display: flex;
   flex-direction: column;
-  width: 820px;
+  align-items: flex-start;
+  width: 830px;
   box-shadow: var(--morphShadow);
+}
+.invoice-page .paper-container > header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.invoice-page .paper-container > header img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+.invoice-page .paper-container .header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+.invoice-page .paper-container > header .left {
+  display: flex;
+  flex-direction: column;
+}
+.invoice-page .paper-container > header .left h3 {
+  margin: 5px 0;
+  font-size: 22px;
+  color: var(--darkGrayText);
+}
+.invoice-page .paper-container > header h5 {
+  font-size: 12px;
+  color: var(--grayText);
+  font-weight: 600;
+}
+.invoice-page .paper-container > header h5 span {
+  font-weight: 800;
+}
+.invoice-page .paper-container > header .right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.invoice-page .paper-container > header .right h3 {
+  font-size: 26px;
+  margin-bottom: 5px;
+  color: var(--grayText);
+}
+
+.invoice-page .paper-container .billto-section {
+  width: 100%;
+  padding: 20px;
+  background: var(--bg);
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+.invoice-page .paper-container .billto-section h4 {
+  font-size: 17px;
+  color: var(--darkGrayText);
+  margin-bottom: 10px;
+}
+.invoice-page .paper-container .billto-section h5 {
+  font-size: 13px;
+  color: var(--darkGrayText);
+  font-weight: 500;
+}
+.invoice-page .paper-container .items-section {
+  margin-top: 50px;
+  width: 100%;
+}
+.invoice-page .paper-container .items-section .app-table {
+  min-width: 100%;
+}
+.invoice-page .paper-container .items-section .app-table .headers {
+  border-bottom: 2px solid var(--inputBorderColor);
+  padding-bottom: 10px;
+}
+.invoice-page .paper-container .items-section .app-table .rows {
+  gap: 0;
+}
+.invoice-page .paper-container .items-section .invoice-item-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  gap: 10px;
+  border-bottom: 1px solid var(--inputBorderColor);
+}
+.invoice-page .paper-container .items-section .invoice-item-row:last-child {
+  border-bottom: none;
+}
+.invoice-page .paper-container .items-section .invoice-item-row h6 {
+  flex-basis: 25%;
+  font-size: 12px;
+  color: var(--darkGrayText);
+  font-weight: 600;
+}
+.invoice-page .paper-container .items-section .invoice-item-row .actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-basis: 25%;
+}
+.invoice-page .paper-container .items-section .invoice-item-row .actions .icon-container:hover i {
+  color: var(--primary)!important;
+}
+
+.invoice-page .paper-container .totals-section {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 5px;
+  padding-right: 10px;
+}
+.invoice-page .paper-container .totals-section h6 {
+  font-size: 13px;
+  color: var(--grayText);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+}
+.invoice-page .paper-container .totals-section h6:first-child {
+  border-top: 1px solid var(--inputBorderColor);
+  padding-top: 10px;
+}
+.invoice-page .paper-container .totals-section h6.totals {
+  font-size: 16px;
+  color: var(--darkGrayText);
+}
+
+.invoice-page .paper-container .notes-section {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+}
+.invoice-page .paper-container .notes-section h4 {
+  font-size: 16px;
+  color: var(--darkGrayText);
+  margin-bottom: 10px;
+}
+.invoice-page .paper-container .notes-section p {
+  font-size: 13px;
+  color: #777;
+  font-weight: 500;
+}
+
+.invoice-page .paper-container .foot-notes {
+  margin: 40px 0 20px 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--inputBorderColor);
+  padding-top: 20px;
+}
+.invoice-page .paper-container .foot-notes h6 {
+  font-size: 13px;
+  color: var(--grayText);
+  font-weight: 600;
+}
+.invoice-page .paper-container .foot-notes small {
+  font-size: 11px;
+  color: #777;
+}
+.invoice-page .paper-container .foot-notes small a {
+  color: var(--primary);
+  text-decoration: underline;
 }
 
 
@@ -70,3 +268,37 @@
     flex-direction: column-reverse;
   }
 }
+
+@media print {
+  .app-container {
+    grid-template-columns: 100%;
+    width: 100%;
+  }
+  .app-container .main-content {
+    width: 100%;
+  }
+  .app-container .sidebar, .app-container .navbar,
+  .invoice-page .send-container {
+    display: none;
+  }
+  .invoice-page {
+    padding: 0;
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  .invoice-page .paper-container {
+    width: 100%;
+    box-shadow: none;
+    padding: 0;
+  }
+  .invoice-page .paper-container .billto-section {
+    padding: 20px 0;
+    background-color: var(--bg);
+  }
+  .invoice-page .paper-container .items-section .invoice-item-row .actions,
+  .invoice-page .paper-container .items-section .headers h5:last-child {
+    display: none;
+  }
+}
+ 

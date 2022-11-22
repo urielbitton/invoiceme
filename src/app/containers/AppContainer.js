@@ -6,6 +6,7 @@ import RoutesContainer from "./RoutesContainer"
 import Sidebar from "app/components/layout/Sidebar"
 import Navbar from "app/components/layout/Navbar"
 import { useNavigate } from "react-router-dom"
+import HelmetTitle from "app/components/ui/HelmetTitle"
 
 export default function AppContainer() {
 
@@ -23,6 +24,7 @@ export default function AppContainer() {
 
   return (
     <div className={`app-container ${ darkMode ? "dark-app" : "" }`}>
+      <HelmetTitle />
       <Sidebar />
       <div className="main-content">
         <Navbar />

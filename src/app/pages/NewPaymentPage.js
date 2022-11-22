@@ -1,7 +1,11 @@
+import HelmetTitle from "app/components/ui/HelmetTitle"
 import React from 'react'
 
 export default function NewPaymentPage() {
   return (
-    <div>NewPament</div>
+    <div>
+      <HelmetTitle title="New Payment" />
+      NewPament
+    </div>
   )
 }

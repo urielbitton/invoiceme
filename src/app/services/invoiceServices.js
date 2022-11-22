@@ -30,7 +30,7 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, in
   const invoiceData = {
     currency: invoiceCurrency,
     dateCreated: new Date(),
-    dateDue: invoiceDueDate,
+    dateDue: new Date(invoiceDueDate),
     invoiceID: docID,
     invoiceNumber: `INV-${invoiceNumber}`,
     invoiceOwnerID: userID,

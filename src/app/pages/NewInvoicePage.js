@@ -5,6 +5,7 @@ import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import AppPagination from "app/components/ui/AppPagination"
 import AppTable from "app/components/ui/AppTable"
 import ContactRow from "app/components/ui/ContactRow"
+import HelmetTitle from "app/components/ui/HelmetTitle"
 import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
@@ -15,10 +16,8 @@ import { getRandomDocID } from "app/services/CrudDB"
 import { createInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
-import {
-  calculatePriceTotal, formatCurrency, formatPhoneNumber,
-  validateEmail, validatePhone
-} from "app/utils/generalUtils"
+import { calculatePriceTotal, formatCurrency, validateEmail, 
+  validatePhone } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import './styles/NewInvoicePage.css'
@@ -107,6 +106,7 @@ export default function NewInvoicePage() {
   const invoiceItemInputs = <>
     <input
       value={itemName}
+      placeholder="Web Consulting"
       onChange={(e) => setItemName(e.target.value)}
       className="invoice-item-row-element"
     />
@@ -396,6 +396,7 @@ export default function NewInvoicePage() {
 
   return (
     <div className="new-invoice-page">
+      <HelmetTitle title="Create New Invoice" />
       <PageTitleBar
         title="Create an Invoice"
         hasBorder
@@ -404,11 +405,13 @@ export default function NewInvoicePage() {
         <form onSubmit={(e) => e.preventDefault()}>
           <AppInput
             label="Invoice Name"
+            placeholder="Montly consulting services"
             value={invoiceName}
             onChange={(e) => setInvoiceName(e.target.value)}
           />
           <AppInput
             label="Invoice Number"
+            placeholder="91288349"
             value={invoiceNumber}
             onChange={(e) => setInvoiceNumber(e.target.value)}
             iconleft={
@@ -434,6 +437,7 @@ export default function NewInvoicePage() {
           <div className="tax-rates">
             <AppInput
               label="Tax Rate 1"
+              placeholder="5"
               type="number"
               value={taxRate1}
               onChange={(e) => setTaxRate1(+e.target.value)}
@@ -446,6 +450,7 @@ export default function NewInvoicePage() {
             />
             <AppInput
               label="Tax Rate 2"
+              placeholder="10"
               type="number"
               value={taxRate2}
               onChange={(e) => setTaxRate2(+e.target.value)}
@@ -465,6 +470,7 @@ export default function NewInvoicePage() {
           />
           <AppTextarea
             label="Notes"
+            placeholder="Enter any notes you want to include on the invoice"
             value={invoiceNotes}
             onChange={(e) => setInvoiceNotes(e.target.value)}
           />

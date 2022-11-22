@@ -37,21 +37,25 @@ export default function AddContactModal(props) {
       <form onSubmit={(e) => e.preventDefault()}>
         <AppInput
           label="Name"
+          placeholder="Contact name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <AppInput
           label="Email"
+          placeholder="Contact email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <AppInput
           label="Phone"
+          placeholder="Contact phone number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
         />
         <AppInput
           label="Address"
+          placeholder="Contact address"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
@@ -65,6 +69,7 @@ export default function AddContactModal(props) {
         />
         <AppInput
           label="Postal Code/Zip Code"
+          placeholder="Postal Code/Zip Code"
           value={postcode}
           onChange={(e) => setPostcode(e.target.value)}
         />
