@@ -1,3 +1,4 @@
+import { invoicePaperStyles } from "app/components/invoices/invoicePaperStyles"
 import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppTextarea } from "app/components/ui/AppInputs"
 import AppModal from "app/components/ui/AppModal"
@@ -7,18 +8,18 @@ import FileUploader from "app/components/ui/FileUploader"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import IconContainer from "app/components/ui/IconContainer"
 import { useInvoice } from "app/hooks/invoiceHooks"
-import { deleteDB } from "app/services/CrudDB"
-import { sendHtmlToEmailAsPDF } from "app/services/emailServices"
+import { deleteInvoiceService, sendInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
-import { formatCurrency, formatPhoneNumber, printElement } from "app/utils/generalUtils"
+import { generateAndDownloadPDFFromHTML } from "app/utils/fileUtils"
+import { formatCurrency, formatPhoneNumber, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
 import './styles/InvoicePage.css'
 
 export default function InvoicePage() {
 
-  const { setPageLoading, myUserID, myUser } = useContext(StoreContext)
+  const { setPageLoading, myUserID, myUser, setNavItemInfo } = useContext(StoreContext)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [contactEmail, setContactEmail] = useState('')
@@ -34,7 +35,12 @@ export default function InvoicePage() {
   const calculatedSubtotal = invoice?.items?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = invoice?.items?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedTaxRate = invoice?.items?.every(item => item.taxRate === invoice?.items[0].taxRate) ? invoice?.items[0].taxRate : null
+  const invoicePaperRef = useRef(null)
   const navigate = useNavigate()
+
+  const allowSendInvoice = invoiceItems.length > 0 &&
+    validateEmail(contactEmail) &&
+    invoice
 
   const invoiceItemsList = invoiceItems?.map((item, index) => {
     return <div
@@ -69,42 +75,26 @@ export default function InvoicePage() {
   })
 
   const sendInvoice = () => {
-    const confirm = window.confirm("Send invoice to client?")
+    if (!allowSendInvoice) return alert('Please fill in all fields.')
+    const confirm = invoice?.isSent ? window.confirm('This invoice has already been sent, would you like to send it again?') : true
     if (confirm) {
-      setPageLoading(true)
-      sendHtmlToEmailAsPDF(
-        'urielas@hotmail.com',
-        'Invoice Email',
-        'Test invoice email',
-        '<h1>Test</h1>',
-        'test.pdf',
-        uploadedFiles.map(file => file.file)
+      sendInvoiceService(
+        contactEmail,
+        emailSubject,
+        emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
+        invoicePaperRef.current.innerHTML,
+        `${invoice.invoiceNumber}.pdf`,
+        uploadedFiles,
+        myUserID,
+        invoiceID,
+        invoice.invoiceNumber,
+        setPageLoading
       )
-        .then(() => {
-          setPageLoading(false)
-          alert("Invoice sent!")
-        })
-        .catch((error) => {
-          setPageLoading(false)
-          alert(error.message)
-        })
     }
   }
 
   const deleteInvoice = () => {
-    const confirm = window.confirm('Are you sure you want to delete this invoice?')
-    if (confirm) {
-      setPageLoading(true)
-      deleteDB(`users/${myUserID}/invoices`, invoiceID)
-        .then(() => {
-          setPageLoading(false)
-          navigate('/invoices')
-        })
-        .catch((error) => {
-          setPageLoading(false)
-          alert(error.message)
-        })
-    }
+    deleteInvoiceService(myUserID, invoiceID, setPageLoading)
   }
 
   const printInvoice = () => {
@@ -125,7 +115,22 @@ export default function InvoicePage() {
       )
       setInvoiceItems(invoice?.items || [])
     }
+    setNavItemInfo({
+      label: <small
+        onClick={() => navigate(-1)}
+        className="go-back"
+      >
+        <i className="fal fa-arrow-left" />Back
+      </small>,
+      sublabel: <div className="meta-data">
+        <h6>Invoice Name: <span>{invoice?.title}</span></h6>
+        <h6>Status: <span>{invoice?.status}</span></h6>
+        <h6>Sent: <span>{invoice?.isSent ? 'Yes' : 'No'}</span></h6>
+        <h6>Paid: <span>{invoice?.isPaid ? 'Yes' : 'No'}</span></h6>
+      </div>
+    })
   }, [invoice])
+
 
   return (
     invoice ?
@@ -135,6 +140,13 @@ export default function InvoicePage() {
           <div className="send-container">
             <div className="top">
               <h3>Send Invoice</h3>
+              {
+                invoice.isSent &&
+                <h5>
+                  <span><i className="fas fa-paper-plane" />Invoice Sent</span>
+                  <i className="far fa-check" />
+                </h5>
+              }
               <AppInput
                 label="Send To"
                 placeholder="Bill to email"
@@ -175,7 +187,11 @@ export default function InvoicePage() {
                   showMenu={showDownloadMenu}
                   setShowMenu={setShowDownloadMenu}
                   items={[
-                    { label: 'Pdf', icon: 'fas fa-file-pdf', onClick: () => console.log('PDF') },
+                    { 
+                      label: 'Pdf', 
+                      icon: 'fas fa-file-pdf', 
+                      onClick: () => generateAndDownloadPDFFromHTML(invoicePaperRef.current.innerHTML, `${invoice.invoiceNumber}.pdf`) 
+                    },
                     { label: 'Excel', icon: 'fas fa-file-excel', onClick: () => console.log('Excel') },
                     { label: 'Word', icon: 'fas fa-file-word', onClick: () => console.log('Word') },
                     { label: 'Image', icon: 'fas fa-image', onClick: () => console.log('Image') },
@@ -208,7 +224,10 @@ export default function InvoicePage() {
               />
             </div>
           </div>
-          <div className="paper-container">
+          <div
+            className="paper-container"
+            ref={invoicePaperRef}
+          >
             <header>
               <img src={myBusiness.logo} alt="Logo" />
               <div className="header-row">
@@ -263,15 +282,15 @@ export default function InvoicePage() {
               </h6>
               <h6>
                 <span>Subtotal</span>
-                <span>{invoice.currency.symbol}{formatCurrency(calculatedSubtotal)}</span>
+                <span>{invoice.currency?.symbol}{formatCurrency(calculatedSubtotal)}</span>
               </h6>
               <h6 className="totals">
                 <span>Total</span>
-                <span>{invoice.currency.symbol}{formatCurrency(calculatedTotal)}</span>
+                <span>{invoice.currency?.symbol}{formatCurrency(calculatedTotal)}</span>
               </h6>
             </div>
             {
-              invoice.notes.length > 0 &&
+              invoice.notes?.length > 0 &&
               <div className="notes-section">
                 <h4>Notes</h4>
                 <p>{invoice.notes}</p>
@@ -288,7 +307,7 @@ export default function InvoicePage() {
           setShowModal={setShowEditModal}
           label="Edit Invoice"
         >
-          
+
         </AppModal>
       </div> :
       null

@@ -83,14 +83,7 @@ exports.sendEmailWithAttachment = functions
     from: data.from,
     subject: data.subject,
     html: data.html,
-    attachments: [
-      {
-        content: data.attachment,
-        filename: data.filename,
-        type: data.type,
-        disposition: data.disposition,
-      },
-    ],
+    attachments: data.attachments
   }
   return sgMail.send(msg)
   .catch(err => console.log(err))

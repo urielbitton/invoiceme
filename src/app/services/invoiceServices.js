@@ -1,5 +1,6 @@
 import { db } from "app/firebase/fire"
-import { firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
+import { deleteDB, firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
+import { sendHtmlToEmailAsPDF } from "./emailServices"
 import { createNotification } from "./notifServices"
 
 export const getInvoicesByUserID = (userID, setInvoices, limit) => {
@@ -59,4 +60,77 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, in
         `/invoices/${docID}`
       )
     })
+    .catch(err => console.log(err))
+}
+
+export const updateInvoiceService = (myUserID, invoiceID, updatedProps, setLoading) => {
+  setLoading(true)
+  updateDB(`users/${myUserID}/invoices`, invoiceID, updatedProps)
+  .then(() => {
+    setLoading(false)
+  })
+  .catch(err => {
+    console.log(err)
+    setLoading(false)
+  })
+}
+
+export const deleteInvoiceService = (myUserID, invoiceID, setLoading) => {
+  const confirm = window.confirm("Are you sure you want to delete this invoice?")
+    if (confirm) {
+      setLoading(true)
+      return deleteDB(`users/${myUserID}/invoices`, invoiceID)
+      .then(() => {
+        return updateDB('users', myUserID, {
+          invoicesNum: firebaseIncrement(-1) 
+        })
+        .then(() => {
+          setLoading(false)
+        })
+        .catch(err => {
+          console.log(err)
+          setLoading(false)
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(false)
+      })
+    }
+}
+
+export const sendInvoiceService = (to, subject, emailHTML, pdfHTML, invoiceFilename, uploadedFiles,
+  myUserID, invoiceID, invoiceNumber, setPageLoading) => {
+    const confirm = window.confirm("Send invoice to client?")
+    if(confirm) {
+      setPageLoading(true)
+      return sendHtmlToEmailAsPDF(
+        to,
+        subject,
+        emailHTML,
+        pdfHTML,
+        invoiceFilename,
+        uploadedFiles.map(file => file.file)
+      )
+      .then(() => {
+        updateDB(`users/${myUserID}/invoices`, invoiceID, {
+          isSent: true, 
+        })
+        .catch(err => console.log(err))
+        createNotification(
+          myUserID,
+          'Invoice Sent to client',
+          `Invoice ${invoiceNumber} has been sent to ${to}.`,
+          'fas fa-paper-plane',
+          `/invoices/${invoiceID}`
+        )
+        .catch(err => console.log(err))
+        setPageLoading(false)
+        alert("Invoice sent to client.")
+      })
+      .catch((error) => {
+        setPageLoading(false)
+        alert(error)
+      })
+    }
 }

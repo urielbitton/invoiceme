@@ -9,22 +9,23 @@ export const sendSgEmail = (to, subject, html, files) => {
         from: 'info@atomicsdigital.com',
         subject: subject,
         html: html,
-        ...(files.length > 0 && [
-          ...files.map((file, i) => {
-            return {
-              attachment: base64s[i],
-              filename: file.name,
-              type: file.type,
-              disposition: 'attachment'
-            }
-          })
-        ])
+        ...(files.length > 0 && {
+          attachments: [
+            ...files.map((file, i) => {
+              return {
+                content: base64s[i],
+                filename: file.name,
+                type: file.type,
+                disposition: 'attachment'
+              }
+            })
+          ]
+        })
       })
+      .then((result) => console.log({result, files}))
+      .catch((error) => console.log(error))
     })
-}
-
-export const sendMultipleSgEmails = (to, subject, html, files) => {
-
+    .catch((error) => console.log(error))
 }
 
 export const sendHtmlToEmailAsPDF = (to, subject, emailHtml, pdfHTML, filename, attachments) => {
@@ -36,13 +37,19 @@ export const sendHtmlToEmailAsPDF = (to, subject, emailHtml, pdfHTML, filename, 
       emailHtml, 
       [file, ...attachments]
     ) 
+    .catch((error) => console.log(error))
   })
+  .catch(err => console.log(err))
+}
+
+export const sendMultipleSgEmails = (to, subject, html, files) => {
+
 }
 
 //sendSgEmail(..., files) - files is an array of file objects, e.g.:
 // [
 //   {
-//     attachment: base64,
+//     content: base64,
 //     filename: file.name,
 //     type: file.type,
 //     disposition: 'attachment'

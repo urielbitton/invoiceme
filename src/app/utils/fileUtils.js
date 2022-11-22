@@ -1,4 +1,5 @@
 import jsPDF from "jspdf"
+import html2canvas from 'html2canvas'
 
 function setLoadingDef(num) {}
 
@@ -132,7 +133,6 @@ export async function downloadUsingFetchFromFile(file, fileName) {
 }
 
 export const convertFilesToBase64 = (files) => {
-  const encodedFiles = []
   return Promise.all(files.map((file,i) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
@@ -142,14 +142,14 @@ export const convertFilesToBase64 = (files) => {
         if (encoded.length % 4 > 0) {
           encoded += "=".repeat(4 - (encoded.length % 4))
         }
-        encodedFiles.push(encoded)
-        if(i === files.length - 1) 
-          resolve(encoded)
+        resolve(encoded)
       }
       reader.onerror = (error) => reject(error)
     })
+    .catch(err => console.log(err))
   }))
-  .then(() => {
+  .then((encodedFiles) => {
+    console.log(encodedFiles)
     return encodedFiles
   })
   .catch(err => console.log(err))
@@ -161,7 +161,7 @@ export const convertDocToFileObject = (doc, filename) => {
 }
 
 export const generatePDFFromHTML = (html) => {
-  const doc = new jsPDF('p', 'pt', 'a4');
+  const doc = new jsPDF('p', 'pt', 'a4')
   return doc.html(html).then(() => {
     return doc
   })
@@ -180,4 +180,5 @@ export const saveHTMLToPDFAsBlob = (html, filename) => {
     const file = convertDocToFileObject(doc.output('blob'), filename)
     return file
   })
+  .catch(err => console.log(err))
 }

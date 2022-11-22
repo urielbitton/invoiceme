@@ -38,10 +38,21 @@
 .invoice-page .send-container .bottom .delete-btn:hover {
   background: var(--lightRed);
 }
-.invoice-page .send-container > h3 {
+.invoice-page .send-container .top > h3 {
   font-size: 22px;
   color: var(--darkGrayText);
-  margin-bottom: 10px;
+}
+.invoice-page .send-container .top > h5 {
+  color: var(--primary);
+  background: var(--extraLightPrimary);
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.invoice-page .send-container .top > h5 i {
+  margin-right: 10px;
 }
 .invoice-page .send-container .commonInput {
   display: flex;
@@ -80,7 +91,7 @@
   color: var(--grayText);
 }
 
-
+/* Invoice paper CSS */
 .invoice-page .paper-container {
   padding: 20px;
   background: #fff;
@@ -100,7 +111,7 @@
   height: 50px;
   object-fit: contain;
 }
-.invoice-page .paper-container .header-row {
+.invoice-page .paper-container > .header-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -261,6 +272,7 @@
   color: var(--primary);
   text-decoration: underline;
 }
+/* End invoice paper css */
 
 
 @media (max-width: 1200px) {

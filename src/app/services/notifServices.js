@@ -4,7 +4,7 @@ import { getRandomDocID, setDB } from "./CrudDB"
 export const createNotification = (userID, title, text, icon, url) => {
   const notifPath = `users/${userID}/notifications`
   const docID = getRandomDocID(notifPath)
-  setDB(notifPath, docID, {
+  return setDB(notifPath, docID, {
     notificationID: docID,
     dateCreated: new Date(),
     isRead: false,

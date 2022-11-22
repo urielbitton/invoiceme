@@ -1,4 +1,4 @@
-import { deleteDB, firebaseIncrement, updateDB } from "app/services/CrudDB"
+import { deleteInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency } from "app/utils/generalUtils"
@@ -9,23 +9,13 @@ import IconContainer from "../ui/IconContainer"
 
 export default function InvoiceRow(props) {
 
-  const { myUserID } = useContext(StoreContext)
+  const { myUserID, setPageLoading } = useContext(StoreContext)
   const { invoiceID, title, invoiceNumber, total, items, invoiceTo, 
     dateCreated, isPaid, currency } = props.invoice
   const navigate = useNavigate()
 
   const deleteInvoice = () => {
-    const confirm = window.confirm("Are you sure you want to delete this invoice?")
-    if (confirm) {
-      deleteDB(`users/${myUserID}/invoices`, invoiceID)
-      .then(() => {
-        updateDB('users', myUserID, {
-          invoicesNum: firebaseIncrement(-1) 
-        })
-        window.alert("Invoice deleted.")
-      })
-      .catch(err => console.log(err))
-    }
+    deleteInvoiceService(myUserID, invoiceID, setPageLoading)
   }
 
   return (

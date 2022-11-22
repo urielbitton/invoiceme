@@ -7,7 +7,7 @@
 }
 .app-contact-row.selected {
   background: #fff;
-  border: 1px solid var(--inputBorderColor);
+  border: 1px solid var(--primary);
   width: 100%;
 }
 .app-contact-row:hover {

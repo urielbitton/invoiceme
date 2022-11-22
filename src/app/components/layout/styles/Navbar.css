@@ -219,8 +219,23 @@
 }
 .navbar .bottombar .nav-item-info {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 20px;
+}
+
+.navbar .bottombar .nav-item-info .meta-data {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.navbar .bottombar .nav-item-info .meta-data h6 {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+}
+.navbar .bottombar .nav-item-info .meta-data h6 span {
+  text-transform: capitalize;
+  font-weight: 700;
 }
 
 .navbar .shapes-container {
