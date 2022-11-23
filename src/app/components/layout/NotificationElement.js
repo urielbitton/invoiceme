@@ -13,12 +13,13 @@ export default function NotificationElement(props) {
   const { notificationID, text, dateCreated, url, isRead, icon } = props.notif
   const navigate = useNavigate()
 
-  const markAsRead = () => {
+  const markAsRead = (goToURL) => {
     updateDB(`users/${myUserID}/notifications`, notificationID, {
       isRead: true 
     })
     .then(() => {
-      navigate(url)
+      if(goToURL)
+        navigate(url)
     })
     .catch(err => console.log(err))
   }
@@ -26,7 +27,7 @@ export default function NotificationElement(props) {
   return (
     <div 
       className={`notif-element ${!isRead ? 'unread' : ''}`} 
-      onClick={() => markAsRead()}
+      onClick={() => markAsRead(true)}
       key={notificationID}
     >
       <div className="left">
@@ -48,6 +49,7 @@ export default function NotificationElement(props) {
           className={`read-reciept ${isRead ? "read" : ""}`} 
           onClick={(e) => {
             e.stopPropagation()
+            markAsRead(false)
           }}
         />
       </div>

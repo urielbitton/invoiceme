@@ -1,4 +1,5 @@
-import domToPdf from 'dom-to-pdf'
+import domToPdf from 'atomics-dom-to-pdf'
+import html2canvas from 'html2canvas'
 
 function setLoadingDef(num) {}
 
@@ -159,13 +160,14 @@ export const convertDocToFileObject = (doc, filename) => {
   return file
 }
 
-export const domToPDFDownload = (htmlElement, filename, compression='MEDIUM') => {
+export const domToPDFDownload = (htmlElement, filename, download=false, compression='MEDIUM') => {
   return domToPdf(
     htmlElement, 
     {
       filename, 
       compression,
       excludeClassNames: ['no-print'],
+      download
     }, 
     (err, pdf) => {
       return pdf    
@@ -173,7 +175,7 @@ export const domToPDFDownload = (htmlElement, filename, compression='MEDIUM') =>
 }
 
 export const generatePDFFromHTML = (htmlElement, filename) => {
-  return domToPDFDownload(htmlElement, filename, 'SLOW')
+  return domToPDFDownload(htmlElement, filename, false, 'SLOW')
 }
 
 export const saveHTMLToPDFAsBlob = (htmlElement, filename) => {
@@ -181,6 +183,20 @@ export const saveHTMLToPDFAsBlob = (htmlElement, filename) => {
   .then((doc) => {
     const file = convertDocToFileObject(doc.output('blob'), filename)
     return file
+  })
+  .catch(err => console.log(err))
+}
+
+export const convertBase64ToFileObject = (base64, filename) => {
+  let file = new File([base64], filename, {type: 'image/png'})
+  return file
+}
+
+export const downloadHtmlElementAsImage = (htmlElement, filename) => {
+  return html2canvas(htmlElement, {useCORS: true})
+  .then((canvas) => {
+    const dataURL = canvas.toDataURL('image/png')
+    downloadUsingFetch(dataURL, filename)
   })
   .catch(err => console.log(err))
 }

@@ -11,7 +11,7 @@ import { useInvoice } from "app/hooks/invoiceHooks"
 import { deleteInvoiceService, sendInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
-import { domToPDFDownload } from "app/utils/fileUtils"
+import { domToPDFDownload, downloadHtmlElementAsImage } from "app/utils/fileUtils"
 import { formatCurrency, formatPhoneNumber, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
@@ -42,6 +42,15 @@ export default function InvoicePage() {
   const allowSendInvoice = invoiceItems.length > 0 &&
     validateEmail(contactEmail) &&
     invoice
+
+  const taxNumbersList = myBusiness?.taxNumbers?.map((taxNum, index) => {
+    return <h5 
+      style={invoicePaperStyles?.headerH5}
+      key={index}
+    >
+      {taxNum.name}: {taxNum.value}
+    </h5>
+  })
 
   const invoiceItemsList = invoiceItems?.map((item, index) => {
     return <div
@@ -102,10 +111,6 @@ export default function InvoicePage() {
     deleteInvoiceService(myUserID, invoiceID, setPageLoading)
   }
 
-  const printInvoice = () => {
-    window.print()
-  }
-
   const saveInvoice = () => {
 
   }
@@ -113,7 +118,15 @@ export default function InvoicePage() {
   const downloadAsPDF = () => {
     domToPDFDownload(
       document.querySelector('.invoice-page .paper-container'), 
-      `${invoice.invoiceNumber}.pdf`
+      `${invoice.invoiceNumber}.pdf`,
+      true
+    )
+  }
+
+  const downloadAsImage = () => {
+    downloadHtmlElementAsImage(
+      document.getElementsByClassName('paper-container')[0],
+      `${invoice.invoiceNumber}.png`,
     )
   }
 
@@ -204,7 +217,11 @@ export default function InvoicePage() {
                       icon: 'fas fa-file-pdf', 
                       onClick: () => downloadAsPDF()
                     },
-                    { label: 'Image Download', icon: 'fas fa-image', onClick: () => console.log('Image') },
+                    { 
+                      label: 'Image Download', 
+                      icon: 'fas fa-image', 
+                      onClick: () => downloadAsImage() 
+                    }
                   ]}
                   buttonType="white"
                   dropdownPosition="place-left-top"
@@ -213,7 +230,7 @@ export default function InvoicePage() {
                   label="Print"
                   leftIcon="fas fa-print"
                   buttonType="white"
-                  onClick={() => printInvoice()}
+                  onClick={() => window.print()}
                 />
               </div>
             </div>
@@ -254,10 +271,10 @@ export default function InvoicePage() {
                   style={invoicePaperStyles?.headerLeft}
                 >
                   <h3 style={invoicePaperStyles?.headerLeftH3}>{myBusiness.name}</h3>
-                  <h5 style={invoicePaperStyles?.headerH5}>Tax Number: {myBusiness.taxNumber}</h5>
                   <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(myBusiness.phone)}</h5>
                   <h5 style={invoicePaperStyles?.headerH5}>{myBusiness.address}</h5>
                   <h5 style={invoicePaperStyles?.headerH5}>{myBusiness.city}, {myBusiness.region} {myBusiness.postcode}</h5>
+                  {taxNumbersList}
                 </div>
                 <div 
                   className="right"
@@ -266,7 +283,9 @@ export default function InvoicePage() {
                   <h3 style={invoicePaperStyles?.headerRightH3}>Invoice</h3>
                   <h5 style={invoicePaperStyles?.headerH5}>#{invoice.invoiceNumber}</h5>
                   <h5 style={invoicePaperStyles?.headerH5}>Invoice Date: {convertClassicDate(invoice.dateCreated.toDate())}</h5>
-                  <h5 style={invoicePaperStyles?.headerH5}>Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(invoice.dateDue.toDate())}</span></h5>
+                  <h5 style={invoicePaperStyles?.headerH5}>
+                    Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(invoice.dateDue.toDate())}</span>
+                  </h5>
                 </div>
               </div>
             </header>

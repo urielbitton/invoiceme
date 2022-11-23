@@ -115,13 +115,13 @@ export default function Navbar() {
               <i className="fal fa-angle-down" />
             </div>
             <div className={`profile-dropdown ${showMenu === 'profile' ? 'show' : ''}`}>
-              <Link to="/my-profile">
-                <i className="fas fa-user" />
-                <span>My Profile</span>
-              </Link>
               <Link to="/my-account">
                 <i className="fas fa-user-circle" />
                 <span>My Account</span>
+              </Link>
+              <Link to="/my-account/preferences">
+                <i className="fas fa-sliders-h" />
+                <span>Preferences</span>
               </Link>
               {
                 myMemberType !== 'business' &&

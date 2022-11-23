@@ -32,7 +32,6 @@ export const invoicePaperStyles = {
   },
   headerLeftH3: {
     margin: '5px 0',
-    marginTop: 10,
     fontSize: 22+addFontSize,
     color: 'var(--darkGrayText)',
   },
@@ -53,8 +52,8 @@ export const invoicePaperStyles = {
   },
   headerRightH3: {
     fontSize: 26+addFontSize,
-    marginBottom: addFontSize,
     color: 'var(--grayText)',
+    margin: '5px 0',
   },
   billToSection: {
     width: '100%',

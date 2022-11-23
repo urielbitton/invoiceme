@@ -125,7 +125,6 @@
   margin: 5px 0;
   font-size: 22px!important;
   color: var(--darkGrayText);
-  margin-top: 0;
 }
 .invoice-page .paper-container > header h5 {
   font-size: 13px!important;
@@ -305,9 +304,9 @@
     display: none;
   }
   .invoice-page .paper-container {
-    width: 100%;
-    box-shadow: none;
-    padding: 0;
+    width: 100%!important;
+    box-shadow: none!important;
+    padding: 0!important;
   }
   .invoice-page .paper-container .billto-section {
     background-color: var(--bg);

@@ -16,9 +16,11 @@ import { getRandomDocID } from "app/services/CrudDB"
 import { createInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
-import { calculatePriceTotal, formatCurrency, validateEmail, 
-  validatePhone } from "app/utils/generalUtils"
-import React, { useContext, useEffect, useState } from 'react'
+import {
+  calculatePriceTotal, formatCurrency, validateEmail,
+  validatePhone
+} from "app/utils/generalUtils"
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import './styles/NewInvoicePage.css'
 
@@ -37,7 +39,7 @@ export default function NewInvoicePage() {
   const [invoiceNotes, setInvoiceNotes] = useState("")
   const [itemName, setItemName] = useState("")
   const [itemPrice, setItemPrice] = useState(0)
-  const [itemQuantity, setItemQuantity] = useState(0)
+  const [itemQuantity, setItemQuantity] = useState(1)
   const [itemTaxRate, setItemTaxRate] = useState(0)
   const [editItemID, setEditItemID] = useState(null)
   const [query, setQuery] = useState('')
@@ -62,6 +64,7 @@ export default function NewInvoicePage() {
   const favoriteContacts = useFavoriteContacts(myUserID)
   const filters = `ownerID: ${myUserID}`
   const navigate = useNavigate()
+  const firstItemInputRef = useRef(null)
   const calculatedSubtotal = invoiceItems.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = invoiceItems.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedItemTotal = calculatePriceTotal(itemPrice, itemTaxRate / 100, itemQuantity)
@@ -104,50 +107,61 @@ export default function NewInvoicePage() {
   ]
 
   const invoiceItemInputs = <>
-    <input
-      value={itemName}
-      placeholder="Web Consulting"
-      onChange={(e) => setItemName(e.target.value)}
-      className="invoice-item-row-element"
-    />
-    <input
-      value={itemPrice}
-      type="number"
-      onChange={(e) => setItemPrice(+e.target.value)}
-      className="invoice-item-row-element"
-    />
-    <input
-      value={itemQuantity}
-      type="number"
-      onChange={(e) => setItemQuantity(+e.target.value)}
-      className="invoice-item-row-element"
-    />
-    <input
-      value={itemTaxRate}
-      type="number"
-      onChange={(e) => setItemTaxRate(+e.target.value)}
-      className="invoice-item-row-element"
-    />
-    <input
-      value={`${invoiceCurrency.symbol}${formatCurrency(calculatedItemTotal?.toFixed(2))}`}
-      className="invoice-item-row-element"
-      disabled
-    />
+    <div>
+      <input
+        value={itemName}
+        placeholder="Web Consulting"
+        onChange={(e) => setItemName(e.target.value)}
+        className="invoice-item-row-element"
+        ref={firstItemInputRef}
+      />
+    </div>
+    <div>
+      <input
+        value={itemPrice}
+        type="number"
+        onChange={(e) => setItemPrice(+e.target.value)}
+        className="invoice-item-row-element"
+      />
+    </div>
+    <div>
+      <input
+        value={itemQuantity}
+        type="number"
+        onChange={(e) => setItemQuantity(+e.target.value)}
+        className="invoice-item-row-element"
+      />
+    </div>
+    <div>
+      <input
+        value={itemTaxRate}
+        type="number"
+        onChange={(e) => setItemTaxRate(+e.target.value)}
+        className="invoice-item-row-element"
+      />
+    </div>
+    <div>
+      <input
+        value={`${invoiceCurrency.symbol}${formatCurrency(calculatedItemTotal?.toFixed(2))}`}
+        className="invoice-item-row-element"
+        disabled
+      />
+    </div>
   </>
 
   const invoiceItemsRender = invoiceItems?.map((item, index) => {
     return <div
       key={index}
-      className="invoice-item-row with-values"
+      className={`invoice-item-row with-values ${editItemID === item.itemID ? 'editing' : ''}`}
     >
       {
         editItemID !== item.itemID ?
           <>
-            <h6>{item.name}</h6>
-            <h6>{invoiceCurrency?.symbol}{item.price}</h6>
-            <h6>{item.quantity}</h6>
-            <h6>{item.taxRate}%</h6>
-            <h6>{invoiceCurrency?.symbol}{formatCurrency(item.total?.toFixed(2))}</h6>
+            <div><h6>{item.name}</h6></div>
+            <div><h6>{invoiceCurrency?.symbol}{item.price}</h6></div>
+            <div><h6>{item.quantity}</h6></div>
+            <div><h6>{item.taxRate}%</h6></div>
+            <div><h6>{invoiceCurrency?.symbol}{formatCurrency(item.total?.toFixed(2))}</h6></div>
           </> :
           invoiceItemInputs
       }
@@ -288,9 +302,10 @@ export default function NewInvoicePage() {
   const clearInvoiceItemInputs = () => {
     setItemName("")
     setItemPrice(0)
-    setItemQuantity(0)
+    setItemQuantity(1)
     setItemTaxRate(0)
     setEditItemID(null)
+    firstItemInputRef.current.focus()
   }
 
   const addInvoiceItem = () => {
@@ -499,19 +514,22 @@ export default function NewInvoicePage() {
                   style={{ display: !editItemID ? 'flex' : 'none' }}
                 >
                   {invoiceItemInputs}
-                  <div className="invoice-item-row-element">
-                    <div
-                      className={`plus-container ${itemName.length < 1 ? 'disabled' : ''}`}
-                      onClick={addInvoiceItem}
-                    >
-                      <i className="far fa-plus" />
-                    </div>
+                  <div className="action-item">
+                    <input />
+                    <button onClick={addInvoiceItem} />
                   </div>
-                  <button style={{ display: 'none' }} />
                 </form>
               </>
             }
           />
+          <div className="invoice-table-actions">
+            <small
+              onClick={addInvoiceItem}
+              className={`add-invoice-item ${!itemName.length ? 'inactive' : ''}`}
+            >
+              Add Item<i className="far fa-plus" />
+            </small>
+          </div>
         </div>
         <div className="invoice-contact">
           <h4>Bill To Contact</h4>
