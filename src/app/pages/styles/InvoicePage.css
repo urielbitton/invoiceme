@@ -93,12 +93,12 @@
 
 /* Invoice paper CSS */
 .invoice-page .paper-container {
-  padding: 20px;
+  padding: 20px!important;
   background: #fff;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 830px;
+  width: 830px!important;
   box-shadow: var(--morphShadow);
 }
 .invoice-page .paper-container > header {
@@ -107,11 +107,11 @@
   flex-direction: column;
 }
 .invoice-page .paper-container > header img {
-  width: 50px;
-  height: 50px;
+  width: 50px!important;
+  height: 50px!important;
   object-fit: contain;
 }
-.invoice-page .paper-container > .header-row {
+.invoice-page .paper-container .header-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -123,16 +123,18 @@
 }
 .invoice-page .paper-container > header .left h3 {
   margin: 5px 0;
-  font-size: 22px;
+  font-size: 22px!important;
   color: var(--darkGrayText);
+  margin-top: 0;
 }
 .invoice-page .paper-container > header h5 {
-  font-size: 12px;
+  font-size: 13px!important;
   color: var(--grayText);
   font-weight: 600;
 }
 .invoice-page .paper-container > header h5 span {
   font-weight: 800;
+  font-size: 13px!important;
 }
 .invoice-page .paper-container > header .right {
   display: flex;
@@ -140,14 +142,14 @@
   align-items: flex-end;
 }
 .invoice-page .paper-container > header .right h3 {
-  font-size: 26px;
+  font-size: 26px!important;
   margin-bottom: 5px;
   color: var(--grayText);
 }
 
 .invoice-page .paper-container .billto-section {
   width: 100%;
-  padding: 20px;
+  padding: 20px!important;
   background: var(--bg);
   margin-top: 40px;
   display: flex;
@@ -157,12 +159,12 @@
   flex-wrap: wrap;
 }
 .invoice-page .paper-container .billto-section h4 {
-  font-size: 17px;
+  font-size: 17px!important;
   color: var(--darkGrayText);
   margin-bottom: 10px;
 }
 .invoice-page .paper-container .billto-section h5 {
-  font-size: 13px;
+  font-size: 13px!important;
   color: var(--darkGrayText);
   font-weight: 500;
 }
@@ -176,6 +178,9 @@
 .invoice-page .paper-container .items-section .app-table .headers {
   border-bottom: 2px solid var(--inputBorderColor);
   padding-bottom: 10px;
+}
+.invoice-page .paper-container .items-section .app-table .headers h5 {
+  font-size: 0.83em!important;
 }
 .invoice-page .paper-container .items-section .app-table .rows {
   gap: 0;
@@ -192,7 +197,7 @@
 }
 .invoice-page .paper-container .items-section .invoice-item-row h6 {
   flex-basis: 25%;
-  font-size: 12px;
+  font-size: 12px!important;
   color: var(--darkGrayText);
   font-weight: 600;
 }
@@ -217,7 +222,7 @@
   padding-right: 10px;
 }
 .invoice-page .paper-container .totals-section h6 {
-  font-size: 13px;
+  font-size: 13px!important;
   color: var(--grayText);
   font-weight: 700;
   display: flex;
@@ -230,7 +235,7 @@
   padding-top: 10px;
 }
 .invoice-page .paper-container .totals-section h6.totals {
-  font-size: 16px;
+  font-size: 16px!important;
   color: var(--darkGrayText);
 }
 
@@ -241,12 +246,12 @@
   margin-top: 40px;
 }
 .invoice-page .paper-container .notes-section h4 {
-  font-size: 16px;
+  font-size: 16px!important;
   color: var(--darkGrayText);
   margin-bottom: 10px;
 }
 .invoice-page .paper-container .notes-section p {
-  font-size: 13px;
+  font-size: 13px!important;
   color: #777;
   font-weight: 500;
 }
@@ -260,12 +265,12 @@
   padding-top: 20px;
 }
 .invoice-page .paper-container .foot-notes h6 {
-  font-size: 13px;
+  font-size: 13px!important;
   color: var(--grayText);
   font-weight: 600;
 }
 .invoice-page .paper-container .foot-notes small {
-  font-size: 11px;
+  font-size: 11px!important;
   color: #777;
 }
 .invoice-page .paper-container .foot-notes small a {
@@ -305,8 +310,8 @@
     padding: 0;
   }
   .invoice-page .paper-container .billto-section {
-    padding: 20px 0;
     background-color: var(--bg);
+    print-color-adjust: exact;
   }
   .invoice-page .paper-container .items-section .invoice-item-row .actions,
   .invoice-page .paper-container .items-section .headers h5:last-child {

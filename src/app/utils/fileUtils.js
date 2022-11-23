@@ -1,5 +1,5 @@
 import jsPDF from "jspdf"
-import html2canvas from 'html2canvas'
+import domToPdf from 'dom-to-pdf'
 
 function setLoadingDef(num) {}
 
@@ -160,10 +160,16 @@ export const convertDocToFileObject = (doc, filename) => {
   return file
 }
 
-export const generatePDFFromHTML = (html) => {
-  const doc = new jsPDF('p', 'pt', 'a4')
-  return doc.html(html).then(() => {
-    return doc
+export const generatePDFFromHTML = (htmlElement, filename) => {
+  // const doc = new jsPDF('p', 'pt', 'a4')
+  // return doc.html(html).then(() => {
+  //   return doc
+  // })
+  return domToPdf(
+    htmlElement, 
+    {filename}, 
+    (err, pdf) => {
+      return pdf    
   })
 }
 
@@ -174,11 +180,18 @@ export const generateAndDownloadPDFFromHTML = (html, fileName) => {
   })
 }
 
-export const saveHTMLToPDFAsBlob = (html, filename) => {
-  return generatePDFFromHTML(html)
+export const saveHTMLToPDFAsBlob = (htmlElement, filename) => {
+  return generatePDFFromHTML(htmlElement, filename)
   .then((doc) => {
     const file = convertDocToFileObject(doc.output('blob'), filename)
     return file
   })
   .catch(err => console.log(err))
+}
+
+export const downloadHTMLAsPDF = (htmlElement, filename) => {
+  domToPdf(
+    htmlElement, 
+    {filename}   
+  )
 }

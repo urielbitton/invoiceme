@@ -1,4 +1,4 @@
-import { invoicePaperStyles } from "app/components/invoices/invoicePaperStyles"
+// @ts-nocheck
 import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppTextarea } from "app/components/ui/AppInputs"
 import AppModal from "app/components/ui/AppModal"
@@ -11,11 +11,12 @@ import { useInvoice } from "app/hooks/invoiceHooks"
 import { deleteInvoiceService, sendInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
-import { generateAndDownloadPDFFromHTML } from "app/utils/fileUtils"
+import { generateAndDownloadPDFFromHTML, downloadHTMLAsPDF } from "app/utils/fileUtils"
 import { formatCurrency, formatPhoneNumber, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
 import './styles/InvoicePage.css'
+import { invoicePaperStyles } from "app/components/invoices/invoicePaperStyles"
 
 export default function InvoicePage() {
 
@@ -45,15 +46,19 @@ export default function InvoicePage() {
   const invoiceItemsList = invoiceItems?.map((item, index) => {
     return <div
       className="invoice-item-row"
+      style={index === invoiceItems.length - 1 ? invoicePaperStyles?.invoiceItemRowLast : invoicePaperStyles?.invoiceItemRow}
       key={index}
     >
-      <h6>{(index + 1)}</h6>
-      <h6>{item.name}</h6>
-      <h6>{invoice.currency.symbol}{formatCurrency(item.price.toFixed(2))}</h6>
-      <h6>{item.quantity}</h6>
-      <h6>{item.taxRate}%</h6>
-      <h6>{invoice.currency.symbol}{item.total.toFixed(2)}</h6>
-      <div className="actions">
+      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{(index + 1)}</h6>
+      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.name}</h6>
+      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{invoice.currency.symbol}{formatCurrency(item.price.toFixed(2))}</h6>
+      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.quantity}</h6>
+      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.taxRate}%</h6>
+      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{invoice.currency.symbol}{item.total.toFixed(2)}</h6>
+      <div 
+        className="actions"
+        style={invoicePaperStyles?.invoiceItemRowActions}
+      >
         <IconContainer
           icon="fas fa-pen"
           onClick={() => console.log('edit')}
@@ -82,7 +87,7 @@ export default function InvoicePage() {
         contactEmail,
         emailSubject,
         emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
-        invoicePaperRef.current.innerHTML,
+        document.querySelector('.invoice-page .paper-container'),
         `${invoice.invoiceNumber}.pdf`,
         uploadedFiles,
         myUserID,
@@ -103,6 +108,13 @@ export default function InvoicePage() {
 
   const saveInvoice = () => {
 
+  }
+
+  const downloadAsPDF = () => {
+    downloadHTMLAsPDF(
+      document.querySelector('.invoice-page .paper-container'), 
+      `${invoice.invoiceNumber}.pdf`
+    )
   }
 
   useEffect(() => {
@@ -190,14 +202,13 @@ export default function InvoicePage() {
                     { 
                       label: 'Pdf', 
                       icon: 'fas fa-file-pdf', 
-                      onClick: () => generateAndDownloadPDFFromHTML(invoicePaperRef.current.innerHTML, `${invoice.invoiceNumber}.pdf`) 
+                      // onClick: () => generateAndDownloadPDFFromHTML(invoicePaperRef.current.innerHTML, `${invoice.invoiceNumber}.pdf`) 
+                      onClick: () => downloadAsPDF()
                     },
-                    { label: 'Excel', icon: 'fas fa-file-excel', onClick: () => console.log('Excel') },
-                    { label: 'Word', icon: 'fas fa-file-word', onClick: () => console.log('Word') },
                     { label: 'Image', icon: 'fas fa-image', onClick: () => console.log('Image') },
                   ]}
                   buttonType="white"
-                  dropdownPosition="place-left"
+                  dropdownPosition="place-left-top"
                 />
                 <AppButton
                   label="Print"
@@ -226,42 +237,60 @@ export default function InvoicePage() {
           </div>
           <div
             className="paper-container"
+            style={invoicePaperStyles?.container}
             ref={invoicePaperRef}
           >
-            <header>
-              <img src={myBusiness.logo} alt="Logo" />
-              <div className="header-row">
-                <div className="left">
-                  <h3>{myBusiness.name}</h3>
-                  <h5>Tax Number: {myBusiness.taxNumber}</h5>
-                  <h5>{formatPhoneNumber(myBusiness.phone)}</h5>
-                  <h5>{myBusiness.address}</h5>
-                  <h5>{myBusiness.city}, {myBusiness.region} {myBusiness.postcode}</h5>
+            <header style={invoicePaperStyles?.header}>
+              <img 
+                style={invoicePaperStyles?.headerImg} 
+                src={myBusiness.logo} 
+                alt="Logo" 
+              />
+              <div 
+                className="header-row"
+                style={invoicePaperStyles?.headerRow}
+              >
+                <div 
+                  className="left"
+                  style={invoicePaperStyles?.headerLeft}
+                >
+                  <h3 style={invoicePaperStyles?.headerLeftH3}>{myBusiness.name}</h3>
+                  <h5 style={invoicePaperStyles?.headerH5}>Tax Number: {myBusiness.taxNumber}</h5>
+                  <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(myBusiness.phone)}</h5>
+                  <h5 style={invoicePaperStyles?.headerH5}>{myBusiness.address}</h5>
+                  <h5 style={invoicePaperStyles?.headerH5}>{myBusiness.city}, {myBusiness.region} {myBusiness.postcode}</h5>
                 </div>
-                <div className="right">
-                  <h3>Invoice</h3>
-                  <h5>#{invoice.invoiceNumber}</h5>
-                  <h5>Invoice Date: {convertClassicDate(invoice.dateCreated.toDate())}</h5>
-                  <h5>Date Due: <span>{convertClassicDate(invoice.dateDue.toDate())}</span></h5>
+                <div 
+                  className="right"
+                  style={invoicePaperStyles?.headerRight}
+                >
+                  <h3 style={invoicePaperStyles?.headerRightH3}>Invoice</h3>
+                  <h5 style={invoicePaperStyles?.headerH5}>#{invoice.invoiceNumber}</h5>
+                  <h5 style={invoicePaperStyles?.headerH5}>Invoice Date: {convertClassicDate(invoice.dateCreated.toDate())}</h5>
+                  <h5 style={invoicePaperStyles?.headerH5}>Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(invoice.dateDue.toDate())}</span></h5>
                 </div>
               </div>
             </header>
-            <div className="billto-section">
+            <div 
+              className="billto-section"
+              style={invoicePaperStyles?.billToSection}
+            >
               <div className="side">
-                <h4>Bill To</h4>
-                <h5>{invoice.invoiceTo.name}</h5>
-                <h5>{invoice.invoiceTo.address}</h5>
-                <h5>{invoice.invoiceTo.phone}</h5>
-                <h5>
+                <h4 style={invoicePaperStyles?.billtoSectionH4}>Bill To</h4>
+                <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice.invoiceTo.name}</h5>
+                <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice.invoiceTo.address}</h5>
+                <h5 style={invoicePaperStyles?.billtoSectionH5}>{formatPhoneNumber(invoice.invoiceTo.phone)}</h5>
+                <h5 style={invoicePaperStyles?.billtoSectionH5}>
                   {invoice.invoiceTo.city}, {invoice.invoiceTo.region},&nbsp;
                   ({invoice.invoiceTo.country}) {invoice.invoiceTo.postcode}
                 </h5>
               </div>
-              <div className="side">
-
-              </div>
+              <div className="side" />
             </div>
-            <div className="items-section">
+            <div 
+              className="items-section"
+              style={invoicePaperStyles?.itemsSection}
+            >
               <AppTable
                 headers={[
                   'Item #',
@@ -273,32 +302,55 @@ export default function InvoicePage() {
                   'Actions'
                 ]}
                 rows={invoiceItemsList}
+                tableStyles={{minWidth: '100%'}}
+                headerStyles={invoicePaperStyles?.appTableHeaders}
+                headerItemStyles={invoicePaperStyles?.appTableHeadersH5}
               />
             </div>
-            <div className="totals-section">
-              <h6>
+            <div 
+              className="totals-section"
+              style={invoicePaperStyles?.totalsSection}
+            >
+              <h6 style={invoicePaperStyles?.totalsSectionH6First}>
                 <span>Tax Rate</span>
                 <span>{calculatedTaxRate}%</span>
               </h6>
-              <h6>
+              <h6 style={invoicePaperStyles?.totalsSectionH6}>
                 <span>Subtotal</span>
                 <span>{invoice.currency?.symbol}{formatCurrency(calculatedSubtotal)}</span>
               </h6>
-              <h6 className="totals">
+              <h6 
+                className="totals"
+                style={invoicePaperStyles?.totalsSectionH6Totals}
+              >
                 <span>Total</span>
                 <span>{invoice.currency?.symbol}{formatCurrency(calculatedTotal)}</span>
               </h6>
             </div>
             {
               invoice.notes?.length > 0 &&
-              <div className="notes-section">
-                <h4>Notes</h4>
-                <p>{invoice.notes}</p>
+              <div 
+                className="notes-section"
+                style={invoicePaperStyles?.notesSection}
+              >
+                <h4 style={invoicePaperStyles?.notesSectionH4}>Notes</h4>
+                <p style={invoicePaperStyles?.notesSectionP}>{invoice.notes}</p>
               </div>
             }
-            <div className="foot-notes">
-              <h6>Thank you for your business.</h6>
-              <small>Invoice generated by <a href="https://invoiceme-six.vercel.app">InvoiceMe</a> Inc.</small>
+            <div 
+              className="foot-notes"
+              style={invoicePaperStyles?.footNotes}
+            >
+              <h6 style={invoicePaperStyles?.footNotesH6}>Thank you for your business.</h6>
+              <small style={invoicePaperStyles?.footNotesSmall}>
+                Invoice generated by&nbsp;
+                <a 
+                  href="https://invoiceme-six.vercel.app"
+                  style={invoicePaperStyles?.footNotesLink}
+                >
+                  InvoiceMe
+                </a> 
+              </small>
             </div>
           </div>
         </div>

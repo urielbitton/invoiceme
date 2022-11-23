@@ -99,7 +99,7 @@ export const deleteInvoiceService = (myUserID, invoiceID, setLoading) => {
     }
 }
 
-export const sendInvoiceService = (to, subject, emailHTML, pdfHTML, invoiceFilename, uploadedFiles,
+export const sendInvoiceService = (to, subject, emailHTML, pdfHTMLElement, invoiceFilename, uploadedFiles,
   myUserID, invoiceID, invoiceNumber, setPageLoading) => {
     const confirm = window.confirm("Send invoice to client?")
     if(confirm) {
@@ -108,7 +108,7 @@ export const sendInvoiceService = (to, subject, emailHTML, pdfHTML, invoiceFilen
         to,
         subject,
         emailHTML,
-        pdfHTML,
+        pdfHTMLElement,
         invoiceFilename,
         uploadedFiles.map(file => file.file)
       )

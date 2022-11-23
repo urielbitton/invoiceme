@@ -1,11 +1,13 @@
+const addFontSize = 10
+
 export const invoicePaperStyles = {
   container: {
-    padding: '20px',
+    padding: '40px 50px',
     background: '#fff',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flexStart',
-    width: '830px',
+    width: '100%',
     boxShadow: 'var(--morphShadow)'
   },
   header: {
@@ -14,8 +16,8 @@ export const invoicePaperStyles = {
     flexDirection: 'column',
   },
   headerImg: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     objectFit: 'contain',
   },
   headerRow: {
@@ -30,16 +32,19 @@ export const invoicePaperStyles = {
   },
   headerLeftH3: {
     margin: '5px 0',
-    fontSize: 22,
+    marginTop: 10,
+    fontSize: 22+addFontSize,
     color: 'var(--darkGrayText)',
   },
-  headerLeftH5: {
-    fontSize: 12,
+  headerH5: {
+    fontSize: 13+addFontSize,
     color: 'var(--grayText)',
     fontWeight: 600,
   },
-  headerLeftH5Span: {
+  headerH5Span: {
     fontWeight: 800,
+    fontSize: 13+addFontSize,
+    color: 'var(--grayText)',
   },
   headerRight: {
     display: 'flex',
@@ -47,27 +52,27 @@ export const invoicePaperStyles = {
     alignItems: 'flex-end',
   },
   headerRightH3: {
-    fontSize: 26,
-    marginBottom: 5,
+    fontSize: 26+addFontSize,
+    marginBottom: addFontSize,
     color: 'var(--grayText)',
   },
-  billtoSection: {
+  billToSection: {
     width: '100%',
-    padding: 20,
-    background: 'var(--bg)',
-    marginTop: 40,
+    padding: '30px 20px',
+    backgroundColor: 'var(--bg)',
     display: 'flex',
     alignItems: 'flex-start',
     gap: 30,
     flexWrap: 'wrap',
+    marginTop: 40
   },
   billtoSectionH4: {
-    fontSize: 17,
+    fontSize: 17+addFontSize,
     color: 'var(--darkGrayText)',
     marginBottom: 10,
   },
   billtoSectionH5: {
-    fontSize: 13,
+    fontSize: 13+addFontSize,
     color: 'var(--darkGrayText)',
     fontWeight: 500,
   },
@@ -78,9 +83,12 @@ export const invoicePaperStyles = {
   appTable: {
     minWidth: '100%',
   },
-  appTableHeader: {
+  appTableHeaders: {
     borderBottom: '2px solid var(--inputBorderColor)',
     paddingBottom: 10,
+  },
+  appTableHeadersH5: {
+    fontSize: 13+addFontSize,
   },
   invoiceItemRow: {
     display: 'flex',
@@ -89,9 +97,16 @@ export const invoicePaperStyles = {
     gap: 10,
     borderBottom: '1px solid var(--inputBorderColor)',
   },
+  invoiceItemRowLast: {
+    borderBottom: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '10px 0',
+    gap: 10,
+  },
   invoiceItemRowH6: {
     flexBasis: '25%',
-    fontSize: 12,
+    fontSize: 12+addFontSize,
     color: 'var(--darkGrayText)',
     fontWeight: 600,
   },
@@ -111,8 +126,19 @@ export const invoicePaperStyles = {
     gap: 5,
     paddingRight: 10,
   },
+  totalsSectionH6First: {
+    borderTop: '1px solid var(--inputBorderColor)',
+    fontSize: 13+addFontSize,
+    color: 'var(--grayText)',
+    fontWeight: 700,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: 200,
+    paddingTop: 20
+  },
   totalsSectionH6: {
-    fontSize: 13,
+    fontSize: 13+addFontSize,
     color: 'var(--grayText)',
     fontWeight: 700,
     display: 'flex',
@@ -121,8 +147,13 @@ export const invoicePaperStyles = {
     width: 200,
   },
   totalsSectionH6Totals: {
-    fontSize: 16,
+    fontSize: 16+addFontSize,
     color: 'var(--darkGrayText)',
+    fontWeight: 700,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: 200,
   },
   notesSection: {
     width: '60%',
@@ -131,12 +162,12 @@ export const invoicePaperStyles = {
     marginTop: 40,
   },
   notesSectionH4: {
-    fontSize: 16,
+    fontSize: 16+addFontSize,
     color: 'var(--darkGrayText)',
     marginBottom: 10,
   },
   notesSectionP: {
-    fontSize: 13,
+    fontSize: 13+addFontSize,
     color: '#777',
     fontWeight: 500,
   },
@@ -149,15 +180,16 @@ export const invoicePaperStyles = {
     paddingTop: 20,
   },
   footNotesH6: {
-    fontSize: 13,
+    fontSize: 13+addFontSize,
     color: 'var(--grayText)',
     fontWeight: 600,
   },
   footNotesSmall: {
-    fontSize: 11,
+    fontSize: 11+addFontSize,
     color: '#777',
   },
   footNotesLink: {
+    // fontSize: 11+addFontSize,
     color: 'var(--primary)',
     textDecoration: 'underline',
   }

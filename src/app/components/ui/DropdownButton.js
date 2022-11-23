@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 export default function DropdownButton(props) {
 
   const { items, leftIcon, rightIcon, buttonType, label,
-    showMenu, setShowMenu, className='', dropdownPosition="place-right" } = props
+    showMenu, setShowMenu, className='', dropdownPosition="place-right-bottom" } = props
 
   const itemsList = items.map((item, index) => {
     return (

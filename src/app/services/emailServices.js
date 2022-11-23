@@ -28,8 +28,8 @@ export const sendSgEmail = (to, subject, html, files) => {
     .catch((error) => console.log(error))
 }
 
-export const sendHtmlToEmailAsPDF = (to, subject, emailHtml, pdfHTML, filename, attachments) => {
-  return saveHTMLToPDFAsBlob(pdfHTML, filename)
+export const sendHtmlToEmailAsPDF = (to, subject, emailHtml, pdfHTMLElement, filename, attachments) => {
+  return saveHTMLToPDFAsBlob(pdfHTMLElement, filename)
   .then((file) => {
     return sendSgEmail(
       to,

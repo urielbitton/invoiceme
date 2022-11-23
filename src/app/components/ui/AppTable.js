@@ -3,13 +3,14 @@ import './styles/AppTable.css'
 
 export default function AppTable(props) {
 
-  const { headers, rows, flexBasis="25%" } = props
+  const { headers, rows, flexBasis="25%", 
+    tableStyles=null, headerStyles, headerItemStyles } = props
 
   const headersRender = headers?.map((header, index) => {
     return <h5
       key={index}
       className="header-item"
-      style={{ flexBasis }}
+      style={{ flexBasis, ...headerItemStyles }}
     >
       {header}
     </h5>
@@ -17,8 +18,14 @@ export default function AppTable(props) {
 
   return (
     <div className="app-table-container">
-      <div className="app-table">
-        <div className="headers">
+      <div 
+        className="app-table"
+        style={tableStyles}
+      >
+        <div 
+          className="headers"
+          style={headerStyles}
+        >
           {headersRender}
         </div>
         <div className="rows">
