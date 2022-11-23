@@ -1,5 +1,4 @@
 import { db } from "app/firebase/fire"
-import { updateDB } from "./CrudDB"
 
 export const getUserByID = (userID, setUser) => {
   db.collection('users')

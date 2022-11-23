@@ -1,4 +1,3 @@
-import jsPDF from "jspdf"
 import domToPdf from 'dom-to-pdf'
 
 function setLoadingDef(num) {}
@@ -160,24 +159,21 @@ export const convertDocToFileObject = (doc, filename) => {
   return file
 }
 
-export const generatePDFFromHTML = (htmlElement, filename) => {
-  // const doc = new jsPDF('p', 'pt', 'a4')
-  // return doc.html(html).then(() => {
-  //   return doc
-  // })
+export const domToPDFDownload = (htmlElement, filename, compression='MEDIUM') => {
   return domToPdf(
     htmlElement, 
-    {filename}, 
+    {
+      filename, 
+      compression,
+      excludeClassNames: ['no-print'],
+    }, 
     (err, pdf) => {
       return pdf    
   })
 }
 
-export const generateAndDownloadPDFFromHTML = (html, fileName) => {
-  const doc = new jsPDF('p', 'pt', 'a4');
-  return doc.html(html).then(() => {
-    doc.save(fileName)
-  })
+export const generatePDFFromHTML = (htmlElement, filename) => {
+  return domToPDFDownload(htmlElement, filename, 'SLOW')
 }
 
 export const saveHTMLToPDFAsBlob = (htmlElement, filename) => {
@@ -187,11 +183,4 @@ export const saveHTMLToPDFAsBlob = (htmlElement, filename) => {
     return file
   })
   .catch(err => console.log(err))
-}
-
-export const downloadHTMLAsPDF = (htmlElement, filename) => {
-  domToPdf(
-    htmlElement, 
-    {filename}   
-  )
 }

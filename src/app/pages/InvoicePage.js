@@ -11,7 +11,7 @@ import { useInvoice } from "app/hooks/invoiceHooks"
 import { deleteInvoiceService, sendInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
-import { generateAndDownloadPDFFromHTML, downloadHTMLAsPDF } from "app/utils/fileUtils"
+import { domToPDFDownload } from "app/utils/fileUtils"
 import { formatCurrency, formatPhoneNumber, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
@@ -56,7 +56,7 @@ export default function InvoicePage() {
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.taxRate}%</h6>
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{invoice.currency.symbol}{item.total.toFixed(2)}</h6>
       <div 
-        className="actions"
+        className="actions no-print"
         style={invoicePaperStyles?.invoiceItemRowActions}
       >
         <IconContainer
@@ -111,7 +111,7 @@ export default function InvoicePage() {
   }
 
   const downloadAsPDF = () => {
-    downloadHTMLAsPDF(
+    domToPDFDownload(
       document.querySelector('.invoice-page .paper-container'), 
       `${invoice.invoiceNumber}.pdf`
     )
@@ -200,12 +200,11 @@ export default function InvoicePage() {
                   setShowMenu={setShowDownloadMenu}
                   items={[
                     { 
-                      label: 'Pdf', 
+                      label: 'PDF Download', 
                       icon: 'fas fa-file-pdf', 
-                      // onClick: () => generateAndDownloadPDFFromHTML(invoicePaperRef.current.innerHTML, `${invoice.invoiceNumber}.pdf`) 
                       onClick: () => downloadAsPDF()
                     },
-                    { label: 'Image', icon: 'fas fa-image', onClick: () => console.log('Image') },
+                    { label: 'Image Download', icon: 'fas fa-image', onClick: () => console.log('Image') },
                   ]}
                   buttonType="white"
                   dropdownPosition="place-left-top"
@@ -305,6 +304,7 @@ export default function InvoicePage() {
                 tableStyles={{minWidth: '100%'}}
                 headerStyles={invoicePaperStyles?.appTableHeaders}
                 headerItemStyles={invoicePaperStyles?.appTableHeadersH5}
+                lastHeaderClassName="no-print"
               />
             </div>
             <div 

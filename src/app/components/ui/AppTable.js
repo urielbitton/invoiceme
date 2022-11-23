@@ -4,12 +4,13 @@ import './styles/AppTable.css'
 export default function AppTable(props) {
 
   const { headers, rows, flexBasis="25%", 
-    tableStyles=null, headerStyles, headerItemStyles } = props
+    tableStyles=null, headerStyles, headerItemStyles,
+    lastHeaderClassName } = props
 
   const headersRender = headers?.map((header, index) => {
     return <h5
       key={index}
-      className="header-item"
+      className={`header-item ${index === headers.length-1 ? lastHeaderClassName : ''}`}
       style={{ flexBasis, ...headerItemStyles }}
     >
       {header}

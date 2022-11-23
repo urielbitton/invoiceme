@@ -1,4 +1,4 @@
-const addFontSize = 10
+const addFontSize = 8
 
 export const invoicePaperStyles = {
   container: {
