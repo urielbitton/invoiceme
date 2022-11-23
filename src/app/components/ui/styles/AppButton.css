@@ -39,8 +39,12 @@
   background: #ccc;
 }
 
-.appButton.gradientBtn {
-  background: var(--primaryGradient);
+.appButton.invertedRedBtn {
+  background: none;
+  color: var(--red);
+}
+.appButton.invertedRedBtn:hover {
+  background: var(--lightRed);
 }
 
 .appButton.grayBtn {

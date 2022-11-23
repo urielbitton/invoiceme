@@ -1,7 +1,7 @@
 import { contactsIndex } from "app/algolia"
 import AddContactModal from "app/components/contacts/AddContactModal"
 import AppButton from "app/components/ui/AppButton"
-import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
+import { AppInput, AppSelect, AppSwitch, AppTextarea } from "app/components/ui/AppInputs"
 import AppPagination from "app/components/ui/AppPagination"
 import AppTable from "app/components/ui/AppTable"
 import ContactRow from "app/components/ui/ContactRow"
@@ -10,10 +10,11 @@ import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
 import { useFavoriteContacts } from "app/hooks/contactsHooks"
+import { useInvoice } from "app/hooks/invoiceHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { addContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
-import { createInvoiceService } from "app/services/invoiceServices"
+import { createInvoiceService, deleteInvoiceService, updateInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
 import {
@@ -21,7 +22,7 @@ import {
   validatePhone
 } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import './styles/NewInvoicePage.css'
 
 export default function NewInvoicePage() {
@@ -61,28 +62,32 @@ export default function NewInvoicePage() {
   const [addToContacts, setAddToContacts] = useState(true)
   const [loading, setLoading] = useState(false)
   const [contactsLoading, setContactsLoading] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const editMode = searchParams.get('edit') === 'true'
+  const editInvoiceID = searchParams.get('invoiceID')
+  const editInvoice = useInvoice(myUserID, editInvoiceID)
   const favoriteContacts = useFavoriteContacts(myUserID)
   const filters = `ownerID: ${myUserID}`
   const navigate = useNavigate()
   const firstItemInputRef = useRef(null)
-  const calculatedSubtotal = invoiceItems.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
-  const calculatedTotal = invoiceItems.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
+  const calculatedSubtotal = invoiceItems?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
+  const calculatedTotal = invoiceItems?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedItemTotal = calculatePriceTotal(itemPrice, itemTaxRate / 100, itemQuantity)
 
-  const allowAddContact = contactName.length > 0 &&
+  const allowAddContact = contactName?.length > 0 &&
     validateEmail(contactEmail) &&
     validatePhone(contactPhone) &&
-    contactAddress.length > 0 &&
-    contactCity.length > 0 &&
-    contactRegion.length > 0 &&
-    contactCountry.length > 0 &&
-    contactPostcode.length > 0
+    contactAddress?.length > 0 &&
+    contactCity?.length > 0 &&
+    contactRegion?.length > 0 &&
+    contactCountry?.length > 0 &&
+    contactPostcode?.length > 0
 
-  const allowCreateInvoice = invoiceName.length > 0 &&
-    invoiceNumber.length > 0 &&
-    invoiceDueDate.length > 0 &&
+  const allowCreateInvoice = invoiceName?.length > 0 &&
+    invoiceNumber?.length > 0 &&
+    invoiceDueDate?.length > 0 &&
     invoiceCurrency &&
-    invoiceItems.length > 0 &&
+    invoiceItems?.length > 0 &&
     invoiceContact
 
   const contacts = useInstantSearch(
@@ -142,7 +147,7 @@ export default function NewInvoicePage() {
     </div>
     <div>
       <input
-        value={`${invoiceCurrency.symbol}${formatCurrency(calculatedItemTotal?.toFixed(2))}`}
+        value={`${invoiceCurrency?.symbol}${formatCurrency(calculatedItemTotal?.toFixed(2))}`}
         className="invoice-item-row-element"
         disabled
       />
@@ -400,6 +405,35 @@ export default function NewInvoicePage() {
       })
   }
 
+  const updateInvoice = () => {
+    if (!allowCreateInvoice) return alert("Please fill out all required fields.")
+    const updatedProps = {
+      title: invoiceName,
+      invoiceNumber,
+      dateDue: new Date(invoiceDueDate),
+      currency: invoiceCurrency,
+      invoiceTo: invoiceContact,
+      items: invoiceItems,
+      notes: invoiceNotes,
+      taxRate1,
+      taxRate2,
+      subtotal: calculatedSubtotal,
+      total: calculatedTotal,
+      status,
+    }
+    updateInvoiceService(myUserID, editInvoiceID, updatedProps, setPageLoading)
+    .then(() => {
+      navigate(`/invoices/${editInvoiceID}`)
+    })
+  }
+
+  const deleteInvoice = () => {
+    deleteInvoiceService(myUserID, editInvoiceID, setLoading)
+    .then(() => {
+      navigate('/invoices')
+    })
+  }
+
   useEffect(() => {
     setNavItemInfo(navItemInfoRender)
     return () => setNavItemInfo(null)
@@ -408,6 +442,21 @@ export default function NewInvoicePage() {
   useEffect(() => {
     setItemTaxRate(taxRate1 + taxRate2)
   }, [taxRate1, taxRate2])
+
+  useEffect(() => {
+    if (editMode) {
+      setInvoiceName(editInvoice?.title)
+      setInvoiceCurrency(editInvoice?.currency)
+      setInvoiceDueDate(convertDateToInputFormat(editInvoice?.dateDue?.toDate()))
+      setInvoiceNumber(editInvoice?.invoiceNumber)
+      setStatus(editInvoice?.status)
+      setInvoiceContact(editInvoice?.invoiceTo)
+      setInvoiceItems(editInvoice?.items)
+      setInvoiceNotes(editInvoice?.notes)
+      setTaxRate1(editInvoice?.taxRate1)
+      setTaxRate2(editInvoice?.taxRate2)
+    }
+  }, [editMode, editInvoice])
 
   return (
     <div className="new-invoice-page">
@@ -603,11 +652,31 @@ export default function NewInvoicePage() {
         </div>
       </div>
       <div className="btn-group">
-        <AppButton
-          label="Create Invoice"
-          onClick={createInvoice}
-          disabled={!allowCreateInvoice}
-        />
+        {
+          !editMode ?
+            <AppButton
+              label="Create Invoice"
+              onClick={createInvoice}
+              disabled={!allowCreateInvoice}
+            /> :
+            <>
+            <AppButton
+              label="Save Changes"
+              onClick={updateInvoice}
+              disabled={!allowCreateInvoice}
+            />
+            <AppButton
+              label="Delete Invoice"
+              onClick={deleteInvoice}
+              buttonType="invertedRedBtn"
+            />
+            <AppButton
+              label="Cancel"
+              onClick={() => navigate(-1)}
+              buttonType="invertedBtn"
+            />
+            </>
+        }
       </div>
       <AddContactModal
         showModal={showContactModal}

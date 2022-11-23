@@ -1,7 +1,5 @@
-// @ts-nocheck
 import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppTextarea } from "app/components/ui/AppInputs"
-import AppModal from "app/components/ui/AppModal"
 import AppTable from "app/components/ui/AppTable"
 import DropdownButton from "app/components/ui/DropdownButton"
 import FileUploader from "app/components/ui/FileUploader"
@@ -28,7 +26,6 @@ export default function InvoicePage() {
   const [emailMessage, setEmailMessage] = useState('')
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [invoiceItems, setInvoiceItems] = useState([])
-  const [showEditModal, setShowEditModal] = useState(false)
   const maxFileSize = 1024 * 1024 * 5
   const invoiceID = useParams().invoiceID
   const invoice = useInvoice(myUserID, invoiceID)
@@ -238,7 +235,7 @@ export default function InvoicePage() {
               <AppButton
                 label="Edit Invoice"
                 leftIcon="fas fa-pen"
-                onClick={() => setShowEditModal(true)}
+                onClick={() => navigate(`/invoices/new?invoiceID=${invoiceID}&edit=true`)}
                 buttonType="invertedBtn"
                 className="edit-invoice-btn"
               />
@@ -373,13 +370,6 @@ export default function InvoicePage() {
             </div>
           </div>
         </div>
-        <AppModal
-          showModal={showEditModal}
-          setShowModal={setShowEditModal}
-          label="Edit Invoice"
-        >
-
-        </AppModal>
       </div> :
       null
   )

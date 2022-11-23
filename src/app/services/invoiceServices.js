@@ -65,7 +65,7 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, in
 
 export const updateInvoiceService = (myUserID, invoiceID, updatedProps, setLoading) => {
   setLoading(true)
-  updateDB(`users/${myUserID}/invoices`, invoiceID, updatedProps)
+  return updateDB(`users/${myUserID}/invoices`, invoiceID, updatedProps)
   .then(() => {
     setLoading(false)
   })

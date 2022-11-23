@@ -43,7 +43,7 @@ export default function InvoiceRow(props) {
             dimensions="23px"
             inverted
             iconSize="13px"
-            onClick={() => navigate(`/invoices/${invoiceID}?edit=true`)}
+            onClick={() => navigate(`/invoices/new?invoiceID=${invoiceID}&edit=true`)}
           />
           <IconContainer
             icon="fas fa-trash"

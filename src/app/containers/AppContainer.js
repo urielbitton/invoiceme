@@ -5,17 +5,19 @@ import PageLoader from "app/components/ui/PageLoader"
 import RoutesContainer from "./RoutesContainer"
 import Sidebar from "app/components/layout/Sidebar"
 import Navbar from "app/components/layout/Navbar"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 
 export default function AppContainer() {
 
   const { darkMode, pageLoading } = useContext(StoreContext)
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
     document.body.onkeyup = function(e) {
       if (e.ctrlKey && e.key === 'i') {
+        setSearchParams({})
         navigate('/invoices/new')
       } 
     }
