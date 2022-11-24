@@ -107,8 +107,25 @@ export const extractMonthNameAndYear = (date, shortName) => {
   return `${date.toLocaleString('en-CA', { month: shortName })} ${date.getFullYear()}`
 }
 
-export const monthNames = ['','Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+export const monthNames = [
+  'January', 'February', 'March', 'April', 'May', 'June', 'July',
+  'August', 'September', 'October', 'November', 'December'
+]
 
+export const shortAndLongMonthNames = [
+  { shortName: 'Jan', longName: 'January' },
+  { shortName: 'Feb', longName: 'February' },
+  { shortName: 'Mar', longName: 'March' },
+  { shortName: 'Apr', longName: 'April' },
+  { shortName: 'May', longName: 'May' },
+  { shortName: 'Jun', longName: 'June' },
+  { shortName: 'Jul', longName: 'July' },
+  { shortName: 'Aug', longName: 'August' },
+  { shortName: 'Sep', longName: 'September' },
+  { shortName: 'Oct', longName: 'October' },
+  { shortName: 'Nov', longName: 'November' },
+  { shortName: 'Dec', longName: 'December' }
+]
 
 export const msToTime = (ms) => {
     let seconds = Math.floor((ms / 1000) % 60),
@@ -181,6 +198,46 @@ export const getLastDayOfMonthAsDate = (date) => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0)
 }
 
+export const getFirstDayOfYearAsDate = (date) => {
+  return new Date(date.getFullYear(), 0, 1)
+}
+
+export const getLastDayOfYearAsDate = (date) => {
+  return new Date(date.getFullYear(), 11, 31)
+}
+
 export const monthNameToDate = (monthName) => {
   return new Date(`${monthName} 01, ${new Date().getFullYear()}`)
+}
+
+export const datesAreInSameMonth = (date1, date2) => {
+  return date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear()
+}
+
+export const dateToMonthName = (date) => {
+  return date.toLocaleString('en-CA', { month: 'long' })
+}
+
+export const splitDocsIntoMonths = (docs, dateKey) => {
+  const months = {}
+  docs && docs.forEach(doc => {
+    const docDate = new Date(doc[dateKey]?.toDate())
+    monthNames.forEach(monthName => {
+      const monthDate = monthNameToDate(monthName)
+      if(datesAreInSameMonth(docDate, monthDate)) {
+        if(months[monthName]) {
+          months[monthName].push(doc)
+        }
+        else {
+          months[monthName] = [doc]
+        }
+      }
+    })
+  })
+  monthNames.forEach(monthName => {
+    if(!months[monthName]) {
+      months[monthName] = []
+    }
+  })
+  return months
 }

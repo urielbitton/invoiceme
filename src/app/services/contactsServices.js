@@ -1,5 +1,5 @@
 import { db } from "app/firebase/fire"
-import { getRandomDocID, setDB } from "./CrudDB"
+import { firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
 
 export const getFavoriteContactsByUserID = (userID, setContacts) => {
   db.collection('users')
@@ -37,6 +37,9 @@ export const addContactService = (userID, contactName, contactEmail, contactPhon
     if(addToContacts) {
       setDB(contactsPath, docID, contactData)
         .then(() => {
+          updateDB('users', userID, {
+            contactsNum: firebaseIncrement(1)
+          })
           setInvoiceContact(contactData)
           clearContactInfo()
           setLoading(false)

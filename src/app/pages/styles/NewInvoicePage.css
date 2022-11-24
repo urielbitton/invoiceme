@@ -52,7 +52,7 @@
   font-weight: 500;
   color: var(--darkGrayText);
 }
-.new-invoice-page .page-content > form .tax-rates {
+.new-invoice-page .page-content > form .split-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 20px;

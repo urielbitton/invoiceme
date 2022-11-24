@@ -64,6 +64,7 @@ export default function InvoicesPage() {
           { value: 'client', label: 'Client Name' },
           { value: 'amount', label: 'Invoice Total' },
         ]}
+        rightComponent={query.length > 0 && <i className="fas fa-file-search search-mode-icon"/>}
         searchValue={searchString}
         searchOnChange={(e) => handleOnChange(e)}
         handleOnKeyPress={(e) => executeSearch(e)}
@@ -71,12 +72,15 @@ export default function InvoicesPage() {
       <div className="invoices-content">
         <InvoicesList
           query={query}
+          setQuery={setQuery}
           searchResults={searchResults}
           setSearchResults={setSearchResults}
           filters={filters}
           setNumOfHits={setNumOfHits}
+          numOfPages={numOfPages}
           setNumOfPages={setNumOfPages}
           pageNum={pageNum}
+          setPageNum={setPageNum}
           hitsPerPage={hitsPerPage}
           showAll={showAll}
           dbInvoices={dbInvoices}

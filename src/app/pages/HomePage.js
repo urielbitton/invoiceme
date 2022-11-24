@@ -2,10 +2,10 @@ import { AppAreaChart } from "app/components/ui/AppChart"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
-import { monthlyRevenue } from "app/data/statsData"
-import { useMonthlyRevenue } from "app/hooks/statsHooks"
+import { useMonthlyRevenue, useYearlyRevenueByMonth } from "app/hooks/statsHooks"
 import { StoreContext } from "app/store/store"
-import { monthNameToDate } from "app/utils/dateUtils"
+import { dateToMonthName, shortAndLongMonthNames, 
+  splitDocsIntoMonths } from "app/utils/dateUtils"
 import { displayGreeting, formatCurrency } from "app/utils/generalUtils"
 import React, { useContext, useEffect } from 'react'
 import './styles/Homepage.css'
@@ -14,24 +14,8 @@ export default function HomePage() {
 
   const { setCompactNav, myUser } = useContext(StoreContext)
   const thisMonthRevenue = useMonthlyRevenue(new Date())
-  const janRevenue = useMonthlyRevenue(monthNameToDate('January'))
-  const febRevenue = useMonthlyRevenue(monthNameToDate('February'))
-  const marRevenue = useMonthlyRevenue(monthNameToDate('March'))
-  const aprRevenue = useMonthlyRevenue(monthNameToDate('April'))
-  const mayRevenue = useMonthlyRevenue(monthNameToDate('May'))
-  const junRevenue = useMonthlyRevenue(monthNameToDate('June'))
-  const julRevenue = useMonthlyRevenue(monthNameToDate('July'))
-  const augRevenue = useMonthlyRevenue(monthNameToDate('August'))
-  const sepRevenue = useMonthlyRevenue(monthNameToDate('September'))
-  const octRevenue = useMonthlyRevenue(monthNameToDate('October'))
-  const novRevenue = useMonthlyRevenue(monthNameToDate('November'))
-  const decRevenue = useMonthlyRevenue(monthNameToDate('December'))
-
-  const revenuesArr = [
-    janRevenue, febRevenue, marRevenue, aprRevenue, 
-    mayRevenue, junRevenue, julRevenue, augRevenue, 
-    sepRevenue, octRevenue, novRevenue, decRevenue
-  ]
+  const yearlyRevenue = useYearlyRevenueByMonth(new Date())
+  const monthlyDocs = splitDocsIntoMonths(yearlyRevenue, 'dateCreated')
 
   const dashboxArray = [
     { 
@@ -43,20 +27,20 @@ export default function HomePage() {
     { 
       name: 'Invoices', 
       icon: 'fal fa-file-invoice-dollar', 
-      value: 100, 
-      thisMonth: 30 
+      value: myUser?.invoicesNum, 
+      thisMonth: monthlyDocs[dateToMonthName(new Date())]?.length
     },
     { 
       name: 'Estimates', 
       icon: 'fal fa-file-invoice', 
-      value: 60, 
-      thisMonth: 12 
+      value: myUser?.estimatesNum, 
+      thisMonth: 0 
     },
     { 
       name: 'Contacts', 
       icon: 'fal fa-users', 
-      value: 250, 
-      thisMonth: 24 
+      value: myUser?.contactsNum, 
+      thisMonth: 0
     }
   ]
 
@@ -96,15 +80,17 @@ export default function HomePage() {
         </div>
         <div className="dashboard-section full-width">
           <AppAreaChart
-            title="Monthly Revenue"
-            data={monthlyRevenue.map((month,i) => ({...month, revenue: revenuesArr[i]}))}
+            title="Revenue By Months"
+            data={shortAndLongMonthNames.map((month,i) => 
+              ({...month, revenue: monthlyDocs[month.longName]?.reduce((acc, doc) => acc + (doc.isPaid ? doc?.total : 0) || 0, 0)})
+            )}
             areas={[
               { dataKey: 'revenue', stroke: 'var(--primary)', fill: 'var(--lightPrimary)' }
             ]}
-            xAxisDataKey="month"
+            xAxisDataKey="shortName"
             xAxisStyles={{fontSize: '13px'}}
             yAxisStyles={{fontSize: '13px'}}
-            tooltipLabelFormat={(name, value) => value[0]?.payload?.monthName}
+            tooltipLabelFormat={(name, value) => value[0]?.payload?.longName}
             tooltipFormat={(name) => `$${formatCurrency(name)}`}
           />
         </div>

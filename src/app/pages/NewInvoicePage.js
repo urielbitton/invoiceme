@@ -14,10 +14,11 @@ import { useInvoice } from "app/hooks/invoiceHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { addContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
-import { createInvoiceService, deleteInvoiceService, 
-  updateInvoiceService } from "app/services/invoiceServices"
+import { createInvoiceService, deleteInvoiceService,
+  updateInvoiceService
+} from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
-import { convertDateToInputFormat } from "app/utils/dateUtils"
+import { convertDateToInputFormat, dateToMonthName } from "app/utils/dateUtils"
 import { calculatePriceTotal, formatCurrency, validateEmail,
   validatePhone
 } from "app/utils/generalUtils"
@@ -30,6 +31,7 @@ export default function NewInvoicePage() {
   const { myUserID, myUser, setNavItemInfo, setPageLoading } = useContext(StoreContext)
   const [invoiceName, setInvoiceName] = useState("")
   const [invoiceNumber, setInvoiceNumber] = useState("")
+  const [invoiceDate, setInvoiceDate] = useState(convertDateToInputFormat(new Date()))
   const [invoiceDueDate, setInvoiceDueDate] = useState(convertDateToInputFormat(new Date()))
   const [invoiceCurrency, setInvoiceCurrency] = useState(currencies[0])
   const [taxRate1, setTaxRate1] = useState(null)
@@ -114,9 +116,10 @@ export default function NewInvoicePage() {
   const invoiceItemInputs = <>
     <div>
       <input
-        value={itemName}
+        type="text"
         placeholder="Web Consulting"
         onChange={(e) => setItemName(e.target.value)}
+        value={itemName}
         className="invoice-item-row-element"
         ref={firstItemInputRef}
       />
@@ -391,7 +394,7 @@ export default function NewInvoicePage() {
     if (!allowCreateInvoice) return alert("Please fill out all required fields.")
     setPageLoading(false)
     createInvoiceService(
-      myUserID, invoiceCurrency, invoiceDueDate, invoiceNumber, invoiceContact,
+      myUserID, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, invoiceContact,
       invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal,
       calculatedTotal, invoiceName, status
     )
@@ -407,20 +410,22 @@ export default function NewInvoicePage() {
 
   const updateInvoice = () => {
     if (!allowCreateInvoice) return alert("Please fill out all required fields.")
-    const newTotalRevenue = status === 'paid' ? 
+    const newTotalRevenue = status === 'paid' ?
       !editInvoice?.partOfTotal ?
         myUser?.totalRevenue + calculatedTotal :
         myUser?.totalRevenue :
-        editInvoice?.partOfTotal ?
-          myUser?.totalRevenue - editInvoice?.total :
-          myUser?.totalRevenue
+      editInvoice?.partOfTotal ?
+        myUser?.totalRevenue - editInvoice?.total :
+        myUser?.totalRevenue
     const updatedProps = {
       title: invoiceName,
       invoiceNumber,
+      dateCreated: new Date(invoiceDate),
       dateDue: new Date(invoiceDueDate),
       currency: invoiceCurrency,
       invoiceTo: invoiceContact,
       items: invoiceItems,
+      monthLabel: dateToMonthName(new Date(invoiceDate)),
       notes: invoiceNotes,
       taxRate1,
       taxRate2,
@@ -431,22 +436,22 @@ export default function NewInvoicePage() {
       partOfTotal: status === 'paid',
     }
     updateInvoiceService(
-      myUserID, 
-      editInvoiceID, 
-      updatedProps, 
-      newTotalRevenue, 
+      myUserID,
+      editInvoiceID,
+      updatedProps,
+      newTotalRevenue,
       setPageLoading
     )
-    .then(() => {
-      navigate(`/invoices/${editInvoiceID}`)
-    })
+      .then(() => {
+        navigate(`/invoices/${editInvoiceID}`)
+      })
   }
 
   const deleteInvoice = () => {
     deleteInvoiceService(myUserID, editInvoiceID, editInvoice?.isPaid, editInvoice?.total, setLoading)
-    .then(() => {
-      navigate('/invoices')
-    })
+      .then(() => {
+        navigate('/invoices')
+      })
   }
 
   useEffect(() => {
@@ -462,6 +467,7 @@ export default function NewInvoicePage() {
     if (editMode) {
       setInvoiceName(editInvoice?.title)
       setInvoiceCurrency(editInvoice?.currency)
+      setInvoiceDate(convertDateToInputFormat(editInvoice?.dateCreated?.toDate()))
       setInvoiceDueDate(convertDateToInputFormat(editInvoice?.dateDue?.toDate()))
       setInvoiceNumber(editInvoice?.invoiceNumber)
       setStatus(editInvoice?.status)
@@ -500,20 +506,29 @@ export default function NewInvoicePage() {
             }
             className="icon-input"
           />
-          <AppInput
-            label="Due Date"
-            type="date"
-            value={invoiceDueDate}
-            onChange={(e) => setInvoiceDueDate(e.target.value)}
-            className="date-input"
-          />
+          <div className="split-row">
+            <AppInput
+              label="Invoice Date"
+              type="date"
+              value={invoiceDate}
+              onChange={(e) => setInvoiceDate(e.target.value)}
+              className="date-input"
+            />
+            <AppInput
+              label="Due Date"
+              type="date"
+              value={invoiceDueDate}
+              onChange={(e) => setInvoiceDueDate(e.target.value)}
+              className="date-input"
+            />
+          </div>
           <AppSelect
             label="Currency"
             options={currencies}
             value={invoiceCurrency}
             onChange={(e) => setInvoiceCurrency(currencies.find(currency => currency.value === e.target.value))}
           />
-          <div className="tax-rates">
+          <div className="split-row">
             <AppInput
               label="Tax Rate 1"
               placeholder="5"
@@ -675,21 +690,21 @@ export default function NewInvoicePage() {
               disabled={!allowCreateInvoice}
             /> :
             <>
-            <AppButton
-              label="Save Changes"
-              onClick={updateInvoice}
-              disabled={!allowCreateInvoice}
-            />
-            <AppButton
-              label="Delete Invoice"
-              onClick={deleteInvoice}
-              buttonType="invertedRedBtn"
-            />
-            <AppButton
-              label="Cancel"
-              onClick={() => navigate(-1)}
-              buttonType="invertedBtn"
-            />
+              <AppButton
+                label="Save Changes"
+                onClick={updateInvoice}
+                disabled={!allowCreateInvoice}
+              />
+              <AppButton
+                label="Delete Invoice"
+                onClick={deleteInvoice}
+                buttonType="invertedRedBtn"
+              />
+              <AppButton
+                label="Cancel"
+                onClick={() => navigate(-1)}
+                buttonType="invertedBtn"
+              />
             </>
         }
       </div>

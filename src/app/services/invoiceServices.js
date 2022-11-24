@@ -1,4 +1,5 @@
 import { db } from "app/firebase/fire"
+import { dateToMonthName } from "app/utils/dateUtils"
 import { deleteDB, firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
 import { sendHtmlToEmailAsPDF } from "./emailServices"
 import { createNotification } from "./notifServices"
@@ -24,13 +25,14 @@ export const getInvoiceByID = (userID, invoiceID, setInvoice) => {
     })
 }
 
-export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, invoiceNumber, invoiceContact,
-  invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, invoiceName, status) => {
+export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, 
+  invoiceContact, invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, 
+  invoiceName, status) => {
   const path = `users/${userID}/invoices`
   const docID = getRandomDocID(path)
   const invoiceData = {
     currency: invoiceCurrency,
-    dateCreated: new Date(),
+    dateCreated: new Date(invoiceDate),
     dateDue: new Date(invoiceDueDate),
     invoiceID: docID,
     invoiceNumber: `INV-${invoiceNumber}`,
@@ -39,6 +41,7 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, in
     isPaid: status === 'paid',
     isSent: false,
     items: invoiceItems,
+    monthLabel: dateToMonthName(new Date(invoiceDate)),
     notes: invoiceNotes,
     status,
     taxRate1,

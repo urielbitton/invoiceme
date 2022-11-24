@@ -2,7 +2,7 @@ import { firebaseIncrement, updateDB } from "app/services/CrudDB"
 import { deleteInvoiceService, updateInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
-import { formatCurrency } from "app/utils/generalUtils"
+import { formatCurrency, truncateText } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
 import AppItemRow from "../ui/AppItemRow"
@@ -36,9 +36,9 @@ export default function InvoiceRow(props) {
 
   return (
     <AppItemRow
-      item1={`#${invoiceNumber < 100 ? '0' + invoiceNumber : invoiceNumber}`}
-      item2={title}
-      item3={invoiceTo.name}
+      item1={`#${truncateText(invoiceNumber,14)}`}
+      item2={truncateText(title, 16)}
+      item3={truncateText(invoiceTo.name, 16)}
       item4={items.length}
       item5={`${currency?.symbol}${formatCurrency(total)}`}
       item6={convertClassicDate(convertAlgoliaDate(dateCreated))}

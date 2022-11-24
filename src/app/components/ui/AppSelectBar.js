@@ -5,7 +5,7 @@ import { AppInput, AppSelect } from "./AppInputs"
 export default function AppSelectBar(props) {
 
   const { labelText1, selectOptions, searchValue, searchOnChange,
-    handleOnKeyPress } = props
+    handleOnKeyPress, rightComponent } = props
 
   return (
     <div className="app-select-bar">
@@ -35,6 +35,7 @@ export default function AppSelectBar(props) {
           className="commonInput"
         />
       </div>
+      { rightComponent }
     </div>
   )
 }
