@@ -152,8 +152,7 @@ export const getNameDayOfTheWeekFromDate = (date) => {
   return date.toLocaleString('en-CA', { weekday: 'long' })
 }
 
-// accept a start and end date and return an array of dates between them
-export const getDatesBetween = (startDate, endDate) => {
+export const getDatesBetweenInclusive = (startDate, endDate) => {
   const dates = []
   const theDate = new Date(startDate)
   while (theDate < endDate) {
@@ -164,7 +163,6 @@ export const getDatesBetween = (startDate, endDate) => {
   return dates
 }
 
-//return dates between two dates without the last date
 export const getDatesBetweenExclusive = (startDate, endDate) => {
   const dates = []
   const theDate = new Date(startDate)
@@ -175,40 +173,14 @@ export const getDatesBetweenExclusive = (startDate, endDate) => {
   return dates
 }
 
-export const isTimeString1BeforeTimeString2 = (time1, time2) => {
-  const [hours1, minutes1] = time1?.split(':')
-  const [hours2, minutes2] = time2?.split(':')
-  if(hours1 < hours2)
-    return true
-  else if(hours1 === hours2 && minutes1 <= minutes2)
-    return true
-  else
-    return false
+export const getFirstDayOfMonthAsDate = (date) => {
+  return new Date(date.getFullYear(), date.getMonth(), 1)
 }
 
-export const areBothDatesOnSameDay = (date1, date2) => {
-  return date1?.toDateString() === date2?.toDateString()
+export const getLastDayOfMonthAsDate = (date) => {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0)
 }
 
-export const returnLatestDate = (date1, date2) => {
-  return date1 > date2 ? date1 : date2
+export const monthNameToDate = (monthName) => {
+  return new Date(`${monthName} 01, ${new Date().getFullYear()}`)
 }
-
-export const detectNumOfHoursDaysOrWeeks = (date1, date2) => {
-  const diff = Math.abs(date1 - date2)
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-  const weeks = Math.floor(days / 7)
-  const hours = Math.floor(diff / (1000 * 60 * 60))
-  const minutes = Math.floor(diff / (1000 * 60))
-  if(weeks > 0)
-    return {string: `${weeks} week${weeks !== 1 ? 's' : ''}`, number: weeks}
-  else if(days > 0)
-    return {string: `${days} day${days !== 1 ? 's' : ''} ${hours-24 > 0 ? `, ${hours-24} hour${hours-24 !== 1 ? 's' : ''}` : ''}`, number: days}
-  else if(hours >= 1)
-    return {string: `${hours} hour${hours !== 1 ? 's' : ''}`, number: hours}
-  else
-    return {string: `${minutes} minutes`, number: minutes}
-  
-}
-
-//

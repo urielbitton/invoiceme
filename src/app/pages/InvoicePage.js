@@ -4,7 +4,6 @@ import AppTable from "app/components/ui/AppTable"
 import DropdownButton from "app/components/ui/DropdownButton"
 import FileUploader from "app/components/ui/FileUploader"
 import HelmetTitle from "app/components/ui/HelmetTitle"
-import IconContainer from "app/components/ui/IconContainer"
 import { useInvoice } from "app/hooks/invoiceHooks"
 import { deleteInvoiceService, sendInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
@@ -61,27 +60,6 @@ export default function InvoicePage() {
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.quantity}</h6>
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.taxRate}%</h6>
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{invoice.currency.symbol}{item.total.toFixed(2)}</h6>
-      <div 
-        className="actions no-print"
-        style={invoicePaperStyles?.invoiceItemRowActions}
-      >
-        <IconContainer
-          icon="fas fa-pen"
-          onClick={() => console.log('edit')}
-          bgColor="transparent"
-          iconColor="var(--grayText)"
-          iconSize="13px"
-          dimensions="20px"
-        />
-        <IconContainer
-          icon="fas fa-trash"
-          onClick={() => console.log('delete')}
-          bgColor="transparent"
-          iconColor="var(--grayText)"
-          iconSize="13px"
-          dimensions="20px"
-        />
-      </div>
     </div>
   })
 
@@ -105,7 +83,7 @@ export default function InvoicePage() {
   }
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, invoiceID, setPageLoading)
+    deleteInvoiceService(myUserID, invoiceID, invoice?.isPaid, invoice?.total, setPageLoading)
   }
 
   const saveInvoice = () => {
@@ -144,13 +122,14 @@ export default function InvoicePage() {
       >
         <i className="fal fa-arrow-left" />Back
       </small>,
-      sublabel: <div className="meta-data">
-        <h6>Invoice Name: <span>{invoice?.title}</span></h6>
-        <h6>Status: <span>{invoice?.status}</span></h6>
-        <h6>Sent: <span>{invoice?.isSent ? 'Yes' : 'No'}</span></h6>
-        <h6>Paid: <span>{invoice?.isPaid ? 'Yes' : 'No'}</span></h6>
+      sublabel: <div className="meta-data column">
+        <h6>Invoice Name <span>{invoice?.title}</span></h6>
+        <h6>Status <span>{invoice?.status}</span></h6>
+        <h6>Sent <span>{invoice?.isSent ? 'Yes' : 'No'}</span></h6>
+        <h6>Paid <span>{invoice?.isPaid ? 'Yes' : 'No'}</span></h6>
       </div>
     })
+    return () => setNavItemInfo(null)
   }, [invoice])
 
 
@@ -313,8 +292,7 @@ export default function InvoicePage() {
                   'Price',
                   'Quantity',
                   'Tax Rate',
-                  'Total',
-                  'Actions'
+                  'Total'
                 ]}
                 rows={invoiceItemsList}
                 tableStyles={{minWidth: '100%'}}
@@ -340,7 +318,7 @@ export default function InvoicePage() {
                 style={invoicePaperStyles?.totalsSectionH6Totals}
               >
                 <span>Total</span>
-                <span>{invoice.currency?.symbol}{formatCurrency(calculatedTotal)}</span>
+                <span>{invoice.currency?.symbol}{formatCurrency(calculatedTotal)} {invoice.currency?.value}</span>
               </h6>
             </div>
             {

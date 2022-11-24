@@ -23,6 +23,7 @@ const StoreContextProvider = ({children}) => {
   const [navItem2, setNavItem2] = useState(null)
   const [navItem3, setNavItem3] = useState(null)
   const [navItemInfo, setNavItemInfo] = useState(null)
+  const [compactNav, setCompactNav] = useState(false)
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
@@ -60,6 +61,7 @@ const StoreContextProvider = ({children}) => {
     windowIsFocused,
     navItem1, setNavItem1, navItem2, setNavItem2, navItemInfo, 
     navItem3, setNavItem3, setNavItemInfo,
+    compactNav, setCompactNav
   }}>
     {children}
   </StoreContext.Provider>

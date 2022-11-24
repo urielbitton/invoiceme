@@ -17,7 +17,8 @@
     "react-helmet": "^6.1.0",
     "react-instantsearch-dom": "^6.18.0",
     "react-router-dom": "6.3.0",
-    "react-scripts": "5.0.0"
+    "react-scripts": "5.0.0",
+    "recharts": "^2.1.16"
   },
   "scripts": {
     "start": "react-scripts start",

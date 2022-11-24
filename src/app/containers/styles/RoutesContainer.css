@@ -5,6 +5,6 @@
   padding: 20px;
   padding-bottom: 25px;
 }
-.routes-container.scrolled {
+.routes-container.compact {
   height: calc(100vh - var(--navbarHeightCompact));
 }

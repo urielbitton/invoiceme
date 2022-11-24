@@ -52,7 +52,8 @@ export default function Register() {
       userID: user.uid,
       dateJoined: new Date(),
       memberType: 'basic',
-      myBusiness: null
+      myBusiness: null,
+      totalRevenue: 0,
     })
       .then(() => {
         setDB(`users/${user.uid}/notifications`, 'welcome', {

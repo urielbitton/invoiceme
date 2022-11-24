@@ -1,8 +1,9 @@
+import { firebaseIncrement, updateDB } from "app/services/CrudDB"
 import { deleteInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency } from "app/utils/generalUtils"
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import AppItemRow from "../ui/AppItemRow"
 import IconContainer from "../ui/IconContainer"
@@ -15,7 +16,21 @@ export default function InvoiceRow(props) {
   const navigate = useNavigate()
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, invoiceID, setPageLoading)
+    deleteInvoiceService(myUserID, invoiceID, isPaid, total, setPageLoading)
+  }
+
+  const togglePaid = () => {
+    updateDB(`users/${myUserID}/invoices`, invoiceID, {
+      isPaid: !isPaid 
+    })
+    .then(() => {
+      updateDB('users', myUserID, {
+        totalRevenue: firebaseIncrement(!isPaid ? total : -total)
+      })
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   return (
@@ -27,6 +42,7 @@ export default function InvoiceRow(props) {
       item5={`${currency?.symbol}${formatCurrency(total)}`}
       item6={convertClassicDate(convertAlgoliaDate(dateCreated))}
       item7={isPaid}
+      handleCheckChange={() => togglePaid()}
       actions={
         <>
           <IconContainer

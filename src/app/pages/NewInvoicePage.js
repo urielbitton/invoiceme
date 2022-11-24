@@ -27,7 +27,7 @@ import './styles/NewInvoicePage.css'
 
 export default function NewInvoicePage() {
 
-  const { myUserID, setNavItemInfo, setPageLoading } = useContext(StoreContext)
+  const { myUserID, myUser, setNavItemInfo, setPageLoading } = useContext(StoreContext)
   const [invoiceName, setInvoiceName] = useState("")
   const [invoiceNumber, setInvoiceNumber] = useState("")
   const [invoiceDueDate, setInvoiceDueDate] = useState(convertDateToInputFormat(new Date()))
@@ -393,7 +393,7 @@ export default function NewInvoicePage() {
     createInvoiceService(
       myUserID, invoiceCurrency, invoiceDueDate, invoiceNumber, invoiceContact,
       invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal,
-      calculatedTotal, invoiceName
+      calculatedTotal, invoiceName, status
     )
       .then(() => {
         setPageLoading(false)
@@ -407,6 +407,7 @@ export default function NewInvoicePage() {
 
   const updateInvoice = () => {
     if (!allowCreateInvoice) return alert("Please fill out all required fields.")
+    const newTotalRevenue = (myUser?.totalRevenue - editInvoice?.total) + calculatedTotal
     const updatedProps = {
       title: invoiceName,
       invoiceNumber,
@@ -420,15 +421,16 @@ export default function NewInvoicePage() {
       subtotal: calculatedSubtotal,
       total: calculatedTotal,
       status,
+      isPaid: status === 'paid'
     }
-    updateInvoiceService(myUserID, editInvoiceID, updatedProps, setPageLoading)
+    updateInvoiceService(myUserID, editInvoiceID, updatedProps, newTotalRevenue, setPageLoading)
     .then(() => {
       navigate(`/invoices/${editInvoiceID}`)
     })
   }
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, editInvoiceID, setLoading)
+    deleteInvoiceService(myUserID, editInvoiceID, editInvoice?.isPaid, editInvoice?.total, setLoading)
     .then(() => {
       navigate('/invoices')
     })

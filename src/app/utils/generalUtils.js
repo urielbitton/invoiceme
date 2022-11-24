@@ -128,10 +128,6 @@ export const isNumbersInRange = (number1, number2, range) => {
   return Math.abs(number1 - number2) <= range
 }
 
-export const getMemberNickname = (userID, members) => {
-  return members?.find(member => member.userID === userID)?.nickname
-}
-
 export const toggleFullScreen = () => {
   const elem = document.documentElement
   if (elem.requestFullscreen) {
@@ -186,4 +182,15 @@ export const printElement = (ref) => {
   newWin.document.write(elementToPrint.outerHTML)
   newWin.print()
   newWin.close()
+}
+
+export const displayGreeting = () => {
+  const hour = new Date().getHours()
+  if(hour < 12) {
+    return 'Good morning'
+  } else if(hour < 18) {
+    return 'Good afternoon'
+  } else {
+    return 'Good evening'
+  }
 }

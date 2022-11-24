@@ -18,11 +18,14 @@ import NewPaymentPage from "app/pages/NewPaymentPage"
 import InvoicePage from "app/pages/InvoicePage"
 import NotificationsPage from "app/pages/NotificationsPage"
 import MessagesPage from "app/pages/MessagesPage"
+import { StoreContext } from "app/store/store"
 
 export default function RoutesContainer() {
 
+  const { compactNav } = useContext(StoreContext)
+
   return (
-    <div className="routes-container">
+    <div className={`routes-container ${compactNav ? 'compact' : ''}`}>
       <Routes>
         <Route index element={<HomePage />} />
         <Route path="invoices" element={<InvoicesPage />} />

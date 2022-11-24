@@ -4,7 +4,7 @@ import './styles/AppItemRow.css'
 export default function AppItemRow(props) {
 
   const { item1, item2, item3, item4, item5, item6, item7, actions,
-    onDoubleClick } = props
+    onDoubleClick, handleCheckChange } = props
 
   const itemsArray = [item1, item2, item3, item4, item5, item6, item7]
 
@@ -19,6 +19,7 @@ export default function AppItemRow(props) {
           <input
             type="checkbox"
             checked={item}
+            onChange={handleCheckChange}
           /> :
           <h6>{item}</h6>
         }

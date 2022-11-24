@@ -25,7 +25,7 @@ export const getInvoiceByID = (userID, invoiceID, setInvoice) => {
 }
 
 export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, invoiceNumber, invoiceContact,
-  invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, invoiceName) => {
+  invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, invoiceName, status) => {
   const path = `users/${userID}/invoices`
   const docID = getRandomDocID(path)
   const invoiceData = {
@@ -36,11 +36,11 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, in
     invoiceNumber: `INV-${invoiceNumber}`,
     invoiceOwnerID: userID,
     invoiceTo: invoiceContact,
-    isPaid: false,
+    isPaid: status === 'paid',
     isSent: false,
     items: invoiceItems,
     notes: invoiceNotes,
-    status: 'unpaid',
+    status,
     taxRate1,
     taxRate2,
     subtotal: calculatedSubtotal,
@@ -50,7 +50,8 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, in
   return setDB(path, docID, invoiceData)
     .then(() => {
       updateDB('users', userID, {
-        invoicesNum: firebaseIncrement(1)
+        invoicesNum: firebaseIncrement(1),
+        ...(status === 'paid' && {totalRevenue: firebaseIncrement(calculatedTotal)})
       })
       createNotification(
         userID,
@@ -63,11 +64,14 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDueDate, in
     .catch(err => console.log(err))
 }
 
-export const updateInvoiceService = (myUserID, invoiceID, updatedProps, setLoading) => {
+export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotalRevenue, setLoading) => {
   setLoading(true)
   return updateDB(`users/${myUserID}/invoices`, invoiceID, updatedProps)
   .then(() => {
     setLoading(false)
+    updateDB('users', myUserID, {
+      ...(updatedProps.isPaid && {totalRevenue: newTotalRevenue}) 
+    })
   })
   .catch(err => {
     console.log(err)
@@ -75,14 +79,15 @@ export const updateInvoiceService = (myUserID, invoiceID, updatedProps, setLoadi
   })
 }
 
-export const deleteInvoiceService = (myUserID, invoiceID, setLoading) => {
+export const deleteInvoiceService = (myUserID, invoiceID, isPaid, invoiceTotal, setLoading) => {
   const confirm = window.confirm("Are you sure you want to delete this invoice?")
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/invoices`, invoiceID)
       .then(() => {
         return updateDB('users', myUserID, {
-          invoicesNum: firebaseIncrement(-1) 
+          invoicesNum: firebaseIncrement(-1),
+          ...(isPaid && {totalRevenue: firebaseIncrement(-1)})
         })
         .then(() => {
           setLoading(false)

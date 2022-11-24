@@ -14,7 +14,8 @@ import './styles/Navbar.css'
 
 export default function Navbar() {
 
-  const { myUserID, setPageLoading, myUserImg, myMemberType } = useContext(StoreContext)
+  const { myUserID, setPageLoading, myUserImg, myMemberType,
+    compactNav } = useContext(StoreContext)
   const [showMenu, setShowMenu] = useState(null)
   const unreadNotifications = useUnreadNotifications(myUserID)
   const notifications = useNotifications(myUserID, 5)
@@ -34,7 +35,7 @@ export default function Navbar() {
   }, [showMenu])
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${compactNav ? 'compact-nav' : ''}`}>
       <div className="topbar">
         <div className="left">
           <AppInput
