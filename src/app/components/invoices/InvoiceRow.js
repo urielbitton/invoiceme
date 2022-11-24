@@ -1,16 +1,16 @@
 import { firebaseIncrement, updateDB } from "app/services/CrudDB"
-import { deleteInvoiceService } from "app/services/invoiceServices"
+import { deleteInvoiceService, updateInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency } from "app/utils/generalUtils"
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
 import AppItemRow from "../ui/AppItemRow"
 import IconContainer from "../ui/IconContainer"
 
 export default function InvoiceRow(props) {
 
-  const { myUserID, setPageLoading } = useContext(StoreContext)
+  const { myUserID, setPageLoading, myUser } = useContext(StoreContext)
   const { invoiceID, title, invoiceNumber, total, items, invoiceTo, 
     dateCreated, isPaid, currency } = props.invoice
   const navigate = useNavigate()
@@ -20,17 +20,18 @@ export default function InvoiceRow(props) {
   }
 
   const togglePaid = () => {
-    updateDB(`users/${myUserID}/invoices`, invoiceID, {
-      isPaid: !isPaid 
-    })
-    .then(() => {
-      updateDB('users', myUserID, {
-        totalRevenue: firebaseIncrement(!isPaid ? total : -total)
-      })
-    })
-    .catch(err => {
-      console.log(err)
-    })
+    const newTotalRevenue = myUser?.totalRevenue + (isPaid ? -total : total)
+    updateInvoiceService(
+      myUserID, 
+      invoiceID, 
+      {
+        isPaid: !isPaid,
+        status: !isPaid ? 'paid' : 'unpaid',
+        partOfTotal: !isPaid,
+      }, 
+      newTotalRevenue,
+      setPageLoading
+    )
   }
 
   return (

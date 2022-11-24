@@ -1,7 +1,7 @@
 import { contactsIndex } from "app/algolia"
 import AddContactModal from "app/components/contacts/AddContactModal"
 import AppButton from "app/components/ui/AppButton"
-import { AppInput, AppSelect, AppSwitch, AppTextarea } from "app/components/ui/AppInputs"
+import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import AppPagination from "app/components/ui/AppPagination"
 import AppTable from "app/components/ui/AppTable"
 import ContactRow from "app/components/ui/ContactRow"
@@ -14,11 +14,11 @@ import { useInvoice } from "app/hooks/invoiceHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { addContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
-import { createInvoiceService, deleteInvoiceService, updateInvoiceService } from "app/services/invoiceServices"
+import { createInvoiceService, deleteInvoiceService, 
+  updateInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat } from "app/utils/dateUtils"
-import {
-  calculatePriceTotal, formatCurrency, validateEmail,
+import { calculatePriceTotal, formatCurrency, validateEmail,
   validatePhone
 } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -407,7 +407,13 @@ export default function NewInvoicePage() {
 
   const updateInvoice = () => {
     if (!allowCreateInvoice) return alert("Please fill out all required fields.")
-    const newTotalRevenue = (myUser?.totalRevenue - editInvoice?.total) + calculatedTotal
+    const newTotalRevenue = status === 'paid' ? 
+      !editInvoice?.partOfTotal ?
+        myUser?.totalRevenue + calculatedTotal :
+        myUser?.totalRevenue :
+        editInvoice?.partOfTotal ?
+          myUser?.totalRevenue - editInvoice?.total :
+          myUser?.totalRevenue
     const updatedProps = {
       title: invoiceName,
       invoiceNumber,
@@ -421,9 +427,16 @@ export default function NewInvoicePage() {
       subtotal: calculatedSubtotal,
       total: calculatedTotal,
       status,
-      isPaid: status === 'paid'
+      isPaid: status === 'paid',
+      partOfTotal: status === 'paid',
     }
-    updateInvoiceService(myUserID, editInvoiceID, updatedProps, newTotalRevenue, setPageLoading)
+    updateInvoiceService(
+      myUserID, 
+      editInvoiceID, 
+      updatedProps, 
+      newTotalRevenue, 
+      setPageLoading
+    )
     .then(() => {
       navigate(`/invoices/${editInvoiceID}`)
     })

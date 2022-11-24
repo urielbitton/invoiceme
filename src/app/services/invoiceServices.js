@@ -70,7 +70,7 @@ export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotal
   .then(() => {
     setLoading(false)
     updateDB('users', myUserID, {
-      ...(updatedProps.isPaid && {totalRevenue: newTotalRevenue}) 
+      totalRevenue: newTotalRevenue,
     })
   })
   .catch(err => {

@@ -28,18 +28,9 @@ export default function HomePage() {
   const decRevenue = useMonthlyRevenue(monthNameToDate('December'))
 
   const revenuesArr = [
-    janRevenue,
-    febRevenue,
-    marRevenue,
-    aprRevenue,
-    mayRevenue,
-    junRevenue,
-    julRevenue,
-    augRevenue,
-    sepRevenue,
-    octRevenue,
-    novRevenue,
-    decRevenue
+    janRevenue, febRevenue, marRevenue, aprRevenue, 
+    mayRevenue, junRevenue, julRevenue, augRevenue, 
+    sepRevenue, octRevenue, novRevenue, decRevenue
   ]
 
   const dashboxArray = [
