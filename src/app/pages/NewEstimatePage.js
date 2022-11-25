@@ -14,20 +14,20 @@ import { useEstimate } from "app/hooks/estimateHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { addContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
-import { createEstimateService, deleteEstimateService, updateEstimateService } from "app/services/estimatesServices"
+import { createEstimateService, deleteEstimateService, 
+  updateEstimateService } from "app/services/estimatesServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat, dateToMonthName } from "app/utils/dateUtils"
 import { calculatePriceTotal, formatCurrency, validateEmail,
-  validatePhone
-} from "app/utils/generalUtils"
+  validatePhone } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom"
 import './styles/NewInvoicePage.css'
 
 export default function NewEstimatePage() {
 
-  const { myUserID, myUser, setNavItemInfo, setPageLoading } = useContext(StoreContext)
-  const [estimateName, setInvoiceName] = useState("")
+  const { myUserID, setNavItemInfo, setPageLoading } = useContext(StoreContext)
+  const [estimateName, setEstimateName] = useState("")
   const [estimateNumber, setEstimateNumber] = useState("")
   const [estimateDate, setEstimateDate] = useState(convertDateToInputFormat(new Date()))
   const [estimateDueDate, setEstimateDueDate] = useState(convertDateToInputFormat(new Date()))
@@ -83,7 +83,7 @@ export default function NewEstimatePage() {
     contactCountry?.length > 0 &&
     contactPostcode?.length > 0
 
-  const allowCreateInvoice = estimateName?.length > 0 &&
+  const allowCreateEstimate = estimateName?.length > 0 &&
     estimateNumber?.length > 0 &&
     estimateDueDate?.length > 0 &&
     estimateCurrency &&
@@ -104,7 +104,7 @@ export default function NewEstimatePage() {
     false
   )
 
-  const invoiceItemInputs = <>
+  const estimateItemInputs = <>
     <div>
       <input
         type="text"
@@ -162,7 +162,7 @@ export default function NewEstimatePage() {
             <div><h6>{item.taxRate}%</h6></div>
             <div><h6>{estimateCurrency?.symbol}{formatCurrency(item.total?.toFixed(2))}</h6></div>
           </> :
-          invoiceItemInputs
+          estimateItemInputs
       }
       <div className="item-actions">
         {
@@ -298,7 +298,7 @@ export default function NewEstimatePage() {
     </div>
   }
 
-  const clearInvoiceItemInputs = () => {
+  const clearestimateItemInputs = () => {
     setItemName("")
     setItemPrice(0)
     setItemQuantity(1)
@@ -307,7 +307,7 @@ export default function NewEstimatePage() {
     firstItemInputRef.current.focus()
   }
 
-  const addInvoiceItem = () => {
+  const addEstimateItem = () => {
     if (itemName.length) {
       setEstimateItems([...estimateItems, {
         name: itemName,
@@ -315,9 +315,9 @@ export default function NewEstimatePage() {
         quantity: itemQuantity,
         taxRate: itemTaxRate,
         total: calculatedItemTotal,
-        itemID: getRandomDocID('invoices/items/invoiceItems')
+        itemID: getRandomDocID('estimates/items/estimateItems')
       }])
-      clearInvoiceItemInputs()
+      clearestimateItemInputs()
     }
   }
 
@@ -330,8 +330,8 @@ export default function NewEstimatePage() {
   }
 
   const saveItem = (itemID) => {
-    setEstimateItems(estimateItems.map(invoiceItem => {
-      if (invoiceItem.itemID === itemID) {
+    setEstimateItems(estimateItems.map(estimateItem => {
+      if (estimateItem.itemID === itemID) {
         return {
           name: itemName,
           price: itemPrice,
@@ -341,14 +341,14 @@ export default function NewEstimatePage() {
           itemID
         }
       }
-      return invoiceItem
+      return estimateItem
     }))
-    clearInvoiceItemInputs()
+    clearestimateItemInputs()
   }
 
   const cancelItem = () => {
     setEditItemID(null)
-    clearInvoiceItemInputs()
+    clearestimateItemInputs()
   }
 
   const deleteItem = (itemID) => {
@@ -356,7 +356,7 @@ export default function NewEstimatePage() {
     if (confirm) {
       setEstimateItems(estimateItems.filter(item => item.itemID !== itemID))
     }
-    clearInvoiceItemInputs()
+    clearestimateItemInputs()
   }
 
   const clearContactInfo = () => {
@@ -382,8 +382,8 @@ export default function NewEstimatePage() {
   }
 
   const createEstimate = () => {
-    if (!allowCreateInvoice) return alert("Please fill out all required fields.")
-    setPageLoading(false)
+    if (!allowCreateEstimate) return alert("Please fill out all required fields.")
+    setPageLoading(true)
     createEstimateService(
       myUserID, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
       estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal,
@@ -391,7 +391,7 @@ export default function NewEstimatePage() {
     )
       .then(() => {
         setPageLoading(false)
-        navigate('/invoices')
+        navigate('/estimates')
       })
       .catch(err => {
         setPageLoading(false)
@@ -400,14 +400,14 @@ export default function NewEstimatePage() {
   }
 
   const updateEstimate = () => {
-    if (!allowCreateInvoice) return alert("Please fill out all required fields.")
+    if (!allowCreateEstimate) return alert("Please fill out all required fields.")
     const updatedProps = {
       title: estimateName,
       estimateNumber,
       dateCreated: new Date(estimateDate),
       dateDue: new Date(estimateDueDate),
       currency: estimateCurrency,
-      invoiceTo: estimateContact,
+      estimateTo: estimateContact,
       items: estimateItems,
       monthLabel: dateToMonthName(new Date(estimateDate)),
       notes: estimateNotes,
@@ -423,7 +423,7 @@ export default function NewEstimatePage() {
       setPageLoading
     )
       .then(() => {
-        navigate(`/invoices/${editEstimateID}`)
+        navigate(`/estimates/${editEstimateID}`)
       })
   }
 
@@ -445,13 +445,13 @@ export default function NewEstimatePage() {
 
   useEffect(() => {
     if (editMode) {
-      setInvoiceName(editEstimate?.title)
+      setEstimateName(editEstimate?.title)
       setEstimateCurrency(editEstimate?.currency)
       setEstimateDate(convertDateToInputFormat(editEstimate?.dateCreated?.toDate()))
       setEstimateDueDate(convertDateToInputFormat(editEstimate?.dateDue?.toDate()))
-      setEstimateNumber(editEstimate?.invoiceNumber)
+      setEstimateNumber(editEstimate?.estimateNumber)
       setStatus(editEstimate?.status)
-      setEstimateContact(editEstimate?.invoiceTo)
+      setEstimateContact(editEstimate?.estimateTo)
       setEstimateItems(editEstimate?.items)
       setEstimateNotes(editEstimate?.notes)
       setTaxRate1(editEstimate?.taxRate1)
@@ -461,34 +461,34 @@ export default function NewEstimatePage() {
 
   return (
     <div className="new-invoice-page">
-      <HelmetTitle title="Create New Invoice" />
+      <HelmetTitle title="Create New Estimate" />
       <PageTitleBar
-        title="Create an Invoice"
+        title="Create an Estimate"
         hasBorder
       />
       <div className="page-content">
         <form onSubmit={(e) => e.preventDefault()}>
           <AppInput
-            label="Invoice Name"
+            label="Estimate Name"
             placeholder="Montly consulting services"
             value={estimateName}
-            onChange={(e) => setInvoiceName(e.target.value)}
+            onChange={(e) => setEstimateName(e.target.value)}
           />
           <AppInput
-            label="Invoice Number"
+            label="Estimate Number"
             placeholder="91288349"
             value={estimateNumber}
             onChange={(e) => setEstimateNumber(e.target.value)}
             iconleft={
               <div className="icon-container">
-                <span>INV-</span>
+                <span>EST-</span>
               </div>
             }
             className="icon-input"
           />
           <div className="split-row">
             <AppInput
-              label="Invoice Date"
+              label="Estimate Date"
               type="date"
               value={estimateDate}
               onChange={(e) => setEstimateDate(e.target.value)}
@@ -538,7 +538,7 @@ export default function NewEstimatePage() {
           </div>
           <AppTextarea
             label="Notes"
-            placeholder="Enter any notes you want to include on the invoice"
+            placeholder="Enter any notes you want to include on the estimate"
             value={estimateNotes}
             onChange={(e) => setEstimateNotes(e.target.value)}
           />
@@ -562,14 +562,14 @@ export default function NewEstimatePage() {
                   className="invoice-item-row"
                   onSubmit={(e) => {
                     e.preventDefault()
-                    addInvoiceItem()
+                    addEstimateItem()
                   }}
                   style={{ display: !editItemID ? 'flex' : 'none' }}
                 >
-                  {invoiceItemInputs}
+                  {estimateItemInputs}
                   <div className="action-item">
                     <input />
-                    <button onClick={addInvoiceItem} />
+                    <button onClick={addEstimateItem} />
                   </div>
                 </form>
               </>
@@ -577,7 +577,7 @@ export default function NewEstimatePage() {
           />
           <div className="invoice-table-actions">
             <small
-              onClick={addInvoiceItem}
+              onClick={addEstimateItem}
               className={`add-invoice-item ${!itemName.length ? 'inactive' : ''}`}
             >
               Add Item<i className="far fa-plus" />
@@ -662,13 +662,13 @@ export default function NewEstimatePage() {
             <AppButton
               label="Create Estimate"
               onClick={createEstimate}
-              disabled={!allowCreateInvoice}
+              disabled={!allowCreateEstimate}
             /> :
             <>
               <AppButton
                 label="Save Changes"
                 onClick={updateEstimate}
-                disabled={!allowCreateInvoice}
+                disabled={!allowCreateEstimate}
               />
               <AppButton
                 label="Delete Estimate"

@@ -52,10 +52,6 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoi
   }
   return setDB(path, docID, invoiceData)
     .then(() => {
-      updateDB('users', userID, {
-        invoicesNum: firebaseIncrement(1),
-        ...(status === 'paid' && {totalRevenue: firebaseIncrement(calculatedTotal)})
-      })
       createNotification(
         userID,
         'Invoice Created',
@@ -63,6 +59,10 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoi
         'fas fa-file-invoice-dollar',
         `/invoices/${docID}`
       )
+      return updateDB('users', userID, {
+        invoicesNum: firebaseIncrement(1),
+        ...(status === 'paid' && {totalRevenue: firebaseIncrement(calculatedTotal)})
+      })
     })
     .catch(err => console.log(err))
 }
@@ -90,7 +90,7 @@ export const deleteInvoiceService = (myUserID, invoiceID, isPaid, invoiceTotal, 
       .then(() => {
         return updateDB('users', myUserID, {
           invoicesNum: firebaseIncrement(-1),
-          ...(isPaid && {totalRevenue: firebaseIncrement(-1)})
+          ...(isPaid && {totalRevenue: firebaseIncrement(-invoiceTotal)})
         })
         .then(() => {
           setLoading(false)

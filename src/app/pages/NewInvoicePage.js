@@ -392,7 +392,7 @@ export default function NewInvoicePage() {
 
   const createInvoice = () => {
     if (!allowCreateInvoice) return alert("Please fill out all required fields.")
-    setPageLoading(false)
+    setPageLoading(true)
     createInvoiceService(
       myUserID, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, invoiceContact,
       invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal,
@@ -442,16 +442,16 @@ export default function NewInvoicePage() {
       newTotalRevenue,
       setPageLoading
     )
-      .then(() => {
-        navigate(`/invoices/${editInvoiceID}`)
-      })
+    .then(() => {
+      navigate(`/invoices/${editInvoiceID}`)
+    })
   }
 
   const deleteInvoice = () => {
     deleteInvoiceService(myUserID, editInvoiceID, editInvoice?.isPaid, editInvoice?.total, setLoading)
-      .then(() => {
-        navigate('/invoices')
-      })
+    .then(() => {
+      navigate('/invoices')
+    })
   }
 
   useEffect(() => {

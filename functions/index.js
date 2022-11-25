@@ -13,6 +13,7 @@ const twilio = require('twilio')(twilioSid, twilioToken)
 // @ts-ignore
 const client = algoliasearch(APP_ID, API_KEY)
 const invoicesIndex = client.initIndex('invoices_index')
+const estimatesIndex = client.initIndex('estimates_index')
 const contactsIndex = client.initIndex('contacts_index')
 
 //Algolia Search functions
@@ -59,6 +60,28 @@ exports.deleteFromIndexContacts = functions
     contactsIndex.deleteObject(snapshot.id)
   })
 
+  //estimates collection
+exports.addToIndexEstimates = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/estimates/{estimateID}').onCreate(snapshot => {
+    const data = snapshot.data()
+    const objectID = snapshot.id
+    return estimatesIndex.saveObject({ ...data, objectID })
+  })
+exports.updateIndexEstimates = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/estimates/{estimateID}').onUpdate((change) => {
+    const newData = change.after.data()
+    const objectID = change.after.id
+    return estimatesIndex.saveObject({ ...newData, objectID })
+  })
+exports.deleteFromIndexEstimates = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/estimates/{estimateID}').onDelete(snapshot => {
+    estimatesIndex.deleteObject(snapshot.id)
+  })
+
+  
 
 // Sendgrid email
 exports.sendSgEmail = functions

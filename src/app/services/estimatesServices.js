@@ -26,8 +26,8 @@ export const getEstimateByID = (userID, estimateID, setEstimate) => {
 }
 
 export const createEstimateService = (userID, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
-  estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal,
-  calculatedTotal, estimateName) => {
+  estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, estimateName
+) => {
   const path = `users/${userID}/estimates`
   const docID = getRandomDocID(path)
   const estimateData = {
@@ -50,9 +50,6 @@ export const createEstimateService = (userID, estimateCurrency, estimateDate, es
   }
   return setDB(path, docID, estimateData)
     .then(() => {
-      updateDB('users', userID, {
-        estimatesNum: firebaseIncrement(1)
-      })
       createNotification(
         userID,
         'Estimate Created',
@@ -60,6 +57,9 @@ export const createEstimateService = (userID, estimateCurrency, estimateDate, es
         'fas fa-file-invoice',
         `/estimates/${docID}`
       )
+      return updateDB('users', userID, {
+        estimatesNum: firebaseIncrement(1)
+      })
     })
     .catch(err => console.log(err))
 }
