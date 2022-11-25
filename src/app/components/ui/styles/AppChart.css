@@ -17,10 +17,17 @@
   min-height: 300px;
 }
 
-.app-chart > h4 {
-  font-size: 18px;
+.app-chart .title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.app-chart .title-bar > h4 {
+  font-size: 16px;
   font-weight: 600;
   color: var(--grayText);
+  text-transform: capitalize;
 }
 
 .app-chart .area-chart .y-axis tspan,

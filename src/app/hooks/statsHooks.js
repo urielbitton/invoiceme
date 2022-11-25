@@ -1,27 +1,26 @@
-import { calculateMonthlyRevenue, 
-  calculateYearlyRevenueByMonth } from "app/services/statsServices"
+import { geCurrentYearInvoices, getCUrrentMonthInvoices } from "app/services/statsServices"
 import { StoreContext } from "app/store/store"
 import { useContext, useEffect, useState } from "react"
 
-export const useMonthlyRevenue = (date) => {
+export const useCurrentMonthInvoices = (date) => {
 
   const { myUserID } = useContext(StoreContext)
   const [revenue, setRevenue] = useState(0)
 
   useEffect(() => {
-    calculateMonthlyRevenue(myUserID, date, setRevenue)
+    getCUrrentMonthInvoices(myUserID, date, setRevenue)
   }, [myUserID, date])
 
   return revenue
 }
 
-export const useYearlyRevenueByMonth = (date) => {
+export const useCurrentYearInvoices = (date) => {
 
   const { myUserID } = useContext(StoreContext)
-  const [revenue, setRevenue] = useState(0)
+  const [revenue, setRevenue] = useState([])
 
   useEffect(() => {
-    calculateYearlyRevenueByMonth(myUserID, date, setRevenue)
+    geCurrentYearInvoices(myUserID, date, setRevenue)
   }, [myUserID])
 
   return revenue

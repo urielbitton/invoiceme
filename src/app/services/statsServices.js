@@ -4,7 +4,7 @@ import { getFirstDayOfMonthAsDate,
   getLastDayOfMonthAsDate, 
   getLastDayOfYearAsDate} from "app/utils/dateUtils"
 
-export const calculateMonthlyRevenue = (userID, date, setRevenue) => {
+export const getCUrrentMonthInvoices = (userID, date, setRevenue) => {
   db.collection('users')
   .doc(userID)
   .collection('invoices')
@@ -17,7 +17,7 @@ export const calculateMonthlyRevenue = (userID, date, setRevenue) => {
   })
 }
 
-export const calculateYearlyRevenueByMonth = (userID, date, setRevenue) => {
+export const geCurrentYearInvoices = (userID, date, setRevenue) => {
   db.collection('users')
   .doc(userID)
   .collection('invoices')

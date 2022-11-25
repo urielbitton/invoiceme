@@ -1,3 +1,7 @@
+.homepage {
+  display: flex;
+  flex-direction: column;
+}
 .homepage .page-title-bar .left h5 {
   font-size: 16px;
   font-weight: 600;
@@ -16,6 +20,9 @@
 }
 .homepage .dashboard-grid .dashboard-section.full-width {
   grid-column: 1/-1;
+}
+.homepage .dashboard-grid .dashboard-section.span-2 {
+  grid-column: span 2;
 }
 .homepage .dashboard-grid .dashboard-section .dashbox {
   border-radius: 10px;
@@ -45,4 +52,21 @@
   color: #fff;
   font-size: 12px;
   font-weight: 500;
+}
+
+.homepage .dashboard-section .revenue-chart-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.homepage .foot-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+.homepage .foot-notes small {
+  color: #777;
+  font-size: 11px;
 }

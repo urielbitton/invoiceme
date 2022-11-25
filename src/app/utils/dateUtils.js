@@ -214,8 +214,29 @@ export const datesAreInSameMonth = (date1, date2) => {
   return date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear()
 }
 
-export const dateToMonthName = (date) => {
-  return date.toLocaleString('en-CA', { month: 'long' })
+export const dateToMonthName = (date, length='long') => {
+  return date.toLocaleString('en-CA', { month: length })
+}
+
+export const getWeekOfMonth = (date) => {
+  const firstDayOfMonth = getFirstDayOfMonthAsDate(date)
+  const firstDayOfMonthWeekday = firstDayOfMonth.getDay()
+  const firstWeekLength = 7 - firstDayOfMonthWeekday
+  const dayOfMonth = date.getDate()
+  if(dayOfMonth <= firstWeekLength)
+    return `week1`
+  else
+    return `week${Math.ceil((dayOfMonth - firstWeekLength) / 7) + 1}`
+}
+
+//get number of days in given month from date and create array of dates
+export const getDatesInMonthIterate = (date) => {
+  const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+  const dates = []
+  for(let i = 1; i <= daysInMonth; i++) {
+    dates.push(i)
+  }
+  return dates
 }
 
 export const splitDocsIntoMonths = (docs, dateKey) => {
@@ -240,4 +261,47 @@ export const splitDocsIntoMonths = (docs, dateKey) => {
     }
   })
   return months
+}
+
+export const splitDocsIntoWeeksOfMonth = (docs, dateKey) => {
+  const weeks = {}
+  docs && docs.forEach(doc => {
+    const docDate = new Date(doc[dateKey]?.toDate())
+    const weekOfMonth = getWeekOfMonth(docDate)
+    if(weeks[weekOfMonth]) {
+      weeks[weekOfMonth].push(doc)
+    }
+    else {
+      weeks[weekOfMonth] = [doc]
+    }
+  })
+  const weeksArr = ['week1','week2','week3','week4']
+  weeksArr.forEach(weekNum => {
+    if(!weeks[weekNum]) {
+      weeks[weekNum] = []
+    }
+  })
+  return weeks
+}
+
+export const splitMonthDocsIntoDays = (docs, dateKey) => {
+  const days = {}
+  docs && docs.forEach(doc => {
+    const docDate = new Date(doc[dateKey]?.toDate())
+    const day = docDate.getDate()
+    const dayName = getNameDayOfTheWeekFromDate(docDate)
+    if(days[day]) {
+      days[day].push({...doc, dayName})
+    }
+    else {
+      days[day] = [{...doc, dayName}]
+    }
+  })
+  const daysInMonth = getDatesInMonthIterate(new Date())
+  daysInMonth.forEach(day => {
+    if(!days[day]) {
+      days[day] = [{dayName: getNameDayOfTheWeekFromDate(new Date(new Date().getFullYear(), new Date().getMonth(), day))}]
+    }
+  })
+  return days
 }

@@ -1,6 +1,6 @@
 import React from 'react'
-import './styles/AppButton.css'
 import { Link } from "react-router-dom"
+import './styles/AppButton.css'
 
 export default function AppButton(props) {
 
@@ -20,6 +20,7 @@ export default function AppButton(props) {
         buttonType === 'outlineBtn' ? 'outlineBtn' :
         buttonType === 'invertedBtn' ? 'invertedBtn' :
         buttonType === 'white' ? 'white' :
+        buttonType === 'tabBtn' ? 'tabBtn' :
         'primaryBtn'
       }
       ${disabled ? 'disabled' : ''}

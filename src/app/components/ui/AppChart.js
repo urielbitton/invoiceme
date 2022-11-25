@@ -8,46 +8,25 @@ import {
   Bar,
   BarChart,
   AreaChart,
-  Area
+  Area,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  Radar
 } from "recharts"
 import './styles/AppChart.css'
 
-export function AppPieChart(props) {
-
-  const { title, data } = props
-
-  return (
-    <div className="app-chart app-pie-chart">
-      <h4>{title}</h4>
-      <div className="chart-container">
-        <ResponsiveContainer>
-          <PieChart className="pie-container">
-            <Pie
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              paddingAngle={2}
-              outerRadius={120}
-              innerRadius={80}
-              blendStroke
-            />
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  )
-}
+const chartsAnimationDuration = 500
 
 export function AppBarChart(props) {
 
-  const { title, data, fill, barSize = 30 } = props
+  const { title, data, fill, barSize = 30, actions, legendLabel } = props
 
   return <div className="app-chart app-bar-chart">
-    <h4>{title}</h4>
+    <div className="title-bar">
+      <h4>{title}</h4>
+      {actions}
+    </div>
     <div className="chart-container">
       <ResponsiveContainer>
         <BarChart
@@ -59,7 +38,12 @@ export function AppBarChart(props) {
           <YAxis dataKey="value" />
           <Tooltip />
           <Legend />
-          <Bar dataKey="value" fill={fill} />
+          <Bar 
+            dataKey="value" 
+            fill={fill} 
+            animationDuration={chartsAnimationDuration} 
+            name={legendLabel}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -69,8 +53,8 @@ export function AppBarChart(props) {
 
 export function AppAreaChart(props) {
 
-  const { title, data, areas, xAxisDataKey, xAxisStyles,
-    yAxisStyles, tooltipLabelFormat, tooltipFormat } = props
+  const { title, actions, data, areas, xDataKey, xAxisStyles,
+    yAxisStyles, tooltipLabelFormat, tooltipFormat, legendLabel } = props
 
   const areasRender = areas?.map((area, index) => {
     return <Area
@@ -78,21 +62,25 @@ export function AppAreaChart(props) {
       dataKey={area.dataKey}
       stroke={area.stroke}
       fill={area.fill}
+      type="natural"
+      animationDuration={chartsAnimationDuration}
+      name={legendLabel}
     />
   })
 
   return <div className="app-chart app-area-chart">
-    <h4>{title}</h4>
+    <div className="title-bar">
+      <h4>{title}</h4>
+      {actions}
+    </div>
     <div className="chart-container">
       <ResponsiveContainer>
         <AreaChart
-          width={1030}
-          // height={350}
           className="area-chart"
           data={data}
         >
           <XAxis
-            dataKey={xAxisDataKey}
+            dataKey={xDataKey}
             style={xAxisStyles}
           />
           <YAxis style={yAxisStyles} />
@@ -101,8 +89,78 @@ export function AppAreaChart(props) {
             labelFormatter={tooltipLabelFormat}
             formatter={tooltipFormat}
           />
-          <Legend verticalAlign="top" align="right"/>
+          <CartesianGrid strokeOpacity={0.3}/>
+          <Legend verticalAlign="top" align="right" />
         </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+}
+
+export function AppPieChart(props) {
+
+  const { title, data, dataKey = "value", nameKey = "name",
+    showLegend = true, actions } = props
+
+  return (
+    <div className="app-chart app-pie-chart">
+      <div className="title-bar">
+        <h4>{title}</h4>
+        {actions}
+      </div>
+      <div className="chart-container">
+        <ResponsiveContainer>
+          <PieChart className="pie-container">
+            <Pie
+              data={data}
+              dataKey={dataKey}
+              nameKey={nameKey}
+              cx="50%"
+              cy="50%"
+              paddingAngle={2}
+              outerRadius={120}
+              innerRadius={80}
+              blendStroke
+              animationDuration={chartsAnimationDuration}
+            />
+            <Tooltip />
+            {showLegend && <Legend />}
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  )
+}
+
+export function AppRadarChart(props) {
+
+  const { title, data, fill, stroke, barLabel, radarDataKey,
+    axisDataKey, actions } = props
+
+  return <div className="app-chart app-area-chart">
+    <div className="title-bar">
+      <h4>{title}</h4>
+      {actions}
+    </div>
+    <div className="chart-container">
+      <ResponsiveContainer>
+        <RadarChart
+          outerRadius={90}
+          data={data}
+        >
+          <PolarGrid />
+          <PolarAngleAxis dataKey={axisDataKey} />
+          <Radar
+            name={barLabel}
+            dataKey={radarDataKey}
+            fill={fill}
+            stroke={stroke}
+            fillOpacity={0.6}
+            animationDuration={chartsAnimationDuration}
+          />
+          <Legend />
+          <Tooltip />
+        </RadarChart>
       </ResponsiveContainer>
     </div>
   </div>

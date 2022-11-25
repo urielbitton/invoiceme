@@ -194,3 +194,18 @@ export const displayGreeting = () => {
     return 'Good evening'
   }
 }
+
+//convert object to array of objects with key as property
+export const objectToArray = (obj, keyLabel) => {
+  if(obj) {
+    return Object.entries(obj).map(([key, value]) => ({[keyLabel]: key, ...value}))
+  }
+}
+
+export const sortArrayByProperty = (array, property, order) => {
+  if(order === 'asc') {
+    return array.sort((a, b) => a[property].toString() > b[property].toString() ? 1 : -1)
+  } else {
+    return array.sort((a, b) => b[property].toString() < a[property].toString() ? 1 : -1)
+  }
+}

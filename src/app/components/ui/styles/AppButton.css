@@ -94,3 +94,17 @@
   background: #ddd;
   color: #333;
 }
+
+.appButton.tabBtn {
+  font-size: 12px;
+  padding: 8px 10px;
+  color: var(--grayText);
+  background: none;
+}
+.appButton.tabBtn:hover {
+  background: #f1f1f1;
+}
+.appButton.tabBtn.active {
+  background: var(--extraLightPrimary);
+  color: var(--primary);
+}
