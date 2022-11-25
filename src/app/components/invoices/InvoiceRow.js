@@ -11,7 +11,7 @@ import IconContainer from "../ui/IconContainer"
 export default function InvoiceRow(props) {
 
   const { myUserID, setPageLoading, myUser } = useContext(StoreContext)
-  const { invoiceID, title, invoiceNumber, total, items, invoiceTo, 
+  const { invoiceID, title, invoiceNumber, total, items, invoiceTo,
     dateCreated, isPaid, currency } = props.invoice
   const navigate = useNavigate()
 
@@ -20,23 +20,26 @@ export default function InvoiceRow(props) {
   }
 
   const togglePaid = () => {
-    const newTotalRevenue = myUser?.totalRevenue + (isPaid ? -total : total)
-    updateInvoiceService(
-      myUserID, 
-      invoiceID, 
-      {
-        isPaid: !isPaid,
-        status: !isPaid ? 'paid' : 'unpaid',
-        partOfTotal: !isPaid,
-      }, 
-      newTotalRevenue,
-      setPageLoading
-    )
+    const confirm = window.confirm(`Are you sure you want to mark this invoice as ${isPaid ? 'unpaid' : 'paid'}?`)
+    if (confirm) {
+      const newTotalRevenue = myUser?.totalRevenue + (isPaid ? -total : total)
+      updateInvoiceService(
+        myUserID,
+        invoiceID,
+        {
+          isPaid: !isPaid,
+          status: !isPaid ? 'paid' : 'unpaid',
+          partOfTotal: !isPaid,
+        },
+        newTotalRevenue,
+        setPageLoading
+      )
+    }
   }
 
   return (
     <AppItemRow
-      item1={`#${truncateText(invoiceNumber,14)}`}
+      item1={`#${truncateText(invoiceNumber, 14)}`}
       item2={truncateText(title, 16)}
       item3={truncateText(invoiceTo.name, 16)}
       item4={items.length}

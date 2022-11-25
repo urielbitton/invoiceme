@@ -1,11 +1,13 @@
 import React from 'react'
 import './styles/AppSelectBar.css'
 import { AppInput, AppSelect } from "./AppInputs"
+import { showXResultsOptions } from "app/data/general"
 
 export default function AppSelectBar(props) {
 
   const { labelText1, selectOptions, searchValue, searchOnChange,
-    handleOnKeyPress, rightComponent } = props
+    handleOnKeyPress, showAmountSelect, rightComponent,
+    amountSelectValue, amountSelectOnChange } = props
 
   return (
     <div className="app-select-bar">
@@ -35,6 +37,18 @@ export default function AppSelectBar(props) {
           className="commonInput"
         />
       </div>
+      {
+        showAmountSelect &&
+        <div className="select-item">
+          <AppSelect
+            label="Show:"
+            options={showXResultsOptions}
+            onChange={amountSelectOnChange}
+            value={amountSelectValue}
+            className="commonInput"
+          />
+        </div>
+      }
       { rightComponent }
     </div>
   )

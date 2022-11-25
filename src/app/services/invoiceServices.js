@@ -127,7 +127,7 @@ export const sendInvoiceService = (to, subject, emailHTML, pdfHTMLElement, invoi
         .catch(err => console.log(err))
         createNotification(
           myUserID,
-          'Invoice Sent to client',
+          'Invoice sent to client',
           `Invoice ${invoiceNumber} has been sent to ${to}.`,
           'fas fa-paper-plane',
           `/invoices/${invoiceID}`

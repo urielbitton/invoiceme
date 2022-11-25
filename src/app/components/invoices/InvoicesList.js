@@ -9,8 +9,8 @@ import InvoiceRow from "./InvoiceRow"
 export default function InvoicesList(props) {
 
   const { setPageLoading } = useContext(StoreContext)
-  const { query, setQuery, searchResults, setSearchResults, filters, setNumOfHits, 
-    setNumOfPages, pageNum, setPageNum, numOfPages, hitsPerPage, showAll, 
+  const { query, searchResults, setSearchResults, filters, setNumOfHits,
+    setNumOfPages, pageNum, setPageNum, numOfPages, hitsPerPage, showAll,
     dbInvoices } = props
 
   const invoices = useInstantSearch(
@@ -49,26 +49,28 @@ export default function InvoicesList(props) {
     <div className="invoices-list">
       <AppTable
         headers={[
-          "Invoice #", 
-          "Title", 
-          "Client", 
-          "Items", 
-          "Total", 
-          "Date Created", 
-          "Paid", 
+          "Invoice #",
+          "Title",
+          "Client",
+          "Items",
+          "Total",
+          "Date Created",
+          "Paid",
           'Actions'
         ]}
-        rows={query.length ? invoicesList : dbInvoicesList}
+        rows={query?.length ? invoicesList : dbInvoicesList}
       />
-      <div className="pagination-section">
-        <AppPagination
-          pageNum={pageNum}
-          setPageNum={setPageNum}
-          numOfPages={numOfPages}
-          dimensions="30px"
-          handleClicks={() => setQuery(' ')}
-        />
-      </div>
+      {
+        query?.length > 0 &&
+        <div className="pagination-section">
+          <AppPagination
+            pageNum={pageNum}
+            setPageNum={setPageNum}
+            numOfPages={numOfPages}
+            dimensions="30px"
+          />
+        </div>
+      }
     </div>
   )
 }

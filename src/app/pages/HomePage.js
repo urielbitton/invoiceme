@@ -1,25 +1,33 @@
+import InvoicesList from "app/components/invoices/InvoicesList"
 import AppButton from "app/components/ui/AppButton"
-import { AppAreaChart, AppBarChart, AppPieChart, 
-  AppRadarChart } from "app/components/ui/AppChart"
+import { AppAreaChart, AppBarChart, AppPieChart,
+  AppRadarChart
+} from "app/components/ui/AppChart"
+import { AppSelect } from "app/components/ui/AppInputs"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
+import { recentsListOptions } from "app/data/general"
+import { dashboxesList } from "app/data/statsData"
+import { useInvoices } from "app/hooks/invoiceHooks"
 import { useCurrentYearInvoices, useCurrentMonthInvoices } from "app/hooks/statsHooks"
 import { StoreContext } from "app/store/store"
 import { dateToMonthName, getNameDayOfTheWeekFromDate, shortAndLongMonthNames,
-  splitDocsIntoMonths, splitDocsIntoWeeksOfMonth, 
-  splitMonthDocsIntoDays
+  splitDocsIntoMonths, splitDocsIntoWeeksOfMonth, splitMonthDocsIntoDays
 } from "app/utils/dateUtils"
-import { displayGreeting, formatCurrency, objectToArray, sortArrayByProperty } from "app/utils/generalUtils"
+import { displayGreeting, formatCurrency, objectToArray, 
+  sortArrayByProperty } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import './styles/Homepage.css'
 
 export default function HomePage() {
 
-  const { setCompactNav, myUser } = useContext(StoreContext)
+  const { setCompactNav, myUser, myUserID } = useContext(StoreContext)
   const [revenueMode, setRevenueMode] = useState('year')
+  const [recentsView, setRecentsView] = useState('invoices')
   const thisMonthInvoices = useCurrentMonthInvoices(new Date())
   const thisYearInvoices = useCurrentYearInvoices(new Date())
+  const dbInvoices = useInvoices(myUserID, 5)
   const monthlyInvoices = splitDocsIntoMonths(thisYearInvoices, 'dateCreated')
   const dailyInvoices = splitMonthDocsIntoDays(monthlyInvoices[dateToMonthName(new Date())], 'dateCreated')
   const weeklyInvoices = splitDocsIntoWeeksOfMonth(monthlyInvoices[dateToMonthName(new Date())], 'dateCreated')
@@ -29,6 +37,7 @@ export default function HomePage() {
   const overdueInvoices = thisYearInvoices?.filter(doc => doc.status === 'overdue')
   const dailyInvoicesArray = objectToArray(dailyInvoices, 'day')
   const weeklyInvoicesArray = sortArrayByProperty(objectToArray(weeklyInvoices, 'week'), 'week', 'desc')
+  const dashboxArray = dashboxesList(myUser, thisMonthInvoices, monthlyInvoices)
 
   const yearlyRevenueData = shortAndLongMonthNames.map((month, i) => ({
     ...month,
@@ -52,37 +61,10 @@ export default function HomePage() {
     { value: unpaidInvoices?.length, name: 'Unpaid', fill: 'var(--theme4)' },
   ]
   const invoiceStatusesData = [
-    {value: paidInvoices?.length, name: 'Paid', fill: 'var(--theme1)'},
-    {value: partiallyPaidInvoices?.length, name: 'Partially Paid', fill: 'var(--theme2)'},
-    {value: unpaidInvoices?.length, name: 'Unpaid', fill: 'var(--theme4)'},
-    {value: overdueInvoices?.length, name: 'Overdue', fill: 'var(--theme3)'},
-  ]
-
-  const dashboxArray = [
-    {
-      name: 'Revenue',
-      icon: 'fal fa-dollar-sign',
-      value: `$${formatCurrency(myUser?.totalRevenue)}`,
-      thisMonth: `$${formatCurrency(thisMonthInvoices)}`
-    },
-    {
-      name: 'Invoices',
-      icon: 'fal fa-file-invoice-dollar',
-      value: myUser?.invoicesNum,
-      thisMonth: monthlyInvoices[dateToMonthName(new Date())]?.length
-    },
-    {
-      name: 'Estimates',
-      icon: 'fal fa-file-invoice',
-      value: myUser?.estimatesNum,
-      thisMonth: 0
-    },
-    {
-      name: 'Contacts',
-      icon: 'fal fa-users',
-      value: myUser?.contactsNum,
-      thisMonth: 0
-    }
+    { value: paidInvoices?.length, name: 'Paid', fill: 'var(--theme1)' },
+    { value: partiallyPaidInvoices?.length, name: 'Partially Paid', fill: 'var(--theme2)' },
+    { value: unpaidInvoices?.length, name: 'Unpaid', fill: 'var(--theme4)' },
+    { value: overdueInvoices?.length, name: 'Overdue', fill: 'var(--theme3)' },
   ]
 
   const revenueChartActions = <div className="revenue-chart-actions">
@@ -106,7 +88,7 @@ export default function HomePage() {
     />
   </div>
 
-  const dashboxList = dashboxArray.map((dashbox, index) => {
+  const dashboxList = dashboxArray?.map((dashbox, index) => {
     return <div
       className="dashbox"
       key={index}
@@ -145,9 +127,9 @@ export default function HomePage() {
             title={`Revenue By ${revenueMode}*`}
             actions={revenueChartActions}
             legendLabel="Revenue"
-            data={revenueMode === 'year' ? yearlyRevenueData : 
-              revenueMode === 'month' ? monthlyRevenueData : 
-              weeklyRevenueData
+            data={revenueMode === 'year' ? yearlyRevenueData :
+              revenueMode === 'month' ? monthlyRevenueData :
+                weeklyRevenueData
             }
             areas={[
               { dataKey: 'revenue', stroke: 'var(--primary)', fill: 'var(--lightPrimary)' }
@@ -156,10 +138,10 @@ export default function HomePage() {
             xAxisStyles={{ fontSize: '13px' }}
             yAxisStyles={{ fontSize: '13px' }}
             tooltipLabelFormat={(name, value) => {
-              return revenueMode === 'year' ? value[0]?.payload?.longName + ' ' + new Date().getFullYear() : 
-              revenueMode === 'month' ? 
-              getNameDayOfTheWeekFromDate(new Date(new Date().getFullYear(), new Date().getMonth(), value[0]?.payload?.day)) + ', ' + dateToMonthName(new Date(), 'short') + ' ' + value[0]?.payload?.day + ' ' : 
-              value[0]?.payload?.week
+              return revenueMode === 'year' ? value[0]?.payload?.longName + ' ' + new Date().getFullYear() :
+                revenueMode === 'month' ?
+                  getNameDayOfTheWeekFromDate(new Date(new Date().getFullYear(), new Date().getMonth(), value[0]?.payload?.day)) + ', ' + dateToMonthName(new Date(), 'short') + ' ' + value[0]?.payload?.day + ' ' :
+                  value[0]?.payload?.week
             }}
             tooltipFormat={(name) => `$${formatCurrency(name)}`}
           />
@@ -188,6 +170,25 @@ export default function HomePage() {
             title="Invoice Statuses"
             data={invoiceStatusesData}
           />
+        </div>
+        <div className="invoices-section full-width">
+          <div className="titles">
+            <h4>Recent Invoices</h4>
+            <AppSelect
+              options={recentsListOptions}
+              value={recentsView}
+              onChange={(e) => setRecentsView(e.target.value)}
+            />
+          </div>
+          {
+            recentsView === 'invoices' ?
+            <InvoicesList
+              dbInvoices={dbInvoices}
+            /> :
+            recentsView === 'estimates' ?
+            <>estimates</> :
+            <>contacts</>
+          }
         </div>
       </div>
       <div className="foot-notes">

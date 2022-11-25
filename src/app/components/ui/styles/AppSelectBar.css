@@ -48,6 +48,11 @@
   width: 200px;
   border-radius: 0;
 }
+.app-select-bar .select-item select {
+  width: auto;
+  padding: 5px 20px;
+  padding-left: 5px;
+}
 .app-select-bar .select-item input {
   padding-left: 25px;
 }

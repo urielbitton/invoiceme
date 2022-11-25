@@ -616,7 +616,8 @@ export default function NewInvoicePage() {
             placeholder="Search Contact"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            iconleft={query.length ?
+            iconleft={contactsLoading ? <i className="fal fa-spinner fa-spin" /> : 
+            query.length ?
               <i
                 className="fal fa-times"
                 onClick={() => {

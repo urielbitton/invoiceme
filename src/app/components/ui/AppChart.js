@@ -1,19 +1,8 @@
 import React from 'react'
-import {
-  Legend, Pie, PieChart, Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Bar,
-  BarChart,
-  AreaChart,
-  Area,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  Radar
-} from "recharts"
+import { Legend, Pie, PieChart, Tooltip, ResponsiveContainer,
+  CartesianGrid, XAxis, YAxis, Bar, BarChart,
+  AreaChart, Area, RadarChart, PolarGrid, PolarAngleAxis,
+  Radar } from "recharts"
 import './styles/AppChart.css'
 
 const chartsAnimationDuration = 500

@@ -28,6 +28,12 @@
   margin: 10px 0;
 }
 
+.invoices-content .show-more-btn {
+  padding: 10px;
+  font-size: 13px;
+  margin-top: 15px;
+}
+
 .invoices-content .no-results {
   width: 100%;
   min-height: 300px;

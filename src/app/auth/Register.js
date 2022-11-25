@@ -41,7 +41,6 @@ export default function Register() {
       photoURL: authMode === 'facebook' ? res.picture.data.url : photoURLPlaceholder,
       address: '',
       phone: '',
-      password,
       city: '',
       region: '',
       country: '',
