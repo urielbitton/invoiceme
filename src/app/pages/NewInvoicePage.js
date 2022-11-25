@@ -481,9 +481,9 @@ export default function NewInvoicePage() {
 
   return (
     <div className="new-invoice-page">
-      <HelmetTitle title="Create New Invoice" />
+      <HelmetTitle title={!editMode ? 'Create New Invoice' : 'Edit Invoice'} />
       <PageTitleBar
-        title="Create an Invoice"
+        title={!editMode ? 'Create An Invoice' : 'Edit Invoice'}
         hasBorder
       />
       <div className="page-content">

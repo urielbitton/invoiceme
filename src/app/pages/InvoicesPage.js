@@ -72,6 +72,7 @@ export default function InvoicesPage() {
         showAmountSelect
         amountSelectValue={invoicesLimit}
         amountSelectOnChange={(e) => setInvoicesLimit(e.target.value)}
+        searchPlaceholder="Search Invoices"
       />
       <div className="invoices-content">
         <InvoicesList

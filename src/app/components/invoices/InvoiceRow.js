@@ -1,4 +1,3 @@
-import { firebaseIncrement, updateDB } from "app/services/CrudDB"
 import { deleteInvoiceService, updateInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"

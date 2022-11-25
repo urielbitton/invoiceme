@@ -461,9 +461,9 @@ export default function NewEstimatePage() {
 
   return (
     <div className="new-invoice-page">
-      <HelmetTitle title="Create New Estimate" />
+      <HelmetTitle title={!editMode ? 'Create New Estimate' : 'Edit Estimate'} />
       <PageTitleBar
-        title="Create an Estimate"
+        title={!editMode ? 'Create An Estimate' : 'Edit Estimate'}
         hasBorder
       />
       <div className="page-content">

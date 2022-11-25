@@ -19,6 +19,7 @@ import InvoicePage from "app/pages/InvoicePage"
 import NotificationsPage from "app/pages/NotificationsPage"
 import MessagesPage from "app/pages/MessagesPage"
 import { StoreContext } from "app/store/store"
+import EstimatePage from "app/pages/EstimatePage"
 
 export default function RoutesContainer() {
 
@@ -33,6 +34,7 @@ export default function RoutesContainer() {
         <Route path="invoices/new" element={<NewInvoicePage />} />
         <Route path="estimates" element={<EstimatesPage />} />
         <Route path="estimates/new" element={<NewEstimatePage />} />
+        <Route path="/estimates/:estimateID" element={<EstimatePage />} />
         <Route path="contacts" element={<ContactsPage />} />
         <Route path="contacts/new" element={<NewContactPage />} />
         <Route path="payments" element={<PaymentsPage />} />

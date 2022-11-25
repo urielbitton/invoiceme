@@ -7,7 +7,7 @@ export default function AppSelectBar(props) {
 
   const { labelText1, selectOptions, searchValue, searchOnChange,
     handleOnKeyPress, showAmountSelect, rightComponent,
-    amountSelectValue, amountSelectOnChange } = props
+    amountSelectValue, amountSelectOnChange, searchPlaceholder } = props
 
   return (
     <div className="app-select-bar">
@@ -16,7 +16,7 @@ export default function AppSelectBar(props) {
       </div>
       <div className="select-item">
         <AppInput
-          placeholder="Search invoices"
+          placeholder={searchPlaceholder}
           iconleft={<i className="fal fa-search" />}
           iconright={searchValue.length > 0 && 
             <i 
