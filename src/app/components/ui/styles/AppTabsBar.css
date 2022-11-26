@@ -1,0 +1,55 @@
+.app-tabs-bar {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--tableBorderColor);
+  border-radius: 5px 5px 0 0;
+  user-select: none;
+}
+.app-tabs-bar.sticky {
+  position: sticky;
+  position: -webkit-sticky;
+  top: -10px;
+  z-index: 100;
+}
+.app-tabs-bar.no-spread {
+  flex-wrap: wrap;
+}
+.app-tabs-bar.no-spread .tab-header,
+.app-tabs-bar.no-spread > a {
+  width: auto;
+}
+
+.app-tabs-bar > a {
+  font-size: 14px;
+  color: var(--darkGrayText);
+}
+.app-tabs-bar > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+  border-radius: 5px 5px 0 0;
+}
+.app-tabs-bar > a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: all 0.3s;
+}
+.app-tabs-bar > a:hover::after,
+.app-tabs-bar > a.active::after {
+  width: 100%;
+}
+.app-tabs-bar > a.active {
+  color: var(--primary);
+}

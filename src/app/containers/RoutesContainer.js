@@ -20,6 +20,7 @@ import NotificationsPage from "app/pages/NotificationsPage"
 import MessagesPage from "app/pages/MessagesPage"
 import { StoreContext } from "app/store/store"
 import EstimatePage from "app/pages/EstimatePage"
+import ContactPage from "app/pages/ContactPage"
 
 export default function RoutesContainer() {
 
@@ -37,8 +38,9 @@ export default function RoutesContainer() {
         <Route path="/estimates/:estimateID" element={<EstimatePage />} />
         <Route path="contacts" element={<ContactsPage />} />
         <Route path="contacts/new" element={<NewContactPage />} />
+        <Route path="/contacts/:contactID" element={<ContactPage />} />
         <Route path="payments" element={<PaymentsPage />} />
-        <Route path="paments/new" element={<NewPaymentPage />} />
+        <Route path="payments/new" element={<NewPaymentPage />} />
         <Route path="my-profile" element={<MyProfilePage />} />
         <Route path="my-account" element={<MyAccountPage />} />
         <Route path="settings" element={<SettingsPage />} />

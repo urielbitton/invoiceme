@@ -86,10 +86,6 @@ export default function InvoicePage() {
     deleteInvoiceService(myUserID, invoiceID, invoice?.isPaid, invoice?.total, setPageLoading)
   }
 
-  const saveInvoice = () => {
-
-  }
-
   const downloadAsPDF = () => {
     domToPDFDownload(
       document.querySelector('.invoice-page .paper-container'), 

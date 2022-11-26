@@ -58,6 +58,7 @@ export default function NewEstimatePage() {
   const [contactRegion, setContactRegion] = useState("")
   const [contactCountry, setContactCountry] = useState("")
   const [contactPostcode, setContactPostcode] = useState("")
+  const [contactCompanyName, setContactCompanyName] = useState("")
   const [contactAddFavorite, setContactAddFavorite] = useState(false)
   const [addToContacts, setAddToContacts] = useState(true)
   const [loading, setLoading] = useState(false)
@@ -228,7 +229,7 @@ export default function NewEstimatePage() {
               region: contact.region,
               country: contact.country,
               postcode: contact.postcode,
-              dateAdded: new Date()
+              dateCreated: new Date()
             })
             setQuery("")
             setSearchResults([])
@@ -255,7 +256,7 @@ export default function NewEstimatePage() {
               region: contact.region,
               country: contact.country,
               postcode: contact.postcode,
-              dateAdded: new Date()
+              dateCreated: new Date()
             })
             setQuery("")
             setSearchResults([])
@@ -368,16 +369,19 @@ export default function NewEstimatePage() {
     setContactRegion("")
     setContactCountry("")
     setContactPostcode("")
+    setContactCompanyName("")
     setContactAddFavorite(false)
     setShowContactModal(false)
     setLoading(false)
   }
 
   const addContact = () => {
+    if(!allowAddContact) return alert('Please fill out all required fields.')
     addContactService(
       myUserID, contactName, contactEmail, contactPhone, contactAddress,
-      contactCity, contactRegion, contactCountry, contactPostcode, contactAddFavorite,
-      addToContacts, allowAddContact, setLoading, setEstimateContact, clearContactInfo
+      contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
+      contactAddFavorite, addToContacts, allowAddContact, setLoading, setEstimateContact, 
+      clearContactInfo
     )
   }
 
@@ -700,6 +704,8 @@ export default function NewEstimatePage() {
         setRegion={setContactRegion}
         postcode={contactPostcode}
         setPostcode={setContactPostcode}
+        companyName={contactCompanyName}
+        setCompanyName={setContactCompanyName}
         country={contactCountry}
         setCountry={setContactCountry}
         addToFavorites={contactAddFavorite}

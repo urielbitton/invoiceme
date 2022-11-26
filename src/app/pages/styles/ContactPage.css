@@ -1,0 +1,21 @@
+.contact-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-page > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  border-radius: 10px;
+  box-shadow: var(--newCardShadow);
+  padding: 25px;
+  margin-bottom: 40px;
+  background: #fff;
+}
+
+.contact-page .contact-routes .app-tabs-bar > a {
+  font-size: 13px;
+}

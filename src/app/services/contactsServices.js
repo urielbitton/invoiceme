@@ -1,37 +1,61 @@
-import { db } from "app/firebase/fire"
-import { firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
+import { db, functions } from "app/firebase/fire"
+import { deleteDB, firebaseIncrement, getRandomDocID, 
+  setDB, updateDB } from "./CrudDB"
+
+export const getContactByID = (userID, contactID, setContact) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('contacts')
+  .doc(contactID)
+  .onSnapshot(snapshot => {
+    setContact(snapshot.data())
+  })
+}
+
+export const getContactsByUserID = (userID, setContacts, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('contacts')
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setContacts(snapshot.docs.map(doc => doc.data()))
+  })
+}
 
 export const getFavoriteContactsByUserID = (userID, setContacts) => {
   db.collection('users')
   .doc(userID)
   .collection('contacts')
   .where('isFavorite', '==', true)
+  .orderBy('dateCreated', 'desc')
   .onSnapshot((snapshot) => {
     setContacts(snapshot.docs.map((doc) => doc.data()))
   })
 }
 
-export const addContactService = (userID, contactName, contactEmail, contactPhone, contactAddress,
-  contactCity, contactRegion, contactCountry, contactPostcode, contactAddFavorite,
+export const addContactService = (userID, name, email, phone, address,
+  city, region, country, postcode, companyName, isFavorite,
   addToContacts, allowAddContact, setLoading, setInvoiceContact, clearContactInfo ) => {
   if (!allowAddContact) return alert("Please fill in all fields")
     setLoading(true)
     const contactsPath = `users/${userID}/contacts`
     const docID = getRandomDocID(contactsPath)
     const contactData = {
-      name: contactName,
-      email: contactEmail,
-      phone: contactPhone,
-      address: contactAddress,
-      city: contactCity,
-      region: contactRegion.split(',')[0],
-      regionCode: contactRegion.split(',')[1],
-      country: contactCountry.split(',')[0],
-      countryCode: contactCountry.split(',')[1],
-      postcode: contactPostcode,
-      isFavorite: contactAddFavorite,
+      name,
+      email,
+      phone,
+      address,
+      city,
+      region: region.split(',')[0],
+      regionCode: region.split(',')[1],
+      country: country.split(',')[0],
+      countryCode: country.split(',')[1],
+      companyName,
+      postcode,
+      isFavorite,
       contactID: docID,
-      dateAdded: new Date(),
+      dateCreated: new Date(),
       ownerID: userID
     }
     if(addToContacts) {
@@ -54,4 +78,44 @@ export const addContactService = (userID, contactName, contactEmail, contactPhon
       clearContactInfo()
       setLoading(false)
     }
+}
+
+export const deleteContactService = (userID, contactID, setLoading) => {
+  const confirm = window.confirm("Are you sure you want to delete this contact?")
+    if (confirm) {
+      setLoading(true)
+      return deleteDB(`users/${userID}/contacts`, contactID)
+      .then(() => {
+        return updateDB('users', userID, {
+          contactsNum: firebaseIncrement(-1),
+        })
+        .then(() => {
+          setLoading(false)
+        })
+        .catch(err => {
+          console.log(err)
+          setLoading(false)
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(false)
+      })
+    }
+}
+
+export const callPhoneService = (phone) => {
+  functions.httpsCallable('callPhone')({ phone })
+  .then(result => {
+    console.log(result) 
+  })
+  .catch(err => console.log(err))
+}
+
+export const sendSMSService = (phone, message) => {
+  functions.httpsCallable('sendSMS')({ phone, message })
+  .then(result => {
+    console.log(result) 
+  })
+  .catch(err => console.log(err))
 }

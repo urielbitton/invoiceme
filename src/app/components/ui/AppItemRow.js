@@ -9,7 +9,7 @@ export default function AppItemRow(props) {
   const itemsArray = [item1, item2, item3, item4, item5, item6, item7]
 
   const itemsRender = itemsArray?.map((item, index) => {
-    return item ?
+    return item !== null ?
       <div 
         key={index} 
         className="row-item"

@@ -10,11 +10,17 @@
   gap: 5px;
 }
 .add-contact-modal form .commonInput h6 {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--darkGrayText);
 }
 .add-contact-modal form input {
   height: 37px;
   border-color: var(--inputBorderColor);
+}
+.add-contact-modal form .split-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }

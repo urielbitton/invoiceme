@@ -38,7 +38,7 @@ export default function EstimateRow(props) {
           />
           <IconContainer
             icon="fas fa-pen"
-            tooltip="Edit Invoice"
+            tooltip="Edit Estimate"
             dimensions="23px"
             inverted
             iconSize="13px"

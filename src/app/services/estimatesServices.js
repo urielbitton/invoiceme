@@ -123,7 +123,7 @@ export const sendEstimateService = (to, subject, emailHTML, pdfHTMLElement, esti
           'Estimate sent to client',
           `Estimate ${estimateNumber} has been sent to ${to}.`,
           'fas fa-paper-plane',
-          `/invoices/${estimateID}`
+          `/estimates/${estimateID}`
         )
         .catch(err => console.log(err))
         setPageLoading(false)
