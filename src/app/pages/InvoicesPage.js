@@ -60,7 +60,7 @@ export default function InvoicesPage() {
       <HelmetTitle title="Invoices" />
       <AppSelectBar
         labelText1={labelText1}
-        selectOptions={[
+        sortSelectOptions={[
           { value: 'date', label: 'Invoice Date' },
           { value: 'client', label: 'Client Name' },
           { value: 'amount', label: 'Invoice Total' },

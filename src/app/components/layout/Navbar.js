@@ -108,7 +108,7 @@ export default function Navbar() {
               }}
             >
               <Avatar
-                img={myUserImg}
+                src={myUserImg}
                 dimensions="30px"
                 alt="profile"
                 border="1.5px solid #fff"

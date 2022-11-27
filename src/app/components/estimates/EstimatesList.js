@@ -55,6 +55,7 @@ export default function EstimatesList(props) {
           "Items",
           "Total",
           "Date Created",
+          '',
           'Actions'
         ]}
         rows={query?.length ? estimatesList : dbEstimatesList}

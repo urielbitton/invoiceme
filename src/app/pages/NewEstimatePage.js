@@ -12,7 +12,7 @@ import { currencies } from "app/data/general"
 import { useFavoriteContacts } from "app/hooks/contactsHooks"
 import { useEstimate } from "app/hooks/estimateHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
-import { addContactService } from "app/services/contactsServices"
+import { createContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
 import { createEstimateService, deleteEstimateService, 
   updateEstimateService } from "app/services/estimatesServices"
@@ -377,7 +377,7 @@ export default function NewEstimatePage() {
 
   const addContact = () => {
     if(!allowAddContact) return alert('Please fill out all required fields.')
-    addContactService(
+    createContactService(
       myUserID, contactName, contactEmail, contactPhone, contactAddress,
       contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
       contactAddFavorite, addToContacts, allowAddContact, setLoading, setEstimateContact, 

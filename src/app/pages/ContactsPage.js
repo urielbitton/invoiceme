@@ -57,7 +57,7 @@ export default function ContactsPage() {
       <HelmetTitle title="Contacts" />
       <AppSelectBar
         labelText1={labelText1}
-        selectOptions={[
+        sortSelectOptions={[
           { value: 'date', label: 'Date Created' },
           { value: 'name', label: 'Contact Name' },
         ]}

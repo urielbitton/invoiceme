@@ -57,7 +57,7 @@ export default function EstimatesPage() {
       <HelmetTitle title="Estimates" />
       <AppSelectBar
         labelText1={labelText1}
-        selectOptions={[
+        sortSelectOptions={[
           { value: 'date', label: 'Estimate Date' },
           { value: 'client', label: 'Client Name' },
           { value: 'amount', label: 'Estimate Total' },

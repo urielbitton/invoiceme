@@ -38,7 +38,7 @@ export default function RoutesContainer() {
         <Route path="/estimates/:estimateID" element={<EstimatePage />} />
         <Route path="contacts" element={<ContactsPage />} />
         <Route path="contacts/new" element={<NewContactPage />} />
-        <Route path="/contacts/:contactID" element={<ContactPage />} />
+        <Route path="/contacts/:contactID/*" element={<ContactPage />} />
         <Route path="payments" element={<PaymentsPage />} />
         <Route path="payments/new" element={<NewPaymentPage />} />
         <Route path="my-profile" element={<MyProfilePage />} />

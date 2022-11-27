@@ -3,7 +3,7 @@ import './styles/Avatar.css'
 
 export default function Avatar(props) {
 
-  const { img, dimensions="50px", alt='avatar', title, border } = props
+  const { src, dimensions="50px", alt='avatar', title, border } = props
 
   return (
     <div 
@@ -12,7 +12,7 @@ export default function Avatar(props) {
       title={title}
     >
       <img 
-        src={img} 
+        src={src} 
         alt={alt} 
       />
     </div>

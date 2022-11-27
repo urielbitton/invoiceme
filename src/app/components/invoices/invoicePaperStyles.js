@@ -133,6 +133,8 @@ export const invoicePaperStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '5px 10px',
     width: 200,
     paddingTop: 20
   },
@@ -143,6 +145,8 @@ export const invoicePaperStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '5px 10px',
     width: 200,
   },
   totalsSectionH6Totals: {
@@ -152,6 +156,8 @@ export const invoicePaperStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: '5px 10px',
     width: 200,
   },
   notesSection: {

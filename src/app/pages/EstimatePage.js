@@ -68,6 +68,7 @@ export default function EstimatePage() {
     const confirm = estimate?.isSent ? window.confirm('This estimate has already been sent, would you like to send it again?') : true
     if (confirm) {
       sendEstimateService(
+        myUser?.email,
         contactEmail,
         emailSubject,
         emailMessage.replace(/\r\n|\r|\n/g, "</br>"),

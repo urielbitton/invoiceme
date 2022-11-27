@@ -9,7 +9,8 @@ import { truncateText } from "app/utils/generalUtils"
 export default function FileUploader(props) {
 
   const { inputRef, isDragging, setIsDragging, uploadedFiles, setUploadedFiles,
-    maxFileSize, icon, text } = props
+    maxFileSize, icon, text, accept="image/*, application/*",
+    truncateFilenameAmpount=25 } = props
   const [loading, setLoading] = useState(false)
   const preventClose = !!uploadedFiles?.length || loading
 
@@ -33,7 +34,7 @@ export default function FileUploader(props) {
             style={{border: "1px solid var(--inputBorderColor)"}}
           />
           <h6 title={file?.file?.name}>
-            {truncateText(file?.file?.name, 25)}&emsp;{convertBytesToKbMbGb(file?.file?.size,0)}
+            {truncateText(file?.file?.name, truncateFilenameAmpount)}&emsp;{convertBytesToKbMbGb(file?.file?.size,0)}
           </h6>
         </div>
       }
@@ -50,7 +51,7 @@ export default function FileUploader(props) {
         <input 
           type="file" 
           multiple 
-          accept="image/*, application/*"
+          accept={accept}
           ref={inputRef}
           onChange={(e) => uploadMultipleFilesLocal(e, maxFileSize, setUploadedFiles, setLoading)}
           onDragEnter={() => setIsDragging(true)}

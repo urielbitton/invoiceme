@@ -6,23 +6,35 @@ import { createNotification } from "./notifServices"
 
 export const getInvoicesByUserID = (userID, setInvoices, limit) => {
   db.collection('users')
-    .doc(userID)
-    .collection('invoices')
-    .orderBy('dateCreated', 'desc')
-    .limit(limit)
-    .onSnapshot(snapshot => {
-      setInvoices(snapshot.docs.map(doc => doc.data()))
-    })
+  .doc(userID)
+  .collection('invoices')
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setInvoices(snapshot.docs.map(doc => doc.data()))
+  })
 }
 
 export const getInvoiceByID = (userID, invoiceID, setInvoice) => {
   db.collection('users')
-    .doc(userID)
-    .collection('invoices')
-    .doc(invoiceID)
-    .onSnapshot(snapshot => {
-      setInvoice(snapshot.data())
-    })
+  .doc(userID)
+  .collection('invoices')
+  .doc(invoiceID)
+  .onSnapshot(snapshot => {
+    setInvoice(snapshot.data())
+  })
+}
+
+export const getInvoicesByContactEmail = (userID, email, setInvoices, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('invoices')
+  .where('invoiceTo.email', '==', email)
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setInvoices(snapshot.docs.map(doc => doc.data()))
+  })
 }
 
 export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, 
@@ -107,12 +119,13 @@ export const deleteInvoiceService = (myUserID, invoiceID, isPaid, invoiceTotal, 
     }
 }
 
-export const sendInvoiceService = (to, subject, emailHTML, pdfHTMLElement, invoiceFilename, uploadedFiles,
+export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement, invoiceFilename, uploadedFiles,
   myUserID, invoiceID, invoiceNumber, setPageLoading) => {
     const confirm = window.confirm("Send invoice to client?")
     if(confirm) {
       setPageLoading(true)
       return sendHtmlToEmailAsPDF(
+        from,
         to,
         subject,
         emailHTML,

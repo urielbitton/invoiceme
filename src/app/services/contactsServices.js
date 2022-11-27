@@ -34,7 +34,7 @@ export const getFavoriteContactsByUserID = (userID, setContacts) => {
   })
 }
 
-export const addContactService = (userID, name, email, phone, address,
+export const createContactService = (userID, name, email, phone, address,
   city, region, country, postcode, companyName, isFavorite,
   addToContacts, allowAddContact, setLoading, setInvoiceContact, clearContactInfo ) => {
   if (!allowAddContact) return alert("Please fill in all fields")
@@ -56,7 +56,8 @@ export const addContactService = (userID, name, email, phone, address,
       isFavorite,
       contactID: docID,
       dateCreated: new Date(),
-      ownerID: userID
+      ownerID: userID,
+      photoURL: 'https://i.imgur.com/D4fLSKa.png'
     }
     if(addToContacts) {
       setDB(contactsPath, docID, contactData)
@@ -105,17 +106,27 @@ export const deleteContactService = (userID, contactID, setLoading) => {
 }
 
 export const callPhoneService = (phone) => {
-  functions.httpsCallable('callPhone')({ phone })
+  return functions.httpsCallable('callPhone')({ phone })
   .then(result => {
     console.log(result) 
   })
   .catch(err => console.log(err))
 }
 
-export const sendSMSService = (phone, message) => {
-  functions.httpsCallable('sendSMS')({ phone, message })
+export const sendSMSService = (phone, message, mediaUrl, setLoading) => {
+  setLoading(true)
+  return functions.httpsCallable('sendSMS')({ 
+    phone, 
+    message,
+    ...(mediaUrl ? { mediaUrl } : null)
+  })
   .then(result => {
+    alert('Message sent successfully.')
+    setLoading(false)
     console.log(result) 
   })
-  .catch(err => console.log(err))
+  .catch(err => {
+    console.log(err)
+    setLoading(false)
+  })
 }

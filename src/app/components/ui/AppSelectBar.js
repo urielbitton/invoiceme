@@ -5,7 +5,7 @@ import { showXResultsOptions } from "app/data/general"
 
 export default function AppSelectBar(props) {
 
-  const { labelText1, selectOptions, searchValue, searchOnChange,
+  const { labelText1, sortSelectOptions, searchValue, searchOnChange,
     handleOnKeyPress, showAmountSelect, rightComponent,
     amountSelectValue, amountSelectOnChange, searchPlaceholder } = props
 
@@ -18,10 +18,10 @@ export default function AppSelectBar(props) {
         <AppInput
           placeholder={searchPlaceholder}
           iconleft={<i className="fal fa-search" />}
-          iconright={searchValue.length > 0 && 
-            <i 
-              className="fal fa-times" 
-              onClick={() => searchOnChange({target: {value: ''}})}
+          iconright={searchValue.length > 0 &&
+            <i
+              className="fal fa-times"
+              onClick={() => searchOnChange({ target: { value: '' } })}
             />
           }
           onKeyPress={handleOnKeyPress}
@@ -30,13 +30,16 @@ export default function AppSelectBar(props) {
           className="commonInput"
         />
       </div>
-      <div className="select-item">
-        <AppSelect
-          label="Sort by:"
-          options={selectOptions}
-          className="commonInput"
-        />
-      </div>
+      {
+        sortSelectOptions &&
+        <div className="select-item">
+          <AppSelect
+            label="Sort by:"
+            options={sortSelectOptions}
+            className="commonInput"
+          />
+        </div>
+      }
       {
         showAmountSelect &&
         <div className="select-item">
@@ -49,7 +52,7 @@ export default function AppSelectBar(props) {
           />
         </div>
       }
-      { rightComponent }
+      {rightComponent}
     </div>
   )
 }

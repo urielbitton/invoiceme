@@ -5,9 +5,8 @@
 
 .contact-page > header {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
+  align-items: center;
+  gap: 40px;
   flex-wrap: wrap;
   border-radius: 10px;
   box-shadow: var(--newCardShadow);
@@ -15,7 +14,114 @@
   margin-bottom: 40px;
   background: #fff;
 }
+.contact-page > header .side {
+  display: flex;
+  flex-direction: column;
+}
+.contact-page > header .side h4 {
+  font-size: 18px;
+  color: var(--darkGrayText);
+}
+.contact-page > header .side h5 {
+  color: var(--grayText);
+  font-weight: 600;
+}
+.contact-page > header .side h6 i {
+  margin-right: 5px;
+}
+.contact-page > header .side .btn-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.contact-page > header .side button {
+  font-size: 13px;
+  padding: 10px;
+}
+.contact-page > header .side h6 {
+  color: var(--primary);
+  font-weight: 500;
+  font-size: 12px;
+}
+.contact-page > header .side.with-border {
+  border-right: 1px solid #e5e5e5;
+  padding-right: 40px;
+}
+.contact-page > header .side.info {
+  gap: 2px;
+}
+.contact-page > header .side.info h5 {
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.contact-page > header .side.info h5 span {
+  color: var(--grayText);
+}
+.contact-page > header .side.info h5 span:first-child {
+  color: var(--darkGrayText);
+}
+.contact-page > header .side.info h5 i {
+  margin-right: 10px;
+}
+
+.new-sms-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.new-sms-modal form .commonInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.new-sms-modal .appInput h6,
+.new-sms-modal .appTextarea h6 {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--darkGrayText);
+}
+.new-sms-modal input {
+  border: 1px solid var(--inputBorderColor);
+  padding: 7px 10px;
+  color: #555;
+}
+.new-sms-modal form textarea {
+  padding: 10px;
+  border: 1px solid var(--inputBorderColor);
+  resize: none;
+  height: 100px;
+}
 
 .contact-page .contact-routes .app-tabs-bar > a {
   font-size: 13px;
+}
+.contact-page .contact-routes .app-tabs-bar > a.not-active {
+  color: var(--darkGrayText);
+}
+.contact-page .contact-routes .app-tabs-bar > a.not-active::after {
+  background: none;
+}
+
+.contact-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+.contact-content .header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.contact-content .header h5 {
+  color: var(--darkGrayText);
+  font-size: 14px;
+}
+
+.contact-invoices-content {
+  gap: 5px;
 }

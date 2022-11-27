@@ -1,12 +1,12 @@
 const { functions } = require("app/firebase/fire")
 const { convertFilesToBase64, saveHTMLToPDFAsBlob } = require("app/utils/fileUtils")
 
-export const sendSgEmail = (to, subject, html, files) => {
+export const sendSgEmail = (from, to, subject, html, files) => {
   return convertFilesToBase64(files)
     .then((base64s) => {
       return functions.httpsCallable('sendEmailWithAttachment')({
+        from: 'info@atomicsdigital.com' || from,
         to: to,
-        from: 'info@atomicsdigital.com',
         subject: subject,
         html: html,
         ...(files.length > 0 && {
@@ -28,10 +28,11 @@ export const sendSgEmail = (to, subject, html, files) => {
     .catch((error) => console.log(error))
 }
 
-export const sendHtmlToEmailAsPDF = (to, subject, emailHtml, pdfHTMLElement, filename, attachments) => {
+export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElement, filename, attachments) => {
   return saveHTMLToPDFAsBlob(pdfHTMLElement, filename)
   .then((file) => {
     return sendSgEmail(
+      from,
       to,
       subject, 
       emailHtml, 

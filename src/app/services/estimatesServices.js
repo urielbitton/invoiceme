@@ -25,6 +25,18 @@ export const getEstimateByID = (userID, estimateID, setEstimate) => {
     })
 }
 
+export const getEstimatesByContactEmail = (userID, email, setEstimates, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('estimates')
+  .where('estimateTo.email', '==', email)
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setEstimates(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
 export const createEstimateService = (userID, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
   estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, estimateName
 ) => {
@@ -100,12 +112,13 @@ export const deleteEstimateService = (myUserID, estimateID, setLoading) => {
     }
 }
 
-export const sendEstimateService = (to, subject, emailHTML, pdfHTMLElement, estimateFilename, uploadedFiles,
+export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement, estimateFilename, uploadedFiles,
   myUserID, estimateID, estimateNumber, setPageLoading) => {
     const confirm = window.confirm("Send estimate to client?")
     if(confirm) {
       setPageLoading(true)
       return sendHtmlToEmailAsPDF(
+        from,
         to,
         subject,
         emailHTML,

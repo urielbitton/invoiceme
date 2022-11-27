@@ -18,6 +18,7 @@ export default function AppButton(props) {
         buttonType === 'gradientBtn' ? 'gradientBtn' : 
         buttonType === 'invertedRedBtn' ? 'invertedRedBtn' :
         buttonType === 'outlineBtn' ? 'outlineBtn' :
+        buttonType === 'outlineBlueBtn' ? 'outlineBlueBtn' :
         buttonType === 'invertedBtn' ? 'invertedBtn' :
         buttonType === 'white' ? 'white' :
         buttonType === 'tabBtn' ? 'tabBtn' :

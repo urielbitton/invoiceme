@@ -68,6 +68,7 @@ export default function InvoicePage() {
     const confirm = invoice?.isSent ? window.confirm('This invoice has already been sent, would you like to send it again?') : true
     if (confirm) {
       sendInvoiceService(
+        myUser?.email,
         contactEmail,
         emailSubject,
         emailMessage.replace(/\r\n|\r|\n/g, "</br>"),

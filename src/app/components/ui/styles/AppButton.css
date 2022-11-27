@@ -67,6 +67,16 @@
   color: #000;
 }
 
+.appButton.outlineBlueBtn {
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
+}
+.appButton.outlineBlueBtn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
 .appButton.invertedBtn {
   color: #333;
   background: transparent;

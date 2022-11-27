@@ -1,0 +1,65 @@
+.email-modal button {
+  padding: 10px 20px;
+}
+.email-modal .email-message-text {
+  margin-top: 25px;
+  font-size: 14px;
+  color: #333;
+  white-space: pre-wrap;
+}
+.email-modal .email-message .titles {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.email-modal .email-message .appSelect h6 {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.email-modal .email-message select {
+  background: #222;
+  color: #fff;
+  padding: 12px;
+}
+.email-modal footer {
+  flex-wrap: wrap;
+}
+.email-modal footer button {
+  padding: 10px 20px;
+}
+
+.new-email-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.new-email-modal form input, 
+.new-email-modal form textarea {
+  border: none;
+}
+.new-email-modal form .appInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--inputBorderColor);
+}
+.new-email-modal .appInput h6 {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--darkGrayText);
+}
+.new-email-modal input {
+  padding: 7px 0;
+  color: #555;
+}
+.new-email-modal input:disabled {
+  background: none;
+  color: #aaa;
+}
+.new-email-modal form textarea {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--inputBorderColor);
+  resize: none;
+  height: 200px;
+}
