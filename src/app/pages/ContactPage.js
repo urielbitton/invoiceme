@@ -1,4 +1,5 @@
 import ContactEstimates from "app/components/contacts/ContactEstimates"
+import ContactGeneral from "app/components/contacts/ContactGeneral"
 import ContactInvoices from "app/components/contacts/ContactInvoices"
 import ContactPayments from "app/components/contacts/ContactPayments"
 import AppButton from "app/components/ui/AppButton"
@@ -40,10 +41,10 @@ export default function ContactPage() {
   const contactInvoices = useContactInvoices(myUserID, contact?.email, showAmount)
   const contactEstimates = useContactEstimates(myUserID, contact?.email, showAmount)
   const location = useLocation()
-  
-  const notIndexTab = location.pathname.includes('invoices') || 
-  location.pathname.includes('estimates') || 
-  location.pathname.includes('payments')
+
+  const notIndexTab = location.pathname.includes('invoices') ||
+    location.pathname.includes('estimates') ||
+    location.pathname.includes('payments')
 
   const resetInputFields = () => {
     setPhone('')
@@ -54,7 +55,7 @@ export default function ContactPage() {
   }
 
   const sendEmail = () => {
-    if(!emailSubject || !emailMessage) 
+    if (!emailSubject || !emailMessage)
       return alert('Please fill in all fields')
     setLoading(true)
     if (!emailFiles.length) {
@@ -71,35 +72,35 @@ export default function ContactPage() {
         replyTo: myUser?.email,
         to: contact?.email,
       })
-      .then(() => {
-        setLoading(false)
-        resetInputFields()
-        setShowEmailModal(false)
-        alert('Email sent to contact.')
-      })
-      .catch(err => {
-        setLoading(false)
-        alert(err.message)
-      })
+        .then(() => {
+          setLoading(false)
+          resetInputFields()
+          setShowEmailModal(false)
+          alert('Email sent to contact.')
+        })
+        .catch(err => {
+          setLoading(false)
+          alert(err.message)
+        })
     }
     else {
       sendSgEmail(
-        myUser?.email, 
-        contact?.email, 
-        emailSubject, 
-        emailMessage, 
+        myUser?.email,
+        contact?.email,
+        emailSubject,
+        emailMessage,
         emailFiles.map(file => file.file)
       )
-      .then(() => {
-        setShowEmailModal(false)
-        resetInputFields()
-        setLoading(false)
-        alert('Email sent to contact.')
-      })
-      .catch(err => {
-        setLoading(false)
-        alert(err.message)
-      })
+        .then(() => {
+          setShowEmailModal(false)
+          resetInputFields()
+          setLoading(false)
+          alert('Email sent to contact.')
+        })
+        .catch(err => {
+          setLoading(false)
+          alert(err.message)
+        })
     }
   }
 
@@ -107,14 +108,14 @@ export default function ContactPage() {
     if (!validatePhone(phone) || !textMessage)
       return alert('Please enter a valid phone number and message.')
     sendSMSService(phone, textMessage, textMediaUrl, setLoading)
-    .then(() => {
-      setShowSMSModal(false)
-      resetInputFields()
-    })
+      .then(() => {
+        setShowSMSModal(false)
+        resetInputFields()
+      })
   }
 
   useEffect(() => {
-    if(contact?.phone)
+    if (contact?.phone)
       setPhone(contact.phone)
   }, [contact])
 
@@ -147,7 +148,7 @@ export default function ContactPage() {
           </div>
           <div className="side info">
             <h5>
-              <span><i className="fas fa-envelope"/>Email</span>
+              <span><i className="fas fa-envelope" />Email</span>
               <span>{contact.email}</span>
             </h5>
             <h5>
@@ -155,28 +156,33 @@ export default function ContactPage() {
               <span>{contact.phone}</span>
             </h5>
             <h5>
-              <span><i className="fas fa-map-marker-alt"/>Address</span>
+              <span><i className="fas fa-map-marker-alt" />Address</span>
               <span>{contact.address}</span>
             </h5>
             <h5>
-              <span><i className="fas fa-globe-americas"/>Location</span>
+              <span><i className="fas fa-globe-americas" />Location</span>
               <span>{contact.city}, {contact.region}, {contact.country}</span>
             </h5>
             <h5>
-              <span><i className="fas fa-mailbox"/>Postal Code/ZIP</span>
+              <span><i className="fas fa-mailbox" />Postal Code/ZIP</span>
               <span>{contact.postcode}</span>
             </h5>
             <h5>
-              <span><i className="fas fa-clock"/>Date Created</span>
+              <span><i className="fas fa-clock" />Date Created</span>
               <span>{convertClassicDate(contact.dateCreated?.toDate())}</span>
             </h5>
           </div>
         </header>
         <div className="contact-routes">
           <AppTabsBar noSpread spacedOut={15}>
-            <NavLink 
-              to="" 
+            <NavLink
+              to=""
               className={notIndexTab ? 'not-active' : ''}
+            >
+              General
+            </NavLink>
+            <NavLink
+              to="invoices"
             >
               Invoices
             </NavLink>
@@ -191,23 +197,31 @@ export default function ContactPage() {
         <div className="contact-pages">
           <Routes>
             <Route path="" element={
-              <ContactInvoices 
-                invoices={contactInvoices} 
+              <ContactGeneral
+                contact={contact}
+                invoices={contactInvoices}
+                estimates={contactEstimates}
+                payments={null}
+              />}
+            />
+            <Route path="invoices" element={
+              <ContactInvoices
+                invoices={contactInvoices}
                 showAmount={showAmount}
                 setShowAmount={setShowAmount}
-              />} 
+              />}
             />
             <Route path="estimates" element={
-              <ContactEstimates 
-                estimates={contactEstimates} 
+              <ContactEstimates
+                estimates={contactEstimates}
                 showAmount={showAmount}
                 setShowAmount={setShowAmount}
-              />} 
+              />}
             />
             <Route path="payments" element={
-              <ContactPayments 
+              <ContactPayments
 
-            />} 
+              />}
             />
           </Routes>
         </div>

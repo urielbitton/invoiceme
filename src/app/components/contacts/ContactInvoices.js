@@ -18,10 +18,6 @@ export default function ContactInvoices({invoices, showAmount, setShowAmount}) {
     <div className="contact-invoices-content contact-content">
       <div className="header">
         <h5>Invoices: {invoices?.length}</h5>
-        <h5>Total Billed: </h5>
-        <h5>Highest Billed: </h5>
-        <h5>Lowest Billed: </h5>
-        <h5>Average Billed: </h5>
         <AppSelect
           label="Show:"
           options={showXResultsOptions}

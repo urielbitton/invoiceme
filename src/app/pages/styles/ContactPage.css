@@ -121,6 +121,9 @@
   color: var(--darkGrayText);
   font-size: 14px;
 }
+.contact-content .btn-group {
+  margin-top: 20px;
+}
 
 .contact-invoices-content {
   gap: 5px;
