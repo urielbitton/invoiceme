@@ -53,7 +53,7 @@ export default function ContactsPage() {
   },[myUser])
 
   return (
-    <div className="invoices-page">
+    <div className="invoices-page contacts-page">
       <HelmetTitle title="Contacts" />
       <AppSelectBar
         labelText1={labelText1}

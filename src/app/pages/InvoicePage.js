@@ -218,9 +218,8 @@ export default function InvoicePage() {
               <AppButton
                 label="Delete Invoice"
                 leftIcon="fas fa-trash"
-                buttonType="invertedBtn"
+                buttonType="invertedRedBtn"
                 onClick={() => deleteInvoice()}
-                className="delete-btn"
               />
             </div>
           </div>

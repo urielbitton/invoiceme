@@ -216,9 +216,8 @@ export default function EstimatePage() {
               <AppButton
                 label="Delete Estimate"
                 leftIcon="fas fa-trash"
-                buttonType="invertedBtn"
+                buttonType="invertedRedBtn"
                 onClick={() => deleteEstimate()}
-                className="delete-btn"
               />
             </div>
           </div>

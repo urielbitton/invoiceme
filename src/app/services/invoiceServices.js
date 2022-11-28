@@ -1,8 +1,14 @@
 import { db } from "app/firebase/fire"
-import { dateToMonthName } from "app/utils/dateUtils"
+import { convertInputDateToDateAndTimeFormat, 
+  dateToMonthName } from "app/utils/dateUtils"
 import { deleteDB, firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
 import { sendHtmlToEmailAsPDF } from "./emailServices"
 import { createNotification } from "./notifServices"
+
+const catchError = (err, setLoading) => {
+  setLoading(false)
+  console.log(err)
+}
 
 export const getInvoicesByUserID = (userID, setInvoices, limit) => {
   db.collection('users')
@@ -25,13 +31,12 @@ export const getInvoiceByID = (userID, invoiceID, setInvoice) => {
   })
 }
 
-export const getInvoicesByContactEmail = (userID, email, setInvoices, limit) => {
+export const getInvoicesByContactEmail = (userID, email, setInvoices) => {
   db.collection('users')
   .doc(userID)
   .collection('invoices')
   .where('invoiceTo.email', '==', email)
   .orderBy('dateCreated', 'desc')
-  .limit(limit)
   .onSnapshot(snapshot => {
     setInvoices(snapshot.docs.map(doc => doc.data()))
   })
@@ -44,8 +49,8 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoi
   const docID = getRandomDocID(path)
   const invoiceData = {
     currency: invoiceCurrency,
-    dateCreated: new Date(invoiceDate),
-    dateDue: new Date(invoiceDueDate),
+    dateCreated: convertInputDateToDateAndTimeFormat(invoiceDate),
+    dateDue: convertInputDateToDateAndTimeFormat(invoiceDueDate),
     invoiceID: docID,
     invoiceNumber: `INV-${invoiceNumber}`,
     invoiceOwnerID: userID,
@@ -53,7 +58,7 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoi
     isPaid: status === 'paid',
     isSent: false,
     items: invoiceItems,
-    monthLabel: dateToMonthName(new Date(invoiceDate)),
+    monthLabel: dateToMonthName(convertInputDateToDateAndTimeFormat(invoiceDate)),
     notes: invoiceNotes,
     status,
     taxRate1,
@@ -88,10 +93,7 @@ export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotal
       totalRevenue: newTotalRevenue,
     })
   })
-  .catch(err => {
-    console.log(err)
-    setLoading(false)
-  })
+  .catch(err => catchError(err, setLoading))
 }
 
 export const deleteInvoiceService = (myUserID, invoiceID, isPaid, invoiceTotal, setLoading) => {
@@ -107,23 +109,17 @@ export const deleteInvoiceService = (myUserID, invoiceID, isPaid, invoiceTotal, 
         .then(() => {
           setLoading(false)
         })
-        .catch(err => {
-          console.log(err)
-          setLoading(false)
-        })
+        .catch(err => catchError(err, setLoading))
       })
-      .catch(err => {
-        console.log(err)
-        setLoading(false)
-      })
+      .catch(err => catchError(err, setLoading))
     }
 }
 
 export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement, invoiceFilename, uploadedFiles,
-  myUserID, invoiceID, invoiceNumber, setPageLoading) => {
+  myUserID, invoiceID, invoiceNumber, setLoading) => {
     const confirm = window.confirm("Send invoice to client?")
     if(confirm) {
-      setPageLoading(true)
+      setLoading(true)
       return sendHtmlToEmailAsPDF(
         from,
         to,
@@ -146,12 +142,9 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
           `/invoices/${invoiceID}`
         )
         .catch(err => console.log(err))
-        setPageLoading(false)
+        setLoading(false)
         alert("Invoice sent to client.")
       })
-      .catch((error) => {
-        setPageLoading(false)
-        alert(error)
-      })
+      .catch(err => catchError(err, setLoading))
     }
 }

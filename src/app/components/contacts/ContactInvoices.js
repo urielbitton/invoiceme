@@ -1,13 +1,17 @@
 import { showXResultsOptions } from "app/data/general"
-import React from 'react'
+import React, { useState } from 'react'
 import InvoiceRow from "../invoices/InvoiceRow"
 import AppButton from "../ui/AppButton"
 import { AppSelect } from "../ui/AppInputs"
 import AppTable from "../ui/AppTable"
 
-export default function ContactInvoices({invoices, showAmount, setShowAmount}) {
+export default function ContactInvoices({invoices}) {
 
-  const invoicesList = invoices?.map((invoice, index) => {
+  const [showAmount, setShowAmount] = useState(showXResultsOptions[0].value)
+
+  const invoicesList = invoices
+  ?.slice(0, showAmount)
+  .map((invoice, index) => {
     return <InvoiceRow
       key={index}
       invoice={invoice}

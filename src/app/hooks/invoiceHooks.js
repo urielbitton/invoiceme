@@ -23,14 +23,14 @@ export const useInvoice = (userID, invoiceID) => {
   return invoice
 } 
 
-export const useContactInvoices = (userID, contactEmail, limit) => {
+export const useContactInvoices = (userID, contactEmail) => {
 
   const [invoices, setInvoices] = useState([])
 
   useEffect(() => {
     if (userID && contactEmail)
-    getInvoicesByContactEmail(userID, contactEmail, setInvoices, limit)
-  }, [userID, contactEmail, limit])
+    getInvoicesByContactEmail(userID, contactEmail, setInvoices)
+  }, [userID, contactEmail])
   
   return invoices
 }

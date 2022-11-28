@@ -5,26 +5,33 @@ import { truncateText } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
 import AppItemRow from "../ui/AppItemRow"
+import Avatar from "../ui/Avatar"
 import IconContainer from "../ui/IconContainer"
 
 export default function ContactRow(props) {
 
   const { myUserID, setPageLoading } = useContext(StoreContext)
   const { contactID, name, email, phone, address, 
-    city, region, country, dateCreated } = props.contact
+    city, region, country, dateCreated, photoURL } = props.contact
   const navigate = useNavigate()
+  const storagePath = `users/${myUserID}/contacts`
 
   const deleteContact = () => {
-    deleteContactService(myUserID, contactID, setPageLoading)
+    deleteContactService(myUserID, contactID, storagePath, ['photo-url'], setPageLoading)
   }
 
   return (
     <AppItemRow
-      item1={truncateText(name, 18)}
+      item1={
+        <div className="avatar-row-item">
+          <Avatar src={photoURL} dimensions={25}/>
+          {truncateText(name, 18)}
+        </div>
+      }
       item2={truncateText(email, 18)}
       item3={phone}
       item4={address}
-      item5={`${city}, ${region}`}
+      item5={city}
       item6={country}
       item7={convertClassicDate(convertAlgoliaDate(dateCreated))}
       actions={

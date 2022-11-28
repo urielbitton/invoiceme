@@ -53,6 +53,11 @@ export default function Register() {
       memberType: 'basic',
       myBusiness: null,
       totalRevenue: 0,
+      currency: { 
+        name: 'Canadian Dollar',
+        symbol: '$',
+        value: 'CAD'
+       }
     })
       .then(() => {
         setDB(`users/${user.uid}/notifications`, 'welcome', {

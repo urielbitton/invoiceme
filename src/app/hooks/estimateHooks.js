@@ -23,14 +23,14 @@ export const useEstimate = (userID, estimateID) => {
   return invoice
 } 
 
-export const useContactEstimates = (userID, contactEmail, limit) => {
+export const useContactEstimates = (userID, contactEmail) => {
 
   const [estimates, setEstimates] = useState([])
 
   useEffect(() => {
     if (userID && contactEmail)
-      getEstimatesByContactEmail(userID, contactEmail, setEstimates, limit)
-  }, [userID, contactEmail, limit])
+      getEstimatesByContactEmail(userID, contactEmail, setEstimates)
+  }, [userID, contactEmail])
 
   return estimates
 }

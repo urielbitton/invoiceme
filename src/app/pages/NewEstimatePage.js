@@ -12,14 +12,16 @@ import { currencies } from "app/data/general"
 import { useFavoriteContacts } from "app/hooks/contactsHooks"
 import { useEstimate } from "app/hooks/estimateHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
-import { createContactService } from "app/services/contactsServices"
+import { addContactService, createContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
-import { createEstimateService, deleteEstimateService, 
-  updateEstimateService } from "app/services/estimatesServices"
+import { createEstimateService, deleteEstimateService,
+  updateEstimateService
+} from "app/services/estimatesServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat, dateToMonthName } from "app/utils/dateUtils"
-import { calculatePriceTotal, formatCurrency, validateEmail,
-  validatePhone } from "app/utils/generalUtils"
+import {calculatePriceTotal, formatCurrency, validateEmail,
+  validatePhone
+} from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom"
 import './styles/NewInvoicePage.css'
@@ -376,13 +378,24 @@ export default function NewEstimatePage() {
   }
 
   const addContact = () => {
-    if(!allowAddContact) return alert('Please fill out all required fields.')
-    createContactService(
-      myUserID, contactName, contactEmail, contactPhone, contactAddress,
-      contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
-      contactAddFavorite, addToContacts, allowAddContact, setLoading, setEstimateContact, 
-      clearContactInfo
-    )
+    if (!!!allowAddContact) return alert('Please fill out all required fields')
+    if (addToContacts) {
+      createContactService(
+        myUserID, contactName, contactEmail, contactPhone, contactAddress,
+        contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
+        contactAddFavorite, '', null, setLoading
+      )
+        .then(() => {
+          clearContactInfo()
+        })
+    }
+    else {
+      addContactService(myUserID, contactName, contactEmail, contactPhone, contactAddress,
+        contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
+        contactAddFavorite, setEstimateContact
+      )
+      clearContactInfo()
+    }
   }
 
   const createEstimate = () => {
@@ -594,16 +607,16 @@ export default function NewEstimatePage() {
             placeholder="Search Contact"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            iconleft={contactsLoading ? <i className="fal fa-spinner fa-spin" /> : 
-            query.length ?
-              <i
-                className="fal fa-times"
-                onClick={() => {
-                  setQuery('')
-                  setSearchResults([])
-                }}
-              /> :
-              <i className="fal fa-search" />
+            iconleft={contactsLoading ? <i className="fal fa-spinner fa-spin" /> :
+              query.length ?
+                <i
+                  className="fal fa-times"
+                  onClick={() => {
+                    setQuery('')
+                    setSearchResults([])
+                  }}
+                /> :
+                <i className="fal fa-search" />
             }
           />
           {
@@ -661,30 +674,24 @@ export default function NewEstimatePage() {
         </div>
       </div>
       <div className="btn-group">
+        <AppButton
+          label={!editMode ? 'Create Estimate' : 'Update Estimate'}
+          onClick={!editMode ? createEstimate : updateEstimate}
+        />
         {
-          !editMode ?
+          editMode &&
+          <>
             <AppButton
-              label="Create Estimate"
-              onClick={createEstimate}
-              disabled={!allowCreateEstimate}
-            /> :
-            <>
-              <AppButton
-                label="Save Changes"
-                onClick={updateEstimate}
-                disabled={!allowCreateEstimate}
-              />
-              <AppButton
-                label="Delete Estimate"
-                onClick={deleteEstimate}
-                buttonType="invertedRedBtn"
-              />
-              <AppButton
-                label="Cancel"
-                onClick={() => navigate(-1)}
-                buttonType="invertedBtn"
-              />
-            </>
+              label="Delete Estimate"
+              onClick={deleteEstimate}
+              buttonType="invertedRedBtn"
+            />
+            <AppButton
+              label="Cancel"
+              onClick={() => navigate(-1)}
+              buttonType="invertedBtn"
+            />
+          </>
         }
       </div>
       <AddContactModal
@@ -708,8 +715,6 @@ export default function NewEstimatePage() {
         setCompanyName={setContactCompanyName}
         country={contactCountry}
         setCountry={setContactCountry}
-        addToFavorites={contactAddFavorite}
-        setAddToFavorites={setContactAddFavorite}
         addToContacts={addToContacts}
         setAddToContacts={setAddToContacts}
         createContact={addContact}

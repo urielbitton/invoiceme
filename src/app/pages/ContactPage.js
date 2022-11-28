@@ -8,11 +8,10 @@ import AppModal from "app/components/ui/AppModal"
 import AppTabsBar from "app/components/ui/AppTabsBar"
 import Avatar from "app/components/ui/Avatar"
 import EmailModal from "app/components/ui/EmailModal"
-import { showXResultsOptions } from "app/data/general"
 import { useContact } from "app/hooks/contactsHooks"
 import { useContactEstimates } from "app/hooks/estimateHooks"
 import { useContactInvoices } from "app/hooks/invoiceHooks"
-import { sendSMSService } from "app/services/contactsServices"
+import { sendSMSService, updateContactService } from "app/services/contactsServices"
 import { getRandomDocID, setDB } from "app/services/CrudDB"
 import { sendSgEmail } from "app/services/emailServices"
 import { StoreContext } from "app/store/store"
@@ -24,7 +23,7 @@ import './styles/ContactPage.css'
 
 export default function ContactPage() {
 
-  const { myUserID, myUser } = useContext(StoreContext)
+  const { myUserID, myUser, setPageLoading } = useContext(StoreContext)
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showSMSModal, setShowSMSModal] = useState(false)
   const [phone, setPhone] = useState('')
@@ -34,12 +33,10 @@ export default function ContactPage() {
   const [emailFiles, setEmailFiles] = useState([])
   const [textMediaUrl, setTextMediaUrl] = useState('')
   const [loading, setLoading] = useState(false)
-  const limitsNum = showXResultsOptions[0].value
-  const [showAmount, setShowAmount] = useState(limitsNum)
   const contactID = useParams().contactID
   const contact = useContact(myUserID, contactID)
-  const contactInvoices = useContactInvoices(myUserID, contact?.email, showAmount)
-  const contactEstimates = useContactEstimates(myUserID, contact?.email, showAmount)
+  const contactInvoices = useContactInvoices(myUserID, contact?.email)
+  const contactEstimates = useContactEstimates(myUserID, contact?.email)
   const location = useLocation()
 
   const notIndexTab = location.pathname.includes('invoices') ||
@@ -129,7 +126,7 @@ export default function ContactPage() {
               src={contact.photoURL}
             />
           </div>
-          <div className="side with-border">
+          <div className="side intro">
             <h4>{contact.name}</h4>
             <h5>{contact.companyName}</h5>
             <div className="btn-group">
@@ -172,6 +169,14 @@ export default function ContactPage() {
               <span>{convertClassicDate(contact.dateCreated?.toDate())}</span>
             </h5>
           </div>
+          <div className="side favorite">
+            <AppButton
+              label={contact.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+              onClick={() => updateContactService(myUserID, contactID, {isFavorite: !contact.isFavorite}, setPageLoading)}
+              buttonType={contact.isFavorite ? 'primary' : 'outlineBlueBtn'}
+              rightIcon={contact.isFavorite ? 'fas fa-heart' : 'far fa-heart'}
+            />
+          </div>
         </header>
         <div className="contact-routes">
           <AppTabsBar noSpread spacedOut={15}>
@@ -205,18 +210,10 @@ export default function ContactPage() {
               />}
             />
             <Route path="invoices" element={
-              <ContactInvoices
-                invoices={contactInvoices}
-                showAmount={showAmount}
-                setShowAmount={setShowAmount}
-              />}
+              <ContactInvoices invoices={contactInvoices} />}
             />
             <Route path="estimates" element={
-              <ContactEstimates
-                estimates={contactEstimates}
-                showAmount={showAmount}
-                setShowAmount={setShowAmount}
-              />}
+              <ContactEstimates estimates={contactEstimates} />}
             />
             <Route path="payments" element={
               <ContactPayments

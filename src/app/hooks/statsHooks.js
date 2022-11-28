@@ -1,4 +1,4 @@
-import { geCurrentYearInvoices, getCUrrentMonthInvoices } from "app/services/statsServices"
+import { geCurrentYearInvoices, getCurrentMonthInvoices } from "app/services/statsServices"
 import { StoreContext } from "app/store/store"
 import { useContext, useEffect, useState } from "react"
 
@@ -8,7 +8,7 @@ export const useCurrentMonthInvoices = (date) => {
   const [revenue, setRevenue] = useState(0)
 
   useEffect(() => {
-    getCUrrentMonthInvoices(myUserID, date, setRevenue)
+    getCurrentMonthInvoices(myUserID, date, setRevenue)
   }, [myUserID, date])
 
   return revenue

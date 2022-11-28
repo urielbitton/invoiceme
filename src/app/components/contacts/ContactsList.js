@@ -46,14 +46,14 @@ export default function ContactsList(props) {
   })
 
   return (
-    <div className="invoices-list">
+    <div className="invoices-list contacts-list">
       <AppTable
         headers={[
           "Name",
           "Email",
           "Phone",
           "Address",
-          "City, Region",
+          "City",
           "Country",
           "Date Created",
           'Actions'

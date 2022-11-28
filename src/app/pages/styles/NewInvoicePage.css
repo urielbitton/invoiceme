@@ -47,10 +47,43 @@
   min-height: 90px;
   max-height: 150px;
 }
-.new-invoice-page .page-content > form .commonInput h6 {
+.new-contact-page .page-content > form .avatar-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  grid-column: 1/-1;
+}
+.new-contact-page .page-content > form .avatar-row .left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.new-contact-page .page-content > form .avatar-row button {
+  font-size: 13px;
+}
+.new-invoice-page .page-content > form .commonInput h6,
+.new-contact-page .page-content > form .avatar-row h6,
+.new-contact-page .page-content > form .switch-row h6 {
   font-size: 13px;
   font-weight: 500;
   color: var(--darkGrayText);
+}
+.new-contact-page .page-content > form .switch-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.new-contact-page .page-content > form .appSwitch {
+  display: flex;
+  flex-direction: row;
+  background: #fff;
+  padding: 5px 10px;
+  height: 37px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--inputBorderColor);
+  border-radius: 5px;
 }
 .new-invoice-page .page-content > form .split-row {
   display: grid;
@@ -272,4 +305,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
+}
+.new-contact-page .btn-group {
+  margin-top: 20px;
 }

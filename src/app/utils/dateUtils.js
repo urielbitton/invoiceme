@@ -43,6 +43,10 @@ export const convertInputDateToDateFormat = (string) => {
   return new Date(`${string.split('-')[1]}-${string.split('-')[2]}-${string.split('-')[0]}`)
 }
 
+export const convertInputDateToDateAndTimeFormat = (string) => {
+  return new Date(`${string.split('-')[1]}-${string.split('-')[2]}-${string.split('-')[0]} ${getTimeFromDate(new Date(string))}`)
+}
+
 export const convertDateToTimeInputFormat = (date) => {
   return reformatDateToMonthDayYear(date)?.toISOString().split('T')[1].split('.')[0]
 }
@@ -59,6 +63,10 @@ export const getDateTimeString = (date) => {
 }
 
 export const getTimeStringIn24h = (date) => {
+  return date?.toTimeString().slice(0,5)
+}
+
+export const getTimeFromDate = (date) => {
   return date?.toTimeString().slice(0,5)
 }
 

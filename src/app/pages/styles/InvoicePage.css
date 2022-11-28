@@ -32,12 +32,6 @@
 .invoice-page .send-container .bottom .edit-invoice-btn {
   color: var(--primary);
 }
-.invoice-page .send-container .bottom .delete-btn {
-  color: var(--red);
-}
-.invoice-page .send-container .bottom .delete-btn:hover {
-  background: var(--lightRed);
-}
 .invoice-page .send-container .top > h3 {
   font-size: 22px;
   color: var(--darkGrayText);

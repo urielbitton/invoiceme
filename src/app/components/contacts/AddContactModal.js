@@ -7,11 +7,11 @@ import './styles/AddContactModal.css'
 
 export default function AddContactModal(props) {
 
-  const { showModal, setShowModal, name,
-    setName, email, setEmail, phone, setPhone, address, setAddress,
-    city, setCity, region, setRegion, country, setCountry, postcode,
-    setPostcode, companyName, setCompanyName, addToFavorites, setAddToFavorites, createContact,
-    loading, addToContacts, setAddToContacts } = props
+  const { showModal, setShowModal, name, setName, email, setEmail, 
+    phone, setPhone, address, setAddress, city, setCity, region, 
+    setRegion, country, setCountry, postcode, setPostcode, companyName, 
+    setCompanyName, createContact, loading, addToContacts, 
+    setAddToContacts } = props
 
   return (
     <AppModal
@@ -81,12 +81,7 @@ export default function AddContactModal(props) {
         />
         <div className="split-row">
           <AppSwitch
-            label="Add to Favorites"
-            checked={addToFavorites}
-            onChange={(e) => setAddToFavorites(e.target.checked)}
-          />
-          <AppSwitch
-            label="Add to Contacts"
+            label="Save to Contacts"
             checked={addToContacts}
             onChange={(e) => setAddToContacts(e.target.checked)}
           />

@@ -51,3 +51,9 @@
   font-weight: 600;
   color: var(--grayText);
 }
+
+.contacts-page .contacts-list .app-table .avatar-row-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

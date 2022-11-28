@@ -12,13 +12,14 @@ import { currencies } from "app/data/general"
 import { useFavoriteContacts } from "app/hooks/contactsHooks"
 import { useInvoice } from "app/hooks/invoiceHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
-import { createContactService } from "app/services/contactsServices"
+import { addContactService, createContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
 import { createInvoiceService, deleteInvoiceService,
   updateInvoiceService
 } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
-import { convertDateToInputFormat, dateToMonthName } from "app/utils/dateUtils"
+import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat, 
+  dateToMonthName } from "app/utils/dateUtils"
 import { calculatePriceTotal, formatCurrency, validateEmail,
   validatePhone
 } from "app/utils/generalUtils"
@@ -77,20 +78,20 @@ export default function NewInvoicePage() {
   const calculatedTotal = invoiceItems?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedItemTotal = calculatePriceTotal(itemPrice, itemTaxRate / 100, itemQuantity)
 
-  const allowAddContact = contactName?.length > 0 &&
+  const allowAddContact = contactName &&
     validateEmail(contactEmail) &&
     validatePhone(contactPhone) &&
-    contactAddress?.length > 0 &&
-    contactCity?.length > 0 &&
-    contactRegion?.length > 0 &&
-    contactCountry?.length > 0 &&
-    contactPostcode?.length > 0
+    contactAddress &&
+    contactCity &&
+    contactRegion &&
+    contactCountry &&
+    contactPostcode
 
-  const allowCreateInvoice = invoiceName?.length > 0 &&
-    invoiceNumber?.length > 0 &&
-    invoiceDueDate?.length > 0 &&
+  const allowCreateInvoice = invoiceName &&
+    invoiceNumber &&
+    invoiceDueDate &&
     invoiceCurrency &&
-    invoiceItems?.length > 0 &&
+    invoiceItems &&
     invoiceContact
 
   const contacts = useInstantSearch(
@@ -385,17 +386,27 @@ export default function NewInvoicePage() {
   }
 
   const addContact = () => {
-    if(!allowAddContact) return alert('Please fill out all required fields')
-    createContactService(
-      myUserID, contactName, contactEmail, contactPhone, contactAddress,
-      contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
-      contactAddFavorite, addToContacts, allowAddContact, setLoading, setInvoiceContact, 
-      clearContactInfo
-    )
+    if (!!!allowAddContact) return alert('Please fill out all required fields')
+    if (addToContacts) {
+      createContactService(myUserID, contactName, contactEmail, contactPhone, contactAddress,
+        contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
+        contactAddFavorite, '', null, setLoading
+      )
+        .then(() => {
+          clearContactInfo()
+        })
+    }
+    else {
+      addContactService(myUserID, contactName, contactEmail, contactPhone, contactAddress,
+        contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
+        contactAddFavorite, setInvoiceContact
+      )
+      clearContactInfo()
+    }
   }
 
   const createInvoice = () => {
-    if (!allowCreateInvoice) return alert("Please fill out all required fields.")
+    if (!!!allowCreateInvoice) return alert("Please fill out all required fields.")
     setPageLoading(true)
     createInvoiceService(
       myUserID, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, invoiceContact,
@@ -413,7 +424,7 @@ export default function NewInvoicePage() {
   }
 
   const updateInvoice = () => {
-    if (!allowCreateInvoice) return alert("Please fill out all required fields.")
+    if (!!!allowCreateInvoice) return alert("Please fill out all required fields.")
     const newTotalRevenue = status === 'paid' ?
       !editInvoice?.partOfTotal ?
         myUser?.totalRevenue + calculatedTotal :
@@ -446,16 +457,16 @@ export default function NewInvoicePage() {
       newTotalRevenue,
       setPageLoading
     )
-    .then(() => {
-      navigate(`/invoices/${editInvoiceID}`)
-    })
+      .then(() => {
+        navigate(`/invoices/${editInvoiceID}`)
+      })
   }
 
   const deleteInvoice = () => {
     deleteInvoiceService(myUserID, editInvoiceID, editInvoice?.isPaid, editInvoice?.total, setLoading)
-    .then(() => {
-      navigate('/invoices')
-    })
+      .then(() => {
+        navigate('/invoices')
+      })
   }
 
   useEffect(() => {
@@ -494,7 +505,7 @@ export default function NewInvoicePage() {
         <form onSubmit={(e) => e.preventDefault()}>
           <AppInput
             label="Invoice Name"
-            placeholder="Montly consulting services"
+            placeholder="Monthly consulting services"
             value={invoiceName}
             onChange={(e) => setInvoiceName(e.target.value)}
           />
@@ -620,16 +631,16 @@ export default function NewInvoicePage() {
             placeholder="Search Contact"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            iconleft={contactsLoading ? <i className="fal fa-spinner fa-spin" /> : 
-            query.length ?
-              <i
-                className="fal fa-times"
-                onClick={() => {
-                  setQuery('')
-                  setSearchResults([])
-                }}
-              /> :
-              <i className="fal fa-search" />
+            iconleft={contactsLoading ? <i className="fal fa-spinner fa-spin" /> :
+              query.length ?
+                <i
+                  className="fal fa-times"
+                  onClick={() => {
+                    setQuery('')
+                    setSearchResults([])
+                  }}
+                /> :
+                <i className="fal fa-search" />
             }
           />
           {
@@ -687,30 +698,24 @@ export default function NewInvoicePage() {
         </div>
       </div>
       <div className="btn-group">
+        <AppButton
+          label={!editMode ? 'Create Invoice' : 'Update Invoice'}
+          onClick={!editMode ? createInvoice : updateInvoice}
+        />
         {
-          !editMode ?
+          editMode &&
+          <>
             <AppButton
-              label="Create Invoice"
-              onClick={createInvoice}
-              disabled={!allowCreateInvoice}
-            /> :
-            <>
-              <AppButton
-                label="Save Changes"
-                onClick={updateInvoice}
-                disabled={!allowCreateInvoice}
-              />
-              <AppButton
-                label="Delete Invoice"
-                onClick={deleteInvoice}
-                buttonType="invertedRedBtn"
-              />
-              <AppButton
-                label="Cancel"
-                onClick={() => navigate(-1)}
-                buttonType="invertedBtn"
-              />
-            </>
+              label="Delete Invoice"
+              onClick={deleteInvoice}
+              buttonType="invertedRedBtn"
+            />
+            <AppButton
+              label="Cancel"
+              onClick={() => navigate(-1)}
+              buttonType="invertedBtn"
+            />
+          </>
         }
       </div>
       <AddContactModal
@@ -734,8 +739,6 @@ export default function NewInvoicePage() {
         setPostcode={setContactPostcode}
         companyName={contactCompanyName}
         setCompanyName={setContactCompanyName}
-        addToFavorites={contactAddFavorite}
-        setAddToFavorites={setContactAddFavorite}
         addToContacts={addToContacts}
         setAddToContacts={setAddToContacts}
         createContact={addContact}

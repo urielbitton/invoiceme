@@ -1,23 +1,28 @@
 import React from 'react'
 import './styles/AvatarUploader.css'
-import { uploadMultipleFilesLocal } from "app/utils/fileUtils"
+import { uploadFileLocal } from "app/utils/fileUtils"
 import PreventTabClose from "./PreventTabClose"
 
 export default function AvatarUploader(props) {
 
-  const { className, imgOnClick, saveOnClick, src, alt, 
-    editRights, inputRef, uploadedImg, setUploadedImg } = props
+  const { dimensions=140, className, imgOnClick, saveOnClick, src, alt, 
+    editRights=true, setLoading, uploadedImg, setUploadedImg,
+    directSaving } = props
+  const maxFileUploadSize = 1024 * 1024 * 4
 
   const cancelOnClick = () => {
     setUploadedImg(null)
   }
 
   return (
-    <div className={`avatar-uploader ${className}`}>
+    <div 
+      className={`avatar-uploader ${className}`}
+      style={{width: dimensions, height: dimensions}}
+    >
       <img
-        src={src}
+        src={src || 'https://i.imgur.com/D4fLSKa.png'}
         onClick={imgOnClick}
-        alt={alt}
+        alt={alt || 'avatar'}
       />
       {
         editRights &&
@@ -27,13 +32,12 @@ export default function AvatarUploader(props) {
             <input 
               type="file" 
               accept="image/*"
-              style={{"display": "none"}}
-              ref={inputRef}
-              onChange={(e) => uploadMultipleFilesLocal(e, 2097152, setUploadedImg, inputRef)}
+              hidden
+              onChange={(e) => uploadFileLocal(e, maxFileUploadSize, setUploadedImg, setLoading)}
             />
           </label>
           {
-            uploadedImg?.file &&
+            directSaving && uploadedImg?.file && 
             <>
             <span 
               className="avatar-icon save-icon"

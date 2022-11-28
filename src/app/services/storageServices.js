@@ -30,16 +30,14 @@ export const uploadMultipleFilesToFireStorage = (files, storagePath, fileNames, 
   })
 }
 
-export const deleteMultipleStorageFiles = (files, storagePath, pass) => {
-  if(pass) {
-    return Promise.resolve()
-  }
+export const deleteMultipleStorageFiles = (storagePath, filenames) => {
   return new Promise((resolve, reject) => {
-    files.forEach((file, i) => {
-      let storageRef = storage.ref(storagePath).child(file.name)
+    if(!filenames?.length) return resolve()
+    filenames.forEach((file, i) => {
+      let storageRef = storage.ref(storagePath).child(file)
       storageRef.delete()
       .then(() => {
-        if(i === files.length-1) {
+        if(i === filenames.length-1) {
           resolve()
         }
       })

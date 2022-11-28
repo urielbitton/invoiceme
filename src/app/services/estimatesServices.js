@@ -1,8 +1,14 @@
 import { db } from "app/firebase/fire"
-import { dateToMonthName } from "app/utils/dateUtils"
+import { convertInputDateToDateAndTimeFormat, 
+  dateToMonthName } from "app/utils/dateUtils"
 import { deleteDB, firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
 import { sendHtmlToEmailAsPDF } from "./emailServices"
 import { createNotification } from "./notifServices"
+
+const catchError = (err, setLoading) => {
+  setLoading(false)
+  console.log(err)
+}
 
 export const getEstimatesByUserID = (userID, setEstimates, limit) => {
   db.collection('users')
@@ -25,34 +31,34 @@ export const getEstimateByID = (userID, estimateID, setEstimate) => {
     })
 }
 
-export const getEstimatesByContactEmail = (userID, email, setEstimates, limit) => {
+export const getEstimatesByContactEmail = (userID, email, setEstimates) => {
   db.collection('users')
   .doc(userID)
   .collection('estimates')
   .where('estimateTo.email', '==', email)
   .orderBy('dateCreated', 'desc')
-  .limit(limit)
   .onSnapshot(snapshot => {
     setEstimates(snapshot.docs.map(doc => doc.data()))
   })
 }
 
-export const createEstimateService = (userID, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
-  estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, estimateName
+export const createEstimateService = (userID, estimateCurrency, estimateDate, estimateDueDate, 
+  estimateNumber, estimateContact, estimateItems, estimateNotes, taxRate1, taxRate2, 
+  calculatedSubtotal, calculatedTotal, estimateName
 ) => {
   const path = `users/${userID}/estimates`
   const docID = getRandomDocID(path)
   const estimateData = {
     currency: estimateCurrency,
-    dateCreated: new Date(estimateDate),
-    dateDue: new Date(estimateDueDate),
+    dateCreated: convertInputDateToDateAndTimeFormat(estimateDate),
+    dateDue: convertInputDateToDateAndTimeFormat(estimateDueDate),
     estimateID: docID,
     estimateNumber: `EST-${estimateNumber}`,
     estimateOwnerID: userID,
     estimateTo: estimateContact,
     isSent: false,
     items: estimateItems,
-    monthLabel: dateToMonthName(new Date(estimateDate)),
+    monthLabel: dateToMonthName(convertInputDateToDateAndTimeFormat(estimateDate)),
     notes: estimateNotes,
     taxRate1,
     taxRate2,
@@ -82,10 +88,7 @@ export const updateEstimateService = (userID, estimateID, updatedProps, setLoadi
   .then(() => {
     setLoading(false)
   })
-  .catch(err => {
-    console.log(err)
-    setLoading(false)
-  })
+  .catch(err => catchError(err, setLoading))
 }
 
 export const deleteEstimateService = (myUserID, estimateID, setLoading) => {
@@ -100,23 +103,17 @@ export const deleteEstimateService = (myUserID, estimateID, setLoading) => {
         .then(() => {
           setLoading(false)
         })
-        .catch(err => {
-          console.log(err)
-          setLoading(false)
-        })
+        .catch(err => catchError(err, setLoading))
       })
-      .catch(err => {
-        console.log(err)
-        setLoading(false)
-      })
+      .catch(err => catchError(err, setLoading))
     }
 }
 
 export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement, estimateFilename, uploadedFiles,
-  myUserID, estimateID, estimateNumber, setPageLoading) => {
+  myUserID, estimateID, estimateNumber, setLoading) => {
     const confirm = window.confirm("Send estimate to client?")
     if(confirm) {
-      setPageLoading(true)
+      setLoading(true)
       return sendHtmlToEmailAsPDF(
         from,
         to,
@@ -139,12 +136,9 @@ export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement
           `/estimates/${estimateID}`
         )
         .catch(err => console.log(err))
-        setPageLoading(false)
+        setLoading(false)
         alert("Estimate sent to client.")
       })
-      .catch((error) => {
-        setPageLoading(false)
-        alert(error)
-      })
+      .catch(err => catchError(err, setLoading))
     }
 }

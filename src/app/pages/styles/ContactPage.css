@@ -44,15 +44,14 @@
   font-weight: 500;
   font-size: 12px;
 }
-.contact-page > header .side.with-border {
-  border-right: 1px solid #e5e5e5;
-  padding-right: 40px;
-}
 .contact-page > header .side.info {
   gap: 2px;
+  border-right: 1px solid #e5e5e5;
+  border-left: 1px solid #e5e5e5;
+  padding: 0 40px;
 }
 .contact-page > header .side.info h5 {
-  width: 300px;
+  width: 350px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -67,6 +66,7 @@
 .contact-page > header .side.info h5 i {
   margin-right: 10px;
 }
+
 
 .new-sms-modal form {
   display: flex;
@@ -109,20 +109,80 @@
 .contact-content {
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 .contact-content .header {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
   margin-bottom: 20px;
 }
 .contact-content .header h5 {
   color: var(--darkGrayText);
   font-size: 14px;
+  font-weight: 600;
+}
+.contact-content .header .appSelect {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.contact-content .header .appSelect h6 {
+  color: var(--darkGrayText);
+  font-size: 14px;
+  font-weight: 600;
+}
+.contact-content .header select {
+  padding: 5px 0;
+  border: none;
+  font-size: 13px;
+  background: none;
+  border-bottom: 1px solid #ccc;
+  width: 200px;
+  border-radius: 0;
+}
+.contact-content .header select {
+  width: auto;
+  padding: 5px 20px;
+  padding-left: 5px;
 }
 .contact-content .btn-group {
   margin-top: 20px;
+}
+.contact-content .section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--newCardShadow);
+  background: #fff;
+  width: 400px;
+}
+.contact-content .section h5 {
+  margin-bottom: 10px;
+}
+.contact-content .section h6 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grayText);
+}
+.contact-content .section p {
+  font-size: 14px;
+  color: var(--grayText);
+}
+.contact-content .btn-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid var(--inputBorderColor);
 }
 
 .contact-invoices-content {

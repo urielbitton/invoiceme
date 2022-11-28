@@ -85,6 +85,23 @@ export const uploadMultipleFilesLocal = (e, maxSize, setFiles, setLoading=setLoa
   })
 }
 
+export const uploadFileLocal = (e, maxSize, setFile, setLoading=setLoadingDef) => {
+  setLoading(true)
+  let file = e.target.files[0]
+  if(file.size > maxSize) {
+    setLoading(false)
+    return alert(`The uploaded file is too large. Max file size is ${maxSize/1000000} MB`)
+  }
+  let reader = new FileReader()
+  reader.onloadend = function() {
+    setLoading(false)
+    setFile({src: reader.result, file})
+  }
+  if(file) {
+    reader.readAsDataURL(file)
+  }
+}
+
 export const isFileTypeImage = (file) => {
   return file?.type?.includes('image')
 }

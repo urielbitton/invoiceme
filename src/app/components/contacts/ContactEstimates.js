@@ -1,13 +1,17 @@
 import { showXResultsOptions } from "app/data/general"
-import React from 'react'
+import React, { useState } from 'react'
 import EstimateRow from "../estimates/EstimateRow"
 import AppButton from "../ui/AppButton"
 import { AppSelect } from "../ui/AppInputs"
 import AppTable from "../ui/AppTable"
 
-export default function ContactEstimates({estimates, showAmount, setShowAmount}) {
+export default function ContactEstimates({estimates}) {
 
-  const estimatesList = estimates?.map((estimate, index) => {
+  const [showAmount, setShowAmount] = useState(showXResultsOptions[0].value)
+
+  const estimatesList = estimates
+  ?.slice(0, showAmount)
+  .map((estimate, index) => {
     return <EstimateRow
       key={index}
       estimate={estimate}

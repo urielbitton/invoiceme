@@ -1,6 +1,12 @@
 import { db, functions } from "app/firebase/fire"
 import { deleteDB, firebaseIncrement, getRandomDocID, 
   setDB, updateDB } from "./CrudDB"
+import { deleteMultipleStorageFiles } from "./storageServices"
+
+const catchError = (err, setLoading) => {
+  setLoading(false)
+  console.log(err)
+}
 
 export const getContactByID = (userID, contactID, setContact) => {
   db.collection('users')
@@ -34,10 +40,8 @@ export const getFavoriteContactsByUserID = (userID, setContacts) => {
   })
 }
 
-export const createContactService = (userID, name, email, phone, address,
-  city, region, country, postcode, companyName, isFavorite,
-  addToContacts, allowAddContact, setLoading, setInvoiceContact, clearContactInfo ) => {
-  if (!allowAddContact) return alert("Please fill in all fields")
+export const createContactService = (userID, name, email, phone, address, city, 
+  region, country, postcode, companyName, isFavorite, notes, photoURL, setLoading) => {
     setLoading(true)
     const contactsPath = `users/${userID}/contacts`
     const docID = getRandomDocID(contactsPath)
@@ -54,36 +58,62 @@ export const createContactService = (userID, name, email, phone, address,
       companyName,
       postcode,
       isFavorite,
+      notes,
       contactID: docID,
       dateCreated: new Date(),
       ownerID: userID,
-      photoURL: 'https://i.imgur.com/D4fLSKa.png'
+      photoURL: photoURL ?? 'https://i.imgur.com/D4fLSKa.png'
     }
-    if(addToContacts) {
-      setDB(contactsPath, docID, contactData)
-        .then(() => {
-          updateDB('users', userID, {
-            contactsNum: firebaseIncrement(1)
-          })
-          setInvoiceContact(contactData)
-          clearContactInfo()
-          setLoading(false)
-        })
-        .catch(err => {
-          setLoading(false)
-          console.log(err)
-        })
-    }
-    else {
-      setInvoiceContact(contactData)
-      clearContactInfo()
-      setLoading(false)
-    }
+    return setDB(contactsPath, docID, contactData)
+    .then(() => {
+      return updateDB('users', userID, {
+        contactsNum: firebaseIncrement(1)
+      })
+      .then(() => {
+        setLoading(false)
+      })
+      .catch(err => catchError(err, setLoading))
+    })
+    .catch(err => catchError(err, setLoading))
 }
 
-export const deleteContactService = (userID, contactID, setLoading) => {
+export const addContactService = (userID, name, email, phone, address,
+  city, region, country, postcode, companyName, isFavorite, setInvoiceContact) => {
+  const contactsPath = `users/${userID}/contacts`
+  const docID = getRandomDocID(contactsPath)
+  const contactData = {
+    name,
+    email,
+    phone,
+    address,
+    city,
+    region: region.split(',')[0],
+    regionCode: region.split(',')[1],
+    country: country.split(',')[0],
+    countryCode: country.split(',')[1],
+    companyName,
+    postcode,
+    isFavorite,
+    contactID: docID,
+    dateCreated: new Date(),
+    ownerID: userID,
+    photoURL: 'https://i.imgur.com/D4fLSKa.png'
+  }
+  setInvoiceContact(contactData)
+}
+
+export const updateContactService = (userID, contactID, updatedProps, setLoading) => {
+  setLoading(true)
+  return updateDB(`users/${userID}/contacts`, contactID, updatedProps)
+    .then(() => {
+      setLoading(false)
+    })
+    .catch(err => catchError(err, setLoading))
+}
+
+export const deleteContactService = (userID, contactID, storagePath, filenames, setLoading) => {
   const confirm = window.confirm("Are you sure you want to delete this contact?")
-    if (confirm) {
+    if(confirm) {
       setLoading(true)
       return deleteDB(`users/${userID}/contacts`, contactID)
       .then(() => {
@@ -91,17 +121,15 @@ export const deleteContactService = (userID, contactID, setLoading) => {
           contactsNum: firebaseIncrement(-1),
         })
         .then(() => {
-          setLoading(false)
+          return deleteMultipleStorageFiles(storagePath, filenames)
+          .then(() => {
+            setLoading(false)
+          })
+          .catch(err => catchError(err, setLoading))
         })
-        .catch(err => {
-          console.log(err)
-          setLoading(false)
-        })
+        .catch(err => catchError(err, setLoading))
       })
-      .catch(err => {
-        console.log(err)
-        setLoading(false)
-      })
+      .catch(err => catchError(err, setLoading))
     }
 }
 
@@ -125,8 +153,5 @@ export const sendSMSService = (phone, message, mediaUrl, setLoading) => {
     setLoading(false)
     console.log(result) 
   })
-  .catch(err => {
-    console.log(err)
-    setLoading(false)
-  })
+  .catch(err => catchError(err, setLoading))
 }
