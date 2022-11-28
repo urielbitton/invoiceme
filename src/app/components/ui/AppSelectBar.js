@@ -7,7 +7,8 @@ export default function AppSelectBar(props) {
 
   const { labelText1, sortSelectOptions, searchValue, searchOnChange,
     handleOnKeyPress, showAmountSelect, rightComponent,
-    amountSelectValue, amountSelectOnChange, searchPlaceholder } = props
+    amountSelectValue, amountSelectOnChange, searchPlaceholder, yearSelectOptions,
+    monthSelectOptions, yearValue, monthValue, yearOnChange, monthOnChange } = props
 
   return (
     <div className="app-select-bar">
@@ -27,7 +28,6 @@ export default function AppSelectBar(props) {
           onKeyPress={handleOnKeyPress}
           value={searchValue}
           onChange={searchOnChange}
-          className="commonInput"
         />
       </div>
       {
@@ -36,7 +36,6 @@ export default function AppSelectBar(props) {
           <AppSelect
             label="Sort by:"
             options={sortSelectOptions}
-            className="commonInput"
           />
         </div>
       }
@@ -48,7 +47,28 @@ export default function AppSelectBar(props) {
             options={showXResultsOptions}
             onChange={amountSelectOnChange}
             value={amountSelectValue}
-            className="commonInput"
+          />
+        </div>
+      }
+      {
+        yearSelectOptions?.length > 0 &&
+        <div className="select-item">
+          <AppSelect
+            label="Year:"
+            options={yearSelectOptions}
+            onChange={yearOnChange}
+            value={yearValue}
+          />
+        </div>
+      }
+      {
+        monthSelectOptions?.length > 0 &&
+        <div className="select-item">
+          <AppSelect
+            label="Month:"
+            options={monthSelectOptions}
+            onChange={monthOnChange}
+            value={monthValue}
           />
         </div>
       }

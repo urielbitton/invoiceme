@@ -5,7 +5,8 @@ export default function MyAccountPage() {
   return (
     <div>
       <HelmetTitle title="My Account" />
-      MyAccount
+      MyAccount<br/>
+      Show brief stats of total all time revenue(homepage shows yearl only), all time invocies, estimates, contacts, etc.<br/>
     </div>
   )
 }

@@ -7,6 +7,7 @@ import noResultsImg from 'app/assets/images/no-results.png'
 import { useInvoices } from "app/hooks/invoiceHooks"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import AppButton from "app/components/ui/AppButton"
+import { monthSelectOptions, yearSelectOptions } from "app/data/general"
 
 export default function InvoicesPage() {
 
@@ -19,6 +20,8 @@ export default function InvoicesPage() {
   const [pageNum, setPageNum] = useState(0)
   const [numOfHits, setNumOfHits] = useState(0)
   const [hitsPerPage, setHitsPerPage] = useState(10)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const [selectedMonth, setSelectedMonth] = useState('all')
   const limitsNum = 10
   const [invoicesLimit, setInvoicesLimit] = useState(limitsNum)
   const dbInvoices = useInvoices(myUserID, invoicesLimit)
@@ -73,6 +76,12 @@ export default function InvoicesPage() {
         amountSelectValue={invoicesLimit}
         amountSelectOnChange={(e) => setInvoicesLimit(e.target.value)}
         searchPlaceholder="Search Invoices"
+        yearSelectOptions={yearSelectOptions}
+        monthSelectOptions={monthSelectOptions}
+        yearValue={selectedYear}
+        yearOnChange={(e) => setSelectedYear(e.target.value)}
+        monthValue={selectedMonth}
+        monthOnChange={(e) => setSelectedMonth(e.target.value)}
       />
       <div className="invoices-content">
         <InvoicesList

@@ -7,6 +7,23 @@
   font-weight: 600;
   color: var(--darkGrayText)
 }
+.homepage .page-title-bar .year-selector {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.homepage .page-title-bar .year-selector h5 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--darkGrayText)
+}
+.homepage .page-title-bar .year-selector select {
+  padding: 5px 10px;
+  font-size: 13px;
+  background: var(--primary);
+  color: #fff;
+}
+
 .homepage .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -90,6 +107,11 @@
 .homepage .invoices-section .titles select {
   font-size: 14px;
   padding: 5px;
+}
+.homepage .app-table .avatar-row-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .homepage .foot-notes {

@@ -206,12 +206,12 @@ export const getLastDayOfMonthAsDate = (date) => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0)
 }
 
-export const getFirstDayOfYearAsDate = (date) => {
-  return new Date(date.getFullYear(), 0, 1)
+export const getFirstDayOfYearAsDate = (year) => {
+  return new Date(year, 0, 1)
 }
 
-export const getLastDayOfYearAsDate = (date) => {
-  return new Date(date.getFullYear(), 11, 31)
+export const getLastDayOfYearAsDate = (year) => {
+  return new Date(year, 11, 31)
 }
 
 export const monthNameToDate = (monthName) => {

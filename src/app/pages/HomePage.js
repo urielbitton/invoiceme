@@ -1,7 +1,9 @@
+import ContactsList from "app/components/contacts/ContactsList"
+import EstimatesList from "app/components/estimates/EstimatesList"
 import InvoicesList from "app/components/invoices/InvoicesList"
 import AppButton from "app/components/ui/AppButton"
-import { AppAreaChart, AppBarChart, AppPieChart,
-  AppRadarChart
+import { AppAreaChart, AppBarChart, 
+  AppPieChart, AppRadarChart
 } from "app/components/ui/AppChart"
 import { AppSelect } from "app/components/ui/AppInputs"
 import HelmetTitle from "app/components/ui/HelmetTitle"
@@ -9,8 +11,12 @@ import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { recentsListOptions } from "app/data/general"
 import { dashboxesList } from "app/data/statsData"
+import { useContacts } from "app/hooks/contactsHooks"
+import { useEstimates } from "app/hooks/estimateHooks"
 import { useInvoices } from "app/hooks/invoiceHooks"
-import { useCurrentYearInvoices, useCurrentMonthInvoices } from "app/hooks/statsHooks"
+import { useCurrentYearInvoices, useCurrentMonthInvoices, 
+  useCurrentYearEstimates, useCurrentMonthEstimates, 
+  useCurrentYearContacts, useCurrentMonthContacts } from "app/hooks/statsHooks"
 import { StoreContext } from "app/store/store"
 import { dateToMonthName, getNameDayOfTheWeekFromDate, shortAndLongMonthNames,
   splitDocsIntoMonths, splitDocsIntoWeeksOfMonth, splitMonthDocsIntoDays
@@ -25,19 +31,37 @@ export default function HomePage() {
   const { setCompactNav, myUser, myUserID } = useContext(StoreContext)
   const [revenueMode, setRevenueMode] = useState('year')
   const [recentsView, setRecentsView] = useState('invoices')
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const thisYearInvoices = useCurrentYearInvoices(selectedYear)
   const thisMonthInvoices = useCurrentMonthInvoices(new Date())
-  const thisYearInvoices = useCurrentYearInvoices(new Date())
+  const thisYearEstimates = useCurrentYearEstimates(selectedYear)
+  const thisMonthEstimates = useCurrentMonthEstimates(new Date())
+  const thisYearContacts = useCurrentYearContacts(selectedYear)
+  const thisMonthContacts = useCurrentMonthContacts(new Date())
   const dbInvoices = useInvoices(myUserID, 5)
+  const dbEstimates = useEstimates(myUserID, 5)
+  const dbContacts = useContacts(myUserID, 5)
   const monthlyInvoices = splitDocsIntoMonths(thisYearInvoices, 'dateCreated')
-  const dailyInvoices = splitMonthDocsIntoDays(monthlyInvoices[dateToMonthName(new Date())], 'dateCreated')
   const weeklyInvoices = splitDocsIntoWeeksOfMonth(monthlyInvoices[dateToMonthName(new Date())], 'dateCreated')
+  const dailyInvoices = splitMonthDocsIntoDays(monthlyInvoices[dateToMonthName(new Date())], 'dateCreated')
   const paidInvoices = thisYearInvoices?.filter(doc => doc.isPaid)
   const unpaidInvoices = thisYearInvoices?.filter(doc => !doc.isPaid)
   const partiallyPaidInvoices = thisYearInvoices?.filter(doc => doc.status === 'partially-paid')
   const overdueInvoices = thisYearInvoices?.filter(doc => doc.status === 'overdue')
   const dailyInvoicesArray = objectToArray(dailyInvoices, 'day')
   const weeklyInvoicesArray = sortArrayByProperty(objectToArray(weeklyInvoices, 'week'), 'week', 'desc')
-  const dashboxArray = dashboxesList(myUser, thisMonthInvoices, monthlyInvoices)
+
+  const dashboxArray = dashboxesList(
+    thisYearInvoices, thisMonthInvoices, 
+    thisYearEstimates, thisMonthEstimates, 
+    thisYearContacts, thisMonthContacts
+  )
+
+  const yearSelectOptions = [
+    { label: '2022', value: 2022 },
+    { label: '2021', value: 2021 },
+    { label: '2020', value: 2020 },
+  ]
 
   const yearlyRevenueData = shortAndLongMonthNames.map((month, i) => ({
     ...month,
@@ -116,7 +140,17 @@ export default function HomePage() {
     <div className="homepage">
       <HelmetTitle />
       <PageTitleBar
-        subtitle={`${displayGreeting()}, ${myUser?.firstName}`}
+        subtitle={<>{displayGreeting()}, <span>{myUser?.firstName}</span></>}
+        rightComponent={
+          <div className="year-selector">
+            <h5>View Year:</h5>
+            <AppSelect
+              options={yearSelectOptions}
+              value={selectedYear}
+              onChange={e => setSelectedYear(e.target.value)}
+            />
+          </div>
+        }
       />
       <div className="dashboard-grid">
         <div className="dashboard-section full-width">
@@ -186,8 +220,12 @@ export default function HomePage() {
               dbInvoices={dbInvoices}
             /> :
             recentsView === 'estimates' ?
-            <>estimates</> :
-            <>contacts</>
+            <EstimatesList
+              dbEstimates={dbEstimates}
+            /> :
+            <ContactsList
+              dbContacts={dbContacts}
+            />
           }
         </div>
       </div>

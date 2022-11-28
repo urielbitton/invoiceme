@@ -1,31 +1,35 @@
-import { dateToMonthName } from "app/utils/dateUtils"
 import { formatCurrency } from "app/utils/generalUtils"
 
-export const dashboxesList = (myUser, thisMonthInvoices, monthlyInvoices) => {
+export const dashboxesList = (thisYearInvoices, thisMonthInvoices, thisYearEstimates,
+  thisMonthEstimates, thisYearContacts, thisMonthContacts) => {
+
+  const thisYearRevenue = thisYearInvoices?.reduce((acc, invoice) => acc + (invoice.isPaid ? invoice.total : 0), 0)
+  const thisMonthRevenue = thisMonthInvoices?.reduce((acc, invoice) => acc + (invoice.isPaid ? invoice.total : 0), 0)
+
   const dashboxArray = [
     {
       name: 'Revenue',
       icon: 'fal fa-dollar-sign',
-      value: `$${formatCurrency(myUser?.totalRevenue) || 0}`,
-      thisMonth: `$${formatCurrency(thisMonthInvoices)}`
+      value: `$${formatCurrency(thisYearRevenue?.toFixed(0)) || 0}`,
+      thisMonth: `$${formatCurrency(thisMonthRevenue?.toFixed(0))}`
     },
     {
       name: 'Invoices',
       icon: 'fal fa-file-invoice-dollar',
-      value: myUser?.invoicesNum,
-      thisMonth: monthlyInvoices[dateToMonthName(new Date())]?.length
+      value: thisYearInvoices?.length,
+      thisMonth: thisMonthInvoices?.length
     },
     {
       name: 'Estimates',
       icon: 'fal fa-file-invoice',
-      value: myUser?.estimatesNum,
-      thisMonth: 0
+      value: thisYearEstimates?.length,
+      thisMonth: thisMonthEstimates?.length
     },
     {
       name: 'Contacts',
       icon: 'fal fa-users',
-      value: myUser?.contactsNum,
-      thisMonth: 0
+      value: thisYearContacts?.length,
+      thisMonth: thisMonthContacts?.length
     }
   ]
   return dashboxArray

@@ -22,6 +22,9 @@
   color: var(--darkGrayText);
   font-weight: 600;
 }
+.page-title-bar .left h1 span {
+  font-weight: 700;
+}
 .page-title-bar .left h1 i {
   margin-right: 12px;
 }
@@ -29,4 +32,7 @@
   color: var(--grayText);
   font-weight: 500;
   font-size: 15px;
+}
+.page-title-bar .left h5 span {
+  font-weight: 700;
 }
