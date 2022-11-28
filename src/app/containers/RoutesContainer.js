@@ -44,7 +44,7 @@ export default function RoutesContainer() {
         <Route path="payments/new" element={<NewPaymentPage />} />
         <Route path="my-profile" element={<MyProfilePage />} />
         <Route path="my-account" element={<MyAccountPage />} />
-        <Route path="settings" element={<SettingsPage />} />
+        <Route path="settings/*" element={<SettingsPage />} />
         <Route path="notifications" element={<NotificationsPage />} />
         <Route path="messages" element={<MessagesPage />} />
         <Route path="upgrade" element={<UpgradePage />} />

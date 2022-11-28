@@ -1,17 +1,72 @@
+import GeneralSettings from "app/components/settings/GeneralSettings"
+import { AppInput } from "app/components/ui/AppInputs"
+import AppTabsBar from "app/components/ui/AppTabsBar"
 import HelmetTitle from "app/components/ui/HelmetTitle"
-import React from 'react'
+import PageTitleBar from "app/components/ui/PageTitleBar"
+import { StoreContext } from "app/store/store"
+import React, { useContext, useEffect, useState } from 'react'
+import { NavLink, Route, Routes } from "react-router-dom"
+import './styles/SettingsPage.css'
 
 export default function SettingsPage() {
 
+  const { setCompactNav } = useContext(StoreContext)
+  // const [activeTab, setActiveTab] = useState('general')
+
+  useEffect(() => {
+    setCompactNav(true)
+    return () => setCompactNav(false)
+  }, [])
+
   return (
-    <div>
+    <div className="settings-page">
       <HelmetTitle title="Settings" />
-      SettingsPage<br/>
-      Let business members only users create a scheduled email that sends an invoice template to a client on nth day of the month. 
-      (create 3 max pubsub functions that run everyday and execute ibusiness user has times matching these.)<br/>
-      Let business users create a scheduled email that sends payment for an received invoice to client (using stripe or paypal)
-      Let users choose if they want to show invoice page titles, dates and numbers on printed invoice (can be hidden with this code):
-      {/* @page { size: auto;  margin: 0mm; }*/}
+      <PageTitleBar
+        title="Settings"
+        rightComponent={
+          <AppInput
+            placeholder="Search settings..."
+          />
+        }
+      />
+      <AppTabsBar 
+        noSpread 
+        spacedOut={15}
+        noBorder
+      >
+        <NavLink
+          to=""
+        >
+          General
+        </NavLink>
+        <NavLink
+          to="invoices"
+        >
+          Invoices
+        </NavLink>
+        <NavLink
+          to="scheduled-invoices"
+        >
+          Scheduled Invoices
+        </NavLink>
+        <NavLink to="estimates">
+          Estimates
+        </NavLink>
+        <NavLink to="payments">
+          Payments
+        </NavLink>
+        <NavLink to="notifications">
+          Notifications
+        </NavLink>
+        <NavLink to="messages">
+          Messages
+        </NavLink>
+      </AppTabsBar>
+      <div className="settings-page-routes">
+        <Routes>
+          <Route path="" element={<GeneralSettings />} />
+        </Routes>
+      </div>
     </div>
   )
 }

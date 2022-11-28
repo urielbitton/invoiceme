@@ -1,0 +1,8 @@
+.settings-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.settings-page .app-tabs-bar {
+  margin-top: 10px;
+}

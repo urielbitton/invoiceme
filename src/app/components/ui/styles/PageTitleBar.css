@@ -15,7 +15,7 @@
 .page-title-bar .left {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 0px;
 }
 .page-title-bar .left h1 {
   font-size: 21px;

@@ -11,6 +11,9 @@
   top: -10px;
   z-index: 100;
 }
+.app-tabs-bar.no-border {
+  border-bottom: none;
+}
 .app-tabs-bar.no-spread {
   flex-wrap: wrap;
 }
