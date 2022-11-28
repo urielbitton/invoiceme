@@ -1,4 +1,5 @@
 import ContactEstimates from "app/components/contacts/ContactEstimates"
+import ContactEvents from "app/components/contacts/ContactEvents"
 import ContactGeneral from "app/components/contacts/ContactGeneral"
 import ContactInvoices from "app/components/contacts/ContactInvoices"
 import ContactPayments from "app/components/contacts/ContactPayments"
@@ -123,7 +124,7 @@ export default function ContactPage() {
           <div className="side">
             <Avatar
               dimensions="90px"
-              src={contact.photoURL}
+              src={contact.photoURL || 'https://i.imgur.com/D4fLSKa.png'}
             />
           </div>
           <div className="side intro">
@@ -197,6 +198,9 @@ export default function ContactPage() {
             <NavLink to="payments">
               Payments
             </NavLink>
+            <NavLink to="events">
+              Events
+            </NavLink>
           </AppTabsBar>
         </div>
         <div className="contact-pages">
@@ -217,6 +221,11 @@ export default function ContactPage() {
             />
             <Route path="payments" element={
               <ContactPayments
+
+              />}
+            />
+            <Route path="events" element={
+              <ContactEvents
 
               />}
             />

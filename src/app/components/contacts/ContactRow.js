@@ -12,7 +12,7 @@ export default function ContactRow(props) {
 
   const { myUserID, setPageLoading } = useContext(StoreContext)
   const { contactID, name, email, phone, address, 
-    city, region, country, dateCreated, photoURL } = props.contact
+    city, country, dateCreated, photoURL } = props.contact
   const navigate = useNavigate()
   const storagePath = `users/${myUserID}/contacts`
 
@@ -24,7 +24,7 @@ export default function ContactRow(props) {
     <AppItemRow
       item1={
         <div className="avatar-row-item">
-          <Avatar src={photoURL} dimensions={25}/>
+          <Avatar src={photoURL || 'https://i.imgur.com/D4fLSKa.png'} dimensions={25}/>
           {truncateText(name, 18)}
         </div>
       }

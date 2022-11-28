@@ -6,6 +6,7 @@ import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { useContact } from "app/hooks/contactsHooks"
 import { createContactService, deleteContactService, updateContactService } from "app/services/contactsServices"
+import { getRandomDocID } from "app/services/CrudDB"
 import { uploadMultipleFilesToFireStorage } from "app/services/storageServices"
 import { StoreContext } from "app/store/store"
 import { validateEmail, validatePhone } from "app/utils/generalUtils"
@@ -34,7 +35,7 @@ export default function NewContactPage() {
   const [isFavorite, setIsFavorite] = useState(false)
   const [uploadedImg, setUploadedImg] = useState(null)
   const navigate = useNavigate()
-  const contactStoragePath = `users/${myUserID}/contacts`
+  const contactStoragePath = `users/${myUserID}/contacts/${editContactID}`
 
   const allowSave = name && validateEmail(email) && address && 
     validatePhone(phone) && city && region && country && 
@@ -43,6 +44,9 @@ export default function NewContactPage() {
   const createContact = () => {
     if(!!!allowSave) return alert('Please fill all required fields')
     setPageLoading(true)
+    const storagePath = `users/${myUserID}/contacts`
+    const storageDocID = getRandomDocID(storagePath)
+    const contactStoragePath = `${storagePath}/${storageDocID}`
     uploadMultipleFilesToFireStorage(uploadedImg ? [uploadedImg.file] : null, contactStoragePath, ['photo-url'])
     .then(fileURLS => {
       createContactService(
@@ -71,8 +75,12 @@ export default function NewContactPage() {
         myUserID,
         editContactID,
         {
-          name, email, phone, address, city, region, 
-          country, postcode, companyName, isFavorite, notes,
+          name, email, phone, address, city, 
+          region: region.split(',')[0], 
+          country: country.split(',')[0], 
+          regionCode: region.split(',')[1],
+          countryCode: country.split(',')[1],
+          postcode, companyName, isFavorite, notes,
           photoURL: uploadedImg ? fileURLS[0]?.downloadURL : null
         },
         setPageLoading

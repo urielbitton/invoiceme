@@ -21,6 +21,7 @@ import MessagesPage from "app/pages/MessagesPage"
 import { StoreContext } from "app/store/store"
 import EstimatePage from "app/pages/EstimatePage"
 import ContactPage from "app/pages/ContactPage"
+import HelpAndContact from "app/pages/HelpAndContact"
 
 export default function RoutesContainer() {
 
@@ -47,6 +48,7 @@ export default function RoutesContainer() {
         <Route path="notifications" element={<NotificationsPage />} />
         <Route path="messages" element={<MessagesPage />} />
         <Route path="upgrade" element={<UpgradePage />} />
+        <Route path="help-and-contact" element={<HelpAndContact />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>

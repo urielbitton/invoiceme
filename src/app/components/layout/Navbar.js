@@ -131,6 +131,10 @@ export default function Navbar() {
                   <span>Upgrade</span>
                 </Link>
               }
+              <Link to="help-and-contact">
+                <i className="fas fa-question-circle" />
+                <span>Help & Contact</span>
+              </Link>
               <h6 onClick={() => signOut(setPageLoading)}>
                 <i className="fas fa-sign-out" />
                 <span>Sign Out</span>
