@@ -31,6 +31,32 @@ export const getInvoiceByID = (userID, invoiceID, setInvoice) => {
   })
 }
 
+export const getYearInvoicesByUserID = (userID, year, setInvoices, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('invoices')
+  .where('dateCreated', '>=', new Date(year, 0, 1))
+  .where('dateCreated', '<=', new Date(year, 11, 31))
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setInvoices(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
+export const getYearAndMonthInvoicesByUserID = (userID, year, month, setInvoices, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('invoices')
+  .where('dateCreated', '>=', new Date(year, month, 0))
+  .where('dateCreated', '<=', new Date(year, month, 31))
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setInvoices(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
 export const getInvoicesByContactEmail = (userID, email, setInvoices) => {
   db.collection('users')
   .doc(userID)

@@ -1,4 +1,5 @@
-import { getInvoiceByID, getInvoicesByContactEmail, getInvoicesByUserID } from "app/services/invoiceServices"
+import { getInvoiceByID, getInvoicesByContactEmail, 
+  getInvoicesByUserID, getYearAndMonthInvoicesByUserID, getYearInvoicesByUserID } from "app/services/invoiceServices"
 import { useEffect, useState } from "react"
 
 export const useInvoices = (userID, limit) => {
@@ -9,6 +10,7 @@ export const useInvoices = (userID, limit) => {
     if (userID)
       getInvoicesByUserID(userID, setInvoices, limit)
   }, [userID, limit])
+
   return invoices
 }
 
@@ -20,8 +22,30 @@ export const useInvoice = (userID, invoiceID) => {
     if (userID && invoiceID)
       getInvoiceByID(userID, invoiceID, setInvoice)
   }, [userID, invoiceID])
+
   return invoice
 } 
+
+export const useYearMonthOrAllInvoices = (userID, year, month, limit) => {
+
+  const [invoices, setInvoices] = useState([])
+
+  useEffect(() => {
+    if (userID) {
+      if(year !== 'all' && month === 'all') {
+        getYearInvoicesByUserID(userID, year, setInvoices, limit)
+      }
+      else if(year !== 'all' && month !== 'all') {
+        getYearAndMonthInvoicesByUserID(userID, year, month, setInvoices, limit)
+      }
+      else {
+        getInvoicesByUserID(userID, setInvoices, limit)
+      }
+    }
+  }, [userID, year, month, limit])
+
+  return invoices
+}
 
 export const useContactInvoices = (userID, contactEmail) => {
 

@@ -29,6 +29,32 @@ export const getContactsByUserID = (userID, setContacts, limit) => {
   })
 }
 
+export const getYearContactsByUserID = (userID, year, setContacts, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('contacts')
+  .where('dateCreated', '>=', new Date(year, 0, 1))
+  .where('dateCreated', '<=', new Date(year, 11, 31))
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setContacts(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
+export const getYearAndMonthContactsByUserID = (userID, year, month, setContacts, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('contacts')
+  .where('dateCreated', '>=', new Date(year, month, 0))
+  .where('dateCreated', '<=', new Date(year, month, 31))
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setContacts(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
 export const getFavoriteContactsByUserID = (userID, setContacts) => {
   db.collection('users')
   .doc(userID)

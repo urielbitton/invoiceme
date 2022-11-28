@@ -124,6 +124,7 @@ export default function InvoicePage() {
         <h6>Status <span>{invoice?.status}</span></h6>
         <h6>Sent <span>{invoice?.isSent ? 'Yes' : 'No'}</span></h6>
         <h6>Paid <span>{invoice?.isPaid ? 'Yes' : 'No'}</span></h6>
+        <h6>Total <span>{invoice?.currency?.symbol}{formatCurrency(invoice?.total?.toFixed(2))}</span></h6>
       </div>
     })
     return () => setNavItemInfo(null)

@@ -5,8 +5,10 @@ import './styles/InvoicesPage.css'
 import noResultsImg from 'app/assets/images/no-results.png'
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import AppButton from "app/components/ui/AppButton"
-import { useContacts } from "app/hooks/contactsHooks"
 import ContactsList from "app/components/contacts/ContactsList"
+import { monthSelectOptions, yearSelectOptions } from "app/data/general"
+import { useCurrentMonthContacts } from "app/hooks/statsHooks"
+import { useYearMonthOrAllContacts } from "app/hooks/contactsHooks"
 
 export default function ContactsPage() {
 
@@ -18,17 +20,20 @@ export default function ContactsPage() {
   const [pageNum, setPageNum] = useState(0)
   const [numOfHits, setNumOfHits] = useState(0)
   const [hitsPerPage, setHitsPerPage] = useState(10)
+  const [selectedYear, setSelectedYear] = useState('all')
+  const [selectedMonth, setSelectedMonth] = useState('all')
   const limitsNum = 10
   const [contactsLimit, setContactsLimit] = useState(limitsNum)
-  const dbContacts = useContacts(myUserID, contactsLimit)
+  const dbContacts = useYearMonthOrAllContacts(myUserID, selectedYear, selectedMonth, contactsLimit)
+  const thisMonthContacts = useCurrentMonthContacts(new Date())
   const filters = `ownerID:${myUserID}`
   const showAll = false
 
   const labelText1 = query.length > 0 ? 
     <>Showing <span className="bold">{hitsPerPage < numOfHits ? hitsPerPage : numOfHits}</span> of {numOfHits} contacts</> :
     <>Showing <span className="bold">
-      {contactsLimit <= myUser?.contactsNum ? contactsLimit : myUser?.contactsNum}
-    </span> of {myUser?.contactsNum} contacts</>
+      {contactsLimit <= dbContacts?.length ? contactsLimit : dbContacts?.length}
+    </span> of {dbContacts?.length} contacts</>
 
   const executeSearch = (e) => {
     if (e.key === 'Enter') {
@@ -45,7 +50,7 @@ export default function ContactsPage() {
 
   useEffect(() => {
     setNavItem1({ label: "Total Contacts", icon: 'fas fa-users', value: myUser?.contactsNum })
-    setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: 0 })
+    setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthContacts?.length })
     return () => {
       setNavItem1(null)
       setNavItem2(null)
@@ -57,6 +62,7 @@ export default function ContactsPage() {
       <HelmetTitle title="Contacts" />
       <AppSelectBar
         labelText1={labelText1}
+        searchQuery={query}
         sortSelectOptions={[
           { value: 'date', label: 'Date Created' },
           { value: 'name', label: 'Contact Name' },
@@ -67,8 +73,17 @@ export default function ContactsPage() {
         handleOnKeyPress={(e) => executeSearch(e)}
         showAmountSelect
         amountSelectValue={contactsLimit}
-        amountSelectOnChange={(e) => setContactsLimit(e.target.value)}
+        amountSelectOnChange={(e) => {
+          setContactsLimit(e.target.value)
+          setHitsPerPage(e.target.value)
+        }}
         searchPlaceholder="Search Contacts"
+        yearSelectOptions={yearSelectOptions}
+        monthSelectOptions={monthSelectOptions}
+        yearValue={selectedYear}
+        yearOnChange={(e) => setSelectedYear(e.target.value)}
+        monthValue={selectedMonth}
+        monthOnChange={(e) => setSelectedMonth(e.target.value)}
       />
       <div className="invoices-content">
         <ContactsList
@@ -86,7 +101,7 @@ export default function ContactsPage() {
           dbContacts={dbContacts}
         />
         {
-          contactsLimit < myUser?.contactsNum &&
+          contactsLimit <= dbContacts?.length &&
           <AppButton
             label="Show More"
             onClick={() => setContactsLimit(contactsLimit + limitsNum)}

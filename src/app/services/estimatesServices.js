@@ -31,6 +31,32 @@ export const getEstimateByID = (userID, estimateID, setEstimate) => {
     })
 }
 
+export const getYearEstimatesByUserID = (userID, year, setEstimates, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('estimates')
+  .where('dateCreated', '>=', new Date(year, 0, 1))
+  .where('dateCreated', '<=', new Date(year, 11, 31))
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setEstimates(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
+export const getYearAndMonthEstimatesByUserID = (userID, year, month, setEstimates, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('estimates')
+  .where('dateCreated', '>=', new Date(year, month, 0))
+  .where('dateCreated', '<=', new Date(year, month, 31))
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot(snapshot => {
+    setEstimates(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
 export const getEstimatesByContactEmail = (userID, email, setEstimates) => {
   db.collection('users')
   .doc(userID)

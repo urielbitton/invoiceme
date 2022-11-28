@@ -4,10 +4,11 @@ import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
 import './styles/InvoicesPage.css'
 import noResultsImg from 'app/assets/images/no-results.png'
-import { useInvoices } from "app/hooks/invoiceHooks"
+import { useYearMonthOrAllInvoices } from "app/hooks/invoiceHooks"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import AppButton from "app/components/ui/AppButton"
 import { monthSelectOptions, yearSelectOptions } from "app/data/general"
+import { useCurrentMonthInvoices } from "app/hooks/statsHooks"
 
 export default function InvoicesPage() {
 
@@ -20,19 +21,21 @@ export default function InvoicesPage() {
   const [pageNum, setPageNum] = useState(0)
   const [numOfHits, setNumOfHits] = useState(0)
   const [hitsPerPage, setHitsPerPage] = useState(10)
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const [selectedYear, setSelectedYear] = useState('all')
   const [selectedMonth, setSelectedMonth] = useState('all')
   const limitsNum = 10
   const [invoicesLimit, setInvoicesLimit] = useState(limitsNum)
-  const dbInvoices = useInvoices(myUserID, invoicesLimit)
+  const dbInvoices = useYearMonthOrAllInvoices(myUserID, selectedYear, selectedMonth, invoicesLimit)
+  const thisMonthInvoices = useCurrentMonthInvoices(new Date())
   const filters = `invoiceOwnerID:${myUserID}`
   const showAll = false
 
   const labelText1 = query.length > 0 ? 
-    <>Showing <span className="bold">{hitsPerPage < numOfHits ? hitsPerPage : numOfHits}</span> of {numOfHits} invoices</> :
+    <>Showing <span className="bold">{hitsPerPage < numOfHits ? hitsPerPage : 
+      numOfHits}</span> of {numOfHits} invoices</> :
     <>Showing <span className="bold">
-      {invoicesLimit <= myUser?.invoicesNum ? invoicesLimit : myUser?.invoicesNum}
-    </span> of {myUser?.invoicesNum} invoices</>
+      {invoicesLimit <= dbInvoices?.length ? invoicesLimit : dbInvoices?.length}
+    </span> of {dbInvoices?.length} invoices</>
 
   const executeSearch = (e) => {
     if (e.key === 'Enter') {
@@ -49,8 +52,8 @@ export default function InvoicesPage() {
 
   useEffect(() => {
     setNavItem1({ label: "Total Invoices", icon: 'fas fa-file-invoice-dollar', value: myUser?.invoicesNum })
-    setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: 0 })
-    setNavItem3({ label: "Invoices Paid", icon: 'fas fa-receipt', value: '0/1' })
+    setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthInvoices?.length })
+    setNavItem3({ label: "Invoices Paid", icon: 'fas fa-receipt', value: '0/0' })
     return () => {
       setNavItem1(null)
       setNavItem2(null)
@@ -63,6 +66,7 @@ export default function InvoicesPage() {
       <HelmetTitle title="Invoices" />
       <AppSelectBar
         labelText1={labelText1}
+        searchQuery={query}
         sortSelectOptions={[
           { value: 'date', label: 'Invoice Date' },
           { value: 'client', label: 'Client Name' },
@@ -74,7 +78,10 @@ export default function InvoicesPage() {
         handleOnKeyPress={(e) => executeSearch(e)}
         showAmountSelect
         amountSelectValue={invoicesLimit}
-        amountSelectOnChange={(e) => setInvoicesLimit(e.target.value)}
+        amountSelectOnChange={(e) => {
+          setInvoicesLimit(e.target.value)
+          setHitsPerPage(e.target.value)
+        }}
         searchPlaceholder="Search Invoices"
         yearSelectOptions={yearSelectOptions}
         monthSelectOptions={monthSelectOptions}
@@ -99,7 +106,7 @@ export default function InvoicesPage() {
           dbInvoices={dbInvoices}
         />
         {
-          invoicesLimit < myUser?.invoicesNum &&
+          invoicesLimit <= dbInvoices?.length &&
           <AppButton
             label="Show More"
             onClick={() => setInvoicesLimit(invoicesLimit + limitsNum)}

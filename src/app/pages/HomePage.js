@@ -207,7 +207,7 @@ export default function HomePage() {
         </div>
         <div className="invoices-section full-width">
           <div className="titles">
-            <h4>Recent Invoices</h4>
+            <h4>Recent {recentsView}</h4>
             <AppSelect
               options={recentsListOptions}
               value={recentsView}

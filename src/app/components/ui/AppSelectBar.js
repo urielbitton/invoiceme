@@ -6,7 +6,7 @@ import { showXResultsOptions } from "app/data/general"
 export default function AppSelectBar(props) {
 
   const { labelText1, sortSelectOptions, searchValue, searchOnChange,
-    handleOnKeyPress, showAmountSelect, rightComponent,
+    handleOnKeyPress, showAmountSelect, rightComponent, searchQuery,
     amountSelectValue, amountSelectOnChange, searchPlaceholder, yearSelectOptions,
     monthSelectOptions, yearValue, monthValue, yearOnChange, monthOnChange } = props
 
@@ -51,7 +51,7 @@ export default function AppSelectBar(props) {
         </div>
       }
       {
-        yearSelectOptions?.length > 0 &&
+        yearSelectOptions?.length > 0 && searchQuery?.length < 1 &&
         <div className="select-item">
           <AppSelect
             label="Year:"
@@ -62,7 +62,7 @@ export default function AppSelectBar(props) {
         </div>
       }
       {
-        monthSelectOptions?.length > 0 &&
+        monthSelectOptions?.length > 0 && yearValue !== 'all' && searchQuery?.length < 1 &&
         <div className="select-item">
           <AppSelect
             label="Month:"
