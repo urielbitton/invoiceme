@@ -99,12 +99,6 @@
 .contact-page .contact-routes .app-tabs-bar > a {
   font-size: 13px;
 }
-.contact-page .contact-routes .app-tabs-bar > a.not-active {
-  color: var(--darkGrayText);
-}
-.contact-page .contact-routes .app-tabs-bar > a.not-active::after {
-  background: none;
-}
 
 .contact-content {
   display: flex;
@@ -162,6 +156,8 @@
 }
 .contact-content .section h5 {
   margin-bottom: 10px;
+  color: var(--darkGrayText);
+  font-size: 14px;
 }
 .contact-content .section h6 {
   display: flex;

@@ -120,10 +120,6 @@ export default function Navbar() {
                 <i className="fas fa-user-circle" />
                 <span>My Account</span>
               </Link>
-              <Link to="/my-account/preferences">
-                <i className="fas fa-sliders-h" />
-                <span>Preferences</span>
-              </Link>
               {
                 myMemberType !== 'business' &&
                 <Link to="/upgrade">
@@ -134,6 +130,10 @@ export default function Navbar() {
               <Link to="help-and-contact">
                 <i className="fas fa-question-circle" />
                 <span>Help & Contact</span>
+              </Link>
+              <Link to="/settings">
+                <i className="fas fa-cog" />
+                <span>Settings</span>
               </Link>
               <h6 onClick={() => signOut(setPageLoading)}>
                 <i className="fas fa-sign-out" />

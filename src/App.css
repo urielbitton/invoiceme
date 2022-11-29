@@ -34,6 +34,8 @@ html, body {
   --theme2: #6DB9BD;
   --theme3: #C1DEC3;
   --theme4: #DF5047;
+  --dark1: #1B2430;
+  --dark2: #151b23;
 }  
 
 * {
@@ -160,7 +162,6 @@ hr {
 }
 .error-boundary button:hover {
   filter: brightness(110%);
-  box-shadow: 0 6px 10px #0088ff2f;
 }
 .error-boundary button i {
   margin-right: 8px;

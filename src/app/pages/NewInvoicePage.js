@@ -18,8 +18,7 @@ import { createInvoiceService, deleteInvoiceService,
   updateInvoiceService
 } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
-import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat, 
-  dateToMonthName } from "app/utils/dateUtils"
+import { convertDateToInputFormat, dateToMonthName } from "app/utils/dateUtils"
 import { calculatePriceTotal, formatCurrency, validateEmail,
   validatePhone
 } from "app/utils/generalUtils"

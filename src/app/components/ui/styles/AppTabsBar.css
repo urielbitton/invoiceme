@@ -56,3 +56,12 @@
 .app-tabs-bar > a.active {
   color: var(--primary);
 }
+.app-tabs-bar > a.not-active::after {
+  width: 0;
+}
+.app-tabs-bar > a.not-active:hover::after {
+  width: 100%;
+}
+.app-tabs-bar > a.not-active {
+  color: var(--darkGrayText);
+}

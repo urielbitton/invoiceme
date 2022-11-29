@@ -55,3 +55,12 @@ export const monthSelectOptions = [
   { label: 'November', value: 10 },
   { label: 'December', value: 11 },
 ]
+
+export const themeColors = [
+  { label: 'Default', value: '#178fff' },
+  { label: 'Midnight', value: '#253752' },
+  { label: 'Gold', value: '#c28b32' },
+  { label: 'Royal', value: '#6432c2' },
+  { label: 'Clouds', value: '#7092c4' },
+  { label: 'Leaf', value: '#8cb36d' }
+]

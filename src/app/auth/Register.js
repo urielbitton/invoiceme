@@ -69,6 +69,9 @@ export default function Register() {
           text: `Welcome to Invoice Me! We're glad you're here. Click here to create your first invoice.`,
           url: '/invoices/new',
         })
+        setDB(`users/${user.uid}/settings`, 'settings', {
+          language: 'en',
+        })
         navigate('/')
         setLoading(false)
       })

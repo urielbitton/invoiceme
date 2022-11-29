@@ -47,16 +47,6 @@
   background: var(--lightRed);
 }
 
-.appButton.grayBtn {
-  color: #333;
-  background: #e9e9e9;
-  font-size: 13px;
-  border-radius: 5px;
-}
-.appButton.grayBtn:hover {
-  background: #e1e1e1;
-}
-
 .appButton.outlineBtn {
   border: 1px solid #fff;
   color: #fff;

@@ -13,12 +13,10 @@ export default function AppButton(props) {
     className={`appButton 
       ${className ?? ""} 
       ${
-        buttonType === 'grayBtn' ? 'grayBtn' : 
         buttonType === 'secondaryBtn' ? 'secondaryBtn' : 
-        buttonType === 'gradientBtn' ? 'gradientBtn' : 
-        buttonType === 'invertedRedBtn' ? 'invertedRedBtn' :
         buttonType === 'outlineBtn' ? 'outlineBtn' :
         buttonType === 'outlineBlueBtn' ? 'outlineBlueBtn' :
+        buttonType === 'invertedRedBtn' ? 'invertedRedBtn' :
         buttonType === 'invertedBtn' ? 'invertedBtn' :
         buttonType === 'white' ? 'white' :
         buttonType === 'tabBtn' ? 'tabBtn' :

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { doGetUserByID, getUserByID } from "app/services/userServices"
+import { doGetUserByID, getUserByID, getUserSettingsByID } from "app/services/userServices"
 
 export default function useUser(userID) {
 
@@ -28,4 +28,17 @@ export function useUsers(userIDs) {
   },[userIDs])
 
   return appUsers
+}
+
+export const useUserSettings = (userID) => {
+
+  const [userSettings, setUserSettings] = useState(null)
+
+  useEffect(() => {
+    if(userID) {
+      getUserSettingsByID(userID, setUserSettings)
+    }
+  },[userID])
+
+  return userSettings
 }

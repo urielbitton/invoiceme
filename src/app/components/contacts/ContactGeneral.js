@@ -35,7 +35,7 @@ export default function ContactGeneral({ contact, invoices, estimates, payments 
     contact ?
     <div className="contact-general contact-content">
       <div className="section">
-        <h5>Contact Info</h5>
+        <h5>Contact Stats</h5>
         <h6>
           <span>Total Invoices:</span>
           <span>{invoices?.length}</span>

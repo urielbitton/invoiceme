@@ -290,3 +290,9 @@
   background: rgba(255,255,255,0.05);
   transform: rotate(200deg);
 }
+
+.navbar .nav-btn {
+  font-size: 13px;
+  color: #fff;
+  padding: 8px 10px;
+}

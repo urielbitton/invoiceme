@@ -13,7 +13,7 @@ import { useCurrentMonthInvoices } from "app/hooks/statsHooks"
 export default function InvoicesPage() {
 
   const { myUser, myUserID, setNavItem1, setNavItem2,
-    setNavItem3 } = useContext(StoreContext)
+    setNavItem3, setNavItemInfo } = useContext(StoreContext)
   const [searchString, setSearchString] = useState("")
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -54,10 +54,20 @@ export default function InvoicesPage() {
     setNavItem1({ label: "Total Invoices", icon: 'fas fa-file-invoice-dollar', value: myUser?.invoicesNum })
     setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthInvoices?.length })
     setNavItem3({ label: "Invoices Paid", icon: 'fas fa-receipt', value: '0/0' })
+    setNavItemInfo({ 
+      label: <AppButton 
+        label="Invoices Settings"
+        buttonType="invertedBtn"
+        leftIcon="fas fa-cog"
+        url="/settings/invoices"
+        className="nav-btn"
+      />
+    })
     return () => {
       setNavItem1(null)
       setNavItem2(null)
       setNavItem3(null)
+      setNavItemInfo(null)
     }
   },[myUser])
 

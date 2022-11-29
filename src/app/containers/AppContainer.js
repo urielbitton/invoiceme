@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import './styles/AppContainer.css'
+import './styles/DarkMode.css'
 import { StoreContext } from "app/store/store"
 import PageLoader from "app/components/ui/PageLoader"
 import RoutesContainer from "./RoutesContainer"

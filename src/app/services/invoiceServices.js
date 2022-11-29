@@ -68,6 +68,15 @@ export const getInvoicesByContactEmail = (userID, email, setInvoices) => {
   })
 }
 
+export const getScheduledInvoicesByUserID = (userID, setInvoices) => {
+  db.collection('scheduledInvoices')
+  .where('ownerID', '==', userID)
+  .orderBy('dateCreated', 'desc')
+  .onSnapshot(snapshot => {
+    setInvoices(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
 export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, 
   invoiceContact, invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, 
   invoiceName, status) => {

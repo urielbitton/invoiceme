@@ -37,3 +37,13 @@ export const getUnreadNotificationsByUserID = (userID, setNotifs) => {
     setNotifs(snap.docs.map(doc => doc.data()))
   })
 }
+
+export const getUserSettingsByID = (userID, setUserSettings) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('settings')
+  .doc('settings')
+  .onSnapshot(snap => {
+    setUserSettings(snap.data())
+  })
+}

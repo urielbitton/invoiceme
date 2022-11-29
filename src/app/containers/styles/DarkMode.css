@@ -1,0 +1,8 @@
+.dark-app {
+  background: var(--dark2)
+}
+.dark-app .navbar,
+.dark-app .sidebar {
+  background: var(--dark1);
+  box-shadow: none;
+}

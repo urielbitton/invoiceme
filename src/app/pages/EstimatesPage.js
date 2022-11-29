@@ -12,7 +12,7 @@ import { monthSelectOptions, yearSelectOptions } from "app/data/general"
 
 export default function EstimatesPage() {
 
-  const { myUser, myUserID, setNavItem1, setNavItem2 } = useContext(StoreContext)
+  const { myUser, myUserID, setNavItem1, setNavItem2, setNavItemInfo } = useContext(StoreContext)
   const [searchString, setSearchString] = useState("")
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -51,9 +51,19 @@ export default function EstimatesPage() {
   useEffect(() => {
     setNavItem1({ label: "Total Estimates", icon: 'fas fa-file-invoice', value: myUser?.estimatesNum })
     setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthEstimates?.length })
+    setNavItemInfo({ 
+      label: <AppButton 
+        label="Estimates Settings"
+        buttonType="invertedBtn"
+        leftIcon="fas fa-cog"
+        url="/settings/estimates"
+        className="nav-btn"
+      />
+    })
     return () => {
       setNavItem1(null)
       setNavItem2(null)
+      setNavItemInfo(null)
     }
   },[myUser])
 

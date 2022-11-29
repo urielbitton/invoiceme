@@ -1,5 +1,5 @@
 import { getInvoiceByID, getInvoicesByContactEmail, 
-  getInvoicesByUserID, getYearAndMonthInvoicesByUserID, getYearInvoicesByUserID } from "app/services/invoiceServices"
+  getInvoicesByUserID, getScheduledInvoicesByUserID, getYearAndMonthInvoicesByUserID, getYearInvoicesByUserID } from "app/services/invoiceServices"
 import { useEffect, useState } from "react"
 
 export const useInvoices = (userID, limit) => {
@@ -56,5 +56,17 @@ export const useContactInvoices = (userID, contactEmail) => {
     getInvoicesByContactEmail(userID, contactEmail, setInvoices)
   }, [userID, contactEmail])
   
+  return invoices
+}
+
+export const useUserScheduledInvoices = (userID) => {
+
+  const [invoices, setInvoices] = useState([])
+
+  useEffect(() => {
+    if(userID)
+      getScheduledInvoicesByUserID(userID, setInvoices)
+  }, [userID])
+
   return invoices
 }

@@ -14,6 +14,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
 import './styles/InvoicePage.css'
 import { invoicePaperStyles } from "app/components/invoices/invoicePaperStyles"
+import AppModal from "app/components/ui/AppModal"
 
 export default function InvoicePage() {
 
@@ -25,6 +26,7 @@ export default function InvoicePage() {
   const [emailMessage, setEmailMessage] = useState('')
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [invoiceItems, setInvoiceItems] = useState([])
+  const [showSettingsModal, setShowSettingsModal] = useState(false)
   const maxFileSize = 1024 * 1024 * 5
   const invoiceID = useParams().invoiceID
   const invoice = useInvoice(myUserID, invoiceID)
@@ -125,6 +127,13 @@ export default function InvoicePage() {
         <h6>Sent <span>{invoice?.isSent ? 'Yes' : 'No'}</span></h6>
         <h6>Paid <span>{invoice?.isPaid ? 'Yes' : 'No'}</span></h6>
         <h6>Total <span>{invoice?.currency?.symbol}{formatCurrency(invoice?.total?.toFixed(2))}</span></h6>
+        <AppButton
+          label="Settings"
+          leftIcon="fas fa-cog"
+          buttonType="invertedBtn"
+          onClick={() => setShowSettingsModal(true)}
+          className="nav-btn"
+        />
       </div>
     })
     return () => setNavItemInfo(null)
@@ -345,6 +354,24 @@ export default function InvoicePage() {
             </div>
           </div>
         </div>
+        <AppModal
+          showModal={showSettingsModal}
+          setShowModal={setShowSettingsModal}
+          label="Invoice Settings"
+          actions={<>
+            <AppButton
+              label="Save"
+            />
+            <AppButton
+              label="Cancel"
+              onClick={() => setShowSettingsModal(false)}
+              buttonType="invertedBtn"
+            />
+          </>
+          }
+        >
+
+        </AppModal>
       </div> :
       null
   )

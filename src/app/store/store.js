@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useRef, useState } from 'react'
 import { auth } from 'app/firebase/fire'
 import { getUserByID } from "app/services/userServices"
+import { useUserSettings } from "app/hooks/userHooks"
 
 // @ts-ignore
 export const StoreContext = createContext()
@@ -10,6 +11,7 @@ const StoreContextProvider = ({children}) => {
   const user = auth.currentUser
   const [myUser, setMyUser] = useState(null) 
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkmode') === "true" ? true : false)
+  const [themeColor, setThemeColor] = useState(localStorage.getItem('themeColor') || "#178fff")
   const [contentScrollBottom, setContentScrollBottom] = useState(false)
   const [windowIsFocused, setWindowIsFocused] = useState(false)
   const [pageLoading, setPageLoading] = useState(false)
@@ -24,6 +26,7 @@ const StoreContextProvider = ({children}) => {
   const [navItem3, setNavItem3] = useState(null)
   const [navItemInfo, setNavItemInfo] = useState(null)
   const [compactNav, setCompactNav] = useState(false)
+  const myUserSettings = useUserSettings(myUserID)
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
@@ -35,10 +38,14 @@ const StoreContextProvider = ({children}) => {
       }
     })
   },[user])
+  
+  useEffect(() => {
+    document.documentElement.style.setProperty('--primary', themeColor)
+  },[])
 
   useEffect(() => {
     localStorage.setItem('darkmode', !darkMode ? "false" : "true")  
-  },[darkMode])  
+  },[darkMode]) 
 
   useEffect(() => {
     document.addEventListener('visibilitychange', () => {
@@ -53,6 +60,7 @@ const StoreContextProvider = ({children}) => {
 
   return <StoreContext.Provider value={{ 
     user, myUser, setMyUser, myUserID, myUserImg, myUserName, myMemberType,
+    myUserSettings,
     pageLoading, setPageLoading,
     darkMode, setDarkMode,
     percentFormat,
@@ -61,7 +69,8 @@ const StoreContextProvider = ({children}) => {
     windowIsFocused,
     navItem1, setNavItem1, navItem2, setNavItem2, navItemInfo, 
     navItem3, setNavItem3, setNavItemInfo,
-    compactNav, setCompactNav
+    compactNav, setCompactNav,
+    themeColor, setThemeColor
   }}>
     {children}
   </StoreContext.Provider>

@@ -12,7 +12,7 @@ import { useYearMonthOrAllContacts } from "app/hooks/contactsHooks"
 
 export default function ContactsPage() {
 
-  const { myUser, myUserID, setNavItem1, setNavItem2 } = useContext(StoreContext)
+  const { myUser, myUserID, setNavItem1, setNavItem2, setNavItemInfo } = useContext(StoreContext)
   const [searchString, setSearchString] = useState("")
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -51,9 +51,19 @@ export default function ContactsPage() {
   useEffect(() => {
     setNavItem1({ label: "Total Contacts", icon: 'fas fa-users', value: myUser?.contactsNum })
     setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthContacts?.length })
+    setNavItemInfo({ 
+      label: <AppButton 
+        label="Contacts Settings"
+        buttonType="invertedBtn"
+        leftIcon="fas fa-cog"
+        url="/settings/contacts"
+        className="nav-btn"
+      />
+    })
     return () => {
       setNavItem1(null)
       setNavItem2(null)
+      setNavItemInfo(null)
     }
   },[myUser])
 
