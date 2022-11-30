@@ -296,3 +296,38 @@
   color: #fff;
   padding: 8px 10px;
 }
+
+.navbar .mobile-btn {
+  display: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.navbar .mobile-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+.navbar .mobile-btn i {
+  font-size: 20px;
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    height: var(--navbarHeightCompact);
+  }
+  .navbar .appInput,
+  .navbar .dropdown-button {
+    display: none;
+  }
+  .navbar .mobile-btn {
+    display: flex;
+  }
+  .navbar .bottombar {
+    display: none;
+  }
+}

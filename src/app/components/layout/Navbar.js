@@ -15,7 +15,7 @@ import './styles/Navbar.css'
 export default function Navbar() {
 
   const { myUserID, setPageLoading, myUserImg, myMemberType,
-    compactNav } = useContext(StoreContext)
+    compactNav, setShowMobileSidebar } = useContext(StoreContext)
   const [showMenu, setShowMenu] = useState(null)
   const unreadNotifications = useUnreadNotifications(myUserID)
   const notifications = useNotifications(myUserID, 5)
@@ -42,6 +42,12 @@ export default function Navbar() {
             placeholder="Search"
             iconright={<i className="fal fa-search" />}
           />
+          <div 
+            className="mobile-btn"
+            onClick={() => setShowMobileSidebar(true)}
+          >
+            <i className="fal fa-bars" />
+          </div>
         </div>
         <div className="right">
           <DropdownButton
@@ -123,7 +129,7 @@ export default function Navbar() {
               {
                 myMemberType !== 'business' &&
                 <Link to="/upgrade">
-                  <i className="fas fa-rocket" />
+                  <i className="fas fa-rocket-launch" />
                   <span>Upgrade</span>
                 </Link>
               }

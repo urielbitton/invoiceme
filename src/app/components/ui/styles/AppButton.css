@@ -57,6 +57,16 @@
   color: #000;
 }
 
+.appButton.outlineGrayBtn {
+  border: 1px solid var(--grayText);
+  color: var(--grayText);
+  background: transparent;
+}
+.appButton.outlineGrayBtn:hover {
+  background: var(--grayText);
+  color: #fff;
+}
+
 .appButton.outlineBlueBtn {
   border: 1px solid var(--primary);
   color: var(--primary);

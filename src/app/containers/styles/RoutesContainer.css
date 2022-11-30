@@ -8,3 +8,9 @@
 .routes-container.compact {
   height: calc(100vh - var(--navbarHeightCompact));
 }
+
+@media (max-width: 700px) {
+  .routes-container {
+    height: calc(100vh - var(--navbarHeightCompact));
+  }
+}

@@ -35,23 +35,23 @@ export default function InvoicesSettings() {
 
   const deleteTaxNumber = (taxNumber) => {
     const confirm = window.confirm(`Are you sure you want to delete tax item: ${taxNumber.name}?`)
-    if(confirm) {
+    if (confirm) {
       const newTaxNumbers = taxNumbers.filter(tax => tax.number !== taxNumber.number)
       setTaxNumbers(newTaxNumbers)
     }
   }
 
   const taxNumbersList = taxNumbers?.map((taxNumber, index) => {
-    return <div 
-      key={index} 
+    return <div
+      key={index}
       className="tax-item-container"
     >
-      <h5>Tax Number {index+1}</h5>
+      <h5>Tax Number {index + 1}</h5>
       <div className="tax-item">
         <span>{taxNumber.name},</span>
         <span>{taxNumber.number},</span>
         <span>{taxNumber.value}%</span>
-        <i 
+        <i
           className="fas fa-trash"
           onClick={() => deleteTaxNumber(taxNumber)}
         />
@@ -82,26 +82,26 @@ export default function InvoicesSettings() {
         showInvoiceMeTag
       }
     })
-    .then(() => {
-      updateDB('users', myUserID, {
-        taxNumbers
-      })
       .then(() => {
-        setPageLoading(false)
+        updateDB('users', myUserID, {
+          taxNumbers
+        })
+          .then(() => {
+            setPageLoading(false)
+          })
+          .catch(err => {
+            console.log(err)
+            setPageLoading(false)
+          })
       })
       .catch(err => {
         console.log(err)
         setPageLoading(false)
       })
-    })
-    .catch(err => {
-      console.log(err)
-      setPageLoading(false)
-    })
   }
 
   const addTaxNumber = () => {
-    if(!!!allowAddTax) return alert('Please fill out the tax name, number and rate.')
+    if (!!!allowAddTax) return alert('Please fill out the tax name, number and rate.')
     setTaxNumbers([...taxNumbers, { name: taxName, number: taxNumber, value: taxRate }])
     setTaxName('')
     setTaxNumber('')
@@ -110,7 +110,7 @@ export default function InvoicesSettings() {
 
   useEffect(() => {
     setTaxNumbers(myUser?.taxNumbers)
-  },[myUser])
+  }, [myUser])
 
   return (
     <div className="settings-sub-page">
@@ -234,7 +234,7 @@ export default function InvoicesSettings() {
             }
             className="icon-input"
           />
-        <small onClick={() => addTaxNumber()}><i className="far fa-plus"/>Add</small>
+          <small onClick={() => addTaxNumber()}><i className="far fa-plus" />Add</small>
         </div>
       </SettingsSection>
       <SettingsSection
@@ -246,7 +246,7 @@ export default function InvoicesSettings() {
           onChange={e => setInvoiceNotes(e.target.value)}
         />
       </SettingsSection>
-      <SettingsSectionSwitch 
+      <SettingsSectionSwitch
         label="Show 'Thank you' message"
         sublabel="Show 'Thank you' message on bottom of invoice"
         value={showThankYouMessage}

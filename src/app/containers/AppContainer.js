@@ -11,7 +11,7 @@ import HelmetTitle from "app/components/ui/HelmetTitle"
 
 export default function AppContainer() {
 
-  const { darkMode, pageLoading } = useContext(StoreContext)
+  const { darkMode, pageLoading, showMobileSidebar, setShowMobileSidebar } = useContext(StoreContext)
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -32,6 +32,13 @@ export default function AppContainer() {
       <div className="main-content">
         <Navbar />
         <RoutesContainer />
+        { 
+          showMobileSidebar && 
+          <div 
+            className="mobile-sidebar-overlay" 
+            onClick={() => setShowMobileSidebar(false)}
+          /> 
+        }
       </div>
       <PageLoader loading={pageLoading} />
     </div>

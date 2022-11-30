@@ -1,0 +1,97 @@
+.pro-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.pro-content .container {
+  border-radius: 10px;
+  background: var(--inputBorderColor);
+  padding: 25px;
+  width: 100%;
+  max-width: 600px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.pro-content .container .rocket {
+  font-size: 4rem;
+  color: var(--darkGrayText);
+  z-index: 10;
+}
+.pro-content .container .lock-icon {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 15px;
+  color: var(--grayText);
+  z-index: 10;
+}
+.pro-content .container h4 {
+  color: var(--darkGrayText);
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-top: 20px;
+  z-index: 10;
+}
+.pro-content .container h6 {
+  color: var(--grayText);
+  font-size: 1rem;
+  margin-top: 5px;
+  font-weight: 500;
+  z-index: 10;
+}
+.pro-content .container button {
+  margin-top: 20px;
+  z-index: 10;
+}
+
+.pro-content .shapes-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+.pro-content .shape {
+  position: absolute;
+  top: 0;
+  border-radius: 20px;
+}
+.pro-content .shape1 {
+  width: 110px;
+  height: 110px;
+  top: 0;
+  left: 40px;
+  background: rgba(255,255,255,0.16);
+  transform: rotate(30deg);
+}
+.pro-content .shape2 {
+  width: 120px;
+  height: 120px;
+  top: -50px;
+  right: 100px;
+  background: rgba(255,255,255,0.2);
+  transform: rotate(-120deg);
+}
+.pro-content .shape3 {
+  width: 200px;
+  height: 200px;
+  top: 200px;
+  left: 0px;
+  background: rgba(255,255,255,0.2);
+  transform: rotate(60deg);
+}
+.pro-content .shape4 {
+  width: 130px;
+  height: 130px;
+  top: auto;
+  bottom: 30px;
+  right: -50px;
+  background: rgba(255,255,255,0.21);
+  transform: rotate(200deg);
+}

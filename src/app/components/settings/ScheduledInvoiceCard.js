@@ -1,14 +1,19 @@
+import { deleteDB } from "app/services/CrudDB"
+import { StoreContext } from "app/store/store"
 import { convertClassicDateAndTime, displayThStNdRd } from "app/utils/dateUtils"
-import React from 'react'
+import React, { useContext } from 'react'
+import { useNavigate } from "react-router-dom"
 import AppButton from "../ui/AppButton"
 import './styles/ScheduledInvoiceCard.css'
 
 export function ScheduledInvoiceCard(props) {
 
+  const { setPageLoading } = useContext(StoreContext)
   const { title, dateCreated, dayOfMonth, timeOfDay, active,
-    lastSent, invoiceTemplate } = props.scheduled
+    lastSent, invoiceTemplate, scheduleID } = props.scheduled
   const { setInvoiceData, setShowInvoicePreview } = props
   const monthName = new Date(dateCreated?.toDate()).toLocaleString('default', { month: 'short' })
+  const navigate = useNavigate()
 
   const showPreview = () => {
     setShowInvoicePreview(true)
@@ -21,6 +26,23 @@ export function ScheduledInvoiceCard(props) {
       taxRate2: invoiceTemplate?.taxRate2,
       total: invoiceTemplate?.total
     })
+  }
+
+  const deleteSchedule = () => {
+    const confirm = window.confirm("Are you sure you want to delete this schedule?")
+    if (confirm) {
+      setPageLoading(true)
+      deleteDB('scheduledInvoices', scheduleID)
+      .then(() => {
+        navigate('/settings/scheduled-invoices')
+        alert("Scheduled invoice deleted.")
+        setPageLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setPageLoading(false)
+      })
+    }
   }
 
   return <div className="scheduled-invoice-card">
@@ -82,10 +104,12 @@ export function ScheduledInvoiceCard(props) {
       <AppButton
         label="Edit"
         buttonType="invertedBtn"
+        onClick={() => navigate(`/settings/scheduled-invoices/new?scheduleID=${scheduleID}&edit=true`)}
       />
       <AppButton
         label="Delete"
         buttonType="invertedBtn"
+        onClick={() => deleteSchedule()}
       />
     </div>
   </div>

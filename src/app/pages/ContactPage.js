@@ -18,16 +18,15 @@ import { sendSgEmail } from "app/services/emailServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
 import { validatePhone } from "app/utils/generalUtils"
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { NavLink, Route, Routes, useLocation, useParams } from "react-router-dom"
 import './styles/ContactPage.css'
 
 export default function ContactPage() {
 
-  const { myUserID, myUser, setPageLoading } = useContext(StoreContext)
+  const { myUserID, myUser, setPageLoading, myMemberType } = useContext(StoreContext)
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showSMSModal, setShowSMSModal] = useState(false)
-  const [phone, setPhone] = useState('')
   const [textMessage, setTextMessage] = useState('')
   const [emailSubject, setEmailSubject] = useState('')
   const [emailMessage, setEmailMessage] = useState('')
@@ -39,13 +38,13 @@ export default function ContactPage() {
   const contactInvoices = useContactInvoices(myUserID, contact?.email)
   const contactEstimates = useContactEstimates(myUserID, contact?.email)
   const location = useLocation()
+  const isBusiness = myMemberType === "business"
 
   const notIndexTab = location.pathname.includes('invoices') ||
     location.pathname.includes('estimates') ||
     location.pathname.includes('payments')
 
   const resetInputFields = () => {
-    setPhone('')
     setTextMessage('')
     setEmailSubject('')
     setEmailMessage('')
@@ -103,19 +102,14 @@ export default function ContactPage() {
   }
 
   const sendSMS = () => {
-    if (!validatePhone(phone) || !textMessage)
+    if (!validatePhone(contact?.phone) || !textMessage)
       return alert('Please enter a valid phone number and message.')
-    sendSMSService(phone, textMessage, textMediaUrl, setLoading)
+    sendSMSService(contact?.phone, textMessage, textMediaUrl, setLoading)
       .then(() => {
         setShowSMSModal(false)
         resetInputFields()
       })
   }
-
-  useEffect(() => {
-    if (contact?.phone)
-      setPhone(contact.phone)
-  }, [contact])
 
   return (
     contact ?
@@ -138,7 +132,7 @@ export default function ContactPage() {
               />
               <AppButton
                 label="Send SMS"
-                onClick={() => setShowSMSModal(true)}
+                onClick={() => isBusiness ? setShowSMSModal(true) : alert('Sending SMS is only available to business members.')}
                 buttonType="outlineBlueBtn"
                 rightIcon="far fa-comment"
               />
@@ -254,7 +248,7 @@ export default function ContactPage() {
             <>
               <AppButton
                 label="Send SMS"
-                onClick={() => sendSMS()}
+                onClick={() => isBusiness ? sendSMS() : alert('Sending SMS is only available for business accounts.')}
                 rightIcon={loading ? 'fas fa-spinner fa-spin' : 'far fa-comment'}
               />
               <AppButton
@@ -268,9 +262,9 @@ export default function ContactPage() {
           <form>
             <AppInput
               label="Phone Number"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
+              value={contact?.phone}
               placeholder="Enter phone number"
+              disabled
             />
             <AppTextarea
               label="SMS Message"

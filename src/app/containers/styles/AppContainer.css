@@ -12,6 +12,17 @@
   height: 100%;
 }
 
+.mobile-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1900;
+  display: none;
+}
+
 
 @media (max-width: 700px) {
   .app-container {
@@ -20,7 +31,7 @@
   .main-content {
     width: 100%;
   }
-  .app-container .sidebar {
-    display: none;
+  .mobile-sidebar-overlay {
+    display: block;
   }
 }

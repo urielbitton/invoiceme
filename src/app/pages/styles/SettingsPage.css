@@ -50,7 +50,7 @@
   display: flex; 
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 30px;
   padding: 15px 0;
   border-bottom: 1px solid var(--inputBorderColor);
 }
@@ -75,6 +75,9 @@
   gap: 15px;
   width: 350px;
 }
+.settings-page .settings-section .right-side.flex-start {
+  align-items: flex-start;
+}
 .settings-page .settings-section .right-side .commonInput input,
 .settings-page .settings-section .right-side .commonInput select,
 .settings-page .settings-section .right-side .commonInput textarea {
@@ -84,6 +87,10 @@
 .settings-page .settings-section .right-side .commonInput input,
 .settings-page .settings-section .right-side .commonInput select {
   height: 37px;
+}
+.settings-page .settings-section .right-side button {
+  font-size: 13px;
+  padding: 8px;
 }
 .settings-page .settings-section .right-side .appInput h6 {
   font-size: 12px;

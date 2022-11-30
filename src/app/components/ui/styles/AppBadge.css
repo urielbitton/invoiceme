@@ -2,8 +2,15 @@
   background: var(--primary);
   padding: 0 5px;
   border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 .app-badge h6 {
   color: #fff;
   font-size: 11px;
+}
+.app-badge i {
+  color: #fff;
+  font-size: 10px;
 }

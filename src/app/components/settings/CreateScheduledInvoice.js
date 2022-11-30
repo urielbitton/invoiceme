@@ -9,7 +9,6 @@ import React, { useContext, useRef, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import InvoiceContact from "../invoices/InvoiceContact"
 import InvoiceItems from "../invoices/InvoiceItems"
-import InvoicePaper from "../invoices/InvoicePaper"
 import AppButton from "../ui/AppButton"
 import { AppInput, AppSelect, AppTextarea } from "../ui/AppInputs"
 import SlideContainer from "../ui/SlideContainer"
@@ -21,10 +20,11 @@ import { formatCurrency, formatPhoneNumber,
   truncateText } from "app/utils/generalUtils"
 import './styles/CreateScheduledInvoice.css'
 import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
+import ProContent from "../ui/ProContent"
 
 export default function CreateScheduledInvoice() {
 
-  const { myUserID, myUser, setPageLoading } = useContext(StoreContext)
+  const { myUserID, myUser, setPageLoading, myMemberType } = useContext(StoreContext)
   const [slidePosition, setSlidePosition] = useState(0)
   const [scheduleTitle, setScheduleTitle] = useState('')
   const [invoiceTitle, setInvoiceTitle] = useState('')
@@ -184,8 +184,8 @@ export default function CreateScheduledInvoice() {
     const data = {
       active: true,
       dateCreated: new Date(),
-      dayOfMonth,
-      timeOfDay,
+      dayOfMonth: +dayOfMonth,
+      timeOfDay: +timeOfDay,
       lastSent: null,
       lastPaid: null,
       title: scheduleTitle,
@@ -209,6 +209,7 @@ export default function CreateScheduledInvoice() {
   }
 
   return (
+    myMemberType === 'business' ?
     <div className="settings-sub-page create-scheduled-page">
       <SettingsTitles
         label="Create a scheduled invoice"
@@ -458,6 +459,7 @@ export default function CreateScheduledInvoice() {
         setShowInvoicePreview={setShowInvoicePreview}
         invoicePaperRef={invoicePaperRef}
       />
-    </div>
+    </div> :
+    <ProContent />
   )
 }

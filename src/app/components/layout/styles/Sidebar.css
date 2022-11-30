@@ -6,6 +6,8 @@
   flex-direction: column;
   justify-content: space-between;
   box-shadow: var(--morphShadow);
+  z-index: 2000;
+  transition: all 0.3s;
 }
 
 .sidebar .top {
@@ -52,6 +54,20 @@
   width: 20px
 }
 
+.sidebar .top .appInput {
+  width: 100%;
+}
+.sidebar .top .appInput input {
+  height: 40px;
+}
+.sidebar .top .appInput i {
+  position: absolute;
+  right: 10px;
+  top: 13px;
+  color: var(--grayText);
+  font-size: 14px;
+}
+
 .sidebar .bottom {
   padding: 10px 20px;
   padding-bottom: 15px;
@@ -59,4 +75,36 @@
 .sidebar .bottom button {
   width: 100%;
   padding: 10px 10px;
+}
+
+.close-sidebar {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 25px;
+  color: #777;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: none;
+}
+
+
+@media (max-width: 700px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    opacity: 0;
+    visibility: hidden;
+    width: 300px;
+    box-shadow: 10px 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .sidebar.show-mobile {
+    left: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+  .close-sidebar {
+    display: block;
+  }
 }
