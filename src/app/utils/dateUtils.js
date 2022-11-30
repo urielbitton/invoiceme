@@ -313,3 +313,21 @@ export const splitMonthDocsIntoDays = (docs, dateKey) => {
   })
   return days
 }
+
+export const displayThStNdRd = (num) => {
+  if(num > 3 && num < 21) return 'th'
+  switch (num % 10) {
+    case 1:  return "st"
+    case 2:  return "nd"
+    case 3:  return "rd"
+    default: return "th"
+  }
+}
+
+export const dayOfMonthNumbers = () => {
+  const options = []
+  for(let i = 1; i <= 31; i++) {
+    options.push({value: i, label: i})
+  }
+  return options
+}

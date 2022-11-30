@@ -1,10 +1,10 @@
 import { contactsIndex } from "app/algolia"
 import AddContactModal from "app/components/contacts/AddContactModal"
+import ContactRow from "app/components/contacts/ContactRow"
 import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import AppPagination from "app/components/ui/AppPagination"
 import AppTable from "app/components/ui/AppTable"
-import ContactRow from "app/components/ui/ContactRow"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
@@ -18,7 +18,7 @@ import { createEstimateService, deleteEstimateService,
   updateEstimateService
 } from "app/services/estimatesServices"
 import { StoreContext } from "app/store/store"
-import { convertDateToInputFormat, dateToMonthName } from "app/utils/dateUtils"
+import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat, dateToMonthName } from "app/utils/dateUtils"
 import {calculatePriceTotal, formatCurrency, validateEmail,
   validatePhone
 } from "app/utils/generalUtils"
@@ -421,8 +421,8 @@ export default function NewEstimatePage() {
     const updatedProps = {
       title: estimateName,
       estimateNumber,
-      dateCreated: new Date(estimateDate),
-      dateDue: new Date(estimateDueDate),
+      dateCreated: convertInputDateToDateAndTimeFormat(estimateDate),
+      dateDue: convertInputDateToDateAndTimeFormat(estimateDueDate),
       currency: estimateCurrency,
       estimateTo: estimateContact,
       items: estimateItems,

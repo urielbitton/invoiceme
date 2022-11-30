@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import { updateDB } from "app/services/CrudDB"
+import { StoreContext } from "app/store/store"
+import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
-import { AppInput, AppSwitch, AppTextarea } from "../ui/AppInputs"
+import { AppInput, AppTextarea } from "../ui/AppInputs"
 import SettingsSection from "./SettingsSection"
 import SettingsSectionSwitch from "./SettingsSectionSwitch"
 import SettingsTitles from "./SettingsTitles"
 
 export default function InvoicesSettings() {
 
+  const { myUserID, myUser, setPageLoading } = useContext(StoreContext)
   const [showMyName, setShowMyName] = useState(true)
   const [showMyAddress, setShowMyAddress] = useState(true)
   const [showMyPhone, setShowMyPhone] = useState(true)
@@ -22,16 +25,92 @@ export default function InvoicesSettings() {
   const [showMyTaxNumbers, setShowMyTaxNumbers] = useState(true)
   const [showNotes, setShowNotes] = useState(true)
   const [invoiceNotes, setInvoiceNotes] = useState('')
-  const [taxRate1, setTaxRate1] = useState(0)
-  const [taxRate2, setTaxRate2] = useState(0)
-  const [taxRateName1, setTaxRateName1] = useState('')
-  const [taxRateName2, setTaxRateName2] = useState('')
-  const [taxNumber1, setTaxNumber1] = useState('')
-  const [taxNumber2, setTaxNumber2] = useState('')
+  const [taxNumbers, setTaxNumbers] = useState([])
+  const [taxName, setTaxName] = useState('')
+  const [taxNumber, setTaxNumber] = useState('')
+  const [taxRate, setTaxRate] = useState(0)
+  const [showThankYouMessage, setShowThankYouMessage] = useState(true)
+  const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
+  const allowAddTax = taxName && taxNumber && taxRate
+
+  const deleteTaxNumber = (taxNumber) => {
+    const confirm = window.confirm(`Are you sure you want to delete tax item: ${taxNumber.name}?`)
+    if(confirm) {
+      const newTaxNumbers = taxNumbers.filter(tax => tax.number !== taxNumber.number)
+      setTaxNumbers(newTaxNumbers)
+    }
+  }
+
+  const taxNumbersList = taxNumbers?.map((taxNumber, index) => {
+    return <div 
+      key={index} 
+      className="tax-item-container"
+    >
+      <h5>Tax Number {index+1}</h5>
+      <div className="tax-item">
+        <span>{taxNumber.name},</span>
+        <span>{taxNumber.number},</span>
+        <span>{taxNumber.value}%</span>
+        <i 
+          className="fas fa-trash"
+          onClick={() => deleteTaxNumber(taxNumber)}
+        />
+      </div>
+    </div>
+  })
 
   const saveSettings = () => {
-
+    setPageLoading(true)
+    updateDB(`users/${myUserID}/settings`, 'settings', {
+      invoices: {
+        showMyName,
+        showMyAddress,
+        showMyPhone,
+        showMyEmail,
+        showMyLogo,
+        showMyCompanyName,
+        showDueDate,
+        showClientName,
+        showClientAddress,
+        showClientPhone,
+        showClientEmail,
+        showClientCompanyName,
+        showMyTaxNumbers,
+        showNotes,
+        invoiceNotes,
+        showThankYouMessage,
+        showInvoiceMeTag
+      }
+    })
+    .then(() => {
+      updateDB('users', myUserID, {
+        taxNumbers
+      })
+      .then(() => {
+        setPageLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setPageLoading(false)
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      setPageLoading(false)
+    })
   }
+
+  const addTaxNumber = () => {
+    if(!!!allowAddTax) return alert('Please fill out the tax name, number and rate.')
+    setTaxNumbers([...taxNumbers, { name: taxName, number: taxNumber, value: taxRate }])
+    setTaxName('')
+    setTaxNumber('')
+    setTaxRate(0)
+  }
+
+  useEffect(() => {
+    setTaxNumbers(myUser?.taxNumbers)
+  },[myUser])
 
   return (
     <div className="settings-sub-page">
@@ -125,56 +204,29 @@ export default function InvoicesSettings() {
         setValue={showNotes}
       />
       <SettingsSection
-        label="Tax Numbers"
-        sublabel="Tax numbers are shown on invoices"
+        label="Tax Information"
+        sublabel="Add your tax information to be displayed on your invoices"
       >
-        <AppInput
-          label="Tax Number 1"
-          value={taxNumber1}
-          onChange={(e) => setTaxNumber1(e.target.value)}
-        />
-        <AppInput
-          label="Tax Number 2"
-          value={taxNumber2}
-          onChange={(e) => setTaxNumber2(e.target.value)}
-        />
-      </SettingsSection>
-      <SettingsSection
-        label="Tax Rates"
-        sublabel="Set automatic tax rates for all invoices"
-      >
-        <div className="split-row">
-          <AppInput
-            label="Tax Label 1"
-            type="number"
-            value={taxRateName1}
-            onChange={(e) => setTaxRateName1(e.target.value)}
-            iconleft={
-              <div className="icon-container">
-                <i className="fal fa-percent" />
-              </div>
-            }
-            className="icon-input"
-          />
-          <AppInput
-            label="Tax Label 2"
-            type="number"
-            value={taxRateName2}
-            onChange={(e) => setTaxRateName2(e.target.value)}
-            iconleft={
-              <div className="icon-container">
-                <i className="fal fa-percent" />
-              </div>
-            }
-            className="icon-input"
-          />
+        <div className="tax-list">
+          {taxNumbersList}
         </div>
-        <div className="split-row">
+        <div className="tax-row">
           <AppInput
-            label="Tax Rate 1"
+            label="Tax Name"
+            value={taxName}
+            onChange={(e) => setTaxName(e.target.value)}
+            className="full"
+          />
+          <AppInput
+            label="Tax Number"
+            value={taxNumber}
+            onChange={(e) => setTaxNumber(e.target.value)}
+          />
+          <AppInput
+            label="Tax Rate"
+            value={taxRate}
+            onChange={(e) => setTaxRate(e.target.value)}
             type="number"
-            value={taxRate1}
-            onChange={(e) => setTaxRate1(e.target.value)}
             iconleft={
               <div className="icon-container">
                 <i className="fal fa-percent" />
@@ -182,18 +234,7 @@ export default function InvoicesSettings() {
             }
             className="icon-input"
           />
-          <AppInput
-            label="Tax Rate 2"
-            type="number"
-            value={taxRate2}
-            onChange={(e) => setTaxRate2(e.target.value)}
-            iconleft={
-              <div className="icon-container">
-                <i className="fal fa-percent" />
-              </div>
-            }
-            className="icon-input"
-          />
+        <small onClick={() => addTaxNumber()}><i className="far fa-plus"/>Add</small>
         </div>
       </SettingsSection>
       <SettingsSection
@@ -205,6 +246,20 @@ export default function InvoicesSettings() {
           onChange={e => setInvoiceNotes(e.target.value)}
         />
       </SettingsSection>
+      <SettingsSectionSwitch 
+        label="Show 'Thank you' message"
+        sublabel="Show 'Thank you' message on bottom of invoice"
+        value={showThankYouMessage}
+        setValue={setShowThankYouMessage}
+      />
+      <SettingsSectionSwitch
+        badge="Business"
+        label="Show 'Invoice Me' watermark"
+        sublabel="Show 'Invoice Me' watermark on bottom of invoice"
+        value={showInvoiceMeTag}
+        setValue={setShowInvoiceMeTag}
+        businessAccess
+      />
       <div className="btn-group">
         <AppButton
           label="Save"

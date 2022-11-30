@@ -156,6 +156,9 @@ exports.runScheduledInvoices9Am = functions.pubsub
     .get()
     scheduledInvoice.forEach(snapshot => {
       snapshot.ref.update({ lastSent: now })
+      //create actual invoice
+      // db.batch()
+      //dynamically add invoice data like dateCreated, invoiceID, etc.
       const data = snapshot.data()
       const msg = {
         to: 'urielas@hotmail.com',

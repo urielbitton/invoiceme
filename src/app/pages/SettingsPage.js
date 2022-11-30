@@ -1,4 +1,5 @@
 import ContactsSettings from "app/components/settings/ContactsSettings"
+import CreateScheduledInvoice from "app/components/settings/CreateScheduledInvoice"
 import EmailsSettings from "app/components/settings/EmailsSettings"
 import EstimatesSettings from "app/components/settings/EstimatesSettings"
 import GeneralSettings from "app/components/settings/GeneralSettings"
@@ -39,6 +40,7 @@ export default function SettingsPage() {
       <AppTabsBar 
         noSpread 
         spacedOut={15}
+        sticky
       >
         <NavLink
           to=""
@@ -82,6 +84,7 @@ export default function SettingsPage() {
           <Route path="payments" element={<PaymentsSettings />} />
           <Route path="notifications" element={<NotificationsSettings />} />
           <Route path="emails" element={<EmailsSettings />} />
+          <Route path="scheduled-invoices/new/*" element={<CreateScheduledInvoice />} />
         </Routes>
       </div>
     </div>

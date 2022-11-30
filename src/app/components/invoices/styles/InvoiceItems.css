@@ -1,0 +1,127 @@
+.invoice-items {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+.invoice-items h4 {
+  color: var(--darkGrayText);
+  margin-bottom: 20px;
+}
+.page-content .add-item-btn {
+  padding: 8px 12px;
+}
+
+.invoice-items .app-table {
+  gap: 0;
+}
+.invoice-items .app-table .headers {
+  border: 1px solid var(--tableBorderColor);
+}
+.invoice-items .app-table .headers h5 {
+  border-left: 1px solid var(--tableBorderColor);
+  padding: 10px;
+}
+.invoice-items .app-table .headers h5:first-child {
+  border-left: none;
+}
+.invoice-items .app-table .rows {
+  border: 1px solid var(--tableBorderColor);
+  border-top: none;
+  padding-right: 0px;
+  gap: 0;
+}
+.invoice-items .app-table .invoice-item-row {
+  border-bottom: 1px solid var(--tableBorderColor);
+}
+.invoice-items .app-table .invoice-item-row:last-child {
+  border-bottom: none;
+}
+.invoice-items .app-table .invoice-item-row input {
+  background: none;
+  border: none;
+}
+.invoice-items .app-table .invoice-item-row.editing {
+  background: var(--extraLightPrimary);
+}
+.invoice-items .invoice-item-row > div {
+  flex-basis: 25%;
+  border-left: 1px solid var(--tableBorderColor);
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.invoice-items .invoice-item-row > div:first-child,
+.invoice-items .invoice-item-row > h6:first-child {
+  border-left: none;
+}
+.invoice-items .app-table .rows .invoice-item-row .action-item input {
+  visibility: hidden;
+}
+.invoice-items .app-table .rows .invoice-item-row button {
+  display: none;
+}
+.invoice-items .invoice-item-row > div h6 {
+  font-weight: 600;
+  color: var(--grayText);
+  font-size: 13px;
+  padding-left: 10px;
+}
+.invoice-items .invoice-item-row > .item-actions {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.invoice-items .invoice-item-row > .item-actions > div {
+  margin-left: 5px;
+}
+.invoice-items .invoice-item-row .invoice-item-row-element:disabled {
+  background-color: none;
+  font-weight: 600;
+}
+.invoice-items .invoice-item-row input {
+  height: 100%;
+  border-color: var(--inputBorderColor);
+}
+.invoice-items .invoice-item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.invoice-items .invoice-item-row .invoice-item-row-element,
+.invoice-items  .invoice-item-row > .item-actions {
+  flex-basis: 25%;
+  font-size: 13px;
+}
+.invoice-items .invoice-item-row > .item-actions .icon-container:hover {
+  background: #fff;
+}
+.invoice-items .invoice-table-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 5px;
+}
+.invoice-items .invoice-table-actions .add-invoice-item {
+  font-size: 13px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.invoice-items .invoice-table-actions .add-invoice-item:hover {
+  background: var(--extraLightPrimary);
+}
+.invoice-items .invoice-table-actions .add-invoice-item.inactive {
+  opacity: 0.5;
+  pointer-events: none;
+  color: var(--grayText);
+}

@@ -5,6 +5,9 @@
 }
 .settings-page .app-tabs-bar {
   margin-top: 10px;
+  background: var(--bg);
+  top: -20px;
+  z-index: 900;
 }
 .settings-page-routes {
   margin-top: 20px;
@@ -17,10 +20,17 @@
 }
 .settings-sub-page .settings-page-titles {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
   border-bottom: 1px solid var(--inputBorderColor);
   padding-bottom: 15px;
+}
+.settings-sub-page .settings-page-titles .texts {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 .settings-sub-page .settings-page-titles h4 {
   font-size: 17px;
@@ -42,7 +52,7 @@
 }
 
 .settings-page .settings-section {
-  display: flex;
+  display: flex; 
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 20px;
@@ -55,11 +65,11 @@
   flex-direction: column;
   align-items: flex-start;
 }
-.settings-page .settings-section .left-side h5 {
+.settings-page .settings-section .left-side > h5 {
   color: var(--darkGrayText);
   font-weight: 600;
 }
-.settings-page .settings-section .left-side h6 {
+.settings-page .settings-section .left-side > h6 {
   color: #999;
   font-weight: 500;
   font-size: 12px;
@@ -93,17 +103,66 @@
   flex-direction: column;
   gap: 5px;
 }
-.settings-page .settings-section .right-side .split-row {
+.settings-page .settings-section .right-side .tax-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
 }
+.settings-page .settings-section .right-side .tax-row .full {
+  grid-column: 1/-1;
+}
+.settings-page .settings-section .right-side .tax-row > small {
+  font-size: 12px;
+  color: var(--grayText);
+  grid-column: 1/-1;
+  cursor: pointer;
+}
+.settings-page .settings-section .right-side .tax-row > small:hover {
+  text-decoration: underline;
+}
+.settings-page .settings-section .right-side .tax-row > small i {
+  margin-right: 3px;
+}
+.settings-page .settings-section .right-side .tax-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.settings-page .settings-section .right-side .tax-list .tax-item-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+.settings-page .settings-section .right-side .tax-list .tax-item-container h5 {
+  font-size: 13px;
+  color: #333;
+  font-weight: 600;
+}
+.settings-page .settings-section .right-side .tax-list .tax-item {
+  background: var(--extraLightPrimary);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 5px;
+}
+.settings-page .settings-section .right-side .tax-list .tax-item span {
+  font-size: 13px;
+  color: var(--darkGrayText);
+  font-weight: 600;
+}
+.settings-page .settings-section .right-side .tax-list .tax-item i {
+  font-size: 13px;
+  color: var(--primary);
+  cursor: pointer;
+}
+
 .settings-page .settings-section .appSwitch {
   transform: scale(0.9);
 }
 .settings-page .settings-section .right-side .commonInput textarea {
   width: 100%;
-  resize: vertical;
   height: 100px;
 }
 
@@ -119,7 +178,8 @@
   background: #fff;
   border: 1px solid var(--inputBorderColor);
   box-shadow: var(--newCardShadow);
-  padding: 20px;
+  padding: 10px 0;
+  padding-bottom: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -128,10 +188,13 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  border-bottom: 1px solid var(--inputBorderColor);
+  padding: 0 20px;
+  padding-bottom: 10px;
 }
 .settings-page .scheduled-invoices-grid .scheduled-invoice-card .header .calendar-container {
-  width: 55px;
-  height: 50px;
+  width: 45px;
+  height: 42px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -142,9 +205,9 @@
 }
 .settings-page .scheduled-invoices-grid .scheduled-invoice-card .header .calendar-container .month {
   background: var(--primary);
-  padding: 2px;
+  padding: 1px;
   width: 100%;
-  font-size: 13px;
+  font-size: 12px;
   color: #fff;
   display: flex;
   align-items: center;
@@ -153,7 +216,7 @@
 .settings-page .scheduled-invoices-grid .scheduled-invoice-card .header .calendar-container .day {
   width: 100%;
   height: 100%;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   color: #000;
   display: flex;
@@ -163,16 +226,191 @@
 .settings-page .scheduled-invoices-grid .scheduled-invoice-card .header h4 {
   color: var(--darkGrayText);
   font-weight: 600;
+  line-height: 1.2;
+}
+.settings-page .scheduled-invoices-grid .scheduled-invoice-card .header h4 small {
+  color: var(--primary);
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+.settings-page .scheduled-invoices-grid .scheduled-invoice-card .content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px;
+}
+.settings-page .scheduled-invoices-grid .scheduled-invoice-card .content > h5 {
+  color: var(--darkGrayText);
+  font-size: 14px;
+}
+.settings-page .scheduled-invoices-grid .scheduled-invoice-card .content h6 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grayText);
 }
 .settings-page .scheduled-invoices-grid .scheduled-invoice-card .actions {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+  padding: 0 20px;
 }
 .settings-page .scheduled-invoices-grid .scheduled-invoice-card .actions button {
   color: var(--grayText);
+  font-size: 13px;
 }
 .settings-page .scheduled-invoices-grid .scheduled-invoice-card .actions button:hover {
   color: var(--primary);
+}
+
+.create-scheduled-page .page-content {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.create-scheduled-page .slide-container {
+  width: 800px;
+  height: 600px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: var(--newCardShadow);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-x: hidden;
+}
+.create-scheduled-page .slide-container .slide-element {
+  height: 90%;
+  width: 100%;
+  padding: 25px;
+  overflow-y: auto;
+}
+.create-scheduled-page .slide-container .slide-element > form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.create-scheduled-page .slide-container .slide-element > form .invoice-items,
+.create-scheduled-page .slide-container .slide-element > form .invoice-contact {
+  grid-column: 1/-1;
+}
+.create-scheduled-page .slide-container .slide-element > form .invoice-contact > h4 {
+  display: none;
+}
+.create-scheduled-page .slide-container .slide-element > form .form-title {
+  grid-column: 1/-1;
+  margin-bottom: 10px;
+}
+.create-scheduled-page .slide-container .slide-element > form .form-title h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
+.create-scheduled-page .slide-container .slide-element > form .form-title h6 {
+  font-size: 12px;
+  color: var(--grayText);
+  font-weight: 600;
+}
+.create-scheduled-page .slide-container .slide-element > form .commonInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.create-scheduled-page .slide-container .slide-element > form .appTextarea {
+  grid-column: 1/-1;
+}
+.create-scheduled-page .slide-container .slide-element > form textarea {
+  max-height: 120px;
+  min-height: 90px;
+}
+.create-scheduled-page .slide-container .slide-element > form .commonInput .icon-container {
+  height: 34px;
+}
+.create-scheduled-page .slide-container .slide-element > form .commonInput .icon-container i {
+  font-weight: 500;
+}
+.create-scheduled-page .slide-container .slide-element > form .commonInput h6 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grayText);
+}
+.create-scheduled-page .slide-container .slide-element > form .split-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+}
+.create-scheduled-page .slide-container .slide-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  flex-wrap: wrap;
+  position: absolute;
+  bottom: 0;
+  padding: 10px;
+}
+.create-scheduled-page .slide-container .slide-nav button {
+  font-size: 13px;
+}
+.create-scheduled-page .slide-container .slide-nav button.disabled {
+  background: none;
+  border: none;
+  opacity: 0.5;
+}
+
+.create-scheduled-page .slide-container .review-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.create-scheduled-page .slide-container .review-form .section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+  grid-column: 1/-1;
+}
+.create-scheduled-page .slide-container .review-form .section h5 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
+
+.create-scheduled-page .preview-modal-container {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: none;
+  justify-content: center;
+  z-index: 9999;
+  overflow-y: auto;
+}
+.create-scheduled-page .preview-modal-container.show {
+  display: flex;
+}
+.create-scheduled-page .preview-modal-container .paper-container {
+  max-width: 1200px!important;
+  min-width: 1000px;
+  height: 1200px!important;
+  transform: scale(0.8);
+  background: #fff;
+  margin-top: -50px;
+}
+.create-scheduled-page .preview-modal-container > i {
+  position: fixed;
+  top: 20px;
+  right: 40px;
+  font-size: 30px;
+  color: var(--darkGrayText);
+  cursor: pointer;
 }

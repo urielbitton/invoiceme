@@ -26,9 +26,9 @@ export default function EstimatePage() {
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [estimateItems, setestimateItems] = useState([])
   const maxFileSize = 1024 * 1024 * 5
+  const myBusiness = myUser?.myBusiness
   const estimateID = useParams().estimateID
   const estimate = useEstimate(myUserID, estimateID)
-  const myBusiness = myUser?.myBusiness
   const calculatedSubtotal = estimate?.items?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = estimate?.items?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedTaxRate = estimate?.items?.every(item => item.taxRate === estimate?.items[0].taxRate) ? estimate?.items[0].taxRate : null
@@ -39,12 +39,12 @@ export default function EstimatePage() {
     validateEmail(contactEmail) &&
     estimate
 
-  const taxNumbersList = myBusiness?.taxNumbers?.map((taxNum, index) => {
+  const taxNumbersList = myUser?.taxNumbers?.map((taxNum, index) => {
     return <h5 
       style={invoicePaperStyles?.headerH5}
       key={index}
     >
-      {taxNum.name}: {taxNum.value}
+      {taxNum.name}: {taxNum.number}
     </h5>
   })
 

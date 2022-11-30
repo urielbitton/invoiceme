@@ -11,6 +11,10 @@
   width: 100%;
   transition: all 0.2s;
 }
+.app-item-row.selected {
+  background: #fff;
+  border: 1px solid var(--primary);
+}
 .app-item-row:hover {
   box-shadow: var(--cardShadowHover);
 }
@@ -36,4 +40,7 @@
 }
 .app-item-row .actions-row i {
   color: var(--primary);
+}
+.app-item-row .avatar-row-item .avatar-container {
+  min-width: 25px;
 }

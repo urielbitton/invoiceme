@@ -13,15 +13,26 @@
 .app-contact-row:hover {
   background: var(--bg);
 }
+.app-contact-row.selected:hover {
+  background: #fff;
+}
 .app-contact-row h6 {
   flex-basis: 20%;
   font-size: 13px;
   font-weight: 600;
   color: var(--darkGrayText);
 }
-.app-contact-row > i {
-  font-size: 16px;
-  color: var(--darkGrayText);
+.app-contact-row .img-container {
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.app-contact-row img {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 100%;
 }
 .app-contact-row button {
   background: var(--extraLightPrimary);
@@ -31,4 +42,10 @@
 }
 .app-contact-row button:hover {
   filter: brightness(1);
+}
+.app-contact-row .icon-container {
+  min-width: 30px;
+}
+.app-contact-row .icon-container:hover {
+  background: var(--bg);
 }

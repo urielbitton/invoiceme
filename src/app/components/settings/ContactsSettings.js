@@ -6,7 +6,7 @@ export default function ContactsSettings() {
     <div className="settings-sub-page">
       <SettingsTitles
         label="Contacts"
-        sublabel=""
+        sublabel="Customize your contact creation experience."
         icon="fas fa-users"
       />
     </div>

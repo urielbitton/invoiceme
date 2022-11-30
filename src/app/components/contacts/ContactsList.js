@@ -2,6 +2,7 @@ import { contactsIndex } from "app/algolia"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
+import { useNavigate } from "react-router-dom"
 import AppPagination from "../ui/AppPagination"
 import AppTable from "../ui/AppTable"
 import ContactRow from "./ContactRow"
@@ -12,6 +13,7 @@ export default function ContactsList(props) {
   const { query, searchResults, setSearchResults, filters, setNumOfHits,
     setNumOfPages, pageNum, setPageNum, numOfPages, hitsPerPage, showAll,
     dbContacts } = props
+  const navigate = useNavigate()
 
   const contacts = useInstantSearch(
     query,
@@ -32,6 +34,7 @@ export default function ContactsList(props) {
       <ContactRow
         key={index}
         contact={contact}
+        onDoubleClick={() => navigate(`/contacts/${contact.contactID}`)}
       />
     )
   })
@@ -41,6 +44,7 @@ export default function ContactsList(props) {
       <ContactRow
         key={index}
         contact={contact}
+        onDoubleClick={() => navigate(`/contacts/${contact.contactID}`)}
       />
     )
   })

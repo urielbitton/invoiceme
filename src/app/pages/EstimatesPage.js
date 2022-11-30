@@ -65,7 +65,7 @@ export default function EstimatesPage() {
       setNavItem2(null)
       setNavItemInfo(null)
     }
-  },[myUser])
+  },[myUser, thisMonthEstimates])
 
   return (
     <div className="invoices-page">

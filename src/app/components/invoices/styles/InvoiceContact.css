@@ -1,0 +1,41 @@
+.invoice-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+}
+.invoice-contact .avatar-row-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.invoice-contact .appInput i {
+  top: 12px;
+  right: 10px;
+  font-size: 13px;
+  color: var(--grayText);
+}
+.invoice-contact .appInput i.fa-times {
+  font-size: 16px;
+  top: 11px;
+  cursor: pointer;
+}
+.invoice-contact input {
+  width: 300px;
+  height: 37px;
+  border-color: var(--inputBorderColor);
+  font-size: 13px;
+}
+.contacts-search-results {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  background: #fff;
+  border: 1px solid var(--inputBorderColor);
+  width: 100%;
+}
+.invoice-contact .app-item-row button {
+  font-size: 13px;
+  padding: 7px 12px;
+}

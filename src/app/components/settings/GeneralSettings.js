@@ -23,7 +23,7 @@ export default function GeneralSettings() {
     })
     .then(() => {
       updateDB(`users/${myUserID}/settings`, 'settings', {
-        
+        general: {}
       })
       .then(() => {
         setPageLoading(false)

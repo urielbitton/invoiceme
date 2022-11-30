@@ -69,7 +69,7 @@ export default function InvoicesPage() {
       setNavItem3(null)
       setNavItemInfo(null)
     }
-  },[myUser])
+  },[myUser, thisMonthInvoices])
 
   return (
     <div className="invoices-page">

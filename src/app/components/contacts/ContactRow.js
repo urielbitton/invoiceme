@@ -1,7 +1,7 @@
 import { deleteContactService } from "app/services/contactsServices"
 import { StoreContext } from "app/store/store"
 import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
-import { truncateText } from "app/utils/generalUtils"
+import { formatPhoneNumber, truncateText } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
 import AppItemRow from "../ui/AppItemRow"
@@ -13,6 +13,7 @@ export default function ContactRow(props) {
   const { myUserID, setPageLoading } = useContext(StoreContext)
   const { contactID, name, email, phone, address, 
     city, country, dateCreated, photoURL } = props.contact
+  const { actions, onDoubleClick, className } = props
   const navigate = useNavigate()
   const storagePath = `users/${myUserID}/contacts`
 
@@ -29,12 +30,13 @@ export default function ContactRow(props) {
         </div>
       }
       item2={truncateText(email, 18)}
-      item3={phone}
+      item3={formatPhoneNumber(phone)}
       item4={address}
       item5={city}
       item6={country}
       item7={convertClassicDate(convertAlgoliaDate(dateCreated))}
       actions={
+        actions ??
         <>
           <IconContainer
             icon="fas fa-eye"
@@ -62,7 +64,8 @@ export default function ContactRow(props) {
           />
         </>
       }
-      onDoubleClick={() => navigate(`/contacts/${contactID}`)}
+      onDoubleClick={onDoubleClick}
+      className={className}
     />
   )
 }

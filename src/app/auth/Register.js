@@ -52,6 +52,7 @@ export default function Register() {
       dateJoined: new Date(),
       memberType: 'basic',
       myBusiness: null,
+      taxNumbers: [],
       totalRevenue: 0,
       currency: { 
         name: 'Canadian Dollar',

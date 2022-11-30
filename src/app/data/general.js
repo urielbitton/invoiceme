@@ -64,3 +64,10 @@ export const themeColors = [
   { label: 'Clouds', value: '#7092c4' },
   { label: 'Leaf', value: '#8cb36d' }
 ]
+
+export const timeOfDaysOptions = [
+  { label: '9:00 AM', value: 9 },
+  { label: '12:00 PM', value: 12 },
+  { label: '3:00 PM', value: 15 },
+  { label: '6:00 PM', value: 18 }
+]

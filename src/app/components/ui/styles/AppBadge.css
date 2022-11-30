@@ -1,0 +1,9 @@
+.app-badge {
+  background: var(--primary);
+  padding: 0 5px;
+  border-radius: 3px;
+}
+.app-badge h6 {
+  color: #fff;
+  font-size: 11px;
+}

@@ -65,7 +65,7 @@ export default function ContactsPage() {
       setNavItem2(null)
       setNavItemInfo(null)
     }
-  },[myUser])
+  },[myUser, thisMonthContacts])
 
   return (
     <div className="invoices-page contacts-page">

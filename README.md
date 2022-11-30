@@ -11,6 +11,7 @@ Let users choose if they want to show invoice page titles, dates and numbers on 
 
 Others
 - add in-app toasts (notifs instead of alerts)
+- find html to pdf npm that preserves text and css
 - add contact events on contact page - shows all events for contact (invoices/estimates received, sent, payments, emails/SMS sent, etc.)
 - create email subcollection for users, all emails they send on the app should be saved there.
 - add AppModal for users to see status of their sent invoices (try to get a read receipt from sendgrid, show other details about invoice)
