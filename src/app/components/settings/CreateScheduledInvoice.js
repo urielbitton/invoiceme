@@ -17,6 +17,10 @@ import SlideElement from "../ui/SlideElement"
 import SettingsTitles from "./SettingsTitles"
 import firebase from 'firebase'
 import { invoicePaperStyles } from "../invoices/invoicePaperStyles"
+import { formatCurrency, formatPhoneNumber, 
+  truncateText } from "app/utils/generalUtils"
+import './styles/CreateScheduledInvoice.css'
+import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
 
 export default function CreateScheduledInvoice() {
 
@@ -89,6 +93,16 @@ export default function CreateScheduledInvoice() {
     </h5>
   })
 
+  const allowSlide2 = invoiceTitle.length > 0 && 
+  invoiceNumber.length > 0 && 
+  invoiceItems.length > 0
+
+  const allowSlide3 = !!invoiceContact
+  
+  const allowSlide4 = scheduleTitle.length > 0 &&
+  emailSubject.length > 0 &&
+  emailMessage.length > 0
+
   const allowCreateSchedule = scheduleTitle &&
     invoiceTitle &&
     invoiceNumber &&
@@ -102,6 +116,24 @@ export default function CreateScheduledInvoice() {
     emailMessage &&
     emailSubject
 
+  const handleNextSlide = () => {
+    if(slidePosition === 0) {
+      allowSlide2 ? setSlidePosition(slidePosition + 1) :
+      alert('Please add an invoice name, number and at least one item.')
+    }
+    else if(slidePosition === 1) {
+      allowSlide3 ? setSlidePosition(slidePosition + 1) :
+      alert('Please select a contact')
+    }
+    else if(slidePosition === 2) {
+      allowSlide4 ? setSlidePosition(slidePosition + 1) :
+      alert('Please add a schedule title, email subject and message')
+    }
+    else {
+      slidePosition < numOfSlides - 1 && setSlidePosition(slidePosition + 1)
+    }
+  }
+
   const slideNav = <div className="slide-nav">
     <AppButton
       label="Back"
@@ -114,12 +146,14 @@ export default function CreateScheduledInvoice() {
       label="Next"
       rightIcon="fal fa-arrow-right"
       buttonType="invertedBtn"
-      onClick={() => slidePosition < numOfSlides - 1 && setSlidePosition(slidePosition + 1)}
+      onClick={() => handleNextSlide()}
       disabled={slidePosition === numOfSlides - 1}
     />
   </div>
 
   const createScheduledInvoice = () => {
+    const confirm = window.confirm('Are you sure you want to create this scheduled invoice?')
+    if(!confirm) return alert('Scheduled invoice not created.')
     if (!!!allowCreateSchedule)
       return alert("Please fill in all required fields.")
     if (userScheduledInvoices.length > 2)
@@ -259,55 +293,53 @@ export default function CreateScheduledInvoice() {
                 value={invoiceNotes}
                 onChange={(e) => setInvoiceNotes(e.target.value)}
               />
-              <InvoiceItems
-                itemName={itemName}
-                setItemName={setItemName}
-                itemPrice={itemPrice}
-                setItemPrice={setItemPrice}
-                itemTaxRate={itemTaxRate}
-                setItemTaxRate={setItemTaxRate}
-                itemQuantity={itemQuantity}
-                setItemQuantity={setItemQuantity}
-                invoiceCurrency={invoiceCurrency}
-                editItemID={editItemID}
-                setEditItemID={setEditItemID}
-                invoiceItems={invoiceItems}
-                setInvoiceItems={setInvoiceItems}
-              />
             </form>
+            <InvoiceItems
+              itemName={itemName}
+              setItemName={setItemName}
+              itemPrice={itemPrice}
+              setItemPrice={setItemPrice}
+              itemTaxRate={itemTaxRate}
+              setItemTaxRate={setItemTaxRate}
+              itemQuantity={itemQuantity}
+              setItemQuantity={setItemQuantity}
+              invoiceCurrency={invoiceCurrency}
+              editItemID={editItemID}
+              setEditItemID={setEditItemID}
+              invoiceItems={invoiceItems}
+              setInvoiceItems={setInvoiceItems}
+            />
           </SlideElement>
           <SlideElement
             index={1}
             slidePosition={slidePosition}
           >
-            <form onSubmit={(e) => e.preventDefault()}>
-              <div className="form-title">
-                <h4>Invoice Contact</h4>
-                <h6>Choose a contact to send your scheduled invoice to.</h6>
-              </div>
-              <InvoiceContact
-                contactName={contactName}
-                setContactName={setContactName}
-                contactEmail={contactEmail}
-                setContactEmail={setContactEmail}
-                contactPhone={contactPhone}
-                setContactPhone={setContactPhone}
-                contactAddress={contactAddress}
-                setContactAddress={setContactAddress}
-                contactCity={contactCity}
-                setContactCity={setContactCity}
-                contactRegion={contactRegion}
-                setContactRegion={setContactRegion}
-                contactPostcode={contactPostcode}
-                setContactPostcode={setContactPostcode}
-                contactCountry={contactCountry}
-                setContactCountry={setContactCountry}
-                contactImg={contactImg}
-                setContactImg={setContactImg}
-                invoiceContact={invoiceContact}
-                setInvoiceContact={setInvoiceContact}
-              />
-            </form>
+            <div className="form-title">
+              <h4>Invoice Contact</h4>
+              <h6>Choose a contact to send your scheduled invoice to.</h6>
+            </div>
+            <InvoiceContact
+              contactName={contactName}
+              setContactName={setContactName}
+              contactEmail={contactEmail}
+              setContactEmail={setContactEmail}
+              contactPhone={contactPhone}
+              setContactPhone={setContactPhone}
+              contactAddress={contactAddress}
+              setContactAddress={setContactAddress}
+              contactCity={contactCity}
+              setContactCity={setContactCity}
+              contactRegion={contactRegion}
+              setContactRegion={setContactRegion}
+              contactPostcode={contactPostcode}
+              setContactPostcode={setContactPostcode}
+              contactCountry={contactCountry}
+              setContactCountry={setContactCountry}
+              contactImg={contactImg}
+              setContactImg={setContactImg}
+              invoiceContact={invoiceContact}
+              setInvoiceContact={setInvoiceContact}
+            />
           </SlideElement>
           <SlideElement
             index={2}
@@ -351,7 +383,7 @@ export default function CreateScheduledInvoice() {
             index={3}
             slidePosition={slidePosition}
           >
-            <form
+            <div
               onSubmit={(e) => e.preventDefault()}
               className="review-form"
             >
@@ -361,38 +393,71 @@ export default function CreateScheduledInvoice() {
               </div>
               <div className="section">
                 <h5>Invoice Template</h5>
-                <small 
-                  className="underline"
+                <h6>
+                  <span>Invoice Name: </span>
+                  {invoiceTitle}
+                </h6>
+                <h6>
+                  <span>Invoice Total: </span>
+                  {invoiceCurrency.symbol}{formatCurrency(calculatedTotal.toFixed(2))}
+                </h6>
+                <small
+                  className="underline bold"
                   onClick={() => setShowInvoicePreview(true)}
                 >Preview Invoice</small>
+              </div>
+              <div className="section">
+                <h5>Invoice Contact</h5>
+                <h6>
+                  <img src={invoiceContact?.photoURL} />
+                  {invoiceContact?.name}<br/>
+                  {invoiceContact?.email}<br/>
+                  {formatPhoneNumber(invoiceContact?.phone)}<br/>
+                  {invoiceContact?.address}<br/>
+                  {invoiceContact?.city}, {invoiceContact?.region}, {invoiceContact?.country} {invoiceContact?.postcode}<br/>
+                </h6>
+              </div>
+              <div className="section">
+                <h5>Schedule Details</h5>
+                <h6>
+                  <span>Shedule Title: </span>
+                  {scheduleTitle}
+                </h6>
+                <h6>
+                  <span>Day of the Month: </span>
+                  {dayOfMonth}
+                </h6>
+                <h6>
+                  <span>Time of Day: </span>
+                  {timeOfDay}
+                </h6>
+                <h6>
+                  <span>Email Subject: </span>
+                  {emailSubject}
+                </h6>
+                <h6>
+                  <span>Email Message:</span><br/>
+                </h6>
+                <p>{truncateText(emailMessage, 100)}</p>
               </div>
               <div className="btn-group">
                 <AppButton
                   label="Create Automated Invoice"
                   onClick={createScheduledInvoice}
+                  rightIcon="far fa-arrow-right"
                 />
               </div>
-            </form>
+            </div>
           </SlideElement>
           {slideNav}
         </SlideContainer>
       </div>
-      <div className={`preview-modal-container ${showInvoicePreview ? 'show' : ''}`}>
-        <i 
-          className="fal fa-times"
-          onClick={() => setShowInvoicePreview(false)}
-        />
-        <InvoicePaper
-          invoice={invoice}
-          myBusiness={myUser?.myBusiness}
-          taxNumbersList={taxNumbersList}
-          invoiceItems={invoiceItems}
-          calculatedSubtotal={calculatedSubtotal}
-          calculatedTaxRate={calculatedTaxRate}
-          calculatedTotal={calculatedTotal}
-          invoicePaperRef={invoicePaperRef}
-        />
-      </div>
+      <InvoicePreviewModal
+        invoiceData={invoice}
+        showInvoicePreview={showInvoicePreview}
+        setShowInvoicePreview={setShowInvoicePreview}
+        invoicePaperRef={invoicePaperRef}
+      />
     </div>
   )
 }

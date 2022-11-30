@@ -1,0 +1,100 @@
+.scheduled-invoice-card {
+  height: 420px;
+  width: 340px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--inputBorderColor);
+  box-shadow: var(--newCardShadow);
+  padding: 10px 0;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.scheduled-invoice-card .top {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.scheduled-invoice-card .header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid var(--inputBorderColor);
+  padding: 0 20px;
+  padding-bottom: 10px;
+}
+.scheduled-invoice-card .header .calendar-container {
+  width: 45px;
+  height: 42px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--inputBorderColor);
+}
+.scheduled-invoice-card .header .calendar-container .month {
+  background: var(--primary);
+  padding: 1px;
+  width: 100%;
+  font-size: 12px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scheduled-invoice-card .header .calendar-container .day {
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+  font-weight: 700;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scheduled-invoice-card .header h4 {
+  color: var(--darkGrayText);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.scheduled-invoice-card .header h4 small {
+  color: var(--primary);
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+.scheduled-invoice-card .content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px;
+}
+.scheduled-invoice-card .content > h5 {
+  color: var(--darkGrayText);
+  font-size: 14px;
+}
+.scheduled-invoice-card .content h6 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grayText);
+}
+.scheduled-invoice-card .actions {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 0 20px;
+}
+.scheduled-invoice-card .actions button {
+  color: var(--grayText);
+  font-size: 13px;
+}
+.scheduled-invoice-card .actions button:hover {
+  color: var(--primary);
+}

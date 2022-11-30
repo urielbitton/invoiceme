@@ -1,0 +1,31 @@
+.invoice-preview-modal {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: none;
+  justify-content: center;
+  z-index: 9999;
+  overflow-y: auto;
+}
+.invoice-preview-modal.show {
+  display: flex;
+}
+.invoice-preview-modal .paper-container {
+  max-width: 1200px!important;
+  min-width: 1000px;
+  height: 1200px!important;
+  transform: scale(0.8);
+  background: #fff;
+  margin-top: -50px;
+}
+.invoice-preview-modal > i {
+  position: fixed;
+  top: 20px;
+  right: 40px;
+  font-size: 30px;
+  color: var(--darkGrayText);
+  cursor: pointer;
+}

@@ -77,9 +77,9 @@ export const getScheduledInvoicesByUserID = (userID, setInvoices) => {
   })
 }
 
-export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, 
-  invoiceContact, invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal, calculatedTotal, 
-  invoiceName, status) => {
+export const createInvoiceService = (userID, myBusiness, taxNumbers, invoiceCurrency, invoiceDate, 
+  invoiceDueDate, invoiceNumber, invoiceContact, invoiceItems, invoiceNotes, taxRate1, taxRate2, 
+  calculatedSubtotal, calculatedTotal, invoiceName, status) => {
   const path = `users/${userID}/invoices`
   const docID = getRandomDocID(path)
   const invoiceData = {
@@ -94,8 +94,10 @@ export const createInvoiceService = (userID, invoiceCurrency, invoiceDate, invoi
     isSent: false,
     items: invoiceItems,
     monthLabel: dateToMonthName(convertInputDateToDateAndTimeFormat(invoiceDate)),
+    myBusiness,
     notes: invoiceNotes,
     status,
+    taxNumbers,
     taxRate1,
     taxRate2,
     subtotal: calculatedSubtotal,

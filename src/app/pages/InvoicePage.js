@@ -11,7 +11,6 @@ import { formatCurrency, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
 import './styles/InvoicePage.css'
-import { invoicePaperStyles } from "app/components/invoices/invoicePaperStyles"
 import AppModal from "app/components/ui/AppModal"
 import InvoicePaper from "app/components/invoices/InvoicePaper"
 
@@ -28,6 +27,7 @@ export default function InvoicePage() {
   const [showSettingsModal, setShowSettingsModal] = useState(false)
   const maxFileSize = 1024 * 1024 * 5
   const myBusiness = myUser?.myBusiness
+  const taxNumbers = myBusiness?.taxNumbers
   const invoiceID = useParams().invoiceID
   const invoice = useInvoice(myUserID, invoiceID)
   const calculatedSubtotal = invoice?.items?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
@@ -39,15 +39,6 @@ export default function InvoicePage() {
   const allowSendInvoice = invoiceItems.length > 0 &&
     validateEmail(contactEmail) &&
     invoice
-
-  const taxNumbersList = myUser?.taxNumbers?.map((taxNum, index) => {
-    return <h5 
-      style={invoicePaperStyles?.headerH5}
-      key={index}
-    >
-      {taxNum.name}: {taxNum.number}
-    </h5>
-  })
 
   const sendInvoice = () => {
     if (!allowSendInvoice) return alert('Please fill in all fields.')
@@ -220,7 +211,7 @@ export default function InvoicePage() {
         <InvoicePaper
           invoice={invoice}
           myBusiness={myBusiness}
-          taxNumbersList={taxNumbersList}
+          taxNumbers={taxNumbers}
           invoiceItems={invoiceItems}
           calculatedSubtotal={calculatedSubtotal}
           calculatedTaxRate={calculatedTaxRate}

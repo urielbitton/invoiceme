@@ -28,7 +28,7 @@ import './styles/NewInvoicePage.css'
 
 export default function NewEstimatePage() {
 
-  const { myUserID, setNavItemInfo, setPageLoading } = useContext(StoreContext)
+  const { myUserID, myUser, setNavItemInfo, setPageLoading } = useContext(StoreContext)
   const [estimateName, setEstimateName] = useState("")
   const [estimateNumber, setEstimateNumber] = useState("")
   const [estimateDate, setEstimateDate] = useState(convertDateToInputFormat(new Date()))
@@ -402,7 +402,7 @@ export default function NewEstimatePage() {
     if (!allowCreateEstimate) return alert("Please fill out all required fields.")
     setPageLoading(true)
     createEstimateService(
-      myUserID, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
+      myUserID, myUser?.myBusiness, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
       estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal,
       calculatedTotal, estimateName
     )

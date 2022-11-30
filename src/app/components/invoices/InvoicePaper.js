@@ -6,7 +6,7 @@ import { invoicePaperStyles } from "./invoicePaperStyles"
 
 export default function InvoicePaper(props) {
 
-  const { invoice, myBusiness, taxNumbersList, invoiceItems,
+  const { invoice, myBusiness, taxNumbers, invoiceItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
     invoicePaperRef } = props
 
@@ -18,11 +18,20 @@ export default function InvoicePaper(props) {
     >
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{(index + 1)}</h6>
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item?.name}</h6>
-      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{invoice.currency.symbol}{formatCurrency(item?.price?.toFixed(2))}</h6>
+      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{invoice?.currency.symbol}{formatCurrency(item?.price?.toFixed(2))}</h6>
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item?.quantity}</h6>
       <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item?.taxRate}%</h6>
-      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{invoice.currency.symbol}{item?.total?.toFixed(2)}</h6>
+      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{invoice?.currency.symbol}{item?.total?.toFixed(2)}</h6>
     </div>
+  })
+
+  const taxNumbersList = taxNumbers?.map((taxNum, index) => {
+    return <h5 
+      style={invoicePaperStyles?.headerH5}
+      key={index}
+    >
+      {taxNum.name}: {taxNum.number}
+    </h5>
   })
 
   return (
@@ -34,7 +43,7 @@ export default function InvoicePaper(props) {
       <header style={invoicePaperStyles?.header}>
         <img
           style={invoicePaperStyles?.headerImg}
-          src={myBusiness.logo}
+          src={invoice?.myBusiness?.logo || myBusiness?.logo}
           alt="Logo"
         />
         <div
@@ -45,10 +54,14 @@ export default function InvoicePaper(props) {
             className="left"
             style={invoicePaperStyles?.headerLeft}
           >
-            <h3 style={invoicePaperStyles?.headerLeftH3}>{myBusiness.name}</h3>
-            <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(myBusiness.phone)}</h5>
-            <h5 style={invoicePaperStyles?.headerH5}>{myBusiness.address}</h5>
-            <h5 style={invoicePaperStyles?.headerH5}>{myBusiness.city}, {myBusiness.region} {myBusiness.postcode}</h5>
+            <h3 style={invoicePaperStyles?.headerLeftH3}>{invoice?.myBusiness?.name || myBusiness.name}</h3>
+            <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(invoice?.myBusiness?.phone || myBusiness.phone)}</h5>
+            <h5 style={invoicePaperStyles?.headerH5}>{invoice?.myBusiness?.address || myBusiness.address}</h5>
+            <h5 style={invoicePaperStyles?.headerH5}>
+              {invoice?.myBusiness?.city || myBusiness.city},&nbsp;
+              {invoice?.myBusiness?.region || myBusiness.region},&nbsp; 
+              {invoice?.myBusiness?.postcode || myBusiness.postcode}
+            </h5>
             {taxNumbersList}
           </div>
           <div
@@ -56,10 +69,10 @@ export default function InvoicePaper(props) {
             style={invoicePaperStyles?.headerRight}
           >
             <h3 style={invoicePaperStyles?.headerRightH3}>Invoice</h3>
-            <h5 style={invoicePaperStyles?.headerH5}>#{invoice.invoiceNumber}</h5>
-            <h5 style={invoicePaperStyles?.headerH5}>Invoice Date: {convertClassicDate(invoice.dateCreated.toDate())}</h5>
+            <h5 style={invoicePaperStyles?.headerH5}>#{invoice?.invoiceNumber}</h5>
+            <h5 style={invoicePaperStyles?.headerH5}>Invoice Date: {convertClassicDate(invoice?.dateCreated.toDate())}</h5>
             <h5 style={invoicePaperStyles?.headerH5}>
-              Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(invoice.dateDue.toDate())}</span>
+              Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(invoice?.dateDue.toDate())}</span>
             </h5>
           </div>
         </div>
@@ -70,12 +83,12 @@ export default function InvoicePaper(props) {
       >
         <div className="side">
           <h4 style={invoicePaperStyles?.billtoSectionH4}>Bill To</h4>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice.invoiceTo.name}</h5>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice.invoiceTo.address}</h5>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{formatPhoneNumber(invoice.invoiceTo.phone)}</h5>
+          <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice?.invoiceTo.name}</h5>
+          <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice?.invoiceTo.address}</h5>
+          <h5 style={invoicePaperStyles?.billtoSectionH5}>{formatPhoneNumber(invoice?.invoiceTo.phone)}</h5>
           <h5 style={invoicePaperStyles?.billtoSectionH5}>
-            {invoice.invoiceTo.city}, {invoice.invoiceTo.region},&nbsp;
-            ({invoice.invoiceTo.country}) {invoice.invoiceTo.postcode}
+            {invoice?.invoiceTo.city}, {invoice?.invoiceTo.region},&nbsp;
+            ({invoice?.invoiceTo.country}) {invoice?.invoiceTo.postcode}
           </h5>
         </div>
         <div className="side" />
@@ -110,24 +123,24 @@ export default function InvoicePaper(props) {
         </h6>
         <h6 style={invoicePaperStyles?.totalsSectionH6}>
           <span>Subtotal</span>
-          <span>{invoice.currency?.symbol}{formatCurrency(calculatedSubtotal)}</span>
+          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedSubtotal)}</span>
         </h6>
         <h6
           className="totals"
           style={invoicePaperStyles?.totalsSectionH6Totals}
         >
           <span>Total</span>
-          <span>{invoice.currency?.symbol}{formatCurrency(calculatedTotal)} {invoice.currency?.value}</span>
+          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedTotal)} {invoice?.currency?.value}</span>
         </h6>
       </div>
       {
-        invoice.notes?.length > 0 &&
+        invoice?.notes?.length > 0 &&
         <div
           className="notes-section"
           style={invoicePaperStyles?.notesSection}
         >
           <h4 style={invoicePaperStyles?.notesSectionH4}>Notes</h4>
-          <p style={invoicePaperStyles?.notesSectionP}>{invoice.notes}</p>
+          <p style={invoicePaperStyles?.notesSectionP}>{invoice?.notes}</p>
         </div>
       }
       <div

@@ -1,0 +1,143 @@
+.create-scheduled-page .page-content {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.create-scheduled-page .slide-container {
+  width: 800px;
+  height: 600px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: var(--newCardShadow);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-x: hidden;
+}
+.create-scheduled-page .slide-container .slide-element {
+  height: 90%;
+  width: 100%;
+  padding: 25px;
+  overflow-y: auto;
+}
+.create-scheduled-page .slide-container .slide-element > form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.create-scheduled-page .slide-container .invoice-items,
+.create-scheduled-page .slide-container .invoice-contact {
+  margin-top: 20px;
+}
+.create-scheduled-page .slide-container .invoice-contact > h4 {
+  display: none;
+}
+.create-scheduled-page .slide-container .slide-element .form-title {
+  grid-column: 1/-1;
+  margin-bottom: 10px;
+}
+.create-scheduled-page .slide-container .slide-element .form-title h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
+.create-scheduled-page .slide-container .slide-element .form-title h6 {
+  font-size: 12px;
+  color: var(--grayText);
+  font-weight: 600;
+}
+.create-scheduled-page .slide-container .slide-element > form .commonInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.create-scheduled-page .slide-container .slide-element > form .appTextarea {
+  grid-column: 1/-1;
+}
+.create-scheduled-page .slide-container .slide-element > form textarea {
+  max-height: 120px;
+  min-height: 90px;
+}
+.create-scheduled-page .slide-container .slide-element > form .commonInput .icon-container {
+  height: 34px;
+}
+.create-scheduled-page .slide-container .slide-element > form .commonInput .icon-container i {
+  font-weight: 500;
+}
+.create-scheduled-page .slide-container .slide-element > form .commonInput h6 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--grayText);
+}
+.create-scheduled-page .slide-container .slide-element > form .split-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+}
+.create-scheduled-page .slide-container .slide-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  flex-wrap: wrap;
+  position: absolute;
+  bottom: 0;
+  padding: 10px;
+}
+.create-scheduled-page .slide-container .slide-nav button {
+  font-size: 13px;
+}
+.create-scheduled-page .slide-container .slide-nav button.disabled {
+  background: none;
+  border: none;
+  opacity: 0.5;
+}
+
+.create-scheduled-page .slide-container .review-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.create-scheduled-page .slide-container .review-form .section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: 8px;
+  padding-bottom: 20px;
+  grid-column: 1/-1;
+  border-bottom: 1px solid var(--inputBorderColor);
+}
+.create-scheduled-page .slide-container .review-form .section h5 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
+.create-scheduled-page .slide-container .review-form .section h6 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--grayText);
+}
+.create-scheduled-page .slide-container .review-form .section small {
+  font-size: 13px;
+  color: var(--grayText);
+}
+.create-scheduled-page .slide-container .review-form .section h6 span {
+  font-weight: 700;
+}
+.create-scheduled-page .slide-container .review-form .section h6 img {
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+  display: block;
+  margin-top: 5px;
+}
+.create-scheduled-page .slide-container .review-form .section p {
+  font-size: 13px;
+  color: var(--grayText);
+  white-space: pre-wrap;
+}
+

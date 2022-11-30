@@ -102,7 +102,7 @@ export default function NewInvoicePage() {
     if (!!!allowCreateInvoice) return alert("Please fill out all required fields.")
     setPageLoading(true)
     createInvoiceService(
-      myUserID, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, invoiceContact,
+      myUserID, myUser?.myBusiness, myUser?.taxNumbers, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, invoiceContact,
       invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal,
       calculatedTotal, invoiceName, status
     )

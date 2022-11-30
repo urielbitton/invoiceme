@@ -1,19 +1,25 @@
 import { useUserScheduledInvoices } from "app/hooks/invoiceHooks"
 import { StoreContext } from "app/store/store"
-import { convertClassicDateAndTime, displayThStNdRd } from "app/utils/dateUtils"
-import React, { useContext } from 'react'
+import React, { useContext, useRef, useState } from 'react'
+import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
 import AppButton from "../ui/AppButton"
+import { ScheduledInvoiceCard } from "./ScheduledInvoiceCard"
 import SettingsTitles from "./SettingsTitles"
 
 export default function ScheduledInvoicesSettings() {
 
   const { myUserID } = useContext(StoreContext)
+  const [showInvoicePreview, setShowInvoicePreview] = useState(false)
+  const [invoiceData, setInvoiceData] = useState(null)
   const scheduledInvoices = useUserScheduledInvoices(myUserID)
+  const invoicePaperRef = useRef(null)
 
-  const scheduledInvoicesList = scheduledInvoices?.map((invoice, index) => {
-    return <ScheduledInvoice
+  const scheduledInvoicesList = scheduledInvoices?.map((scheduled, index) => {
+    return <ScheduledInvoiceCard
       key={index}
-      invoice={invoice}
+      scheduled={scheduled}
+      setInvoiceData={setInvoiceData}
+      setShowInvoicePreview={setShowInvoicePreview}
     />
   })
 
@@ -30,56 +36,17 @@ export default function ScheduledInvoicesSettings() {
             url={`/settings/scheduled-invoices/new`}
           />
         }
+        badge="Business"
       />
       <div className="scheduled-invoices-grid">
         {scheduledInvoicesList}
       </div>
+      <InvoicePreviewModal
+        invoiceData={invoiceData}
+        showInvoicePreview={showInvoicePreview}
+        setShowInvoicePreview={setShowInvoicePreview}
+        invoicePaperRef={invoicePaperRef}
+      />
     </div>
   )
-}
-
-
-export function ScheduledInvoice(props) {
-
-  const { title, dateCreated, dayOfMonth, timeOfDay, active,
-    lastSent } = props.invoice
-  const monthName = new Date(dateCreated?.toDate()).toLocaleString('default', { month: 'short' })
-
-  return <div className="scheduled-invoice-card">
-    <div className="header">
-      <div className="calendar-container">
-        <div className="month">{monthName}</div>
-        <div className="day">{dayOfMonth}</div>
-      </div>
-      <h4>
-        {title}
-        <small>{active ? 'Active' : 'Inactive'}</small>
-      </h4>
-    </div>
-    <div className="content">
-      <h5>Schedule</h5>
-      <h6>
-        <i className="fas fa-calendar-alt" />
-        Every month on the {dayOfMonth}{displayThStNdRd(dayOfMonth)}
-      </h6>
-      <h6>
-        <i className="fas fa-clock"/>
-        {timeOfDay}:00{timeOfDay > 12 ? "PM" : "AM"}
-      </h6>
-      <h6>
-        <i className="fas fa-history"/>
-        Last sent: {convertClassicDateAndTime(lastSent?.toDate())}
-      </h6>
-    </div>
-    <div className="actions">
-      <AppButton
-        label="Edit"
-        buttonType="invertedBtn"
-      />
-      <AppButton
-        label="Delete"
-        buttonType="invertedBtn"
-      />
-    </div>
-  </div>
 }

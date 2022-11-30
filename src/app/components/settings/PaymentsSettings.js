@@ -8,6 +8,7 @@ export default function PaymentsSettings() {
         label="Payments"
         sublabel="Manage and choose your payment options."
         icon="fas fa-credit-card"
+        badge="Business"
       />
     </div>
   )

@@ -68,7 +68,7 @@ export const getEstimatesByContactEmail = (userID, email, setEstimates) => {
   })
 }
 
-export const createEstimateService = (userID, estimateCurrency, estimateDate, estimateDueDate, 
+export const createEstimateService = (userID, myBusiness, estimateCurrency, estimateDate, estimateDueDate, 
   estimateNumber, estimateContact, estimateItems, estimateNotes, taxRate1, taxRate2, 
   calculatedSubtotal, calculatedTotal, estimateName
 ) => {
@@ -85,6 +85,7 @@ export const createEstimateService = (userID, estimateCurrency, estimateDate, es
     isSent: false,
     items: estimateItems,
     monthLabel: dateToMonthName(convertInputDateToDateAndTimeFormat(estimateDate)),
+    myBusiness,
     notes: estimateNotes,
     taxRate1,
     taxRate2,
