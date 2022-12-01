@@ -33,8 +33,8 @@ export default function PaymentsSettings() {
         />
       </SettingsSection>
       <SettingsSection
-        label="Stripe Payments"
-        sublabel="Connect your Stripe account to accept and send payments."
+        label="PayPal Payments"
+        sublabel="Connect your PayPal account to accept and send payments."
         flexStart
       >
         <AppButton

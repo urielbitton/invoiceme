@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import { AppSwitch } from "../ui/AppInputs"
 import SettingsSection from "./SettingsSection"
 
-export default function SettingsSectionSwitch({label, sublabel, badge='', value, setValue, businessAccess=false}) {
+export default function SettingsSectionSwitch({label, sublabel='', badge='', value, setValue, businessAccess=false}) {
 
   const { myMemberType } = useContext(StoreContext)
 

@@ -71,3 +71,21 @@ export const timeOfDaysOptions = [
   { label: '3:00 PM', value: 15 },
   { label: '6:00 PM', value: 18 }
 ]
+
+export const overdueDaysOptions = [
+  { label: '1 day', value: 1 },
+  { label: '2 days', value: 2 },
+  { label: '3 days', value: 3 },
+  { label: '4 days', value: 4 },
+  { label: '5 days', value: 5 },
+  { label: '6 days', value: 6 },
+  { label: '7 days', value: 7 },
+  { label: '2 weeks', value: 14 },
+  { label: '3 weeks', value: 21 },
+]
+
+export const monthlyReportOptions = [
+  { label: 'None', value: 'none' },
+  { label: 'Brief', value: 'brief' },
+  { label: 'Full', value: 'full' }
+]

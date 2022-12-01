@@ -9,7 +9,7 @@ import SettingsTitles from "./SettingsTitles"
 
 export default function GeneralSettings() {
 
-  const { myUserID, myUser, themeColor, setThemeColor, 
+  const { myUserID, myUser, themeColor, setThemeColor,
     darkMode, setDarkMode, setPageLoading } = useContext(StoreContext)
   const [currency, setCurrency] = useState('CAD')
   const currencyObject = currencies.find(c => c.value === currency) || currencies[0]
@@ -17,31 +17,31 @@ export default function GeneralSettings() {
   const saveSettings = () => {
     setPageLoading(true)
     document.documentElement.style.setProperty('--primary', themeColor)
-    localStorage.setItem('themeColor', themeColor) 
-    updateDB('users', myUserID, { 
-      currency: currencyObject 
+    localStorage.setItem('themeColor', themeColor)
+    updateDB('users', myUserID, {
+      currency: currencyObject
     })
-    .then(() => {
-      updateDB(`users/${myUserID}/settings`, 'general', {
-        themeColor,
-      })
       .then(() => {
-        setPageLoading(false)
+        updateDB(`users/${myUserID}/settings`, 'general', {
+          themeColor,
+        })
+          .then(() => {
+            setPageLoading(false)
+          })
+          .catch(err => {
+            console.log(err)
+            setPageLoading(false)
+          })
       })
       .catch(err => {
-        console.log(err)
         setPageLoading(false)
+        console.log(err)
       })
-    })
-    .catch(err => {
-      setPageLoading(false)
-      console.log(err)
-    })
   }
 
   useEffect(() => {
     setCurrency(myUser?.currency?.value || 'CAD')
-  },[myUser])
+  }, [myUser])
 
   return (
     <div className="settings-sub-page">
@@ -52,7 +52,7 @@ export default function GeneralSettings() {
       />
       <SettingsSection
         label="Language"
-        sublabel="Choose your preferred language" 
+        sublabel="Choose your preferred language"
       >
         <AppSelect
           options={[
@@ -73,12 +73,30 @@ export default function GeneralSettings() {
       <SettingsSection
         label="Theme"
         sublabel="Choose your preferred theme"
+        flexStart
       >
         <AppSelect
           options={themeColors}
           value={themeColor}
           onChange={e => setThemeColor(e.target.value)}
         />
+        <div style={{display:'flex', gap:15}}>
+          <AppButton
+            label="Preview"
+            onClick={() => document.documentElement.style.setProperty('--primary', themeColor)}
+            leftIcon="far fa-eye"
+            disabled={themeColor === '#178fff'}
+          />
+          <AppButton
+            label="Reset"
+            onClick={() => {
+              document.documentElement.style.setProperty('--primary', '#178fff')
+              setThemeColor('#178fff')
+            }}
+            leftIcon="far fa-undo"
+            disabled={themeColor === '#178fff'}
+          />
+        </div>
       </SettingsSection>
       <SettingsSection
         label="Dark Mode"

@@ -70,9 +70,13 @@ export default function Register() {
           text: `Welcome to Invoice Me! We're glad you're here. Click here to create your first invoice.`,
           url: '/invoices/new',
         })
-        setDB(`users/${user.uid}/settings`, 'settings', {
-          language: 'en',
-        })
+        setDB(`users/${user.uid}/settings`, 'general', {})
+        setDB(`users/${user.uid}/settings`, 'invoices', {})
+        setDB(`users/${user.uid}/settings`, 'estimates', {})
+        setDB(`users/${user.uid}/settings`, 'contacts', {})
+        setDB(`users/${user.uid}/settings`, 'payments', {})
+        setDB(`users/${user.uid}/settings`, 'notifications', {})
+        setDB(`users/${user.uid}/settings`, 'emails', {})
         navigate('/')
         setLoading(false)
       })
