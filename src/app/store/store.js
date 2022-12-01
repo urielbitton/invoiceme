@@ -1,7 +1,6 @@
-import React, { createContext, useEffect, useRef, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { auth } from 'app/firebase/fire'
 import { getUserByID } from "app/services/userServices"
-import { useUserSettings } from "app/hooks/userHooks"
 
 // @ts-ignore
 export const StoreContext = createContext()
@@ -27,7 +26,6 @@ const StoreContextProvider = ({children}) => {
   const [navItemInfo, setNavItemInfo] = useState(null)
   const [compactNav, setCompactNav] = useState(false)
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
-  const myUserSettings = useUserSettings(myUserID)
 
   useEffect(() => {
     auth.onAuthStateChanged(user => {
@@ -61,7 +59,6 @@ const StoreContextProvider = ({children}) => {
 
   return <StoreContext.Provider value={{ 
     user, myUser, setMyUser, myUserID, myUserImg, myUserName, myMemberType,
-    myUserSettings,
     pageLoading, setPageLoading,
     darkMode, setDarkMode,
     percentFormat,

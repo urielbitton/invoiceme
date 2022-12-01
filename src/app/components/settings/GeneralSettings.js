@@ -22,8 +22,8 @@ export default function GeneralSettings() {
       currency: currencyObject 
     })
     .then(() => {
-      updateDB(`users/${myUserID}/settings`, 'settings', {
-        general: {}
+      updateDB(`users/${myUserID}/settings`, 'general', {
+        themeColor,
       })
       .then(() => {
         setPageLoading(false)

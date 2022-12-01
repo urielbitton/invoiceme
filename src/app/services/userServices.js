@@ -38,12 +38,32 @@ export const getUnreadNotificationsByUserID = (userID, setNotifs) => {
   })
 }
 
-export const getUserSettingsByID = (userID, setUserSettings) => {
+export const getUserInvoiceSettingsByID = (userID, setSettings) => {
   db.collection('users')
   .doc(userID)
   .collection('settings')
-  .doc('settings')
+  .doc('invoices')
   .onSnapshot(snap => {
-    setUserSettings(snap.data())
+    setSettings(snap.data())
+  })
+}
+
+export const getUserEstimateSettingsByID = (userID, setSettings) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('settings')
+  .doc('estimates')
+  .onSnapshot(snap => {
+    setSettings(snap.data())
+  })
+}
+
+export const getUserContactSettingsByID = (userID, setSettings) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('settings')
+  .doc('contacts')
+  .onSnapshot(snap => {
+    setSettings(snap.data())
   })
 }

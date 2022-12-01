@@ -1,3 +1,4 @@
+import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
@@ -32,6 +33,7 @@ export default function InvoicesSettings() {
   const [showThankYouMessage, setShowThankYouMessage] = useState(true)
   const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
   const allowAddTax = taxName && taxNumber && taxRate
+  const myUserInvoiceSettings = useUserInvoiceSettings(myUserID)
 
   const deleteTaxNumber = (taxNumber) => {
     const confirm = window.confirm(`Are you sure you want to delete tax item: ${taxNumber.name}?`)
@@ -61,26 +63,24 @@ export default function InvoicesSettings() {
 
   const saveSettings = () => {
     setPageLoading(true)
-    updateDB(`users/${myUserID}/settings`, 'settings', {
-      invoices: {
-        showMyName,
-        showMyAddress,
-        showMyPhone,
-        showMyEmail,
-        showMyLogo,
-        showMyCompanyName,
-        showDueDate,
-        showClientName,
-        showClientAddress,
-        showClientPhone,
-        showClientEmail,
-        showClientCompanyName,
-        showMyTaxNumbers,
-        showNotes,
-        invoiceNotes,
-        showThankYouMessage,
-        showInvoiceMeTag
-      }
+    updateDB(`users/${myUserID}/settings`, 'invoices', {
+      showMyName,
+      showMyAddress,
+      showMyPhone,
+      showMyEmail,
+      showMyLogo,
+      showMyCompanyName,
+      showDueDate,
+      showClientName,
+      showClientAddress,
+      showClientPhone,
+      showClientEmail,
+      showClientCompanyName,
+      showMyTaxNumbers,
+      showNotes,
+      invoiceNotes,
+      showThankYouMessage,
+      showInvoiceMeTag
     })
       .then(() => {
         updateDB('users', myUserID, {
@@ -201,7 +201,7 @@ export default function InvoicesSettings() {
         label="Show notes"
         sublabel="Show notes on invoices"
         value={showNotes}
-        setValue={showNotes}
+        setValue={setShowNotes}
       />
       <SettingsSection
         label="Tax Information"

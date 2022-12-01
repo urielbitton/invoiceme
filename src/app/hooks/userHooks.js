@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { doGetUserByID, getUserByID, getUserSettingsByID } from "app/services/userServices"
+import { doGetUserByID, getUserByID, 
+  getUserContactSettingsByID, 
+  getUserEstimateSettingsByID, getUserInvoiceSettingsByID } from "app/services/userServices"
 
 export default function useUser(userID) {
 
@@ -30,13 +32,39 @@ export function useUsers(userIDs) {
   return appUsers
 }
 
-export const useUserSettings = (userID) => {
+export const useUserInvoiceSettings = (userID) => {
 
   const [userSettings, setUserSettings] = useState(null)
 
   useEffect(() => {
     if(userID) {
-      getUserSettingsByID(userID, setUserSettings)
+      getUserInvoiceSettingsByID(userID, setUserSettings)
+    }
+  },[userID])
+
+  return userSettings
+}
+
+export const useUserEstimateSettings = (userID) => {
+
+  const [userSettings, setUserSettings] = useState(null)
+
+  useEffect(() => {
+    if(userID) {
+      getUserEstimateSettingsByID(userID, setUserSettings)
+    }
+  },[userID])
+
+  return userSettings
+}
+
+export const useUserContactSettings = (userID) => {
+
+  const [userSettings, setUserSettings] = useState(null)
+
+  useEffect(() => {
+    if(userID) {
+      getUserContactSettingsByID(userID, setUserSettings)
     }
   },[userID])
 
