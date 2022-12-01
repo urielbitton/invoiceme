@@ -1,3 +1,4 @@
+import { settingsIndex } from "app/algolia"
 import ContactsSettings from "app/components/settings/ContactsSettings"
 import CreateScheduledInvoice from "app/components/settings/CreateScheduledInvoice"
 import EmailsSettings from "app/components/settings/EmailsSettings"
@@ -11,15 +12,54 @@ import { AppInput } from "app/components/ui/AppInputs"
 import AppTabsBar from "app/components/ui/AppTabsBar"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
+import { useInstantSearch } from "app/hooks/searchHooks"
 import { StoreContext } from "app/store/store"
-import React, { useContext, useEffect } from 'react'
-import { NavLink, Route, Routes, useLocation } from "react-router-dom"
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, NavLink, Route, Routes, useLocation } from "react-router-dom"
 import './styles/SettingsPage.css'
 
 export default function SettingsPage() {
 
   const { setCompactNav } = useContext(StoreContext)
+  const [query, setQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [numOfPages, setNumOfPages] = useState(1)
+  const [pageNum, setPageNum] = useState(0)
+  const [numOfHits, setNumOfHits] = useState(0)
+  const [hitsPerPage, setHitsPerPage] = useState(100)
+  const [settingsLoading, setSettingsLoading] = useState(true)
+  const filters = ''
   const location = useLocation()
+
+  const settings = useInstantSearch(
+    query,
+    searchResults,
+    setSearchResults,
+    settingsIndex,
+    filters,
+    setNumOfHits,
+    setNumOfPages,
+    pageNum,
+    hitsPerPage,
+    setSettingsLoading,
+    false
+  )
+
+  const settingsList = settings?.map((setting, index) => {
+    return <Link
+      to={setting.pageURL}
+      onClick={() => setQuery('')}
+      key={index}
+    >
+      <div className="left">
+        <i className={setting.icon} />
+      </div>
+      <div className="right">
+        <h5>{setting.label}</h5>
+        <p>{setting.sublabel}</p>
+      </div>
+    </Link>
+  })
 
   useEffect(() => {
     setCompactNav(true)
@@ -32,13 +72,24 @@ export default function SettingsPage() {
       <PageTitleBar
         title="Settings"
         rightComponent={
-          <AppInput
-            placeholder="Search settings..."
-          />
+          <>
+            <AppInput
+              placeholder="Search settings..."
+              onChange={e => setQuery(e.target.value)}
+              value={query}
+              type="search"
+            />
+            {
+              query.length > 0 &&
+              <div className="settings-results">
+                {settingsList}
+              </div>
+            }
+          </>
         }
       />
-      <AppTabsBar 
-        noSpread 
+      <AppTabsBar
+        noSpread
         spacedOut={15}
         sticky
       >

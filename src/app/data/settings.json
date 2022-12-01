@@ -1,0 +1,170 @@
+[
+  {
+    "label": "General",
+    "sublabel": "Select your language",
+    "settingID": "language",
+    "tags": [],
+    "pageURL": "/settings",
+    "icon": "fas fa-globe"
+  },
+  {
+    "label": "General",
+    "sublabel": "Select your currency",
+    "settingID": "currency",
+    "tags": [],
+    "pageURL": "/settings",
+    "icon": "fas fa-globe"
+  },
+  {
+    "label": "General",
+    "sublabel": "Choose a theme",
+    "settingID": "theme",
+    "tags": [],
+    "pageURL": "/settings",
+    "icon": "fas fa-globe"
+  },
+  {
+    "label": "General",
+    "sublabel": "Toggle dark mode",
+    "settingID": "darkMode",
+    "tags": [],
+    "pageURL": "/settings",
+    "icon": "fas fa-globe"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show my name on invoice headers",
+    "settingID": "inv-showMyName",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show my address on invoice headers",
+    "settingID": "inv-showMyAddress",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show my phone on invoice headers",
+    "settingID": "inv-showMyPhone",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show my email on invoice headers",
+    "settingID": "inv-showMyEmail",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show my name on estimate headers",
+    "settingID": "est-showMyName",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show my address on estimate headers",
+    "settingID": "est-showMyAddress",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show my phone on estimate headers",
+    "settingID": "est-showMyPhone",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show my email on estimate headers",
+    "settingID": "est-showMyEmail",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Contacts",
+    "sublabel": "Show favorite contacts",
+    "settingID": "showFavoriteContacts",
+    "tags": [],
+    "pageURL": "/settings/contacts",
+    "icon": "fas fa-users"
+  },
+  {
+    "label": "Notifications",
+    "sublabel": "Show pop-up notifications",
+    "settingID": "showPopUpNotifs",
+    "tags": [],
+    "pageURL": "/settings/notifications",
+    "icon": "fas fa-bell"
+  },
+  {
+    "label": "Notifications",
+    "sublabel": "Show invoice notifications",
+    "settingID": "showInvoiceNotifs",
+    "tags": [],
+    "pageURL": "/settings/notifications",
+    "icon": "fas fa-bell"
+  },
+  {
+    "label": "Notifications",
+    "sublabel": "Show estimate notifications",
+    "settingID": "showEstimateNotifs",
+    "tags": [],
+    "pageURL": "/settings/notifications",
+    "icon": "fas fa-bell"
+  },
+  {
+    "label": "Notifications",
+    "sublabel": "Show payment notifications",
+    "settingID": "showPaymentNotifs",
+    "tags": [],
+    "pageURL": "/settings/notifications",
+    "icon": "fas fa-bell"
+  },
+  {
+    "label": "Notifications",
+    "sublabel": "Show scheduled invoices notifications",
+    "settingID": "showScheduledInvoiceNotifs",
+    "tags": [],
+    "pageURL": "/settings/notifications",
+    "icon": "fas fa-bell"
+  },
+  {
+    "label": "Notifications",
+    "sublabel": "Show overdue invoices notifications",
+    "settingID": "showOverdueInvoiceNotifs",
+    "tags": [],
+    "pageURL": "/settings/notifications",
+    "icon": "fas fa-bell"
+  },
+  {
+    "label": "Notifications",
+    "sublabel": "Create monthly reports notifications",
+    "settingID": "showMonthlyReportNotifs",
+    "tags": [],
+    "pageURL": "/settings/notifications",
+    "icon": "fas fa-bell"
+  },
+  {
+    "label": "Emails",
+    "sublabel": "Send me monthly reports to my email",
+    "settingID": "sendMonthlyReportEmails",
+    "tags": [],
+    "pageURL": "/settings/emails",
+    "icon": "fas fa-envelope"
+  }
+]

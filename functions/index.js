@@ -139,114 +139,274 @@ exports.sendSMS = functions
       .then(message => console.log(message.sid))
       .catch(err => console.log(err))
   })
-  
+
 
 //Scheduled functions
 
-function sendScheduledInvoice(scheduledInvoice, dayOfMonth) {
-  const now = firebase.firestore.Timestamp.now()
-  const monthNum = new Date().getMonth()
-  const year = new Date().getFullYear()
-  const batch = firestore.batch()
-  scheduledInvoice.forEach(snapshot => {
-    const data = snapshot.data()
-    const path = `users/${data.ownerID}/invoices`
-    const docID = firestore.collection(path).doc().id
-    const docRef = firestore.collection(path).doc(docID)
-    batch.set(docRef, {
-      currency: data.invoiceTemplate.invoiceCurrency,
-      dateCreated: now,
-      dateDue: data.invoiceTemplate.dateDue,
-      invoiceID: data.invoiceTemplate.invoiceID,
-      invoiceNumber: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}`,
-      invoiceOwnerID: data.invoiceTemplate.invoiceOwnerID,
-      invoiceTo: data.invoiceTemplate.invoiceTo,
-      isPaid: false,
-      isSent: false,
-      items: data.invoiceTemplate.items,
-      monthLabel: data.invoiceTemplate.monthLabel,
-      myBusiness: data.invoiceTemplate.myBusiness,
-      notes: data.invoiceTemplate.notes,
-      status: data.invoiceTemplate.status,
-      taxNumbers: data.invoiceTemplate.taxNumbers,
-      taxRate1: data.invoiceTemplate.taxRate1,
-      taxRate2: data.invoiceTemplate.taxRate2,
-      subtotal: data.invoiceTemplate.subtotal,
-      total: data.invoiceTemplate.total,
-      title: data.invoiceTemplate.title,
-    })
-  })
-  batch.commit()
-    .then(() => {
-      scheduledInvoice.forEach(snapshot => {
-        snapshot.ref.update({ lastSent: now })
-        const data = snapshot.data()
-        const msg = {
-          to: data.invoiceTemplate.invoiceTo.email,
-          from: 'info@atomicsdigital.com',
-          subject: data.emailSubject,
-          html: data.emailMessage,
-          attachments: [{
-            content: data.invoicePaperHTML.toString('base64'),
-            filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
-            type: 'application/pdf',
-            disposition: 'attachment'
-          }]
-        }
-        return sgMail.send(msg)
-      })
-    })
-  return null
-}
-
 // 9am EST every day
 exports.runScheduledInvoices9am = functions.pubsub
-.schedule('0 9 * * *')
-.onRun(async (context) => {
-  const dayOfMonth = new Date().getDate()
-  const scheduledInvoices = firestore.collection('scheduledInvoices')
-  const scheduledInvoice = await scheduledInvoices
-    .where('dayOfMonth', '==', dayOfMonth)
-    .where('timeOfDay', '==', 9)
-    .get()
-  sendScheduledInvoice(scheduledInvoice, dayOfMonth)
-})
+  .schedule('0 9 * * *')
+  .onRun((context) => {
+    const dayOfMonth = new Date().getDate()
+    firestore.collection('scheduledInvoices')
+      .where('dayOfMonth', '==', dayOfMonth)
+      .where('timeOfDay', '==', 9)
+      .where('active', '==', true)
+      .get()
+      .then((scheduledInvoices) => {
+        const now = firebase.firestore.Timestamp.now()
+        const monthNum = new Date().getMonth()
+        const year = new Date().getFullYear()
+        const batch = firestore.batch()
+        scheduledInvoices.forEach(schedule => {
+          const data = schedule.data()
+          const path = `users/${data.ownerID}/invoices`
+          const docID = firestore.collection(path).doc().id
+          const docRef = firestore.collection(path).doc(docID)
+          batch.set(docRef, {
+            currency: data.invoiceTemplate.invoiceCurrency,
+            dateCreated: now,
+            dateDue: data.invoiceTemplate.dateDue,
+            invoiceID: data.invoiceTemplate.invoiceID,
+            invoiceNumber: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}`,
+            invoiceOwnerID: data.invoiceTemplate.invoiceOwnerID,
+            invoiceTo: data.invoiceTemplate.invoiceTo,
+            isPaid: false,
+            isSent: false,
+            items: data.invoiceTemplate.items,
+            monthLabel: data.invoiceTemplate.monthLabel,
+            myBusiness: data.invoiceTemplate.myBusiness,
+            notes: data.invoiceTemplate.notes,
+            status: data.invoiceTemplate.status,
+            taxNumbers: data.invoiceTemplate.taxNumbers,
+            taxRate1: data.invoiceTemplate.taxRate1,
+            taxRate2: data.invoiceTemplate.taxRate2,
+            subtotal: data.invoiceTemplate.subtotal,
+            total: data.invoiceTemplate.total,
+            title: data.invoiceTemplate.title,
+          })
+        })
+        batch.commit()
+          .then(() => {
+            scheduledInvoices.forEach(snapshot => {
+              snapshot.ref.update({ lastSent: now })
+              const data = snapshot.data()
+              const msg = {
+                to: data.invoiceTemplate.invoiceTo.email,
+                from: 'info@atomicsdigital.com',
+                subject: data.emailSubject,
+                html: data.emailMessage,
+                attachments: [{
+                  content: data.invoicePaperHTML.toString('base64'),
+                  filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
+                  type: 'application/pdf',
+                  disposition: 'attachment'
+                }]
+              }
+              return sgMail.send(msg)
+            })
+          })
+        return null
+      })
+  })
 
 // 12pm EST every day
-exports.runScheduledInvoices12Pm = functions.pubsub
-.schedule('0 12 * * *')
-.onRun(async (context) => {
-  const dayOfMonth = new Date().getDate()
-  const scheduledInvoices = firestore.collection('scheduledInvoices')
-  const scheduledInvoice = await scheduledInvoices
-    .where('dayOfMonth', '==', dayOfMonth)
-    .where('timeOfDay', '==', 12)
-    .get()
-  sendScheduledInvoice(scheduledInvoice, dayOfMonth)
-})
+exports.runScheduledInvoices12pm = functions.pubsub
+  .schedule('0 12 * * *')
+  .onRun((context) => {
+    const dayOfMonth = new Date().getDate()
+    firestore.collection('scheduledInvoices')
+      .where('dayOfMonth', '==', dayOfMonth)
+      .where('timeOfDay', '==', 12)
+      .where('active', '==', true)
+      .get()
+      .then(scheduledInvoices => {
+        const now = firebase.firestore.Timestamp.now()
+        const monthNum = new Date().getMonth()
+        const year = new Date().getFullYear()
+        const batch = firestore.batch()
+        scheduledInvoices.forEach(schedule => {
+          const data = schedule.data()
+          const path = `users/${data.ownerID}/invoices`
+          const docID = firestore.collection(path).doc().id
+          const docRef = firestore.collection(path).doc(docID)
+          batch.set(docRef, {
+            currency: data.invoiceTemplate.invoiceCurrency,
+            dateCreated: now,
+            dateDue: data.invoiceTemplate.dateDue,
+            invoiceID: data.invoiceTemplate.invoiceID,
+            invoiceNumber: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}`,
+            invoiceOwnerID: data.invoiceTemplate.invoiceOwnerID,
+            invoiceTo: data.invoiceTemplate.invoiceTo,
+            isPaid: false,
+            isSent: false,
+            items: data.invoiceTemplate.items,
+            monthLabel: data.invoiceTemplate.monthLabel,
+            myBusiness: data.invoiceTemplate.myBusiness,
+            notes: data.invoiceTemplate.notes,
+            status: data.invoiceTemplate.status,
+            taxNumbers: data.invoiceTemplate.taxNumbers,
+            taxRate1: data.invoiceTemplate.taxRate1,
+            taxRate2: data.invoiceTemplate.taxRate2,
+            subtotal: data.invoiceTemplate.subtotal,
+            total: data.invoiceTemplate.total,
+            title: data.invoiceTemplate.title,
+          })
+        })
+        batch.commit()
+          .then(() => {
+            scheduledInvoices.forEach(snapshot => {
+              snapshot.ref.update({ lastSent: now })
+              const data = snapshot.data()
+              const msg = {
+                to: data.invoiceTemplate.invoiceTo.email,
+                from: 'info@atomicsdigital.com',
+                subject: data.emailSubject,
+                html: data.emailMessage,
+                attachments: [{
+                  content: data.invoicePaperHTML.toString('base64'),
+                  filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
+                  type: 'application/pdf',
+                  disposition: 'attachment'
+                }]
+              }
+              return sgMail.send(msg)
+            })
+          })
+        return null
+      })
+  })
 
 // 3pm EST every day
-exports.runScheduledInvoices3Pm = functions.pubsub
-.schedule('0 15 * * *')
-.onRun(async (context) => {
-  const dayOfMonth = new Date().getDate()
-  const scheduledInvoices = firestore.collection('scheduledInvoices')
-  const scheduledInvoice = await scheduledInvoices
-    .where('dayOfMonth', '==', dayOfMonth)
-    .where('timeOfDay', '==', 15)
-    .get()
-  sendScheduledInvoice(scheduledInvoice, dayOfMonth)
-})
+exports.runScheduledInvoices3pm = functions.pubsub
+  .schedule('0 15 * * *')
+  .onRun((context) => {
+    const dayOfMonth = new Date().getDate()
+    firestore.collection('scheduledInvoices')
+      .where('dayOfMonth', '==', dayOfMonth)
+      .where('timeOfDay', '==', 15)
+      .where('active', '==', true)
+      .get()
+      .then(scheduledInvoices => {
+        const now = firebase.firestore.Timestamp.now()
+        const monthNum = new Date().getMonth()
+        const year = new Date().getFullYear()
+        const batch = firestore.batch()
+        scheduledInvoices.forEach(schedule => {
+          const data = schedule.data()
+          const path = `users/${data.ownerID}/invoices`
+          const docID = firestore.collection(path).doc().id
+          const docRef = firestore.collection(path).doc(docID)
+          batch.set(docRef, {
+            currency: data.invoiceTemplate.invoiceCurrency,
+            dateCreated: now,
+            dateDue: data.invoiceTemplate.dateDue,
+            invoiceID: data.invoiceTemplate.invoiceID,
+            invoiceNumber: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}`,
+            invoiceOwnerID: data.invoiceTemplate.invoiceOwnerID,
+            invoiceTo: data.invoiceTemplate.invoiceTo,
+            isPaid: false,
+            isSent: false,
+            items: data.invoiceTemplate.items,
+            monthLabel: data.invoiceTemplate.monthLabel,
+            myBusiness: data.invoiceTemplate.myBusiness,
+            notes: data.invoiceTemplate.notes,
+            status: data.invoiceTemplate.status,
+            taxNumbers: data.invoiceTemplate.taxNumbers,
+            taxRate1: data.invoiceTemplate.taxRate1,
+            taxRate2: data.invoiceTemplate.taxRate2,
+            subtotal: data.invoiceTemplate.subtotal,
+            total: data.invoiceTemplate.total,
+            title: data.invoiceTemplate.title,
+          })
+        })
+        batch.commit()
+          .then(() => {
+            scheduledInvoices.forEach(snapshot => {
+              snapshot.ref.update({ lastSent: now })
+              const data = snapshot.data()
+              const msg = {
+                to: data.invoiceTemplate.invoiceTo.email,
+                from: 'info@atomicsdigital.com',
+                subject: data.emailSubject,
+                html: data.emailMessage,
+                attachments: [{
+                  content: data.invoicePaperHTML.toString('base64'),
+                  filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
+                  type: 'application/pdf',
+                  disposition: 'attachment'
+                }]
+              }
+              return sgMail.send(msg)
+            })
+          })
+        return null
+      })
+  })
 
 // 6pm EST every day
-exports.runScheduledInvoices6Pm = functions.pubsub
-.schedule('0 18 * * *')
-.onRun(async (context) => {
-  const dayOfMonth = new Date().getDate()
-  const scheduledInvoices = firestore.collection('scheduledInvoices')
-  const scheduledInvoice = await scheduledInvoices
-    .where('dayOfMonth', '==', dayOfMonth)
-    .where('timeOfDay', '==', 18)
-    .get()
-  sendScheduledInvoice(scheduledInvoice, dayOfMonth)
-})
+exports.runScheduledInvoices6pm = functions.pubsub
+  .schedule('0 18 * * *')
+  .onRun((context) => {
+    const dayOfMonth = new Date().getDate()
+    firestore.collection('scheduledInvoices')
+      .where('dayOfMonth', '==', dayOfMonth)
+      .where('timeOfDay', '==', 18)
+      .where('active', '==', true)
+      .get()
+      .then(scheduledInvoices => {
+        const now = firebase.firestore.Timestamp.now()
+        const monthNum = new Date().getMonth()
+        const year = new Date().getFullYear()
+        const batch = firestore.batch()
+        scheduledInvoices.forEach(schedule => {
+          const data = schedule.data()
+          const path = `users/${data.ownerID}/invoices`
+          const docID = firestore.collection(path).doc().id
+          const docRef = firestore.collection(path).doc(docID)
+          batch.set(docRef, {
+            currency: data.invoiceTemplate.invoiceCurrency,
+            dateCreated: now,
+            dateDue: data.invoiceTemplate.dateDue,
+            invoiceID: data.invoiceTemplate.invoiceID,
+            invoiceNumber: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}`,
+            invoiceOwnerID: data.invoiceTemplate.invoiceOwnerID,
+            invoiceTo: data.invoiceTemplate.invoiceTo,
+            isPaid: false,
+            isSent: false,
+            items: data.invoiceTemplate.items,
+            monthLabel: data.invoiceTemplate.monthLabel,
+            myBusiness: data.invoiceTemplate.myBusiness,
+            notes: data.invoiceTemplate.notes,
+            status: data.invoiceTemplate.status,
+            taxNumbers: data.invoiceTemplate.taxNumbers,
+            taxRate1: data.invoiceTemplate.taxRate1,
+            taxRate2: data.invoiceTemplate.taxRate2,
+            subtotal: data.invoiceTemplate.subtotal,
+            total: data.invoiceTemplate.total,
+            title: data.invoiceTemplate.title,
+          })
+        })
+        batch.commit()
+          .then(() => {
+            scheduledInvoices.forEach(snapshot => {
+              snapshot.ref.update({ lastSent: now })
+              const data = snapshot.data()
+              const msg = {
+                to: data.invoiceTemplate.invoiceTo.email,
+                from: 'info@atomicsdigital.com',
+                subject: data.emailSubject,
+                html: data.emailMessage,
+                attachments: [{
+                  content: data.invoicePaperHTML.toString('base64'),
+                  filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
+                  type: 'application/pdf',
+                  disposition: 'attachment'
+                }]
+              }
+              return sgMail.send(msg)
+            })
+          })
+        return null
+      })
+  })
