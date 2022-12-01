@@ -7,7 +7,6 @@
 }
 .create-scheduled-page .slide-container {
   width: 800px;
-  height: 600px;
   background: #fff;
   border-radius: 10px;
   box-shadow: var(--newCardShadow);
@@ -17,7 +16,6 @@
   overflow-x: hidden;
 }
 .create-scheduled-page .slide-container .slide-element {
-  height: 90%;
   width: 100%;
   padding: 25px;
   overflow-y: auto;
@@ -82,8 +80,6 @@
   justify-content: flex-end;
   width: 100%;
   flex-wrap: wrap;
-  position: absolute;
-  bottom: 0;
   padding: 10px;
 }
 .create-scheduled-page .slide-container .slide-nav button {
@@ -116,6 +112,12 @@
   font-weight: 600;
   color: var(--darkGrayText);
 }
+.create-scheduled-page .slide-container .review-form .section h5 i {
+  margin-left: 10px;
+  font-size: 14px;
+  color: var(--grayText);
+  cursor: pointer;
+}
 .create-scheduled-page .slide-container .review-form .section h6 {
   font-size: 13px;
   font-weight: 500;
@@ -133,7 +135,7 @@
   height: 35px;
   border-radius: 100%;
   display: block;
-  margin-top: 5px;
+  margin: 5px 0;
 }
 .create-scheduled-page .slide-container .review-form .section p {
   font-size: 13px;

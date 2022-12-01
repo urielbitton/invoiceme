@@ -3,6 +3,7 @@
   top: 55px;
   right: 5px;
   width: 300px;
+  min-width: 300px;
   max-height: 400px;
   border-radius: 5px;
   box-shadow: var(--shadow);

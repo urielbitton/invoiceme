@@ -393,7 +393,13 @@ export default function CreateScheduledInvoice() {
                 <h6>Make sure the information is correct before creating your automated invoice.</h6>
               </div>
               <div className="section">
-                <h5>Invoice Template</h5>
+                <h5>
+                  Invoice Template
+                  <i 
+                    className="fas fa-pen"
+                    onClick={() => setSlidePosition(0)}
+                  />
+                </h5>
                 <h6>
                   <span>Invoice Name: </span>
                   {invoiceTitle}
@@ -408,18 +414,30 @@ export default function CreateScheduledInvoice() {
                 >Preview Invoice</small>
               </div>
               <div className="section">
-                <h5>Invoice Contact</h5>
+                <h5>
+                  Invoice Contact
+                  <i 
+                    className="fas fa-pen"
+                    onClick={() => setSlidePosition(1)}
+                  />
+                </h5>
                 <h6>
                   <img src={invoiceContact?.photoURL} />
-                  {invoiceContact?.name}<br/>
-                  {invoiceContact?.email}<br/>
-                  {formatPhoneNumber(invoiceContact?.phone)}<br/>
-                  {invoiceContact?.address}<br/>
-                  {invoiceContact?.city}, {invoiceContact?.region}, {invoiceContact?.country} {invoiceContact?.postcode}<br/>
+                  <span>Name: </span>{invoiceContact?.name}<br/>
+                  <span>Email: </span>{invoiceContact?.email}<br/>
+                  <span>Phone: </span>{formatPhoneNumber(invoiceContact?.phone)}<br/>
+                  <span>Address: </span>{invoiceContact?.address}<br/>
+                  <span>Location: </span>{invoiceContact?.city}, {invoiceContact?.region}, {invoiceContact?.country} {invoiceContact?.postcode}<br/>
                 </h6>
               </div>
               <div className="section">
-                <h5>Schedule Details</h5>
+                <h5>
+                  Schedule Details
+                  <i 
+                    className="fas fa-pen"
+                    onClick={() => setSlidePosition(2)}
+                  />
+                </h5>
                 <h6>
                   <span>Shedule Title: </span>
                   {scheduleTitle}

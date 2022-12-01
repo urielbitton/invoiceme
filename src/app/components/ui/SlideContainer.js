@@ -1,9 +1,9 @@
 import React from 'react'
 import './styles/SlideContainer.css'
 
-export default function SlideContainer({children, fade=''}) {
+export default function SlideContainer({children}) {
   return (
-    <div className={`slide-container ${fade}`}>
+    <div className="slide-container">
       {children}
     </div>
   )
