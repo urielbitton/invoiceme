@@ -148,7 +148,7 @@ exports.runScheduledInvoices9am = functions.pubsub
   .schedule('0 9 * * *')
   .onRun((context) => {
     const dayOfMonth = new Date().getDate()
-    firestore.collection('scheduledInvoices')
+    return firestore.collection('scheduledInvoices')
       .where('dayOfMonth', '==', dayOfMonth)
       .where('timeOfDay', '==', 9)
       .where('active', '==', true)
@@ -186,7 +186,7 @@ exports.runScheduledInvoices9am = functions.pubsub
             title: data.invoiceTemplate.title,
           })
         })
-        batch.commit()
+        return batch.commit()
           .then(() => {
             scheduledInvoices.forEach(snapshot => {
               snapshot.ref.update({ lastSent: now })
@@ -206,7 +206,6 @@ exports.runScheduledInvoices9am = functions.pubsub
               return sgMail.send(msg)
             })
           })
-        return null
       })
   })
 
@@ -215,7 +214,7 @@ exports.runScheduledInvoices12pm = functions.pubsub
   .schedule('0 12 * * *')
   .onRun((context) => {
     const dayOfMonth = new Date().getDate()
-    firestore.collection('scheduledInvoices')
+    return firestore.collection('scheduledInvoices')
       .where('dayOfMonth', '==', dayOfMonth)
       .where('timeOfDay', '==', 12)
       .where('active', '==', true)
@@ -253,7 +252,7 @@ exports.runScheduledInvoices12pm = functions.pubsub
             title: data.invoiceTemplate.title,
           })
         })
-        batch.commit()
+        return batch.commit()
           .then(() => {
             scheduledInvoices.forEach(snapshot => {
               snapshot.ref.update({ lastSent: now })
@@ -273,7 +272,6 @@ exports.runScheduledInvoices12pm = functions.pubsub
               return sgMail.send(msg)
             })
           })
-        return null
       })
   })
 
@@ -282,7 +280,7 @@ exports.runScheduledInvoices3pm = functions.pubsub
   .schedule('0 15 * * *')
   .onRun((context) => {
     const dayOfMonth = new Date().getDate()
-    firestore.collection('scheduledInvoices')
+    return firestore.collection('scheduledInvoices')
       .where('dayOfMonth', '==', dayOfMonth)
       .where('timeOfDay', '==', 15)
       .where('active', '==', true)
@@ -320,7 +318,7 @@ exports.runScheduledInvoices3pm = functions.pubsub
             title: data.invoiceTemplate.title,
           })
         })
-        batch.commit()
+        return batch.commit()
           .then(() => {
             scheduledInvoices.forEach(snapshot => {
               snapshot.ref.update({ lastSent: now })
@@ -340,7 +338,6 @@ exports.runScheduledInvoices3pm = functions.pubsub
               return sgMail.send(msg)
             })
           })
-        return null
       })
   })
 
@@ -349,7 +346,7 @@ exports.runScheduledInvoices6pm = functions.pubsub
   .schedule('0 18 * * *')
   .onRun((context) => {
     const dayOfMonth = new Date().getDate()
-    firestore.collection('scheduledInvoices')
+    return firestore.collection('scheduledInvoices')
       .where('dayOfMonth', '==', dayOfMonth)
       .where('timeOfDay', '==', 18)
       .where('active', '==', true)
@@ -387,7 +384,7 @@ exports.runScheduledInvoices6pm = functions.pubsub
             title: data.invoiceTemplate.title,
           })
         })
-        batch.commit()
+        return batch.commit()
           .then(() => {
             scheduledInvoices.forEach(snapshot => {
               snapshot.ref.update({ lastSent: now })
@@ -407,6 +404,5 @@ exports.runScheduledInvoices6pm = functions.pubsub
               return sgMail.send(msg)
             })
           })
-        return null
       })
   })

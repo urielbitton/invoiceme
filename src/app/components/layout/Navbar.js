@@ -100,7 +100,7 @@ export default function Navbar() {
           />
           <NavDropdown 
             label="Emails"
-            viewAllURL="/messages"
+            viewAllURL="/emails"
             type="emails" 
             showDropdown={showMenu}
             setShowDropdown={setShowMenu} 

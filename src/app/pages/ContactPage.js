@@ -8,13 +8,12 @@ import { AppInput, AppTextarea } from "app/components/ui/AppInputs"
 import AppModal from "app/components/ui/AppModal"
 import AppTabsBar from "app/components/ui/AppTabsBar"
 import Avatar from "app/components/ui/Avatar"
-import EmailModal from "app/components/ui/EmailModal"
+import EmailModal from "app/components/emails/EmailModal"
 import { useContact } from "app/hooks/contactsHooks"
 import { useContactEstimates } from "app/hooks/estimateHooks"
 import { useContactInvoices } from "app/hooks/invoiceHooks"
 import { sendSMSService, updateContactService } from "app/services/contactsServices"
-import { getRandomDocID, setDB } from "app/services/CrudDB"
-import { sendSgEmail } from "app/services/emailServices"
+import { sendAppEmail } from "app/services/emailServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
 import { validatePhone } from "app/utils/generalUtils"
@@ -55,50 +54,23 @@ export default function ContactPage() {
     if (!emailSubject || !emailMessage)
       return alert('Please fill in all fields')
     setLoading(true)
-    if (!emailFiles.length) {
-      const docID = getRandomDocID('mail')
-      setDB('mail', docID, {
-        dateSent: new Date(),
-        emailID: docID,
-        isRead: false,
-        message: {
-          html: emailMessage,
-          subject: emailSubject,
-        },
-        name: contact?.name,
-        replyTo: myUser?.email,
-        to: contact?.email,
-      })
-        .then(() => {
-          setLoading(false)
-          resetInputFields()
-          setShowEmailModal(false)
-          alert('Email sent to contact.')
-        })
-        .catch(err => {
-          setLoading(false)
-          alert(err.message)
-        })
-    }
-    else {
-      sendSgEmail(
-        myUser?.email,
-        contact?.email,
-        emailSubject,
-        emailMessage,
-        emailFiles.map(file => file.file)
-      )
-        .then(() => {
-          setShowEmailModal(false)
-          resetInputFields()
-          setLoading(false)
-          alert('Email sent to contact.')
-        })
-        .catch(err => {
-          setLoading(false)
-          alert(err.message)
-        })
-    }
+    sendAppEmail(
+      myUser?.email,
+      contact?.email,
+      emailSubject,
+      emailMessage,
+      emailFiles.map(file => file.file)
+    )
+    .then(() => {
+      setLoading(false)
+      resetInputFields()
+      setShowEmailModal(false)
+      alert('Email sent to contact.')
+    })
+    .catch(err => {
+      setLoading(false)
+      alert(err.message)
+    })
   }
 
   const sendSMS = () => {
@@ -238,6 +210,8 @@ export default function ContactPage() {
           setFiles={setEmailFiles}
           sendEmail={sendEmail}
           loading={loading}
+          disableTo
+          disableFrom
         />
         <AppModal
           label="Send SMS"

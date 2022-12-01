@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import './styles/RoutesContainer.css'
 import ErrorPage from "app/pages/ErrorPage"
 import HomePage from 'app/pages/HomePage'
+import { StoreContext } from "app/store/store"
 import { Routes, Route } from "react-router"
 import InvoicesPage from "app/pages/InvoicesPage"
 import EstimatesPage from "app/pages/EstimatesPage"
@@ -17,8 +18,7 @@ import NewContactPage from "app/pages/NewContactPage"
 import NewPaymentPage from "app/pages/NewPaymentPage"
 import InvoicePage from "app/pages/InvoicePage"
 import NotificationsPage from "app/pages/NotificationsPage"
-import MessagesPage from "app/pages/MessagesPage"
-import { StoreContext } from "app/store/store"
+import EmailsPage from "app/pages/EmailsPage"
 import EstimatePage from "app/pages/EstimatePage"
 import ContactPage from "app/pages/ContactPage"
 import HelpAndContact from "app/pages/HelpAndContact"
@@ -46,7 +46,7 @@ export default function RoutesContainer() {
         <Route path="my-account" element={<MyAccountPage />} />
         <Route path="settings/*" element={<SettingsPage />} />
         <Route path="notifications" element={<NotificationsPage />} />
-        <Route path="messages" element={<MessagesPage />} />
+        <Route path="emails/*" element={<EmailsPage />} />
         <Route path="upgrade" element={<UpgradePage />} />
         <Route path="help-and-contact" element={<HelpAndContact />} />
         <Route path="*" element={<ErrorPage />} />

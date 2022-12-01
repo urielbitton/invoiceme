@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import AppButton from "./AppButton"
-import { AppInput, AppTextarea } from "./AppInputs"
-import AppModal from "./AppModal"
-import FileUploader from "./FileUploader"
+import AppButton from "../ui/AppButton"
+import { AppInput, AppTextarea } from "../ui/AppInputs"
+import AppModal from "../ui/AppModal"
+import FileUploader from "../ui/FileUploader"
 import './styles/EmailModal.css'
 
 export default function EmailModal(props) {
 
-  const { showModal, setShowModal, fromEmail, sendEmail,
-    loading, toEmail, subject, setSubject,
-    message, setMessage, files, setFiles } = props
+  const { showModal, setShowModal, fromEmail, setFromEmail,
+    sendEmail, loading, toEmail, setToEmail, subject, setSubject,
+    message, setMessage, files, setFiles, disableFrom,
+    disableTo } = props
   const [isDragging, setIsDragging] = useState(false)
   const maxFileSize = 1024 * 1024 * 5
 
@@ -39,12 +40,14 @@ export default function EmailModal(props) {
         <AppInput
           label="From:"
           value={fromEmail}
-          disabled
+          onChange={e => setFromEmail(e.target.value)}
+          disabled={disableFrom}
         />
         <AppInput
           label="To:"
           value={toEmail}
-          disabled
+          onChange={e => setToEmail(e.target.value)}
+          disabled={disableTo}
         />
         <AppInput
           label="Subject:"

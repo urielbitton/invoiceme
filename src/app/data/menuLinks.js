@@ -25,6 +25,11 @@ export const menuLinks = [
     icon: 'fas fa-credit-card',
   },
   {
+    name: 'Emails',
+    url: '/emails',
+    icon: 'fas fa-envelope',
+  },
+  {
     name: 'Settings',
     url: '/settings',
     icon: 'fas fa-cog',
