@@ -176,8 +176,8 @@ export default function CreateScheduledInvoice() {
       partOfTotal: false,
       status: 'unpaid',
       subtotal: calculatedSubtotal,
-      taxRate1,
-      taxRate2,
+      taxRate1: +taxRate1,
+      taxRate2: +taxRate2,
       title: invoiceTitle,
       total: calculatedTotal
     }

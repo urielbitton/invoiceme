@@ -9,7 +9,7 @@ export default function InvoiceItems(props) {
 
   const { itemName, setItemName, itemPrice, setItemPrice, itemTaxRate, 
     setItemTaxRate, itemQuantity, setItemQuantity, invoiceCurrency, 
-    editItemID, setEditItemID, invoiceItems, setInvoiceItems } = props
+    editItemID, setEditItemID, invoiceItems, setInvoiceItems, title } = props
   const firstItemInputRef = useRef(null)
   const calculatedItemTotal = calculatePriceTotal(itemPrice, itemTaxRate / 100, itemQuantity)
 
@@ -183,7 +183,7 @@ export default function InvoiceItems(props) {
 
   return (
     <div className="invoice-items">
-      <h4>Invoice Items</h4>
+      <h4>{title || 'Invoice'} Items</h4>
       <AppTable
         flexBasis="20%"
         headers={[

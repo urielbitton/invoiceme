@@ -1,19 +1,18 @@
 import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppTextarea } from "app/components/ui/AppInputs"
-import AppTable from "app/components/ui/AppTable"
 import DropdownButton from "app/components/ui/DropdownButton"
 import FileUploader from "app/components/ui/FileUploader"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import { StoreContext } from "app/store/store"
-import { convertClassicDate } from "app/utils/dateUtils"
 import { domToPDFDownload, downloadHtmlElementAsImage } from "app/utils/fileUtils"
-import { formatCurrency, formatPhoneNumber, validateEmail } from "app/utils/generalUtils"
+import { formatCurrency, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
 import './styles/InvoicePage.css'
 import { invoicePaperStyles } from "app/components/invoices/invoicePaperStyles"
 import { useEstimate } from "app/hooks/estimateHooks"
 import { deleteEstimateService, sendEstimateService } from "app/services/estimatesServices"
+import EstimatePaper from "app/components/estimates/EstimatePaper"
 
 export default function EstimatePage() {
 
@@ -27,12 +26,13 @@ export default function EstimatePage() {
   const [estimateItems, setestimateItems] = useState([])
   const maxFileSize = 1024 * 1024 * 5
   const myBusiness = myUser?.myBusiness
+  const taxNumbers = myBusiness?.taxNumbers
   const estimateID = useParams().estimateID
   const estimate = useEstimate(myUserID, estimateID)
   const calculatedSubtotal = estimate?.items?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = estimate?.items?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedTaxRate = estimate?.items?.every(item => item.taxRate === estimate?.items[0].taxRate) ? estimate?.items[0].taxRate : null
-  const invoicePaperRef = useRef(null)
+  const estimatePaperRef = useRef(null)
   const navigate = useNavigate()
 
   const allowSendEstimate = estimateItems.length > 0 &&
@@ -221,126 +221,16 @@ export default function EstimatePage() {
               />
             </div>
           </div>
-          <div
-            className="paper-container"
-            style={invoicePaperStyles?.container}
-            ref={invoicePaperRef}
-          >
-            <header style={invoicePaperStyles?.header}>
-              <img 
-                style={invoicePaperStyles?.headerImg} 
-                src={myBusiness.logo} 
-                alt="Logo" 
-              />
-              <div 
-                className="header-row"
-                style={invoicePaperStyles?.headerRow}
-              >
-                <div 
-                  className="left"
-                  style={invoicePaperStyles?.headerLeft}
-                >
-                  <h3 style={invoicePaperStyles?.headerLeftH3}>{myBusiness.name}</h3>
-                  <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(myBusiness.phone)}</h5>
-                  <h5 style={invoicePaperStyles?.headerH5}>{myBusiness.address}</h5>
-                  <h5 style={invoicePaperStyles?.headerH5}>{myBusiness.city}, {myBusiness.region} {myBusiness.postcode}</h5>
-                  {taxNumbersList}
-                </div>
-                <div 
-                  className="right"
-                  style={invoicePaperStyles?.headerRight}
-                >
-                  <h3 style={invoicePaperStyles?.headerRightH3}>Estimate</h3>
-                  <h5 style={invoicePaperStyles?.headerH5}>#{estimate.estimateNumber}</h5>
-                  <h5 style={invoicePaperStyles?.headerH5}>Estimate Date: {convertClassicDate(estimate.dateCreated.toDate())}</h5>
-                  <h5 style={invoicePaperStyles?.headerH5}>
-                    Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(estimate.dateDue.toDate())}</span>
-                  </h5>
-                </div>
-              </div>
-            </header>
-            <div 
-              className="billto-section"
-              style={invoicePaperStyles?.billToSection}
-            >
-              <div className="side">
-                <h4 style={invoicePaperStyles?.billtoSectionH4}>Bill To</h4>
-                <h5 style={invoicePaperStyles?.billtoSectionH5}>{estimate.estimateTo.name}</h5>
-                <h5 style={invoicePaperStyles?.billtoSectionH5}>{estimate.estimateTo.address}</h5>
-                <h5 style={invoicePaperStyles?.billtoSectionH5}>{formatPhoneNumber(estimate.estimateTo.phone)}</h5>
-                <h5 style={invoicePaperStyles?.billtoSectionH5}>
-                  {estimate.estimateTo.city}, {estimate.estimateTo.region},&nbsp;
-                  ({estimate.estimateTo.country}) {estimate.estimateTo.postcode}
-                </h5>
-              </div>
-              <div className="side" />
-            </div>
-            <div 
-              className="items-section"
-              style={invoicePaperStyles?.itemsSection}
-            >
-              <AppTable
-                headers={[
-                  'Item #',
-                  'Service',
-                  'Price',
-                  'Quantity',
-                  'Tax Rate',
-                  'Total'
-                ]}
-                rows={estimateItemsList}
-                tableStyles={{minWidth: '100%'}}
-                headerStyles={invoicePaperStyles?.appTableHeaders}
-                headerItemStyles={invoicePaperStyles?.appTableHeadersH5}
-                lastHeaderClassName="no-print"
-              />
-            </div>
-            <div 
-              className="totals-section"
-              style={invoicePaperStyles?.totalsSection}
-            >
-              <h6 style={invoicePaperStyles?.totalsSectionH6First}>
-                <span>Tax Rate</span>
-                <span>{calculatedTaxRate}%</span>
-              </h6>
-              <h6 style={invoicePaperStyles?.totalsSectionH6}>
-                <span>Subtotal</span>
-                <span>{estimate.currency?.symbol}{formatCurrency(calculatedSubtotal)}</span>
-              </h6>
-              <h6 
-                className="totals"
-                style={invoicePaperStyles?.totalsSectionH6Totals}
-              >
-                <span>Total</span>
-                <span>{estimate.currency?.symbol}{formatCurrency(calculatedTotal)} {estimate.currency?.value}</span>
-              </h6>
-            </div>
-            {
-              estimate.notes?.length > 0 &&
-              <div 
-                className="notes-section"
-                style={invoicePaperStyles?.notesSection}
-              >
-                <h4 style={invoicePaperStyles?.notesSectionH4}>Notes</h4>
-                <p style={invoicePaperStyles?.notesSectionP}>{estimate.notes}</p>
-              </div>
-            }
-            <div 
-              className="foot-notes"
-              style={invoicePaperStyles?.footNotes}
-            >
-              <h6 style={invoicePaperStyles?.footNotesH6}>Thank you for your business.</h6>
-              <small style={invoicePaperStyles?.footNotesSmall}>
-                Estimate generated by&nbsp;
-                <a 
-                  href="https://invoiceme-six.vercel.app"
-                  style={invoicePaperStyles?.footNotesLink}
-                >
-                  InvoiceMe
-                </a> 
-              </small>
-            </div>
-          </div>
+          <EstimatePaper
+            estimate={estimate}
+            myBusiness={myBusiness}
+            taxNumbers={taxNumbers}
+            estimateItems={estimateItems}
+            calculatedSubtotal={calculatedSubtotal}
+            calculatedTaxRate={calculatedTaxRate}
+            calculatedTotal={calculatedTotal}
+            estimatePaperRef={estimatePaperRef}
+          />
         </div>
       </div> :
       null

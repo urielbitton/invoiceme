@@ -2,7 +2,6 @@ import AppButton from "app/components/ui/AppButton"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
-import { Link } from "react-router-dom"
 
 export default function UpgradePage() {
 

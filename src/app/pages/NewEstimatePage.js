@@ -1,6 +1,8 @@
 import { contactsIndex } from "app/algolia"
 import AddContactModal from "app/components/contacts/AddContactModal"
 import ContactRow from "app/components/contacts/ContactRow"
+import InvoiceContact from "app/components/invoices/InvoiceContact"
+import InvoiceItems from "app/components/invoices/InvoiceItems"
 import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import AppPagination from "app/components/ui/AppPagination"
@@ -14,12 +16,14 @@ import { useEstimate } from "app/hooks/estimateHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { addContactService, createContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
-import { createEstimateService, deleteEstimateService,
+import {
+  createEstimateService, deleteEstimateService,
   updateEstimateService
 } from "app/services/estimatesServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat, dateToMonthName } from "app/utils/dateUtils"
-import {calculatePriceTotal, formatCurrency, validateEmail,
+import {
+  calculatePriceTotal, formatCurrency, validateEmail,
   validatePhone
 } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -45,13 +49,6 @@ export default function NewEstimatePage() {
   const [itemQuantity, setItemQuantity] = useState(1)
   const [itemTaxRate, setItemTaxRate] = useState(0)
   const [editItemID, setEditItemID] = useState(null)
-  const [query, setQuery] = useState('')
-  const [searchResults, setSearchResults] = useState([])
-  const [numOfPages, setNumOfPages] = useState(1)
-  const [pageNum, setPageNum] = useState(0)
-  const [numOfHits, setNumOfHits] = useState(0)
-  const [hitsPerPage, setHitsPerPage] = useState(10)
-  const [showContactModal, setShowContactModal] = useState(false)
   const [contactName, setContactName] = useState("")
   const [contactEmail, setContactEmail] = useState("")
   const [contactPhone, setContactPhone] = useState("")
@@ -60,31 +57,13 @@ export default function NewEstimatePage() {
   const [contactRegion, setContactRegion] = useState("")
   const [contactCountry, setContactCountry] = useState("")
   const [contactPostcode, setContactPostcode] = useState("")
-  const [contactCompanyName, setContactCompanyName] = useState("")
-  const [contactAddFavorite, setContactAddFavorite] = useState(false)
-  const [addToContacts, setAddToContacts] = useState(true)
-  const [loading, setLoading] = useState(false)
-  const [contactsLoading, setContactsLoading] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
   const editMode = searchParams.get('edit') === 'true'
   const editEstimateID = searchParams.get('estimateID')
   const editEstimate = useEstimate(myUserID, editEstimateID)
-  const favoriteContacts = useFavoriteContacts(myUserID)
-  const filters = `ownerID: ${myUserID}`
   const navigate = useNavigate()
-  const firstItemInputRef = useRef(null)
   const calculatedSubtotal = estimateItems?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = estimateItems?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
-  const calculatedItemTotal = calculatePriceTotal(itemPrice, itemTaxRate / 100, itemQuantity)
-
-  const allowAddContact = contactName?.length > 0 &&
-    validateEmail(contactEmail) &&
-    validatePhone(contactPhone) &&
-    contactAddress?.length > 0 &&
-    contactCity?.length > 0 &&
-    contactRegion?.length > 0 &&
-    contactCountry?.length > 0 &&
-    contactPostcode?.length > 0
 
   const allowCreateEstimate = estimateName?.length > 0 &&
     estimateNumber?.length > 0 &&
@@ -92,181 +71,6 @@ export default function NewEstimatePage() {
     estimateCurrency &&
     estimateItems?.length > 0 &&
     estimateContact
-
-  const contacts = useInstantSearch(
-    query,
-    searchResults,
-    setSearchResults,
-    contactsIndex,
-    filters,
-    setNumOfHits,
-    setNumOfPages,
-    pageNum,
-    hitsPerPage,
-    setContactsLoading,
-    false
-  )
-
-  const estimateItemInputs = <>
-    <div>
-      <input
-        type="text"
-        placeholder="Web Consulting"
-        onChange={(e) => setItemName(e.target.value)}
-        value={itemName}
-        className="invoice-item-row-element"
-        ref={firstItemInputRef}
-      />
-    </div>
-    <div>
-      <input
-        value={itemPrice}
-        type="number"
-        onChange={(e) => setItemPrice(+e.target.value)}
-        className="invoice-item-row-element"
-      />
-    </div>
-    <div>
-      <input
-        value={itemQuantity}
-        type="number"
-        onChange={(e) => setItemQuantity(+e.target.value)}
-        className="invoice-item-row-element"
-      />
-    </div>
-    <div>
-      <input
-        value={itemTaxRate}
-        type="number"
-        onChange={(e) => setItemTaxRate(+e.target.value)}
-        className="invoice-item-row-element"
-      />
-    </div>
-    <div>
-      <input
-        value={`${estimateCurrency?.symbol}${formatCurrency(calculatedItemTotal?.toFixed(2))}`}
-        className="invoice-item-row-element"
-        disabled
-      />
-    </div>
-  </>
-
-  const estimateItemsRender = estimateItems?.map((item, index) => {
-    return <div
-      key={index}
-      className={`invoice-item-row with-values ${editItemID === item.itemID ? 'editing' : ''}`}
-    >
-      {
-        editItemID !== item.itemID ?
-          <>
-            <div><h6>{item.name}</h6></div>
-            <div><h6>{estimateCurrency?.symbol}{item.price}</h6></div>
-            <div><h6>{item.quantity}</h6></div>
-            <div><h6>{item.taxRate}%</h6></div>
-            <div><h6>{estimateCurrency?.symbol}{formatCurrency(item.total?.toFixed(2))}</h6></div>
-          </> :
-          estimateItemInputs
-      }
-      <div className="item-actions">
-        {
-          editItemID === item.itemID &&
-          <>
-            <IconContainer
-              dimensions="24px"
-              onClick={() => saveItem(item.itemID)}
-              icon="fas fa-check"
-              iconColor="var(--primary)"
-              iconSize="13px"
-              tooltip="Save Item"
-            />
-            <IconContainer
-              dimensions="24px"
-              onClick={() => cancelItem()}
-              icon="far fa-times"
-              iconColor="var(--primary)"
-              iconSize="15px"
-              tooltip="Cancel"
-            />
-          </>
-        }
-        {
-          editItemID === null &&
-          <>
-            <IconContainer
-              dimensions="24px"
-              onClick={() => initEditItem(item)}
-              icon="fas fa-pen"
-              iconColor="var(--primary)"
-              iconSize="13px"
-              tooltip="Edit Item"
-            />
-            <IconContainer
-              dimensions="24px"
-              onClick={() => deleteItem(item.itemID)}
-              icon="fas fa-trash"
-              iconColor="var(--primary)"
-              iconSize="13px"
-              tooltip="Delete Item"
-            />
-          </>
-        }
-      </div>
-    </div>
-  })
-
-  const contactsList = contacts?.map((contact, index) => {
-    return <ContactRow
-      key={index}
-      contact={contact}
-      actions={
-        <AppButton
-          label="Select"
-          onClick={() => {
-            setEstimateContact({
-              name: contact.name,
-              email: contact.email,
-              phone: contact.phone,
-              address: contact.address,
-              city: contact.city,
-              region: contact.region,
-              country: contact.country,
-              postcode: contact.postcode,
-              dateCreated: new Date()
-            })
-            setQuery("")
-            setSearchResults([])
-          }}
-        />
-      }
-    />
-  })
-
-  const favoritesList = favoriteContacts?.map((contact, index) => {
-    return <ContactRow
-      key={index}
-      contact={contact}
-      actions={
-        <AppButton
-          label="Select"
-          onClick={() => {
-            setEstimateContact({
-              name: contact.name,
-              email: contact.email,
-              phone: contact.phone,
-              address: contact.address,
-              city: contact.city,
-              region: contact.region,
-              country: contact.country,
-              postcode: contact.postcode,
-              dateCreated: new Date()
-            })
-            setQuery("")
-            setSearchResults([])
-          }}
-        />
-      }
-    />
-  })
 
   const navItemInfoRender = {
     label: <small
@@ -301,108 +105,11 @@ export default function NewEstimatePage() {
     </div>
   }
 
-  const clearestimateItemInputs = () => {
-    setItemName("")
-    setItemPrice(0)
-    setItemQuantity(1)
-    setItemTaxRate(0)
-    setEditItemID(null)
-    firstItemInputRef.current.focus()
-  }
-
-  const addEstimateItem = () => {
-    if (itemName.length) {
-      setEstimateItems([...estimateItems, {
-        name: itemName,
-        price: itemPrice,
-        quantity: itemQuantity,
-        taxRate: itemTaxRate,
-        total: calculatedItemTotal,
-        itemID: getRandomDocID('estimates/items/estimateItems')
-      }])
-      clearestimateItemInputs()
-    }
-  }
-
-  const initEditItem = (item) => {
-    setEditItemID(item.itemID)
-    setItemName(item.name)
-    setItemPrice(item.price)
-    setItemQuantity(item.quantity)
-    setItemTaxRate(item.taxRate)
-  }
-
-  const saveItem = (itemID) => {
-    setEstimateItems(estimateItems.map(estimateItem => {
-      if (estimateItem.itemID === itemID) {
-        return {
-          name: itemName,
-          price: itemPrice,
-          quantity: itemQuantity,
-          taxRate: itemTaxRate,
-          total: calculatedItemTotal,
-          itemID
-        }
-      }
-      return estimateItem
-    }))
-    clearestimateItemInputs()
-  }
-
-  const cancelItem = () => {
-    setEditItemID(null)
-    clearestimateItemInputs()
-  }
-
-  const deleteItem = (itemID) => {
-    const confirm = window.confirm("Are you sure you want to delete this item?")
-    if (confirm) {
-      setEstimateItems(estimateItems.filter(item => item.itemID !== itemID))
-    }
-    clearestimateItemInputs()
-  }
-
-  const clearContactInfo = () => {
-    setContactName("")
-    setContactEmail("")
-    setContactPhone("")
-    setContactAddress("")
-    setContactCity("")
-    setContactRegion("")
-    setContactCountry("")
-    setContactPostcode("")
-    setContactCompanyName("")
-    setContactAddFavorite(false)
-    setShowContactModal(false)
-    setLoading(false)
-  }
-
-  const addContact = () => {
-    if (!!!allowAddContact) return alert('Please fill out all required fields')
-    if (addToContacts) {
-      createContactService(
-        myUserID, contactName, contactEmail, contactPhone, contactAddress,
-        contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
-        contactAddFavorite, '', null, setLoading
-      )
-        .then(() => {
-          clearContactInfo()
-        })
-    }
-    else {
-      addContactService(myUserID, contactName, contactEmail, contactPhone, contactAddress,
-        contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
-        contactAddFavorite, setEstimateContact
-      )
-      clearContactInfo()
-    }
-  }
-
   const createEstimate = () => {
     if (!allowCreateEstimate) return alert("Please fill out all required fields.")
     setPageLoading(true)
     createEstimateService(
-      myUserID, myUser?.myBusiness, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
+      myUserID, myUser?.myBusiness, myUser?.taxNumbers, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
       estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal,
       calculatedTotal, estimateName
     )
@@ -445,7 +152,7 @@ export default function NewEstimatePage() {
   }
 
   const deleteEstimate = () => {
-    deleteEstimateService(myUserID, editEstimateID, setLoading)
+    deleteEstimateService(myUserID, editEstimateID, setPageLoading)
       .then(() => {
         navigate('/estimates')
       })
@@ -560,118 +267,42 @@ export default function NewEstimatePage() {
             onChange={(e) => setEstimateNotes(e.target.value)}
           />
         </form>
-        <div className="invoice-items">
-          <h4>Estimate Items</h4>
-          <AppTable
-            flexBasis="20%"
-            headers={[
-              'Item',
-              'Unit Price',
-              'Quantity',
-              'Tax %',
-              'Total',
-              'Edit'
-            ]}
-            rows={
-              <>
-                {estimateItemsRender}
-                <form
-                  className="invoice-item-row"
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    addEstimateItem()
-                  }}
-                  style={{ display: !editItemID ? 'flex' : 'none' }}
-                >
-                  {estimateItemInputs}
-                  <div className="action-item">
-                    <input />
-                    <button onClick={addEstimateItem} />
-                  </div>
-                </form>
-              </>
-            }
-          />
-          <div className="invoice-table-actions">
-            <small
-              onClick={addEstimateItem}
-              className={`add-invoice-item ${!itemName.length ? 'inactive' : ''}`}
-            >
-              Add Item<i className="far fa-plus" />
-            </small>
-          </div>
-        </div>
-        <div className="invoice-contact">
-          <h4>Bill To Contact</h4>
-          <AppInput
-            placeholder="Search Contact"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            iconleft={contactsLoading ? <i className="fal fa-spinner fa-spin" /> :
-              query.length ?
-                <i
-                  className="fal fa-times"
-                  onClick={() => {
-                    setQuery('')
-                    setSearchResults([])
-                  }}
-                /> :
-                <i className="fal fa-search" />
-            }
-          />
-          {
-            estimateContact &&
-            <>
-              <h5>Selected Contact</h5>
-              <ContactRow
-                contact={{
-                  name: estimateContact.name,
-                  email: estimateContact.email,
-                  phone: estimateContact.phone,
-                  address: estimateContact.address,
-                  city: estimateContact.city,
-                  region: estimateContact.region,
-                  country: estimateContact.country,
-                }}
-                className="selected"
-                actions={
-                  <IconContainer
-                    icon="fal fa-times"
-                    onClick={() => setEstimateContact(null)}
-                    iconColor="var(--darkGrayText)"
-                    iconSize="17px"
-                  />
-                }
-              />
-            </>
-          }
-          {
-            query.length > 0 && searchResults.length > 0 ?
-              <>
-                <h5>My Contacts</h5>
-                <div className="contacts-search-results">
-                  {contactsList}
-                </div>
-                <AppPagination
-                  pageNum={pageNum}
-                  setPageNum={setPageNum}
-                  numOfPages={numOfPages}
-                  dimensions="25px"
-                />
-              </> :
-              <>
-                <h5>Favorite Contacts</h5>
-                <div className="contacts-search-results favorite-contacts">
-                  {favoritesList}
-                </div>
-              </>
-          }
-          <AppButton
-            label="New Contact"
-            onClick={() => setShowContactModal(true)}
-            rightIcon="fal fa-plus"
-          />
-        </div>
+        <InvoiceItems
+          itemName={itemName}
+          setItemName={setItemName}
+          itemPrice={itemPrice}
+          setItemPrice={setItemPrice}
+          itemTaxRate={itemTaxRate}
+          setItemTaxRate={setItemTaxRate}
+          itemQuantity={itemQuantity}
+          setItemQuantity={setItemQuantity}
+          invoiceCurrency={estimateCurrency}
+          editItemID={editItemID}
+          setEditItemID={setEditItemID}
+          invoiceItems={estimateItems}
+          setInvoiceItems={setEstimateItems}
+          title="Estimate"
+        />
+        <InvoiceContact
+          contactName={contactName}
+          setContactName={setContactName}
+          contactEmail={contactEmail}
+          setContactEmail={setContactEmail}
+          contactPhone={contactPhone}
+          setContactPhone={setContactPhone}
+          contactAddress={contactAddress}
+          setContactAddress={setContactAddress}
+          contactCity={contactCity}
+          setContactCity={setContactCity}
+          contactRegion={contactRegion}
+          setContactRegion={setContactRegion}
+          contactPostcode={contactPostcode}
+          setContactPostcode={setContactPostcode}
+          contactCountry={contactCountry}
+          setContactCountry={setContactCountry}
+          invoiceContact={estimateContact}
+          setInvoiceContact={setEstimateContact}
+        />
       </div>
       <div className="btn-group">
         <AppButton
@@ -694,32 +325,6 @@ export default function NewEstimatePage() {
           </>
         }
       </div>
-      <AddContactModal
-        showModal={showContactModal}
-        setShowModal={setShowContactModal}
-        name={contactName}
-        setName={setContactName}
-        email={contactEmail}
-        setEmail={setContactEmail}
-        phone={contactPhone}
-        setPhone={setContactPhone}
-        address={contactAddress}
-        setAddress={setContactAddress}
-        city={contactCity}
-        setCity={setContactCity}
-        region={contactRegion}
-        setRegion={setContactRegion}
-        postcode={contactPostcode}
-        setPostcode={setContactPostcode}
-        companyName={contactCompanyName}
-        setCompanyName={setContactCompanyName}
-        country={contactCountry}
-        setCountry={setContactCountry}
-        addToContacts={addToContacts}
-        setAddToContacts={setAddToContacts}
-        createContact={addContact}
-        loading={loading}
-      />
     </div>
   )
 }
