@@ -1,0 +1,69 @@
+.notification-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background: #fff;
+  box-shadow: var(--newCardShadow);
+  border-radius: 5px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.notification-card:hover {
+  background: var(--extraLightPrimary);
+}
+.notification-card .left {
+  display: flex;
+  gap: 15px;
+}
+.notification-card .left i {
+  top: 3px;
+  color: var(--darkGrayText);
+}
+.notification-card .left .texts {
+  display: flex;
+  flex-direction: column;
+}
+.notification-card .left .texts h5 {
+  font-size: 14px;
+  color: var(--darkGrayText);
+}
+.notification-card .left .texts p {
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+}
+.notification-card .left .texts h6 {
+  font-size: 11px;
+  color: var(--grayText);
+  font-weight: 500;
+}
+.notification-card .right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.notification-card .right .fa-circle {
+  font-size: 8px;
+  color: var(--inputBorderColor);
+  padding: 4px;
+}
+.notification-card .right .fa-circle.unread {
+  color: var(--primary);
+}
+.notification-card .right a {
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.notification-card .right a:hover {
+  background: #fff;
+}
+.notification-card .right a i {
+  color: var(--primary);
+}

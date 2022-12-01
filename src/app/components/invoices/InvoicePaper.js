@@ -1,14 +1,18 @@
+// @ts-nocheck
+import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency, formatPhoneNumber } from "app/utils/generalUtils"
-import React from 'react'
+import React, { useContext } from 'react'
 import AppTable from "../ui/AppTable"
 import { invoicePaperStyles } from "./invoicePaperStyles"
 
 export default function InvoicePaper(props) {
 
+  const { myUser } = useContext(StoreContext)
   const { invoice, myBusiness, taxNumbers, invoiceItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
     invoicePaperRef } = props
+  const myTaxNumbers = taxNumbers || myUser?.taxNumbers
 
   const invoiceItemsList = invoiceItems?.map((item, index) => {
     return <div
@@ -25,7 +29,7 @@ export default function InvoicePaper(props) {
     </div>
   })
 
-  const taxNumbersList = taxNumbers?.map((taxNum, index) => {
+  const taxNumbersList = myTaxNumbers?.map((taxNum, index) => {
     return <h5 
       style={invoicePaperStyles?.headerH5}
       key={index}

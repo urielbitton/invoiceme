@@ -1,0 +1,39 @@
+.notifications-page {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.notifications-page .notifications-list {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notifications-page .toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.notifications-page .toolbar h6 {
+  font-size: 14px;
+  color: var(--darkGrayText);
+  font-weight: 600;
+}
+.notifications-page .toolbar .appSelect {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.notifications-page .toolbar select {
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--tableBorderColor);
+  border-radius: 0;
+}
+
+.notifications-page .load-more-btn {
+  margin-top: 10px;
+}

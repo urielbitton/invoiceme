@@ -1,5 +1,5 @@
-import { auth } from "app/firebase/fire"
-import { getAllNotifications, getUnreadNotifications } from "app/services/notifServices"
+import { getAllNotifications, getReadNotifications, 
+  getUnreadNotifications } from "app/services/notifServices"
 import { useEffect, useState } from "react"
 
 export const useUnreadNotifications = (userID) => {
@@ -13,7 +13,18 @@ export const useUnreadNotifications = (userID) => {
   return unreadNotifs
 }
 
-export const useNotifications = (userID, limit) => {
+export const useReadNotifications = (userID, limit) => {
+
+  const [readNotifs, setReadNotifs] = useState([])
+
+  useEffect(() => {
+    getReadNotifications(userID, setReadNotifs, limit)
+  }, [userID, limit])
+
+  return readNotifs
+}
+
+export const useAllNotifications = (userID, limit) => {
 
   const [notifications, setNotifications] = useState([])
 

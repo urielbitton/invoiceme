@@ -45,7 +45,7 @@
   border: none;
   font-size: 13px;
   background: none;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--tableBorderColor);
   width: 200px;
   border-radius: 0;
 }

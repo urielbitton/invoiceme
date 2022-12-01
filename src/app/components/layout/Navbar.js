@@ -1,4 +1,4 @@
-import { useNotifications, useUnreadNotifications } from "app/hooks/notificationHooks"
+import { useAllNotifications, useUnreadNotifications } from "app/hooks/notificationHooks"
 import { signOut } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
@@ -18,7 +18,7 @@ export default function Navbar() {
     compactNav, setShowMobileSidebar } = useContext(StoreContext)
   const [showMenu, setShowMenu] = useState(null)
   const unreadNotifications = useUnreadNotifications(myUserID)
-  const notifications = useNotifications(myUserID, 5)
+  const notifications = useAllNotifications(myUserID, 5)
 
   const notificationsList = notifications?.map((notif, index) => {
     return <NotificationElement

@@ -20,6 +20,20 @@ export const getUnreadNotifications = (userID, setNotifs) => {
   .doc(userID)
   .collection('notifications')
   .where('isRead', '==', false)
+  .orderBy('dateCreated', 'desc')
+  .limit(50)
+  .onSnapshot(snapshot => {
+    setNotifs(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
+export const getReadNotifications = (userID, setNotifs, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('notifications')
+  .where('isRead', '==', true)
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
   .onSnapshot(snapshot => {
     setNotifs(snapshot.docs.map(doc => doc.data()))
   })
