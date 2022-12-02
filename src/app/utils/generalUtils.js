@@ -209,3 +209,11 @@ export const sortArrayByProperty = (array, property, order) => {
     return array.sort((a, b) => b[property].toString() < a[property].toString() ? 1 : -1)
   }
 }
+
+export const cap = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
+export const upper = (string) => {
+  return string.toUpperCase()
+}

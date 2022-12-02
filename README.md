@@ -3,6 +3,8 @@ InvoiceMe App
 ToDos:
 
 Others
+- Show brief stats of total all time revenue(homepage shows yearly only), all time invocies, estimates, contacts, etc.<br/>
+  | tabs: Account Info (delete account), stats, upgrade account
 - Edit scheduled invoices
 - implement settings in settings page against user settings
 - add in-app toasts (notifs instead of alerts)

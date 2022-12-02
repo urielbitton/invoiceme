@@ -1,4 +1,6 @@
 import { db } from "app/firebase/fire"
+import { updateDB } from "./CrudDB"
+import { uploadMultipleFilesToFireStorage } from "./storageServices"
 
 export const getUserByID = (userID, setUser) => {
   db.collection('users')
@@ -65,5 +67,29 @@ export const getUserContactSettingsByID = (userID, setSettings) => {
   .doc('contacts')
   .onSnapshot(snap => {
     setSettings(snap.data())
+  })
+}
+
+export const saveAccountInfoService = (userID, data, uploadedImg, contactStoragePath) => {
+  return uploadMultipleFilesToFireStorage(uploadedImg ? [uploadedImg.file] : null, contactStoragePath, ['photo-url'])
+  .then(imgURL => {
+    return updateDB('users', userID, {
+      ...data,
+      ...(uploadedImg && { photoURL: imgURL[0].downloadURL })
+    })
+    .catch(err => console.log(err))
+  })
+}
+
+export const saveMyBusinessInfoService = (userID, data, uploadedImg, contactStoragePath) => {
+  return uploadMultipleFilesToFireStorage(uploadedImg ? [uploadedImg.file] : null, contactStoragePath, ['photo-url'])
+  .then(imgURL => {
+    return updateDB('users', userID, {
+      myBusiness: {
+        ...data,
+        ...(uploadedImg && { logo: imgURL[0].downloadURL })
+      }
+    })
+    .catch(err => console.log(err))
   })
 }

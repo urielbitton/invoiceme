@@ -10,7 +10,6 @@ import ContactsPage from "app/pages/ContactsPage"
 import PaymentsPage from "app/pages/PaymentsPage"
 import SettingsPage from "app/pages/SettingsPage"
 import UpgradePage from "app/pages/UpgradePage"
-import MyProfilePage from "app/pages/MyProfilePage"
 import MyAccountPage from "app/pages/MyAccountPage"
 import NewInvoicePage from "app/pages/NewInvoicePage"
 import NewEstimatePage from "app/pages/NewEstimatePage"
@@ -42,8 +41,7 @@ export default function RoutesContainer() {
         <Route path="/contacts/:contactID/*" element={<ContactPage />} />
         <Route path="payments" element={<PaymentsPage />} />
         <Route path="payments/new" element={<NewPaymentPage />} />
-        <Route path="my-profile" element={<MyProfilePage />} />
-        <Route path="my-account" element={<MyAccountPage />} />
+        <Route path="my-account/*" element={<MyAccountPage />} />
         <Route path="settings/*" element={<SettingsPage />} />
         <Route path="notifications" element={<NotificationsPage />} />
         <Route path="emails/*" element={<EmailsPage />} />

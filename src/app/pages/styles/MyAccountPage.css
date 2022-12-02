@@ -1,0 +1,44 @@
+.account-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-page .app-tabs-bar {
+  margin-top: 20px;
+}
+
+.account-page .account-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-top: 20px;
+  width: 1000px;
+}
+.account-page .account-content .account-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px 20px;
+}
+.account-page .account-content .account-section > h4 {
+  grid-column: 1 / -1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+  margin-bottom: 10px;
+}
+.account-page .account-content .account-section .avatar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 20px;
+}
+.account-page .account-content .account-section .commonInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.account-page .account-content .account-section .commonInput h6 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
