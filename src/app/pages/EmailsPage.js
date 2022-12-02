@@ -61,6 +61,16 @@ export default function EmailsPage() {
       })
   }
 
+  const filesList = activeEmail?.files?.map((file, index) => {
+    return <div
+      key={index}
+      className="email-file"
+    >
+      <i className="fas fa-paperclip" />
+      <h6>{file}</h6>
+    </div>
+  })
+
   useEffect(() => {
     setCompactNav(true)
     return () => setCompactNav(false)
@@ -178,6 +188,13 @@ export default function EmailsPage() {
         <div className="body">
           <p>{activeEmail?.html}</p>
         </div>
+        {
+          activeEmail?.files?.length > 0 &&
+          <div className="files-list">
+            <h5>Files</h5>
+            {filesList}
+          </div>
+        }
       </AppModal>
     </div>
   )

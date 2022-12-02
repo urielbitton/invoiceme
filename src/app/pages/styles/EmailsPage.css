@@ -7,6 +7,14 @@
 .emails-page .app-item-row .actions-row .icon-container:hover {
   background: #fff;
 }
+.emails-page .app-item-row i.fa-circle {
+  font-size: 8px;
+  color: var(--primary);
+  margin-right: 10px;
+}
+.emails-page .app-table .headers {
+  padding: 0 10px;
+}
 
 .email-modal-portal .header {
   display: flex;
@@ -32,4 +40,34 @@
   font-size: 13px;
   white-space: pre-wrap;
   font-weight: 500;
+}
+
+.email-modal-portal .files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.email-modal-portal .files-list > h5 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+  margin-bottom: 5px;
+}
+.email-modal-portal .files-list .email-file {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-radius: 5px;
+  background: var(--bg);
+  padding: 10px;
+}
+.email-modal-portal .files-list .email-file i {
+  font-size: 14px;
+  color: var(--grayText);
+}
+.email-modal-portal .files-list .email-file h6 {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--darkGrayText);
 }

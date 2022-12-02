@@ -113,6 +113,9 @@
   align-items: center;
   gap: 10px;
 }
+.homepage .app-table .headers {
+  padding: 0 10px;
+}
 
 .homepage .foot-notes {
   display: flex;

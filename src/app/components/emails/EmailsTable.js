@@ -44,11 +44,18 @@ export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal 
   const emailsList = emails?.map((email, index) => {
     return <AppItemRow
       key={index}
-      item1={email.from}
+      item1={<>
+        {!email.isRead && <i className="fas fa-circle"/>}
+        {truncateText(email.from, 20)}
+      </>}
       item2={email.to}
       item3={email.subject}
-      item4={truncateText(email.html, 50)}
-      item5={convertClassicDate(email.dateSent?.toDate())}
+      item4={truncateText(email.html, 44)}
+      item5={email?.files?.length > 0 ?<>
+        <i className="fas fa-paperclip"/>&nbsp;
+        {email.files.length} file{email.files.length !== 1 ? 's' : ''}</> : 'No files'
+      }
+      item6={convertClassicDate(email.dateSent?.toDate())}
       actions={<>
         <IconContainer
           icon="fas fa-eye"
@@ -64,6 +71,7 @@ export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal 
         />
         </>
       }
+      onDoubleClick={() => openEmail(email)}
     />
   })
 
@@ -74,6 +82,7 @@ export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal 
         'To',
         'Subject',
         'Message',
+        'Files',
         'Date',
         'View'
       ]}

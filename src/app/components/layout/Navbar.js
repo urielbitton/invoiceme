@@ -1,4 +1,4 @@
-import { useUnreadEmails } from "app/hooks/emailHooks"
+import { useEmailsByType, useUnreadEmails } from "app/hooks/emailHooks"
 import { useAllNotifications, useUnreadNotifications } from "app/hooks/notificationHooks"
 import { signOut } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
@@ -8,6 +8,7 @@ import { AppInput } from "../ui/AppInputs"
 import Avatar from "../ui/Avatar"
 import DropdownButton from "../ui/DropdownButton"
 import IconContainer from "../ui/IconContainer"
+import EmailElement from "./EmailElement"
 import NavBottomBar from "./NavBottomBar"
 import NavDropdown from "./NavDropdown"
 import NotificationElement from "./NotificationElement"
@@ -20,12 +21,20 @@ export default function Navbar() {
   const [showMenu, setShowMenu] = useState(null)
   const unreadNotifications = useUnreadNotifications(myUserID)
   const unreadEmails = useUnreadEmails(myUser?.email)
+  const emails = useEmailsByType(myUser?.email, 'inbox', 5)
   const notifications = useAllNotifications(myUserID, 5)
 
   const notificationsList = notifications?.map((notif, index) => {
     return <NotificationElement
       key={index}
       notif={notif}
+    />
+  })
+
+  const emailsList = emails?.map((email, index) => {
+    return <EmailElement
+      key={index}
+      email={email}
     />
   })
 
@@ -109,6 +118,7 @@ export default function Navbar() {
             type="emails" 
             showDropdown={showMenu}
             setShowDropdown={setShowMenu} 
+            itemsRender={emailsList}
           />
           <div className="profile-container">
             <div

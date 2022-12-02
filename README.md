@@ -3,6 +3,7 @@ InvoiceMe App
 ToDos:
 
 Others
+- Edit scheduled invoices
 - add in-app toasts (notifs instead of alerts)
 - find html to pdf npm that preserves text and css
 - add contact events on contact page - shows all events for contact (invoices/estimates received, sent, payments, emails/SMS sent, etc.)
