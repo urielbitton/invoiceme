@@ -1,4 +1,5 @@
-import { getMyInboxEmails, getMySentEmails, getUnreadEmails } from "app/services/emailServices"
+import { getMyInboxEmails, 
+  getMySentEmails, getUnreadEmails } from "app/services/emailServices"
 import { useEffect, useState } from "react"
 
 export const useInboxEmails = (myEmail, limit) => {
@@ -32,10 +33,10 @@ export const useEmailsByType = (myEmail, type, limit) => {
   const [emails, setEmails] = useState([])
 
   useEffect(() => {
-    if(myEmail) {
-      type === 'inbox' ? 
-      getMyInboxEmails(emails, setEmails, limit) :
-      getMySentEmails(emails, setEmails, limit)
+    if (myEmail) {
+      type === 'inbox' ?
+        getMyInboxEmails(myEmail, setEmails, limit) :
+        getMySentEmails(myEmail, setEmails, limit)
 
     }
   }, [myEmail, type, limit])
@@ -48,7 +49,7 @@ export const useUnreadEmails = (myEmail) => {
   const [unreadEmails, setUnreadEmails] = useState([])
 
   useEffect(() => {
-    if(myEmail) {
+    if (myEmail) {
       getUnreadEmails(myEmail, setUnreadEmails)
     }
   }, [myEmail])

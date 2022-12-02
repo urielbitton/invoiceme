@@ -1,7 +1,6 @@
-import { addDB, getRandomDocID, setDB } from "./CrudDB"
-
-const { functions, db } = require("app/firebase/fire")
-const { convertFilesToBase64, saveHTMLToPDFAsBlob } = require("app/utils/fileUtils")
+import { db, functions } from "app/firebase/fire"
+import { convertFilesToBase64, saveHTMLToPDFAsBlob } from "app/utils/fileUtils"
+import { getRandomDocID, setDB } from "./CrudDB"
 
 export const sendSgEmail = (from, to, subject, html, files) => {
   return convertFilesToBase64(files)
@@ -24,39 +23,28 @@ export const sendSgEmail = (from, to, subject, html, files) => {
           ]
         })
       })
-      .then((result) => {
-        console.log({result, files})
-        const docID = getRandomDocID('mail')
-        return setDB('mail', docID, {
-          from,
-          to,
-          subject,
-          html,
-          files: files?.length > 0 ? files?.map(file => file?.filename || file.name) : [],
-          dateSent: new Date(),
-          emailID: docID,
-          isRead: false
+        .then((result) => {
+          console.log({ result, files })
+          return sendFireEmail(from, to, subject, html, files)
         })
-        .catch(err => console.log(err))
-      })
-      .catch((error) => console.log(error))
+        .catch((error) => console.log(error))
     })
     .catch((error) => console.log(error))
 }
 
 export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElement, filename, attachments) => {
   return saveHTMLToPDFAsBlob(pdfHTMLElement, filename)
-  .then((file) => {
-    return sendSgEmail(
-      from,
-      to,
-      subject, 
-      emailHtml, 
-      [file, ...attachments]
-    ) 
-    .catch((error) => console.log(error))
-  })
-  .catch(err => console.log(err))
+    .then((file) => {
+      return sendSgEmail(
+        from,
+        to,
+        subject,
+        emailHtml,
+        [file, ...attachments]
+      )
+        .catch((error) => console.log(error))
+    })
+    .catch(err => console.log(err))
 }
 
 export const sendAppEmail = (from, to, subject, message, files) => {
@@ -65,35 +53,50 @@ export const sendAppEmail = (from, to, subject, message, files) => {
     to,
     subject,
     message,
-    files.map(file => file.file)
+    files.map(file => file.file),
   )
+}
+
+export const sendFireEmail = (from, to, subject, html, files) => {
+  const docID = getRandomDocID('mail')
+  return setDB('mail', docID, {
+    from,
+    to,
+    subject,
+    html,
+    files: files?.length > 0 ? files?.map(file => file?.filename || file.name) : [],
+    dateSent: new Date(),
+    emailID: docID,
+    isRead: false,
+  })
+  .catch(err => console.log(err))
 }
 
 export const getMyInboxEmails = (myEmail, setEmails, limit) => {
   db.collection('mail')
-  .where('to', '==', myEmail)
-  .orderBy('dateSent', 'desc')
-  .limit(limit)
-  .onSnapshot((snapshot) => {
-    setEmails(snapshot.docs.map((doc) => doc.data()))
-  })
+    .where('to', '==', myEmail)
+    .orderBy('dateSent', 'desc')
+    .limit(limit)
+    .onSnapshot((snapshot) => {
+      setEmails(snapshot.docs.map((doc) => doc.data()))
+    })
 }
 
 export const getMySentEmails = (email, setEmails, limit) => {
-  db.collection('emails')
-  .where('from', '==', email)
-  .orderBy('dateSent', 'desc')
-  .limit(limit)
-  .onSnapshot((snapshot) => {
-    setEmails(snapshot.docs.map((doc) => doc.data()))
-  })
+  db.collection('mail')
+    .where('from', '==', email)
+    .orderBy('dateSent', 'desc')
+    .limit(limit)
+    .onSnapshot((snapshot) => {
+      setEmails(snapshot.docs.map((doc) => doc.data()))
+    })
 }
 
 export const getUnreadEmails = (myEmail, setUnreadEmails) => {
   db.collection('mail')
-  .where('to', '==', myEmail)
-  .where('isRead', '==', false)
-  .onSnapshot((snapshot) => {
-    setUnreadEmails(snapshot.docs.map((doc) => doc.data()))
-  })
+    .where('to', '==', myEmail)
+    .where('isRead', '==', false)
+    .onSnapshot((snapshot) => {
+      setUnreadEmails(snapshot.docs.map((doc) => doc.data()))
+    })
 }

@@ -84,21 +84,6 @@ exports.deleteFromIndexEstimates = functions
   })
 
 
-// Sendgrid email
-exports.sendSgEmail = functions
-  .region('northamerica-northeast1')
-  .firestore.document('sgEmails/{emailID}').onCreate(snapshot => {
-    const data = snapshot.data()
-    const msg = {
-      from: data.from,
-      to: data.to,
-      subject: data.subject,
-      html: data.html,
-    }
-    return sgMail.send(msg)
-      .catch(err => console.log(err))
-  })
-
 // Sendgrid email with attachment
 exports.sendEmailWithAttachment = functions
   .https.onCall((data, context) => {

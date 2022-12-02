@@ -1,3 +1,4 @@
+import { useUnreadEmails } from "app/hooks/emailHooks"
 import { useAllNotifications, useUnreadNotifications } from "app/hooks/notificationHooks"
 import { signOut } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
@@ -14,10 +15,11 @@ import './styles/Navbar.css'
 
 export default function Navbar() {
 
-  const { myUserID, setPageLoading, myUserImg, myMemberType,
-    compactNav, setShowMobileSidebar } = useContext(StoreContext)
+  const { myUserID, myUser, setPageLoading, myUserImg, 
+    myMemberType, compactNav, setShowMobileSidebar } = useContext(StoreContext)
   const [showMenu, setShowMenu] = useState(null)
   const unreadNotifications = useUnreadNotifications(myUserID)
+  const unreadEmails = useUnreadEmails(myUser?.email)
   const notifications = useAllNotifications(myUserID, 5)
 
   const notificationsList = notifications?.map((notif, index) => {
@@ -89,6 +91,9 @@ export default function Navbar() {
               e.stopPropagation()
               setShowMenu(showMenu === 'emails' ? null : 'emails')
             }}
+            badgeValue={unreadEmails.length}
+            badgeBgColor="#fff"
+            badgeTextColor="var(--darkGrayText)"
           />
           <NavDropdown 
             label="Notifications"
