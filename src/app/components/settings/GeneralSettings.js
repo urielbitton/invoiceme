@@ -53,6 +53,7 @@ export default function GeneralSettings() {
       <SettingsSection
         label="Language"
         sublabel="Choose your preferred language"
+        className="language"
       >
         <AppSelect
           options={[
@@ -63,6 +64,7 @@ export default function GeneralSettings() {
       <SettingsSection
         label="Currency"
         sublabel="Set your preferred currency"
+        className="currency"
       >
         <AppSelect
           options={currencies}
@@ -74,6 +76,7 @@ export default function GeneralSettings() {
         label="Theme"
         sublabel="Choose your preferred theme"
         flexStart
+        className="theme"
       >
         <AppSelect
           options={themeColors}
@@ -101,6 +104,7 @@ export default function GeneralSettings() {
       <SettingsSection
         label="Dark Mode"
         sublabel="Toggle dark mode"
+        className="darkMode"
       >
         <AppSwitch
           checked={darkMode}

@@ -23,31 +23,32 @@
   border-radius: 5px;
   box-shadow: var(--shadow);
 }
-.settings-page .page-title-bar .settings-results a {
+.settings-page .page-title-bar .settings-results .settings-list-item {
   padding: 10px;
   display: flex;
   align-items: flex-start;
   gap: 10px;
   transition: all 0.2s;
+  cursor: pointer;
 }
-.settings-page .page-title-bar .settings-results a:hover {
+.settings-page .page-title-bar .settings-results .settings-list-item:hover {
   background: var(--bg);
 }
-.settings-page .page-title-bar .settings-results a i {
+.settings-page .page-title-bar .settings-results .settings-list-item i {
   top: 1px;
   color: var(--darkGrayText);
 }
-.settings-page .page-title-bar .settings-results a .right {
+.settings-page .page-title-bar .settings-results .settings-list-item .right {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
-.settings-page .page-title-bar .settings-results a .right h5 {
+.settings-page .page-title-bar .settings-results .settings-list-item .right h5 {
   font-size: 14px;
   color: var(--darkGrayText);
   font-weight: 600;
 }
-.settings-page .page-title-bar .settings-results a .right p {
+.settings-page .page-title-bar .settings-results .settings-list-item .right p {
   font-size: 12px;
   color: var(--grayText);
   font-weight: 500;
@@ -103,6 +104,12 @@
   gap: 30px;
   padding: 15px 0;
   border-bottom: 1px solid var(--inputBorderColor);
+  transition: all 0.2s;
+}
+.settings-page .settings-section.active {
+  background: var(--extraLightPrimary);
+  padding: 15px 10px;
+  scroll-margin-top: 100px;
 }
 .settings-page .settings-section .left-side {
   width: 320px;

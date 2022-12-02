@@ -30,6 +30,7 @@ export default function ContactsSettings() {
         sublabel="Show favorite contacts on invoices and estimates creation pages."
         value={showFavorites}
         setValue={setShowFavorites}
+        className="showFavoriteContacts"
       />
       <div className="btn-group">
         <AppButton

@@ -31,6 +31,7 @@ export default function EmailsSettings() {
         sublabel="Send me monthly reports about my invoices to my email address."
         flexStart
         badge="Business"
+        className="sendMonthlyReportEmails"
       >
         <AppSelect
           options={monthlyReportOptions}

@@ -15,7 +15,8 @@ import PageTitleBar from "app/components/ui/PageTitleBar"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
-import { Link, NavLink, Route, Routes, useLocation } from "react-router-dom"
+import { NavLink, Route, Routes, 
+  useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import './styles/SettingsPage.css'
 
 export default function SettingsPage() {
@@ -28,8 +29,10 @@ export default function SettingsPage() {
   const [numOfHits, setNumOfHits] = useState(0)
   const [hitsPerPage, setHitsPerPage] = useState(100)
   const [settingsLoading, setSettingsLoading] = useState(true)
+  const [searchParams, setSearchParams] = useSearchParams()
   const filters = ''
   const location = useLocation()
+  const navigate = useNavigate()
 
   const settings = useInstantSearch(
     query,
@@ -46,10 +49,13 @@ export default function SettingsPage() {
   )
 
   const settingsList = settings?.map((setting, index) => {
-    return <Link
-      to={setting.pageURL}
-      onClick={() => setQuery('')}
+    return <div
+      onClick={() => {
+        setQuery('')
+        navigate({ pathname: setting.pageURL, search: `goTo=${setting.settingID}` })
+      }}
       key={index}
+      className="settings-list-item"
     >
       <div className="left">
         <i className={setting.icon} />
@@ -58,13 +64,21 @@ export default function SettingsPage() {
         <h5>{setting.label}</h5>
         <p>{setting.sublabel}</p>
       </div>
-    </Link>
+    </div>
   })
 
   useEffect(() => {
     setCompactNav(true)
     return () => setCompactNav(false)
   }, [])
+
+  useEffect(() => {
+    if (searchParams.get('goTo')) {
+      const goTo = searchParams.get('goTo')
+      const goToElement = document.querySelector(`.${goTo}`)
+      goToElement?.scrollIntoView({ behavior: 'smooth' })
+    }
+  },[searchParams])
 
   return (
     <div className="settings-page">

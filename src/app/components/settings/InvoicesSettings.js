@@ -2,6 +2,7 @@ import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
+import { useLocation } from "react-router-dom"
 import AppButton from "../ui/AppButton"
 import { AppInput, AppTextarea } from "../ui/AppInputs"
 import SettingsSection from "./SettingsSection"
@@ -34,6 +35,7 @@ export default function InvoicesSettings() {
   const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
   const allowAddTax = taxName && taxNumber && taxRate
   const myUserInvoiceSettings = useUserInvoiceSettings(myUserID)
+  const location = useLocation()
 
   const deleteTaxNumber = (taxNumber) => {
     const confirm = window.confirm(`Are you sure you want to delete tax item: ${taxNumber.name}?`)
@@ -124,88 +126,103 @@ export default function InvoicesSettings() {
         sublabel="Show my name on invoice headers"
         value={showMyName}
         setValue={setShowMyName}
+        className="inv-showMyName"
       />
       <SettingsSectionSwitch
         label="Show my address"
         sublabel="Show my address on invoice headers"
         value={showMyAddress}
         setValue={setShowMyAddress}
+        className="inv-showMyAddress"
       />
       <SettingsSectionSwitch
         label="Show my phone"
         sublabel="Show my phone on invoice headers"
         value={showMyPhone}
         setValue={setShowMyPhone}
+        className="inv-showMyPhone"
       />
       <SettingsSectionSwitch
         label="Show my email"
         sublabel="Show my email on invoice headers"
         value={showMyEmail}
         setValue={setShowMyEmail}
+        className="inv-showMyEmail"
       />
       <SettingsSectionSwitch
         label="Show my logo"
         sublabel="Show my logo on invoice headers"
         value={showMyLogo}
         setValue={setShowMyLogo}
+        className="inv-showMyLogo"
       />
       <SettingsSectionSwitch
         label="Show my company name"
         sublabel="Show my company name on invoice headers"
         value={showMyCompanyName}
         setValue={setShowMyCompanyName}
+        className="inv-showMyCompanyName"
       />
       <SettingsSectionSwitch
         label="Show due date"
         sublabel="Show due date on invoice headers"
         value={showDueDate}
         setValue={setShowDueDate}
+        className="inv-showDueDate"
       />
       <SettingsSectionSwitch
         label="Show Tax Numbers"
         sublabel="Show tax numbers on invoice headers"
         value={showMyTaxNumbers}
         setValue={setShowMyTaxNumbers}
+        className="inv-showMyTaxNumbers"
       />
       <SettingsSectionSwitch
         label="Show client name"
         sublabel="Show client name on invoices"
         value={showClientName}
         setValue={setShowClientName}
+        className="inv-showClientInfo"
       />
       <SettingsSectionSwitch
         label="Show client address"
         sublabel="Show client address on invoices"
         value={showClientAddress}
         setValue={setShowClientAddress}
+        className="inv-showClientInfo"
       />
       <SettingsSectionSwitch
         label="Show client phone"
         sublabel="Show client phone on invoices"
         value={showClientPhone}
         setValue={setShowClientPhone}
+        className="inv-showClientInfo"
       />
       <SettingsSectionSwitch
         label="Show client email"
         sublabel="Show client email on invoices"
         value={showClientEmail}
         setValue={setShowClientEmail}
+        className="inv-showClientInfo"
       />
       <SettingsSectionSwitch
         label="Show client company name"
         sublabel="Show client company name on invoices"
         value={showClientCompanyName}
         setValue={setShowClientCompanyName}
+        className="inv-showClientInfo"
       />
       <SettingsSectionSwitch
         label="Show notes"
         sublabel="Show notes on invoices"
         value={showNotes}
         setValue={setShowNotes}
+        className="inv-showNotes"
       />
       <SettingsSection
         label="Tax Information"
         sublabel="Add your tax information to be displayed on your invoices"
+        className="enterTaxInfo"
       >
         <div className="tax-list">
           {taxNumbersList}
@@ -240,6 +257,7 @@ export default function InvoicesSettings() {
       <SettingsSection
         label="Invoice notes"
         sublabel="Add global notes that show up on all invoices"
+        className="invoiceNotes"
       >
         <AppTextarea
           value={invoiceNotes}
@@ -251,6 +269,7 @@ export default function InvoicesSettings() {
         sublabel="Show 'Thank you' message on bottom of invoice"
         value={showThankYouMessage}
         setValue={setShowThankYouMessage}
+        className="inv-showThankYou"
       />
       <SettingsSectionSwitch
         badge="Business"
@@ -259,6 +278,7 @@ export default function InvoicesSettings() {
         value={showInvoiceMeTag}
         setValue={setShowInvoiceMeTag}
         businessAccess
+        className="inv-showWatermark"
       />
       <div className="btn-group">
         <AppButton

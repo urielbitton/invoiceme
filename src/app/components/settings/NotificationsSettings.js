@@ -43,32 +43,38 @@ export default function NotificationsSettings() {
         label="Show popup notifications"
         value={showNotifications}
         setValue={setShowNotifications}
+        className="showPopUpNotifs"
       />
       <SettingsSectionSwitch
         label="Show invoices notifications"
         value={showInvoicesNotifs}
         setValue={setShowInvoicesNotifs}
+        className="showInvoiceNotifs"
       />
       <SettingsSectionSwitch
         label="Show estimates notifications"
         value={showEstimateNotifs}
         setValue={setShowEstimateNotifs}
+        className="showEstimateNotifs"
       />
       <SettingsSectionSwitch
         label="Show payments notifications"
         value={showPaymentsNotifs}
         setValue={setShowPaymentsNotifs}
+        className="showPaymentNotifs"
       />
       <SettingsSectionSwitch  
         label="Show scheduled invoices notifications"
         sublabel="Show notifications before a scheduled invoice is about to be sent and after it was sent."
         value={showScheduleNotifs}
         setValue={setShowScheduleNotifs}
+        className="showScheduledInvoiceNotifs"
       />
       <SettingsSection
         label="Show overdue invoices notifications"
         sublabel="Show notifications when an invoice is overdue by how many days?"
         flexStart
+        className="showOverdueInvoiceNotifs"
       >
         <AppSelect
           options={overdueDaysOptions}
@@ -81,6 +87,7 @@ export default function NotificationsSettings() {
         sublabel="Save a brief or full monthly reports to your profile and get notified"
         flexStart
         badge="Business"
+        className="showMonthlyReportNotifs"
       >
         <AppSelect
           options={monthlyReportOptions}

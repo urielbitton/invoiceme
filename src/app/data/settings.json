@@ -64,6 +64,86 @@
     "icon": "fas fa-file-invoice-dollar"
   },
   {
+    "label": "Invoices",
+    "sublabel": "Show my logo on invoice headers",
+    "settingID": "inv-showMyLogo",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show my company name on invoice headers",
+    "settingID": "inv-showMyCompanyName",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show due date invoice",
+    "settingID": "inv-showDueDate",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show my tax numbers on invoice headers",
+    "settingID": "inv-showMyTaxNumbers",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show client information on invoice",
+    "settingID": "inv-showClientInfo",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show notes on bottom of invoices",
+    "settingID": "inv-showNotes",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Enter my tax information for invoices",
+    "settingID": "enterTaxInfo",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Enter invoice notes",
+    "settingID": "invoiceNotes",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show thank you message on bottom of invoices",
+    "settingID": "inv-showThankYou",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
+    "sublabel": "Show invoice me watermark on bottom of invoices",
+    "settingID": "inv-showWatermark",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
     "label": "Estimates",
     "sublabel": "Show my name on estimate headers",
     "settingID": "est-showMyName",
@@ -91,6 +171,78 @@
     "label": "Estimates",
     "sublabel": "Show my email on estimate headers",
     "settingID": "est-showMyEmail",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show my logo on estimate headers",
+    "settingID": "est-showMyLogo",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show my company name on estimate headers",
+    "settingID": "est-showMyCompanyName",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show due date on estimate",
+    "settingID": "est-showDueDate",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show my tax numbers on estimate headers",
+    "settingID": "est-showMyTaxNumbers",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show client information on estimate",
+    "settingID": "est-showClientInfo",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show notes on bottom of estimates",
+    "settingID": "est-showNotes",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Enter estimate notes",
+    "settingID": "estimateNotes",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show thank you message on bottom of estimates",
+    "settingID": "est-showThankYou",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show invoice me watermark on bottom of estimates",
+    "settingID": "est-showWatermark",
     "tags": [],
     "pageURL": "/settings/estimates",
     "icon": "fas fa-file-invoice"

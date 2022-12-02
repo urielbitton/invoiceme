@@ -3,8 +3,10 @@ import React, { useContext } from 'react'
 import { AppSwitch } from "../ui/AppInputs"
 import SettingsSection from "./SettingsSection"
 
-export default function SettingsSectionSwitch({label, sublabel='', badge='', value, setValue, businessAccess=false}) {
-
+export default function SettingsSectionSwitch(props) {
+  
+  const { label, sublabel='', badge='', value, setValue, 
+    businessAccess=false, className='' } = props
   const { myMemberType } = useContext(StoreContext)
 
   const handleSwitch = (e) => {
@@ -21,6 +23,7 @@ export default function SettingsSectionSwitch({label, sublabel='', badge='', val
       label={label}
       sublabel={sublabel}
       badge={badge}
+      className={className}
     >
       <AppSwitch
         checked={value}
