@@ -53,6 +53,16 @@ export default function EmailsPage() {
     return () => setCompactNav(false)
   },[])
 
+  useEffect(() => {
+    if(location.pathname.includes('sent')) {
+      setEmailsType('sent')
+    }
+    else {
+      setEmailsType('inbox')
+    }
+    return () => setEmailsType('inbox')
+  },[location])
+
   return (
     <div className="emails-page">
       <HelmetTitle title="Emails" />

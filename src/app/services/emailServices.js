@@ -1,4 +1,4 @@
-import { getRandomDocID, setDB } from "./CrudDB"
+import { addDB, getRandomDocID, setDB } from "./CrudDB"
 
 const { functions, db } = require("app/firebase/fire")
 const { convertFilesToBase64, saveHTMLToPDFAsBlob } = require("app/utils/fileUtils")
@@ -24,7 +24,21 @@ export const sendSgEmail = (from, to, subject, html, files) => {
           ]
         })
       })
-      .then((result) => console.log({result, files}))
+      .then((result) => {
+        console.log({result, files})
+        const docID = getRandomDocID('mail')
+        return setDB('mail', docID, {
+          from,
+          to,
+          subject,
+          html,
+          files: files?.length > 0 ? files?.map(file => file?.filename || file.name) : [],
+          dateSent: new Date(),
+          emailID: docID,
+          isRead: false
+        })
+        .catch(err => console.log(err))
+      })
       .catch((error) => console.log(error))
     })
     .catch((error) => console.log(error))
@@ -45,46 +59,14 @@ export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElemen
   .catch(err => console.log(err))
 }
 
-export const sendMultipleSgEmails = (to, subject, html, files) => {
-
-}
-
-export const sendFireEmail = (from, to, subject, html) => {
-  const path = 'mail'
-  const docID = getRandomDocID(path)
-  const data = {
-    dateSent: new Date(),
-    emailID: docID,
-    isRead: false,
-    message: {
-      html,
-      subject
-    },
-    from: from,
-    to
-  }
-  return setDB(path, docID, data)
-  .catch(err => console.log(err))
-}
-
 export const sendAppEmail = (from, to, subject, message, files) => {
-  if (!files.length) {
-    return sendFireEmail(
-      from,
-      to,
-      subject,
-      message,
-    )
-  }
-  else {
-    return sendSgEmail(
-      from,
-      to,
-      subject,
-      message,
-      files.map(file => file.file)
-    )
-  }
+  return sendSgEmail(
+    from,
+    to,
+    subject,
+    message,
+    files.map(file => file.file)
+  )
 }
 
 export const getMyInboxEmails = (myEmail, setEmails, limit) => {
