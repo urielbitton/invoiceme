@@ -52,6 +52,7 @@ export default function Navbar() {
           <AppInput
             placeholder="Search"
             iconright={<i className="fal fa-search" />}
+            enterKeyHint="go"
           />
           <div 
             className="mobile-btn"

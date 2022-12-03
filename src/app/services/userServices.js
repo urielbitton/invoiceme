@@ -81,11 +81,12 @@ export const saveAccountInfoService = (userID, data, uploadedImg, contactStorage
   })
 }
 
-export const saveMyBusinessInfoService = (userID, data, uploadedImg, contactStoragePath) => {
+export const saveMyBusinessInfoService = (userID, myUser, data, uploadedImg, contactStoragePath) => {
   return uploadMultipleFilesToFireStorage(uploadedImg ? [uploadedImg.file] : null, contactStoragePath, ['photo-url'])
   .then(imgURL => {
     return updateDB('users', userID, {
       myBusiness: {
+        ...myUser.myBusiness,
         ...data,
         ...(uploadedImg && { logo: imgURL[0].downloadURL })
       }

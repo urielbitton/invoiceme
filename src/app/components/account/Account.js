@@ -1,6 +1,6 @@
 import { saveAccountInfoService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
-import { cap, upper } from "app/utils/generalUtils"
+import { validatePhone } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import { AppInput } from "../ui/AppInputs"
@@ -9,7 +9,7 @@ import CountryStateCity from "../ui/CountryStateCity"
 
 export default function Account() {
 
-  const { setPageLoading, myUser } = useContext(StoreContext)
+  const { setPageLoading, myUser, myUserID } = useContext(StoreContext)
   const [photoURL, setPhotoURL] = useState("")
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
@@ -21,9 +21,29 @@ export default function Account() {
   const [postcode, setPostcode] = useState("")
   const [uploadedProfileImg, setUploadedProfileImg] = useState(null)
 
-  const saveAccount = () => {
+  const allowSave = (firstName !== myUser?.firstName || 
+  lastName !== myUser?.lastName || 
+  phone !== myUser?.phone || 
+  address !== myUser?.address || 
+  city !== myUser?.city || 
+  region !== `${myUser?.region},${myUser?.regionCode}` || 
+  country !== `${myUser?.country},${myUser?.countryCode}` || 
+  postcode !== myUser?.postcode ||
+  uploadedProfileImg !== null) &&
+  !!(firstName && 
+    lastName && 
+    validatePhone(phone) && 
+    address && 
+    city && 
+    region && 
+    country && 
+    postcode)
+
+  const saveAccountInfo = () => {
+    if(!!!myUser) return alert('Please fill in all fields.')
+    setPageLoading(true)
     saveAccountInfoService(
-      myUser, 
+      myUserID, 
       {
         firstName,
         lastName, 
@@ -37,8 +57,17 @@ export default function Account() {
         postcode
       }, 
       uploadedProfileImg, 
-      `users/${myUser}/account`
+      `users/${myUserID}/account`
     )
+    .then(() => {
+      setPageLoading(false)
+      setUploadedProfileImg(null)
+      alert('Account info saved.')
+    })
+    .catch(err => {
+      setPageLoading(false)
+      console.log(err)
+    })
   }
 
   useEffect(() => {
@@ -62,7 +91,7 @@ export default function Account() {
         <div className="avatar-container">
         <AvatarUploader
           src={uploadedProfileImg?.src || photoURL}
-          dimensions={100}
+          dimensions={110}
           uploadedImg={uploadedProfileImg}
           setUploadedImg={setUploadedProfileImg}
           setPageLoading={setPageLoading}
@@ -96,6 +125,8 @@ export default function Account() {
         />
         <AppInput
           label="Phone"
+          type="number"
+          onKeyDown={e => (e.key === 'e' || e.key === 'E') && e.preventDefault()}
           placeholder="(123)-456-7890"
           value={phone}
           onChange={e => setPhone(e.target.value)}
@@ -124,7 +155,8 @@ export default function Account() {
       <div className="btn-group">
         <AppButton
           label="Save"
-          onClick={() => saveAccount()}
+          onClick={() => saveAccountInfo()}
+          disabled={!!!allowSave}
         />
       </div>
     </div>

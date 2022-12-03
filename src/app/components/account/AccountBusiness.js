@@ -1,4 +1,4 @@
-import { saveAccountInfoService, saveMyBusinessInfoService } from "app/services/userServices"
+import { saveMyBusinessInfoService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
@@ -8,7 +8,7 @@ import CountryStateCity from "../ui/CountryStateCity"
 
 export default function AccountBusiness() {
 
-  const { setPageLoading, myUser } = useContext(StoreContext)
+  const { setPageLoading, myUser, myUserID } = useContext(StoreContext)
   const [businessAddress, setBusinessAddress] = useState("")
   const [businessCity, setBusinessCity] = useState("")
   const [businessCountry, setBusinessCountry] = useState("")
@@ -21,11 +21,35 @@ export default function AccountBusiness() {
   const [uploadedBusinessLogo, setUploadedBusinessLogo] = useState(null)
   const myBusiness = myUser?.myBusiness
 
-  const saveAccount = () => {
+  const allowSave = (businessAddress !== myBusiness?.address ||
+  businessCity !== myBusiness?.city ||
+  businessCountry !== `${myBusiness?.country},${myBusiness?.countryCode}` ||
+  businessRegion !== `${myBusiness?.region},${myBusiness?.regionCode}` ||
+  businessLogo !== myBusiness?.logo ||
+  businessName !== myBusiness?.name ||
+  businessPhone !== myBusiness?.phone ||
+  businessPostcode !== myBusiness?.postcode ||
+  businessEmail !== myBusiness?.email ||
+  uploadedBusinessLogo !== null) &&
+  !!(businessAddress &&
+    businessCity &&
+    businessCountry &&
+    businessRegion &&
+    businessName &&
+    businessPhone &&
+    businessPostcode &&
+    businessEmail)
+
+  const saveBusinessAccountInfo = () => {
+    if(!!!allowSave) return alert('Please fill in all fields.')
+    setPageLoading(true)
     saveMyBusinessInfoService(
-      myUser, 
+      myUserID, 
+      myUser,
       {
+        name: businessName,
         phone: businessPhone,
+        email: businessEmail,
         address: businessAddress,
         city: businessCity,
         region: businessRegion.split(',')[0],
@@ -34,8 +58,17 @@ export default function AccountBusiness() {
         countryCode: businessCountry.split(',')[1],
       }, 
       uploadedBusinessLogo, 
-      `users/${myUser}/myBusiness`
+      `users/${myUserID}/myBusiness`
     )
+    .then(() => {
+      setPageLoading(false)
+      setUploadedBusinessLogo(null)
+      alert('Business info saved.')
+    })
+    .catch(err => {
+      setPageLoading(false)
+      console.log(err)
+    })
   }
 
   useEffect(() => {
@@ -59,7 +92,7 @@ export default function AccountBusiness() {
         <div className="avatar-container">
           <AvatarUploader
             src={uploadedBusinessLogo?.src || businessLogo}
-            dimensions={100}
+            dimensions={110}
             uploadedImg={uploadedBusinessLogo}
             setUploadedImg={setUploadedBusinessLogo}
             setPageLoading={setPageLoading}
@@ -88,6 +121,8 @@ export default function AccountBusiness() {
         <AppInput
           label="Business Phone"
           placeholder="(123)-456-7890"
+          type="number"
+          onKeyDown={e => (e.key === 'e' || e.key === 'E') && e.preventDefault()}
           value={businessPhone}
           onChange={e => setBusinessPhone(e.target.value)}
         />
@@ -115,7 +150,8 @@ export default function AccountBusiness() {
       <div className="btn-group">
         <AppButton
           label="Save"
-          onClick={() => saveAccount()}
+          onClick={() => saveBusinessAccountInfo()}
+          disabled={!!!allowSave}
         />
       </div>
     </div>

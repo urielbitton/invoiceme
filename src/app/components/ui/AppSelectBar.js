@@ -18,6 +18,7 @@ export default function AppSelectBar(props) {
       <div className="select-item">
         <AppInput
           placeholder={searchPlaceholder}
+          enterKeyHint="go"
           iconleft={<i className="fal fa-search" />}
           iconright={searchValue.length > 0 &&
             <i
