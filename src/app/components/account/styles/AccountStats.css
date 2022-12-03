@@ -1,4 +1,16 @@
 .account-stats {
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
+}
+.account-stats > h4 {
+  color: var(--darkGrayText);
+  font-weight: 600;
+  font-size: 15px;
+}
+.account-stats .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 15px;
 }

@@ -41,41 +41,6 @@
 .homepage .dashboard-grid .span-2 {
   grid-column: span 2;
 }
-.homepage .dashboard-grid .dashboard-section .dashbox {
-  border-radius: 10px;
-  padding: 20px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--primary);
-}
-.homepage .dashboard-grid .dashboard-section .dashbox .right-side {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-.homepage .dashboard-grid .dashboard-section .dashbox h4 {
-  color: #fff;
-  font-size: 25px;
-  font-weight: 600;
-}
-.homepage .dashboard-grid .dashboard-section .dashbox small {
-  font-weight: 600;
-  color: #fff;
-  font-size: 15px;
-}
-.homepage .dashboard-grid .dashboard-section .dashbox h6 {
-  color: #fff;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.homepage .dashboard-section .revenue-chart-actions {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
 
 .homepage .invoices-section {
   margin-top: 30px;

@@ -34,3 +34,23 @@ export const dashboxesList = (thisYearInvoices, thisMonthInvoices, thisYearEstim
   ]
   return dashboxArray
 }
+
+export const extendedStatsData = (myUser) => {
+  return [
+    {
+      name: 'Total Invoices',
+      icon: 'fas fa-file-invoice-dollar',
+      value: myUser?.invoicesNum
+    },
+    {
+      name: 'Total Estimates',
+      icon: 'fas fa-file-invoice',
+      value: myUser?.estimatesNum
+    },
+    {
+      name: 'Total Contacts',
+      icon: 'fas fa-users',
+      value: myUser?.contactsNum
+    },
+  ]
+}
