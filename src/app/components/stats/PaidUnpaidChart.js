@@ -5,7 +5,7 @@ import StatusToggler from "./StatusToggler"
 export default function PaidUnpaidChart(props) {
 
   const { paidTimeMode, setPaidTimeMode, thisYearInvoices,
-    thisMonthInvoices } = props
+    thisMonthInvoices, className='', subtitle } = props
   const paidYearInvoices = thisYearInvoices?.filter(doc => doc.isPaid)
   const unpaidYearInvoices = thisYearInvoices?.filter(doc => !doc.isPaid)
   const paidMonthInvoices = thisMonthInvoices?.filter(doc => doc.isPaid)
@@ -18,11 +18,19 @@ export default function PaidUnpaidChart(props) {
     { value: unpaidMonthInvoices?.length, name: 'Unpaid', fill: 'var(--theme4)', time: 'month' },
   ]
 
+  const paidUnpaidBarsList = [
+    {
+      dataKey: 'value',
+      fill: 'var(--primary)',
+      legendLabel: 'Invoices',
+    }
+  ]
+
   return (
     <AppBarChart
       title="Paid/Unpaid"
-      legendLabel="Invoices"
-      fill="var(--primary)"
+      subtitle={subtitle}
+      className={className}
       actions={
         <StatusToggler
           mode={paidTimeMode}
@@ -30,7 +38,9 @@ export default function PaidUnpaidChart(props) {
           hideWeek
         />
       }
+      xDataKey="name"
       data={paidUnpaidInvoicesData.filter(item => item.time === paidTimeMode)}
+      barsList={paidUnpaidBarsList}
     />
   )
 }

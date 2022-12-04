@@ -28,6 +28,12 @@
   font-weight: 600;
   color: var(--grayText);
   text-transform: capitalize;
+  display: flex;
+  flex-direction: column;
+}
+.app-chart .title-bar > h4 span {
+  color: var(--primary);
+  font-size: 14px;
 }
 
 .app-chart .area-chart .y-axis tspan,

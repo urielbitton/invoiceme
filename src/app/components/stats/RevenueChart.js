@@ -9,7 +9,7 @@ import StatusToggler from "./StatusToggler"
 export default function RevenueChart(props) {
 
   const { revenueMode, setRevenueMode, thisYearInvoices, hideStatusToggler,
-    selectedYear, selectedMonth } = props
+    selectedYear, selectedMonth, subtitle } = props
   const monthlyInvoices = splitDocsIntoMonths(thisYearInvoices, 'dateCreated')
   const weeklyInvoices = splitDocsIntoWeeksOfMonth(monthlyInvoices[monthNames[selectedMonth]], 'dateCreated')
   const dailyInvoices = splitMonthDocsIntoDays(monthlyInvoices[monthNames[selectedMonth]], 'dateCreated')
@@ -29,9 +29,16 @@ export default function RevenueChart(props) {
     revenue: weeklyInvoices[week.week]?.reduce((acc, doc) => acc + (doc.isPaid ? doc?.total : 0) || 0, 0)
   }))
 
+  const revenueCountTitle = revenueMode === 'year' ? 
+    thisYearInvoices?.length : 
+    revenueMode === 'month' ?
+      monthlyInvoices[monthNames[selectedMonth]]?.length :
+      weeklyInvoices[weeklyInvoicesArray[0]?.week]?.length
+
   return (
     <AppAreaChart
-      title={`Revenue By ${revenueMode}*`}
+      title={`Revenue By ${revenueMode} (${revenueCountTitle})`}
+      subtitle={subtitle}
       actions={!hideStatusToggler &&
         <StatusToggler
           mode={revenueMode}

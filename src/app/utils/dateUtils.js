@@ -339,7 +339,7 @@ export const dayOfMonthNumbers = () => {
 
 export const getYearsBetween = (startYear, endYear) => {
   const years = []
-  for(let i = startYear; i <= endYear; i++) {
+  for(let i = endYear; i >= startYear; i--) {
     years.push({value: i, label: i})
   }
   return years

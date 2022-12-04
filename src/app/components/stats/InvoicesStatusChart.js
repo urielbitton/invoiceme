@@ -5,7 +5,7 @@ import StatusToggler from "./StatusToggler"
 export default function InvoicesStatusChart(props) {
 
   const { statusesTimeMode, setStatusesTimeMode, 
-    thisYearInvoices, thisMonthInvoices } = props
+    thisYearInvoices, thisMonthInvoices, subtitle } = props
   const paidYearInvoices = thisYearInvoices?.filter(doc => doc.isPaid)
   const unpaidYearInvoices = thisYearInvoices?.filter(doc => !doc.isPaid)
   const paidMonthInvoices = thisMonthInvoices?.filter(doc => doc.isPaid)
@@ -29,6 +29,7 @@ export default function InvoicesStatusChart(props) {
   return (
     <AppPieChart
       title="Invoice Statuses"
+      subtitle={subtitle}
       actions={
         <StatusToggler
           mode={statusesTimeMode}

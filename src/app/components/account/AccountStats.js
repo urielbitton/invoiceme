@@ -1,16 +1,17 @@
 import { monthSelectOptions } from "app/data/general"
 import { extendedStatsData } from "app/data/statsData"
 import { useInvoiceYearOptions } from "app/hooks/invoiceHooks"
-import { useCurrentMonthInvoices, useCurrentYearInvoices } from "app/hooks/statsHooks"
+import { useCurrentMonthInvoices, useCurrentYearContacts, 
+  useCurrentYearEstimates, useCurrentYearInvoices } from "app/hooks/statsHooks"
 import { StoreContext } from "app/store/store"
 import { monthNames } from "app/utils/dateUtils"
 import React, { useContext, useState } from 'react'
 import Dashbox from "../stats/Dashbox"
+import InvEstConChart from "../stats/InvEstConChart"
 import InvoicesStatusChart from "../stats/InvoicesStatusChart"
 import PaidUnpaidChart from "../stats/PaidUnpaidChart"
 import RevenueChart from "../stats/RevenueChart"
 import AppButton from "../ui/AppButton"
-import { AppScatterChart } from "../ui/AppChart"
 import { AppSelect } from "../ui/AppInputs"
 import './styles/AccountStats.css'
 
@@ -26,9 +27,12 @@ export default function AccountStats() {
   const [revenueMode, setRevenueMode] = useState('month')
   const [paidTimeMode, setPaidTimeMode] = useState('month')
   const [statusesTimeMode, setStatusesTimeMode] = useState('month')
+  const [allItemsMode, setAllItemsMode] = useState('month')
   const yearOptions = useInvoiceYearOptions()
-  const thisYearInvoices = useCurrentYearInvoices(selectedYear)
-  const thisMonthInvoices = useCurrentMonthInvoices(activeDate)
+  const activeYearInvoices = useCurrentYearInvoices(activeYear)
+  const activeYearEstimates = useCurrentYearEstimates(activeYear)
+  const activeYearContacts = useCurrentYearContacts(activeYear)
+  const activeMonthInvoices = useCurrentMonthInvoices(activeDate)
 
   const extendedStatsList = extendedStatsData(myUser)?.map((stat, index) => {
     return <Dashbox
@@ -74,26 +78,37 @@ export default function AccountStats() {
         <RevenueChart
           revenueMode={revenueMode}
           setRevenueMode={setRevenueMode}
-          thisYearInvoices={thisYearInvoices}
+          thisYearInvoices={activeYearInvoices}
           selectedYear={activeYear}
           selectedMonth={activeMonth}
-          setSelectedYear={setSelectedYear}
-          hideStatusToggler
+          subtitle={revenueMode === 'month' ? `${monthNames[activeMonth]} ${activeYear}` : activeYear }
         />
         <PaidUnpaidChart
           paidTimeMode={paidTimeMode}
           setPaidTimeMode={setPaidTimeMode}
-          thisYearInvoices={thisYearInvoices}
-          thisMonthInvoices={thisMonthInvoices}
+          thisYearInvoices={activeYearInvoices}
+          thisMonthInvoices={activeMonthInvoices}
+          className="paid-unpaid-chart"
+          subtitle={paidTimeMode === 'month' ? `${monthNames[activeMonth]} ${activeYear}` : activeYear }
         />
         <InvoicesStatusChart
           statusesTimeMode={statusesTimeMode}
           setStatusesTimeMode={setStatusesTimeMode}
-          thisYearInvoices={thisYearInvoices}
-          thisMonthInvoices={thisMonthInvoices}
+          thisYearInvoices={activeYearInvoices}
+          thisMonthInvoices={activeMonthInvoices}
+          subtitle={statusesTimeMode === 'month' ? `${monthNames[activeMonth]} ${activeYear}` : activeYear }
         />
-        <AppScatterChart
-          title="Top Contact Invoices"
+        <InvEstConChart
+          mode={allItemsMode}
+          setMode={setAllItemsMode}
+          className="all-items-chart"
+          selectedYear={selectedYear}
+          selectedMonth={selectedMonth}
+          setSelectedYear={setSelectedYear}
+          thisYearInvoices={activeYearInvoices}
+          thisYearEstimates={activeYearEstimates}
+          thisYearContacts={activeYearContacts}
+          subtitle={allItemsMode === 'month' ? `${monthNames[activeMonth]} ${activeYear}` : activeYear }
         />
       </div>
     </div>

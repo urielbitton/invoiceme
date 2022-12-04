@@ -26,18 +26,20 @@ import './styles/Homepage.css'
 export default function HomePage() {
 
   const { setCompactNav, myUser, myUserID } = useContext(StoreContext)
+  const date = new Date()
   const [revenueMode, setRevenueMode] = useState('year')
   const [recentsView, setRecentsView] = useState('invoices')
   const [paidTimeMode, setPaidTimeMode] = useState('year')
   const [statusesTimeMode, setStatusesTimeMode] = useState('year')
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
+  const [selectedYear, setSelectedYear] = useState(date.getFullYear())
+  const [selectedMonth, setSelectedMonth] = useState(date.getMonth())
+  const [activeDate, setActiveDate] = useState(new Date(date.getFullYear(), date.getMonth(), 1))
+  const thisMonthInvoices = useCurrentMonthInvoices(activeDate)
+  const thisMonthEstimates = useCurrentMonthEstimates(activeDate)
+  const thisMonthContacts = useCurrentMonthContacts(activeDate)
   const thisYearInvoices = useCurrentYearInvoices(selectedYear)
-  const thisMonthInvoices = useCurrentMonthInvoices(new Date())
   const thisYearEstimates = useCurrentYearEstimates(selectedYear)
-  const thisMonthEstimates = useCurrentMonthEstimates(new Date())
   const thisYearContacts = useCurrentYearContacts(selectedYear)
-  const thisMonthContacts = useCurrentMonthContacts(new Date())
   const dbInvoices = useInvoices(myUserID, 5)
   const dbEstimates = useEstimates(myUserID, 5)
   const dbContacts = useContacts(myUserID, 5)
@@ -74,9 +76,8 @@ export default function HomePage() {
           <RevenueChart
             revenueMode={revenueMode}
             setRevenueMode={setRevenueMode}
-            selectedYear
+            selectedYear={selectedYear}
             selectedMonth={selectedMonth}
-            setSelectedYear={setSelectedYear}
             thisYearInvoices={thisYearInvoices}
           />
         </div>

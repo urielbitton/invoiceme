@@ -39,7 +39,7 @@ export const useCurrentMonthEstimates = (date) => {
   useEffect(() => {
     if(myUserID)
       getCurrentMonthEstimates(myUserID, date, setEstimates)
-  }, [myUserID])
+  }, [myUserID, date])
 
   return estimates
 }
@@ -65,7 +65,7 @@ export const useCurrentMonthContacts = (date) => {
   useEffect(() => {
     if(myUserID)
       getCurrentMonthContacts(myUserID, date, setContacts)
-  }, [myUserID])
+  }, [myUserID, date])
 
   return contacts
 }
