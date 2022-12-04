@@ -6,9 +6,9 @@ import noResultsImg from 'app/assets/images/no-results.png'
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import AppButton from "app/components/ui/AppButton"
 import ContactsList from "app/components/contacts/ContactsList"
-import { monthSelectOptions, yearSelectOptions } from "app/data/general"
+import { monthSelectOptions } from "app/data/general"
 import { useCurrentMonthContacts } from "app/hooks/statsHooks"
-import { useYearMonthOrAllContacts } from "app/hooks/contactsHooks"
+import { useContactYearOptions, useYearMonthOrAllContacts } from "app/hooks/contactsHooks"
 
 export default function ContactsPage() {
 
@@ -26,6 +26,7 @@ export default function ContactsPage() {
   const [contactsLimit, setContactsLimit] = useState(limitsNum)
   const dbContacts = useYearMonthOrAllContacts(myUserID, selectedYear, selectedMonth, contactsLimit)
   const thisMonthContacts = useCurrentMonthContacts(new Date())
+  const yearSelectOptions = useContactYearOptions()
   const filters = `ownerID:${myUserID}`
   const showAll = false
 

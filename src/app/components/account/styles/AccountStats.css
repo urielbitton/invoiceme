@@ -8,9 +8,46 @@
   font-weight: 600;
   font-size: 15px;
 }
+
 .account-stats .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
-  margin-top: 15px;
+  margin: 15px 0;
+}
+
+.account-stats .toolbar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 10px 0;
+}
+.account-stats .toolbar .appSelect {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.account-stats .toolbar .appSelect h6 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+  white-space: nowrap;
+}
+
+.account-stats > h3 {
+  color: var(--primary);
+  margin: 10px 0;
+}
+.account-stats .charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+.account-stats .charts-grid .app-area-chart {
+  grid-column: 1/-1;
+}
+.account-stats .charts-grid .app-bar-chart,
+.account-stats .charts-grid .app-pie-chart {
+  grid-column: span 2;
 }

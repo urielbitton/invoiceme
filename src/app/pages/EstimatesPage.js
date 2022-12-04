@@ -5,10 +5,10 @@ import './styles/InvoicesPage.css'
 import noResultsImg from 'app/assets/images/no-results.png'
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import AppButton from "app/components/ui/AppButton"
-import { useYearMonthOrAllEstimates } from "app/hooks/estimateHooks"
+import { useEstimateYearOptions, useYearMonthOrAllEstimates } from "app/hooks/estimateHooks"
 import EstimatesList from "app/components/estimates/EstimatesList"
 import { useCurrentMonthEstimates } from "app/hooks/statsHooks"
-import { monthSelectOptions, yearSelectOptions } from "app/data/general"
+import { monthSelectOptions } from "app/data/general"
 
 export default function EstimatesPage() {
 
@@ -26,6 +26,7 @@ export default function EstimatesPage() {
   const [estimatesLimit, setEstimatesLimit] = useState(limitsNum)
   const dbEstimates = useYearMonthOrAllEstimates(myUserID, selectedYear, selectedMonth, estimatesLimit)
   const thisMonthEstimates = useCurrentMonthEstimates(new Date())
+  const yearSelectOptions = useEstimateYearOptions()
   const filters = `estimateOwnerID:${myUserID}`
   const showAll = false
 

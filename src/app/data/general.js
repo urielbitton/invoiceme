@@ -33,13 +33,6 @@ export const recentsListOptions = [
   },
 ]
 
-export const yearSelectOptions = [
-  { value: 'all', label: 'All' },
-  { value: 2022, label: '2022' },
-  { value: 2021, label: '2021' },
-  //get oldest invoice from user and set its date created as the oldest year
-]
-
 export const monthSelectOptions = [
   { label: 'All', value: 'all' },
   { label: 'January', value: 0 },

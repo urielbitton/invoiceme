@@ -1,7 +1,8 @@
 import { getEstimateByID, getEstimatesByContactEmail, 
-  getEstimatesByUserID, getYearAndMonthEstimatesByUserID, 
+  getEstimatesByUserID, getEstimateYearOptions, getYearAndMonthEstimatesByUserID, 
   getYearEstimatesByUserID } from "app/services/estimatesServices"
-import { useEffect, useState } from "react"
+import { StoreContext } from "app/store/store"
+import { useContext, useEffect, useState } from "react"
 
 export const useEstimates = (userID, limit) => {
 
@@ -56,4 +57,16 @@ export const useContactEstimates = (userID, contactEmail) => {
   }, [userID, contactEmail])
 
   return estimates
+}
+
+export const useEstimateYearOptions = () => {
+
+  const { myUserID } = useContext(StoreContext)
+  const [options, setOptions] = useState([])
+
+  useEffect(() => {
+    getEstimateYearOptions(myUserID, setOptions)
+  }, [myUserID])
+
+  return options
 }

@@ -1,6 +1,7 @@
 import { db } from "app/firebase/fire"
 import { convertInputDateToDateAndTimeFormat, 
-  dateToMonthName } from "app/utils/dateUtils"
+  dateToMonthName, 
+  getYearsBetween} from "app/utils/dateUtils"
 import { deleteDB, firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
 import { sendHtmlToEmailAsPDF } from "./emailServices"
 import { createNotification } from "./notifServices"
@@ -74,6 +75,25 @@ export const getScheduledInvoicesByUserID = (userID, setInvoices) => {
   .orderBy('dateCreated', 'desc')
   .onSnapshot(snapshot => {
     setInvoices(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
+export const getEarliestYearInvoice = (userID) => {
+  return db.collection('users')
+  .doc(userID)
+  .collection('invoices')
+  .orderBy('dateCreated', 'asc')
+  .limit(1)
+  .get()
+  .then(snap => {
+    return snap.docs[0]?.data()?.dateCreated?.toDate()?.getFullYear()
+  })
+}
+
+export const getInvoiceYearOptions = (userID, setOptions) => {
+  return getEarliestYearInvoice(userID)
+  .then((year) => {
+    setOptions(getYearsBetween(year, new Date().getFullYear()))
   })
 }
 
@@ -185,3 +205,4 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
       .catch(err => catchError(err, setLoading))
     }
 }
+

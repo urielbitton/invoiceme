@@ -1,6 +1,7 @@
 import { db } from "app/firebase/fire"
 import { convertInputDateToDateAndTimeFormat, 
-  dateToMonthName } from "app/utils/dateUtils"
+  dateToMonthName, 
+  getYearsBetween} from "app/utils/dateUtils"
 import { deleteDB, firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
 import { sendHtmlToEmailAsPDF } from "./emailServices"
 import { createNotification } from "./notifServices"
@@ -65,6 +66,25 @@ export const getEstimatesByContactEmail = (userID, email, setEstimates) => {
   .orderBy('dateCreated', 'desc')
   .onSnapshot(snapshot => {
     setEstimates(snapshot.docs.map(doc => doc.data()))
+  })
+}
+
+export const getEarliestYearEstimate = (userID) => {
+  return db.collection('users')
+  .doc(userID)
+  .collection('estimates')
+  .orderBy('dateCreated', 'asc')
+  .limit(1)
+  .get()
+  .then(snap => {
+    return snap.docs[0]?.data()?.dateCreated?.toDate()?.getFullYear()
+  })
+}
+
+export const getEstimateYearOptions = (userID, setOptions) => {
+  return getEarliestYearEstimate(userID)
+  .then((year) => {
+    setOptions(getYearsBetween(year, new Date().getFullYear()))
   })
 }
 

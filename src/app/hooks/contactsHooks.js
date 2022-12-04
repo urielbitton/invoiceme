@@ -1,8 +1,10 @@
 import { getContactByID, getContactsByUserID, 
+  getContactYearOptions, 
   getFavoriteContactsByUserID, 
   getYearAndMonthContactsByUserID, 
   getYearContactsByUserID} from "app/services/contactsServices"
-import { useEffect, useState } from "react"
+import { StoreContext } from "app/store/store"
+import { useContext, useEffect, useState } from "react"
 
 export const useContacts = (userID, limit) => {
   
@@ -59,4 +61,16 @@ export const useFavoriteContacts = (userID) => {
   }, [userID])
 
   return contacts
+}
+
+export const useContactYearOptions = () => {
+
+  const { myUserID } = useContext(StoreContext)
+  const [options, setOptions] = useState([])
+
+  useEffect(() => {
+    getContactYearOptions(myUserID, setOptions)
+  }, [myUserID])
+
+  return options
 }

@@ -94,3 +94,4 @@ export const saveMyBusinessInfoService = (userID, myUser, data, uploadedImg, con
     .catch(err => console.log(err))
   })
 }
+

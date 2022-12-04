@@ -1,5 +1,5 @@
-import { dateToMonthName, getNameDayOfTheWeekFromDate, 
-  shortAndLongMonthNames, splitDocsIntoMonths, 
+import { getNameDayOfTheWeekFromDate, monthNames, 
+  shortAndLongMonthNames, shortMonthNames, splitDocsIntoMonths, 
   splitDocsIntoWeeksOfMonth, splitMonthDocsIntoDays } from "app/utils/dateUtils"
 import { formatCurrency, objectToArray, sortArrayByProperty } from "app/utils/generalUtils"
 import React from 'react'
@@ -8,10 +8,11 @@ import StatusToggler from "./StatusToggler"
 
 export default function RevenueChart(props) {
 
-  const { revenueMode, setRevenueMode, thisYearInvoices } = props
+  const { revenueMode, setRevenueMode, thisYearInvoices, hideStatusToggler,
+    selectedYear, selectedMonth } = props
   const monthlyInvoices = splitDocsIntoMonths(thisYearInvoices, 'dateCreated')
-  const weeklyInvoices = splitDocsIntoWeeksOfMonth(monthlyInvoices[dateToMonthName(new Date())], 'dateCreated')
-  const dailyInvoices = splitMonthDocsIntoDays(monthlyInvoices[dateToMonthName(new Date())], 'dateCreated')
+  const weeklyInvoices = splitDocsIntoWeeksOfMonth(monthlyInvoices[monthNames[selectedMonth]], 'dateCreated')
+  const dailyInvoices = splitMonthDocsIntoDays(monthlyInvoices[monthNames[selectedMonth]], 'dateCreated')
   const dailyInvoicesArray = objectToArray(dailyInvoices, 'day')
   const weeklyInvoicesArray = sortArrayByProperty(objectToArray(weeklyInvoices, 'week'), 'week', 'desc')
 
@@ -31,7 +32,7 @@ export default function RevenueChart(props) {
   return (
     <AppAreaChart
       title={`Revenue By ${revenueMode}*`}
-      actions={
+      actions={!hideStatusToggler &&
         <StatusToggler
           mode={revenueMode}
           setMode={setRevenueMode}
@@ -51,8 +52,8 @@ export default function RevenueChart(props) {
       tooltipLabelFormat={(name, value) => {
         return revenueMode === 'year' ? value[0]?.payload?.longName + ' ' + new Date().getFullYear() :
           revenueMode === 'month' ?
-            getNameDayOfTheWeekFromDate(new Date(new Date().getFullYear(), new Date().getMonth(), value[0]?.payload?.day)) + 
-            ', ' + dateToMonthName(new Date(), 'short') + ' ' + value[0]?.payload?.day + ' ' :
+            getNameDayOfTheWeekFromDate(new Date(selectedYear, selectedMonth, value[0]?.payload?.day)) + 
+            ', ' + shortMonthNames[selectedMonth] + ' ' + value[0]?.payload?.day + ' ' :
             value[0]?.payload?.week
       }}
       tooltipFormat={(name) => `$${formatCurrency(name)}`}

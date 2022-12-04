@@ -6,6 +6,7 @@ import InvoicesCountChart from "app/components/stats/InvoicesCountChart"
 import InvoicesStatusChart from "app/components/stats/InvoicesStatusChart"
 import PaidUnpaidChart from "app/components/stats/PaidUnpaidChart"
 import RevenueChart from "app/components/stats/RevenueChart"
+import AppButton from "app/components/ui/AppButton"
 import { AppSelect } from "app/components/ui/AppInputs"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
@@ -30,6 +31,7 @@ export default function HomePage() {
   const [paidTimeMode, setPaidTimeMode] = useState('year')
   const [statusesTimeMode, setStatusesTimeMode] = useState('year')
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
   const thisYearInvoices = useCurrentYearInvoices(selectedYear)
   const thisMonthInvoices = useCurrentMonthInvoices(new Date())
   const thisYearEstimates = useCurrentYearEstimates(selectedYear)
@@ -45,12 +47,6 @@ export default function HomePage() {
     thisYearEstimates, thisMonthEstimates, 
     thisYearContacts, thisMonthContacts
   )
-
-  const yearSelectOptions = [
-    { label: '2022', value: 2022 },
-    { label: '2021', value: 2021 },
-    { label: '2020', value: 2020 },
-  ]
 
   const dashboxList = dashboxArray?.map((dashbox, index) => {
     return <Dashbox
@@ -69,16 +65,6 @@ export default function HomePage() {
       <HelmetTitle />
       <PageTitleBar
         subtitle={<>{displayGreeting()}, <span>{myUser?.firstName}</span></>}
-        rightComponent={
-          <div className="year-selector">
-            <h5>View Year:</h5>
-            <AppSelect
-              options={yearSelectOptions}
-              value={selectedYear}
-              onChange={e => setSelectedYear(e.target.value)}
-            />
-          </div>
-        }
       />
       <div className="dashboard-grid">
         <div className="dashboard-section full-width">
@@ -88,6 +74,8 @@ export default function HomePage() {
           <RevenueChart
             revenueMode={revenueMode}
             setRevenueMode={setRevenueMode}
+            selectedYear
+            selectedMonth={selectedMonth}
             setSelectedYear={setSelectedYear}
             thisYearInvoices={thisYearInvoices}
           />
@@ -111,6 +99,13 @@ export default function HomePage() {
             setStatusesTimeMode={setStatusesTimeMode}
             thisYearInvoices={thisYearInvoices}
             thisMonthInvoices={thisMonthInvoices}
+          />
+        </div>
+        <div className="more-stats">
+          <AppButton
+            label="More Stats"
+            url="/my-account/extended-stats"
+            rightIcon="fal fa-chart-bar"
           />
         </div>
         <div className="invoices-section full-width">

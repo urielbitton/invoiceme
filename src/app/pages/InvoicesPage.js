@@ -4,10 +4,10 @@ import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
 import './styles/InvoicesPage.css'
 import noResultsImg from 'app/assets/images/no-results.png'
-import { useYearMonthOrAllInvoices } from "app/hooks/invoiceHooks"
+import { useInvoiceYearOptions, useYearMonthOrAllInvoices } from "app/hooks/invoiceHooks"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import AppButton from "app/components/ui/AppButton"
-import { monthSelectOptions, yearSelectOptions } from "app/data/general"
+import { monthSelectOptions } from "app/data/general"
 import { useCurrentMonthInvoices } from "app/hooks/statsHooks"
 
 export default function InvoicesPage() {
@@ -27,6 +27,7 @@ export default function InvoicesPage() {
   const [invoicesLimit, setInvoicesLimit] = useState(limitsNum)
   const dbInvoices = useYearMonthOrAllInvoices(myUserID, selectedYear, selectedMonth, invoicesLimit)
   const thisMonthInvoices = useCurrentMonthInvoices(new Date())
+  const yearSelectOptions = useInvoiceYearOptions()
   const filters = `invoiceOwnerID:${myUserID}`
   const showAll = false
 

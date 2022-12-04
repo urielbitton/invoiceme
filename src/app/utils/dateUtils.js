@@ -120,6 +120,11 @@ export const monthNames = [
   'August', 'September', 'October', 'November', 'December'
 ]
 
+export const shortMonthNames = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
+  'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+]
+
 export const shortAndLongMonthNames = [
   { shortName: 'Jan', longName: 'January' },
   { shortName: 'Feb', longName: 'February' },
@@ -330,4 +335,12 @@ export const dayOfMonthNumbers = () => {
     options.push({value: i, label: i})
   }
   return options
+}
+
+export const getYearsBetween = (startYear, endYear) => {
+  const years = []
+  for(let i = startYear; i <= endYear; i++) {
+    years.push({value: i, label: i})
+  }
+  return years
 }

@@ -13,7 +13,7 @@ export const useCurrentMonthInvoices = (date) => {
   useEffect(() => {
     if(myUserID)
       getCurrentMonthInvoices(myUserID, date, setInvoices)
-  }, [myUserID])
+  }, [myUserID, date])
 
   return invoices
 }

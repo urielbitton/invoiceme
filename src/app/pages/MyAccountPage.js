@@ -40,15 +40,15 @@ export default function MyAccountPage() {
         >
           Business
         </NavLink>
-        <NavLink to="stats">
-          Stats
+        <NavLink to="extended-stats">
+          Extended Stats
         </NavLink>
       </AppTabsBar>
       <div className="account-page-routes">
         <Routes>
           <Route path="" element={<Account />} />
           <Route path="business" element={<AccountBusiness />} />
-          <Route path="stats" element={<AccountStats />} />
+          <Route path="extended-stats" element={<AccountStats />} />
         </Routes>
       </div>
     </div>

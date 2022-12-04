@@ -1,4 +1,5 @@
 import { db, functions } from "app/firebase/fire"
+import { getYearsBetween } from "app/utils/dateUtils"
 import { deleteDB, firebaseIncrement, getRandomDocID, 
   setDB, updateDB } from "./CrudDB"
 import { deleteMultipleStorageFiles } from "./storageServices"
@@ -63,6 +64,25 @@ export const getFavoriteContactsByUserID = (userID, setContacts) => {
   .orderBy('dateCreated', 'desc')
   .onSnapshot((snapshot) => {
     setContacts(snapshot.docs.map((doc) => doc.data()))
+  })
+}
+
+export const getEarliestYearContact = (userID) => {
+  return db.collection('users')
+  .doc(userID)
+  .collection('contacts')
+  .orderBy('dateCreated', 'asc')
+  .limit(1)
+  .get()
+  .then(snap => {
+    return snap.docs[0]?.data()?.dateCreated?.toDate()?.getFullYear()
+  })
+}
+
+export const getContactYearOptions = (userID, setOptions) => {
+  return getEarliestYearContact(userID)
+  .then((year) => {
+    setOptions(getYearsBetween(year, new Date().getFullYear()))
   })
 }
 
