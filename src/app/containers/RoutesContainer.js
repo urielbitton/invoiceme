@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import './styles/RoutesContainer.css'
 import ErrorPage from "app/pages/ErrorPage"
 import HomePage from 'app/pages/HomePage'
 import { StoreContext } from "app/store/store"
-import { Routes, Route } from "react-router"
+import { Routes, Route, useLocation } from "react-router"
 import InvoicesPage from "app/pages/InvoicesPage"
 import EstimatesPage from "app/pages/EstimatesPage"
 import ContactsPage from "app/pages/ContactsPage"
@@ -25,9 +25,17 @@ import HelpAndContact from "app/pages/HelpAndContact"
 export default function RoutesContainer() {
 
   const { compactNav } = useContext(StoreContext)
+  const windowRef = useRef(null)
+  const location = useLocation()
+
+  useEffect(() => {
+    if (windowRef.current) {
+      windowRef.current.scrollTop = 0
+    }
+  },[location])
 
   return (
-    <div className={`routes-container ${compactNav ? 'compact' : ''}`}>
+    <div className={`routes-container ${compactNav ? 'compact' : ''}`} ref={windowRef}>
       <Routes>
         <Route index element={<HomePage />} />
         <Route path="invoices" element={<InvoicesPage />} />

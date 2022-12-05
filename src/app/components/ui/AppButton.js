@@ -21,6 +21,7 @@ export default function AppButton(props) {
         buttonType === 'invertedBtn' ? 'invertedBtn' :
         buttonType === 'white' ? 'white' :
         buttonType === 'tabBtn' ? 'tabBtn' :
+        buttonType === 'tabBlueBtn' ? 'tabBlueBtn' :
         'primaryBtn'
       }
       ${disabled ? 'disabled' : ''}

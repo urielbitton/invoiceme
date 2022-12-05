@@ -1,5 +1,6 @@
-import { db } from "app/firebase/fire"
+import { db, functions } from "app/firebase/fire"
 import { updateDB } from "./CrudDB"
+import { createNotification } from "./notifServices"
 import { uploadMultipleFilesToFireStorage } from "./storageServices"
 
 export const getUserByID = (userID, setUser) => {
@@ -95,3 +96,31 @@ export const saveMyBusinessInfoService = (userID, myUser, data, uploadedImg, con
   })
 }
 
+export const createStripeAccountService = (data) => {
+  return functions.httpsCallable('createStripeAccount')(data)
+  .then(result => {
+    return updateDB('users', data.metadata.userID, {
+      stripeCustomerID: result.data.id
+    })
+    .then(() => {
+      createNotification(
+        data.metadata.userID,
+        'Stripe Account Connected',
+        `Your Stripe account has been connected successfully.`,
+        'fab fa-stripe-s',
+        `/settings/payments`
+      )
+      return result
+    })
+    .catch(err => console.log(err))
+  })
+  .catch(err => console.log(err))
+}
+
+export const retrieveStripeAccountService = (customerID) => {
+  return functions.httpsCallable('retrieveStripeAccount')({customerID})
+  .then(result => {
+    return result
+  })
+  .catch(err => console.log(err))
+}

@@ -4,6 +4,8 @@ const firebase = require("firebase-admin")
 firebase.initializeApp()
 const firestore = firebase.firestore()
 const sgMail = require('@sendgrid/mail')
+// @ts-ignore
+const stripe = require('stripe')('sk_test_51M9uofAp3OtccpN9BHYvw5vnFUiWFPFljepU3FB2RQ2z7udZYeGmiNHE1PiZ01eXZk9FaOZNKGHEXKd9NFUpsGsg00Y8wW8uM8')
 
 const APP_ID = functions.config().algolia.app
 const API_KEY = functions.config().algolia.key
@@ -124,6 +126,20 @@ exports.sendSMS = functions
       .then(message => console.log(message.sid))
       .catch(err => console.log(err))
   })
+
+
+//Stripe calls
+exports.createStripeAccount = functions
+.https.onCall(async(data, context) => {
+  const customer = await stripe.customers.create(data)
+  return customer
+})
+
+exports.retrieveStripeAccount = functions
+.https.onCall(async(data, context) => {
+  const customer = await stripe.customers.retrieve(data.customerID)
+  return customer
+})
 
 
 //Scheduled functions
@@ -391,3 +407,4 @@ exports.runScheduledInvoices6pm = functions.pubsub
           })
       })
   })
+

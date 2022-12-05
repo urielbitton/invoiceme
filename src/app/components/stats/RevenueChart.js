@@ -29,15 +29,9 @@ export default function RevenueChart(props) {
     revenue: weeklyInvoices[week.week]?.reduce((acc, doc) => acc + (doc.isPaid ? doc?.total : 0) || 0, 0)
   }))
 
-  const revenueCountTitle = revenueMode === 'year' ? 
-    thisYearInvoices?.length : 
-    revenueMode === 'month' ?
-      monthlyInvoices[monthNames[selectedMonth]]?.length :
-      weeklyInvoices[weeklyInvoicesArray[0]?.week]?.length
-
   return (
     <AppAreaChart
-      title={`Revenue By ${revenueMode} (${revenueCountTitle})`}
+      title={`Revenue this ${revenueMode}`}
       subtitle={subtitle}
       actions={!hideStatusToggler &&
         <StatusToggler
@@ -60,7 +54,7 @@ export default function RevenueChart(props) {
         return revenueMode === 'year' ? value[0]?.payload?.longName + ' ' + new Date().getFullYear() :
           revenueMode === 'month' ?
           getNameDayOfTheWeekFromDate(new Date(selectedYear, selectedMonth, value[0]?.payload?.day.slice(4))) +
-          ' ' + value[0]?.payload?.day :
+          ', ' + value[0]?.payload?.day :
             value[0]?.payload?.week
       }}
       tooltipFormat={(name) => `$${formatCurrency(name)}`}

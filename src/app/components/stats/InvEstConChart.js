@@ -82,7 +82,7 @@ export default function InvEstConChart(props) {
         return mode === 'year' ? value[0]?.payload?.longName + ' ' + new Date().getFullYear() :
         mode === 'month' ?
           getNameDayOfTheWeekFromDate(new Date(selectedYear, selectedMonth, value[0]?.payload?.day.slice(4))) +
-          ' ' + value[0]?.payload?.day :
+          ', ' + value[0]?.payload?.day :
           value[0]?.payload?.week
       }}
     />

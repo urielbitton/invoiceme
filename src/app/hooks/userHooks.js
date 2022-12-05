@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { doGetUserByID, getUserByID, 
   getUserContactSettingsByID, 
-  getUserEstimateSettingsByID, getUserInvoiceSettingsByID } from "app/services/userServices"
+  getUserEstimateSettingsByID, getUserInvoiceSettingsByID, retrieveStripeAccountService } from "app/services/userServices"
 
 export default function useUser(userID) {
 
@@ -69,4 +69,20 @@ export const useUserContactSettings = (userID) => {
   },[userID])
 
   return userSettings
+}
+
+export const useRetrieveStripeCustomer = (customerID) => {
+
+  const [stripeCustomer, setStripeCustomer] = useState(null)
+
+  useEffect(() => {
+    if(customerID) {
+      retrieveStripeAccountService(customerID)
+      .then((result) => {
+        setStripeCustomer(result)
+      })
+    }
+  },[customerID])
+
+  return stripeCustomer
 }

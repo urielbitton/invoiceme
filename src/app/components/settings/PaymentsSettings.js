@@ -1,3 +1,4 @@
+import { createStripeAccountService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
 import AppButton from "../ui/AppButton"
@@ -6,8 +7,32 @@ import SettingsTitles from "./SettingsTitles"
 
 export default function PaymentsSettings() {
 
-  const { myMemberType } = useContext(StoreContext)
+  const { myMemberType, myUser, myUserName, myUserID,
+    setPageLoading } = useContext(StoreContext)
   const isBusiness = myMemberType === "business"
+
+  const connectStripe = () => {
+    setPageLoading(true)
+    const userData = {
+      name: myUserName,
+      email: myUser.email,
+      phone: myUser.phone,
+      metadata: {
+        userID: myUserID,
+        address: myUser.address,
+      }
+    }
+    createStripeAccountService(userData)
+    .then((res) => {
+      alert("Stripe account connected successfully.")
+      console.log(res)
+      setPageLoading(false)
+    })
+    .catch(err => {
+      console.log(err)
+      setPageLoading(false)
+    })
+  }
 
   return (
     <div className="settings-sub-page">
@@ -23,11 +48,14 @@ export default function PaymentsSettings() {
         flexStart
       >
         <AppButton
-          label="Connect Stripe"
-          buttonType="outlineBlueBtn"
+          label={myUser?.stripeCustomerID  ? "Stripe connected" : "Connect Stripe"}
+          buttonType={!myUser?.stripeCustomerID ? "outlineBlueBtn" : 'primary'}
           leftIcon="fab fa-stripe-s"
           onClick={() => {
-            isBusiness ? window.open('https://stripe.com', '_blank') :
+            isBusiness ? 
+            myUser?.stripeCustomerID ?
+            alert('Stripe account already connected.') :
+            connectStripe() :
             alert("You must be a business member to access this feature.")
           }}
         />
@@ -38,13 +66,27 @@ export default function PaymentsSettings() {
         flexStart
       >
         <AppButton
-          label="Connect PayPal"
-          buttonType="outlineBlueBtn"
+          label={myUser?.paypalEmail ? "PayPal connected" : "Connect PayPal"}
+          buttonType={!myUser?.paypalEmail ? "outlineBlueBtn" : 'primary'}
           leftIcon="fab fa-paypal"
           onClick={() => {
-            isBusiness ? window.open('https://paypal.com', '_blank') :
+            isBusiness ? 
+            myUser?.paypalEmail ?
+            alert('PayPal account already connected.') :
+            window.open('https://paypal.com', '_blank') :
             alert("You must be a business member to access this feature.")
           }}
+        />
+      </SettingsSection>
+      <SettingsSection
+        label="Account Payments"
+        sublabel="View and manage your account payments."
+        flexStart
+      >
+        <AppButton
+          label="Account Payments"
+          leftIcon="fas fa-credit-card"
+          url="/my-account/payments"
         />
       </SettingsSection>
     </div>

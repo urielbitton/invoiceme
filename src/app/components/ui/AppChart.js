@@ -43,11 +43,11 @@ export function AppBarChart(props) {
           <XAxis dataKey={xDataKey} />
           <YAxis />
           <Legend />
-          {barsListRender}
           <Tooltip
             labelFormatter={tooltipLabelFormat}
             formatter={tooltipFormat}
-          />
+            />
+          {barsListRender}
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -91,11 +91,11 @@ export function AppAreaChart(props) {
             style={xAxisStyles}
           />
           <YAxis style={yAxisStyles} />
-          {areasRender}
           <Tooltip
             labelFormatter={tooltipLabelFormat}
             formatter={tooltipFormat}
-          />
+            />
+          {areasRender}
           <CartesianGrid strokeOpacity={0.3} />
           <Legend verticalAlign="top" align="right" />
         </AreaChart>
