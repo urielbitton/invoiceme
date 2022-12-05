@@ -29,7 +29,7 @@ export default function InvEstConChart(props) {
     contacts: monthlyContacts[month.longName]?.reduce((acc, doc) => acc + 1, 0),
   }))
   const monthlyData = dailyArray?.map((day, i) => ({
-    day: day.day,
+    day: `${shortMonthNames[selectedMonth]} ${day.day}`,
     invoices: dailyInvoices[day.day]?.reduce((acc, doc) => acc + (doc.dateCreated ? 1 : 0), 0),
     estimates: dailyEstimates[day.day]?.reduce((acc, doc) => acc + (doc.dateCreated ? 1 : 0), 0),
     contacts: dailyContacts[day.day]?.reduce((acc, doc) => acc + (doc.dateCreated ? 1 : 0), 0)
@@ -81,11 +81,10 @@ export default function InvEstConChart(props) {
       tooltipLabelFormat={(name, value) => {
         return mode === 'year' ? value[0]?.payload?.longName + ' ' + new Date().getFullYear() :
         mode === 'month' ?
-            getNameDayOfTheWeekFromDate(new Date(selectedYear, selectedMonth, value[0]?.payload?.day)) + 
-            ', ' + shortMonthNames[selectedMonth] + ' ' + value[0]?.payload?.day + ' ' :
-            value[0]?.payload?.week
+          getNameDayOfTheWeekFromDate(new Date(selectedYear, selectedMonth, value[0]?.payload?.day.slice(4))) +
+          ' ' + value[0]?.payload?.day :
+          value[0]?.payload?.week
       }}
-      tooltipFormat={(name) => `$${formatCurrency(name)}`}
     />
   )
 }

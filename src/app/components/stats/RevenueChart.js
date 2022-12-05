@@ -21,7 +21,7 @@ export default function RevenueChart(props) {
     revenue: monthlyInvoices[month.longName]?.reduce((acc, doc) => acc + (doc.isPaid ? doc?.total : 0) || 0, 0)
   }))
   const monthlyRevenueData = dailyInvoicesArray?.map((day, i) => ({
-    day: day.day,
+    day: `${shortMonthNames[selectedMonth]} ${day.day}`,
     revenue: dailyInvoices[day.day]?.reduce((acc, doc) => acc + (doc.isPaid ? doc?.total : 0) || 0, 0)
   }))
   const weeklyRevenueData = weeklyInvoicesArray?.map((week, i) => ({
@@ -59,8 +59,8 @@ export default function RevenueChart(props) {
       tooltipLabelFormat={(name, value) => {
         return revenueMode === 'year' ? value[0]?.payload?.longName + ' ' + new Date().getFullYear() :
           revenueMode === 'month' ?
-            getNameDayOfTheWeekFromDate(new Date(selectedYear, selectedMonth, value[0]?.payload?.day)) + 
-            ', ' + shortMonthNames[selectedMonth] + ' ' + value[0]?.payload?.day + ' ' :
+          getNameDayOfTheWeekFromDate(new Date(selectedYear, selectedMonth, value[0]?.payload?.day.slice(4))) +
+          ' ' + value[0]?.payload?.day :
             value[0]?.payload?.week
       }}
       tooltipFormat={(name) => `$${formatCurrency(name)}`}

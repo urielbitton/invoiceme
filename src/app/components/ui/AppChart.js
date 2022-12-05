@@ -12,7 +12,8 @@ const chartsAnimationDuration = 500
 export function AppBarChart(props) {
 
   const { title, subtitle, data, barSize = 30, actions,
-    barsList, xDataKey, className='' } = props
+    barsList, xDataKey, className='', tooltipLabelFormat,
+    tooltipFormat } = props
 
   const barsListRender = barsList?.map((bar, index) => {
     return <Bar
@@ -41,9 +42,12 @@ export function AppBarChart(props) {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey={xDataKey} />
           <YAxis />
-          <Tooltip />
           <Legend />
           {barsListRender}
+          <Tooltip
+            labelFormatter={tooltipLabelFormat}
+            formatter={tooltipFormat}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
