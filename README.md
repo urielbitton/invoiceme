@@ -14,4 +14,5 @@ Others
 - add contact events on contact page - shows all events for contact (emails/SMS sent, etc.)
 - add AppModal for users to see status of their sent invoices (try to get a read receipt from sendgrid, show other details about invoice)
 - add SearchAddressInput for necessary address inputs
-- create upgrade page
+- verifiy email to create account
+- add google and facebook auth
