@@ -13,6 +13,7 @@ import { invoicePaperStyles } from "app/components/invoices/invoicePaperStyles"
 import { useEstimate } from "app/hooks/estimateHooks"
 import { deleteEstimateService, sendEstimateService } from "app/services/estimatesServices"
 import EstimatePaper from "app/components/estimates/EstimatePaper"
+import EmptyPage from "app/components/ui/EmptyPage"
 
 export default function EstimatePage() {
 
@@ -40,7 +41,7 @@ export default function EstimatePage() {
     estimate
 
   const taxNumbersList = myUser?.taxNumbers?.map((taxNum, index) => {
-    return <h5 
+    return <h5
       style={invoicePaperStyles?.headerH5}
       key={index}
     >
@@ -89,7 +90,7 @@ export default function EstimatePage() {
 
   const downloadAsPDF = () => {
     domToPDFDownload(
-      document.querySelector('.invoice-page .paper-container'), 
+      document.querySelector('.invoice-page .paper-container'),
       `${estimate.estimateNumber}.pdf`,
       true
     )
@@ -183,15 +184,15 @@ export default function EstimatePage() {
                   showMenu={showDownloadMenu}
                   setShowMenu={setShowDownloadMenu}
                   items={[
-                    { 
-                      label: 'PDF Download', 
-                      icon: 'fas fa-file-pdf', 
+                    {
+                      label: 'PDF Download',
+                      icon: 'fas fa-file-pdf',
                       onClick: () => downloadAsPDF()
                     },
-                    { 
-                      label: 'Image Download', 
-                      icon: 'fas fa-image', 
-                      onClick: () => downloadAsImage() 
+                    {
+                      label: 'Image Download',
+                      icon: 'fas fa-image',
+                      onClick: () => downloadAsImage()
                     }
                   ]}
                   buttonType="white"
@@ -233,6 +234,13 @@ export default function EstimatePage() {
           />
         </div>
       </div> :
-      null
+
+      <EmptyPage
+        object={estimate}
+        label="ContacEstimatet Not Found"
+        sublabel="This estimate does not exist or was deleted."
+        btnLabel='All Estimates'
+        btnLink='/estimates'
+      />
   )
 }

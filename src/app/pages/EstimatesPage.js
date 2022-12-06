@@ -10,6 +10,7 @@ import EstimatesList from "app/components/estimates/EstimatesList"
 import { useCurrentMonthEstimates } from "app/hooks/statsHooks"
 import { monthSelectOptions } from "app/data/general"
 import { getNumOfDaysInMonth } from "app/utils/dateUtils"
+import EmptyPage from "app/components/ui/EmptyPage"
 
 export default function EstimatesPage() {
 
@@ -34,7 +35,7 @@ export default function EstimatesPage() {
   const filters = `estimateOwnerID:${myUserID}`
   const showAll = false
 
-  const labelText1 = query.length > 0 ? 
+  const labelText1 = query.length > 0 ?
     <>Showing <span className="bold">{hitsPerPage < numOfHits ? hitsPerPage : numOfHits}</span> of {numOfHits} estimates</> :
     <>Showing <span className="bold">
       {estimatesLimit <= dbEstimates?.length ? estimatesLimit : dbEstimates?.length}
@@ -47,7 +48,7 @@ export default function EstimatesPage() {
   }
 
   const handleOnChange = (e) => {
-    if(e.target.value.length < 1) {
+    if (e.target.value.length < 1) {
       setQuery('')
     }
     setSearchString(e.target.value)
@@ -56,8 +57,8 @@ export default function EstimatesPage() {
   useEffect(() => {
     setNavItem1({ label: "Total Estimates", icon: 'fas fa-file-invoice', value: myUser?.estimatesNum })
     setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthEstimates?.length })
-    setNavItemInfo({ 
-      label: <AppButton 
+    setNavItemInfo({
+      label: <AppButton
         label="Estimates Settings"
         buttonType="invertedBtn"
         leftIcon="fas fa-cog"
@@ -70,9 +71,9 @@ export default function EstimatesPage() {
       setNavItem2(null)
       setNavItemInfo(null)
     }
-  },[myUser, thisMonthEstimates])
+  }, [myUser, thisMonthEstimates])
 
-  return (
+  return dbEstimates?.length > 0 ? (
     <div className="invoices-page">
       <HelmetTitle title="Estimates" />
       <AppSelectBar
@@ -83,7 +84,7 @@ export default function EstimatesPage() {
           { value: 'client', label: 'Client Name' },
           { value: 'amount', label: 'Estimate Total' },
         ]}
-        rightComponent={query.length > 0 && <i className="fas fa-file-search search-mode-icon"/>}
+        rightComponent={query.length > 0 && <i className="fas fa-file-search search-mode-icon" />}
         searchValue={searchString}
         searchOnChange={(e) => handleOnChange(e)}
         handleOnKeyPress={(e) => executeSearch(e)}
@@ -133,5 +134,11 @@ export default function EstimatesPage() {
         }
       </div>
     </div>
-  )
+  ) :
+    <EmptyPage
+      label="You have no estimates yet."
+      sublabel="Add your first estimate to view it here."
+      btnLink="/estimates/new"
+      btnIcon="fal fa-plus"
+    />
 }

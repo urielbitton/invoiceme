@@ -10,12 +10,13 @@ import AppButton from "app/components/ui/AppButton"
 import { monthSelectOptions } from "app/data/general"
 import { useCurrentMonthInvoices } from "app/hooks/statsHooks"
 import { getNumOfDaysInMonth } from "app/utils/dateUtils"
+import EmptyPage from "app/components/ui/EmptyPage"
 
 export default function InvoicesPage() {
 
   const { myUser, myUserID, setNavItem1, setNavItem2,
     setNavItem3, setNavItemInfo } = useContext(StoreContext)
-    const yearSelectOptions = useInvoiceYearOptions()
+  const yearSelectOptions = useInvoiceYearOptions()
   const [searchString, setSearchString] = useState("")
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -36,8 +37,8 @@ export default function InvoicesPage() {
   const filters = `invoiceOwnerID:${myUserID}`
   const showAll = false
 
-  const labelText1 = query.length > 0 ? 
-    <>Showing <span className="bold">{hitsPerPage < numOfHits ? hitsPerPage : 
+  const labelText1 = query.length > 0 ?
+    <>Showing <span className="bold">{hitsPerPage < numOfHits ? hitsPerPage :
       numOfHits}</span> of {numOfHits} invoices</> :
     <>Showing <span className="bold">
       {invoicesLimit <= dbInvoices?.length ? invoicesLimit : dbInvoices?.length}
@@ -50,7 +51,7 @@ export default function InvoicesPage() {
   }
 
   const handleOnChange = (e) => {
-    if(e.target.value.length < 1) {
+    if (e.target.value.length < 1) {
       setQuery('')
     }
     setSearchString(e.target.value)
@@ -60,8 +61,8 @@ export default function InvoicesPage() {
     setNavItem1({ label: "Total Invoices", icon: 'fas fa-file-invoice-dollar', value: myUser?.invoicesNum })
     setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthInvoices?.length })
     setNavItem3({ label: "Invoices Paid", icon: 'fas fa-receipt', value: `${paidInvoices?.length}/${dbInvoices?.length}` })
-    setNavItemInfo({ 
-      label: <AppButton 
+    setNavItemInfo({
+      label: <AppButton
         label="Invoices Settings"
         buttonType="invertedBtn"
         leftIcon="fas fa-cog"
@@ -75,9 +76,9 @@ export default function InvoicesPage() {
       setNavItem3(null)
       setNavItemInfo(null)
     }
-  },[myUser, thisMonthInvoices, invoicesLimit])
+  }, [myUser, thisMonthInvoices, invoicesLimit])
 
-  return (
+  return dbInvoices?.length > 0 ? (
     <div className="invoices-page">
       <HelmetTitle title="Invoices" />
       <AppSelectBar
@@ -88,7 +89,7 @@ export default function InvoicesPage() {
           { value: 'client', label: 'Client Name' },
           { value: 'amount', label: 'Invoice Total' },
         ]}
-        rightComponent={query.length > 0 && <i className="fas fa-file-search search-mode-icon"/>}
+        rightComponent={query.length > 0 && <i className="fas fa-file-search search-mode-icon" />}
         searchValue={searchString}
         searchOnChange={(e) => handleOnChange(e)}
         handleOnKeyPress={(e) => executeSearch(e)}
@@ -138,5 +139,11 @@ export default function InvoicesPage() {
         }
       </div>
     </div>
-  )
+  ) :
+    <EmptyPage
+      label="You have no invoices yet."
+      sublabel="Add your first invoice to view it here."
+      btnLink="/invoices/new"
+      btnIcon="fal fa-plus"
+    />
 }

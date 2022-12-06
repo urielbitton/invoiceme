@@ -56,15 +56,11 @@ export const attachPaymentMethodsService = (userID, data, setLoading) => {
   })
 }
 
-export const createSubscriptionService = (myUser, userID, data, setLoading) => {
-  if(myUser?.stripe?.subscriptionID) {
-    console.log('Subscription already exists')
-    return Promise.resolve(myUser.stripe.subscriptionID)
-  }
+export const createSubscriptionService = (userID, data, setLoading) => {
   return functions.httpsCallable('createStripeSubscription')(data)
   .then((res) => {
     return updateDB('users', userID, {
-      "stripe.stripeSubscriptionID": res.data.id,
+      "stripe.subscriptions": firebaseArrayAdd(res.data.id),
     })
     .then(() => {
       setLoading(false)

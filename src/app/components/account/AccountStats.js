@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { monthSelectOptions } from "app/data/general"
 import { extendedStatsData } from "app/data/statsData"
 import { useContactYearOptions } from "app/hooks/contactsHooks"
@@ -38,7 +39,6 @@ export default function AccountStats() {
   const activeYearContacts = useCurrentYearContacts(null, null, activeYear)
   const activeMonthInvoices = useCurrentMonthInvoices(null, null, activeDate)
   const allYearsOptions = [...invoiceYearOptions, ...estimateYearOptions, ...contactYearOptions]
-  // @ts-ignore
   const allYearsSelectOptions = [...new Map(allYearsOptions.map(item => [item['label'], item])).values()]
   const isBusiness = myMemberType === 'business'
 

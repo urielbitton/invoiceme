@@ -23,6 +23,7 @@ export default function AppButton(props) {
         buttonType === 'tabBtn' ? 'tabBtn' :
         buttonType === 'tabBlueBtn' ? 'tabBlueBtn' :
         buttonType === 'tabRedBtn' ? 'tabRedBtn' :
+        buttonType === 'tabActiveBtn' ? 'tabActiveBtn' :
         'primaryBtn'
       }
       ${disabled ? 'disabled' : ''}

@@ -68,5 +68,5 @@ export const useEstimateYearOptions = () => {
     getEstimateYearOptions(myUserID, setOptions)
   }, [myUserID])
 
-  return options
+  return options?.length ? options :  [{label: new Date().getFullYear(), value: new Date().getFullYear()}]
 }

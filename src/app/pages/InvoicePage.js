@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import './styles/InvoicePage.css'
 import AppModal from "app/components/ui/AppModal"
 import InvoicePaper from "app/components/invoices/InvoicePaper"
+import EmptyPage from "app/components/ui/EmptyPage"
 
 export default function InvoicePage() {
 
@@ -66,7 +67,7 @@ export default function InvoicePage() {
 
   const downloadAsPDF = () => {
     domToPDFDownload(
-      document.querySelector('.invoice-page .paper-container'), 
+      document.querySelector('.invoice-page .paper-container'),
       `${invoice.invoiceNumber}.pdf`,
       true
     )
@@ -117,127 +118,134 @@ export default function InvoicePage() {
 
   return (
     invoice ?
-    <div className="invoice-page">
-      <HelmetTitle title={`Invoice #${invoice.invoiceNumber}`} />
-      <div className="page-content">
-        <div className="send-container">
-          <div className="top">
-            <h3>Send Invoice</h3>
-            {
-              invoice.isSent &&
-              <h5>
-                <span><i className="fas fa-paper-plane" />Invoice Sent</span>
-                <i className="far fa-check" />
-              </h5>
-            }
-            <AppInput
-              label="Send To"
-              placeholder="Bill to email"
-              value={contactEmail}
-              onChange={e => setContactEmail(e.target.value)}
-            />
-            <AppInput
-              label="Subject"
-              placeholder="Invoice email subject"
-              value={emailSubject}
-              onChange={e => setEmailSubject(e.target.value)}
-            />
-            <AppTextarea
-              label="Message"
-              placeholder="Invoice email message"
-              value={emailMessage}
-              onChange={e => setEmailMessage(e.target.value)}
-            />
-            <FileUploader
-              isDragging={isDragging}
-              setIsDragging={setIsDragging}
-              uploadedFiles={uploadedFiles}
-              setUploadedFiles={setUploadedFiles}
-              maxFileSize={maxFileSize}
-              icon="fas fa-paperclip"
-              text="Attach Files"
-            />
-            <AppButton
-              label="Send"
-              onClick={() => sendInvoice()}
-              rightIcon="fas fa-paper-plane"
-            />
-            <div className="additional-actions">
-              <DropdownButton
-                label="Download As"
-                leftIcon="fas fa-arrow-to-bottom"
-                rightIcon="far fa-angle-down"
-                showMenu={showDownloadMenu}
-                setShowMenu={setShowDownloadMenu}
-                items={[
-                  { 
-                    label: 'PDF Download', 
-                    icon: 'fas fa-file-pdf', 
-                    onClick: () => downloadAsPDF()
-                  },
-                  { 
-                    label: 'Image Download', 
-                    icon: 'fas fa-image', 
-                    onClick: () => downloadAsImage() 
-                  }
-                ]}
-                buttonType="white"
-                dropdownPosition="place-left-top"
+      <div className="invoice-page">
+        <HelmetTitle title={`Invoice #${invoice.invoiceNumber}`} />
+        <div className="page-content">
+          <div className="send-container">
+            <div className="top">
+              <h3>Send Invoice</h3>
+              {
+                invoice.isSent &&
+                <h5>
+                  <span><i className="fas fa-paper-plane" />Invoice Sent</span>
+                  <i className="far fa-check" />
+                </h5>
+              }
+              <AppInput
+                label="Send To"
+                placeholder="Bill to email"
+                value={contactEmail}
+                onChange={e => setContactEmail(e.target.value)}
+              />
+              <AppInput
+                label="Subject"
+                placeholder="Invoice email subject"
+                value={emailSubject}
+                onChange={e => setEmailSubject(e.target.value)}
+              />
+              <AppTextarea
+                label="Message"
+                placeholder="Invoice email message"
+                value={emailMessage}
+                onChange={e => setEmailMessage(e.target.value)}
+              />
+              <FileUploader
+                isDragging={isDragging}
+                setIsDragging={setIsDragging}
+                uploadedFiles={uploadedFiles}
+                setUploadedFiles={setUploadedFiles}
+                maxFileSize={maxFileSize}
+                icon="fas fa-paperclip"
+                text="Attach Files"
               />
               <AppButton
-                label="Print"
-                leftIcon="fas fa-print"
-                buttonType="white"
-                onClick={() => window.print()}
+                label="Send"
+                onClick={() => sendInvoice()}
+                rightIcon="fas fa-paper-plane"
+              />
+              <div className="additional-actions">
+                <DropdownButton
+                  label="Download As"
+                  leftIcon="fas fa-arrow-to-bottom"
+                  rightIcon="far fa-angle-down"
+                  showMenu={showDownloadMenu}
+                  setShowMenu={setShowDownloadMenu}
+                  items={[
+                    {
+                      label: 'PDF Download',
+                      icon: 'fas fa-file-pdf',
+                      onClick: () => downloadAsPDF()
+                    },
+                    {
+                      label: 'Image Download',
+                      icon: 'fas fa-image',
+                      onClick: () => downloadAsImage()
+                    }
+                  ]}
+                  buttonType="white"
+                  dropdownPosition="place-left-top"
+                />
+                <AppButton
+                  label="Print"
+                  leftIcon="fas fa-print"
+                  buttonType="white"
+                  onClick={() => window.print()}
+                />
+              </div>
+            </div>
+            <div className="bottom">
+              <AppButton
+                label="Edit Invoice"
+                leftIcon="fas fa-pen"
+                onClick={() => navigate(`/invoices/new?invoiceID=${invoiceID}&edit=true`)}
+                buttonType="invertedBtn"
+                className="edit-invoice-btn"
+              />
+              <AppButton
+                label="Delete Invoice"
+                leftIcon="fas fa-trash"
+                buttonType="invertedRedBtn"
+                onClick={() => deleteInvoice()}
               />
             </div>
           </div>
-          <div className="bottom">
-            <AppButton
-              label="Edit Invoice"
-              leftIcon="fas fa-pen"
-              onClick={() => navigate(`/invoices/new?invoiceID=${invoiceID}&edit=true`)}
-              buttonType="invertedBtn"
-              className="edit-invoice-btn"
-            />
-            <AppButton
-              label="Delete Invoice"
-              leftIcon="fas fa-trash"
-              buttonType="invertedRedBtn"
-              onClick={() => deleteInvoice()}
-            />
-          </div>
+          <InvoicePaper
+            invoice={invoice}
+            myBusiness={myBusiness}
+            taxNumbers={taxNumbers}
+            invoiceItems={invoiceItems}
+            calculatedSubtotal={calculatedSubtotal}
+            calculatedTaxRate={calculatedTaxRate}
+            calculatedTotal={calculatedTotal}
+            invoicePaperRef={invoicePaperRef}
+          />
         </div>
-        <InvoicePaper
-          invoice={invoice}
-          myBusiness={myBusiness}
-          taxNumbers={taxNumbers}
-          invoiceItems={invoiceItems}
-          calculatedSubtotal={calculatedSubtotal}
-          calculatedTaxRate={calculatedTaxRate}
-          calculatedTotal={calculatedTotal}
-          invoicePaperRef={invoicePaperRef}
-        />
-      </div>
-      <AppModal
-        showModal={showSettingsModal}
-        setShowModal={setShowSettingsModal}
-        label="Invoice Settings"
-        actions={<>
-          <AppButton
-            label="Save"
-          />
-          <AppButton
-            label="Cancel"
-            onClick={() => setShowSettingsModal(false)}
-            buttonType="invertedBtn"
-          />
-        </>
-        }
-      >
+        <AppModal
+          showModal={showSettingsModal}
+          setShowModal={setShowSettingsModal}
+          label="Invoice Settings"
+          actions={<>
+            <AppButton
+              label="Save"
+            />
+            <AppButton
+              label="Cancel"
+              onClick={() => setShowSettingsModal(false)}
+              buttonType="invertedBtn"
+            />
+          </>
+          }
+        >
 
-      </AppModal>
-    </div> :
-    null
+        </AppModal>
+      </div> :
+
+      <EmptyPage
+        object={invoice}
+        label="Invoice Not Found"
+        sublabel="This invoice does not exist or was deleted."
+        btnLabel='All Invoices'
+        btnLink='/invoices'
+      />
   )
 }

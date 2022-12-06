@@ -3,6 +3,7 @@ import EmailsTable from "app/components/emails/EmailsTable"
 import AppButton from "app/components/ui/AppButton"
 import AppModal from "app/components/ui/AppModal"
 import AppTabsBar from "app/components/ui/AppTabsBar"
+import EmptyPage from "app/components/ui/EmptyPage"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { showXResultsOptions } from "app/data/general"
@@ -122,26 +123,36 @@ export default function EmailsPage() {
           Sent
         </NavLink>
       </AppTabsBar>
-      <div className="emails-page-routes">
-        <Routes>
-          <Route path="" element={<EmailsTable
-            emails={emails}
-            setActiveEmail={setActiveEmail}
-            setShowEmailModal={setShowEmailModal}
-          />} />
-          <Route path="sent" element={<EmailsTable
-            emails={emails}
-            setActiveEmail={setActiveEmail}
-            setShowEmailModal={setShowEmailModal}
-          />} />
-        </Routes>
-      </div>
       {
-        emailsLimit <= emails.length &&
-        <AppButton
-          label="Show More"
-          onClick={() => setEmailsLimit(emailsLimit + limitsNum)}
-        />
+        emails?.length > 0 ?
+          <div className="emails-page-routes">
+            <Routes>
+              <Route path="" element={<EmailsTable
+                emails={emails}
+                setActiveEmail={setActiveEmail}
+                setShowEmailModal={setShowEmailModal}
+              />} />
+              <Route path="sent" element={<EmailsTable
+                emails={emails}
+                setActiveEmail={setActiveEmail}
+                setShowEmailModal={setShowEmailModal}
+              />} />
+            </Routes>
+            {
+              emailsLimit <= emails.length &&
+              <AppButton
+                label="Show More"
+                onClick={() => setEmailsLimit(emailsLimit + limitsNum)}
+              />
+            }
+          </div> :
+          <EmptyPage
+            label="You have no emails yet."
+            sublabel="Send your first email to view it here."
+            btnLabel="Send"
+            btnClick={() => setShowNewEmailModal(true)}
+            btnIcon="fal fa-paper-plane"
+          />
       }
       <EmailModal
         showModal={showNewEmailModal}

@@ -20,6 +20,7 @@ import { validatePhone } from "app/utils/generalUtils"
 import React, { useContext, useState } from 'react'
 import { NavLink, Route, Routes, useLocation, useParams } from "react-router-dom"
 import './styles/ContactPage.css'
+import EmptyPage from "app/components/ui/EmptyPage"
 
 export default function ContactPage() {
 
@@ -61,16 +62,16 @@ export default function ContactPage() {
       emailMessage,
       emailFiles.map(file => file.file)
     )
-    .then(() => {
-      setLoading(false)
-      resetInputFields()
-      setShowEmailModal(false)
-      alert('Email sent to contact.')
-    })
-    .catch(err => {
-      setLoading(false)
-      alert(err.message)
-    })
+      .then(() => {
+        setLoading(false)
+        resetInputFields()
+        setShowEmailModal(false)
+        alert('Email sent to contact.')
+      })
+      .catch(err => {
+        setLoading(false)
+        alert(err.message)
+      })
   }
 
   const sendSMS = () => {
@@ -84,7 +85,7 @@ export default function ContactPage() {
   }
 
   return (
-    contact ?
+    contact ? (
       <div className="contact-page">
         <header>
           <div className="side">
@@ -139,7 +140,7 @@ export default function ContactPage() {
           <div className="side favorite">
             <AppButton
               label={contact.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
-              onClick={() => updateContactService(myUserID, contactID, {isFavorite: !contact.isFavorite}, setPageLoading)}
+              onClick={() => updateContactService(myUserID, contactID, { isFavorite: !contact.isFavorite }, setPageLoading)}
               buttonType={contact.isFavorite ? 'primary' : 'outlineBlueBtn'}
               rightIcon={contact.isFavorite ? 'fas fa-heart' : 'far fa-heart'}
             />
@@ -254,7 +255,14 @@ export default function ContactPage() {
             />
           </form>
         </AppModal>
-      </div> :
-      null
+      </div> 
+      ) :
+      <EmptyPage
+        object={contact}
+        label="Contact Not Found"
+        sublabel="This contact does not exist or was deleted."
+        btnLabel='All Contacts'
+        btnLink='/contacts'
+      />
   )
 }

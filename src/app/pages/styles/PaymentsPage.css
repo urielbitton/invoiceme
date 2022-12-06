@@ -1,0 +1,11 @@
+.payments-page {
+  display: flex;
+  flex-direction: column;
+}
+.payments-page .app-tabs-bar {
+  margin-top: 10px;
+}
+
+.payments-page .payments-content {
+  margin-top: 20px;
+}

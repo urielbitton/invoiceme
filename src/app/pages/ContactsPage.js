@@ -10,6 +10,7 @@ import { monthSelectOptions } from "app/data/general"
 import { useCurrentMonthContacts } from "app/hooks/statsHooks"
 import { useContactYearOptions, useYearMonthOrAllContacts } from "app/hooks/contactsHooks"
 import { getNumOfDaysInMonth } from "app/utils/dateUtils"
+import EmptyPage from "app/components/ui/EmptyPage"
 
 export default function ContactsPage() {
 
@@ -73,6 +74,7 @@ export default function ContactsPage() {
   }, [myUser, thisMonthContacts])
 
   return (
+    dbContacts?.length > 0 ?
     <div className="invoices-page contacts-page">
       <HelmetTitle title="Contacts" />
       <AppSelectBar
@@ -131,6 +133,12 @@ export default function ContactsPage() {
           </div>
         }
       </div>
-    </div>
+    </div> :
+    <EmptyPage
+      label="You have no contacts yet."
+      sublabel="Add your first contact to view it here."
+      btnLink="/contacts/new"
+      btnIcon="fal fa-plus"
+    />
   )
 }
