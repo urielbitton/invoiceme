@@ -5,6 +5,8 @@
 
 .account-page .app-tabs-bar {
   margin-top: 20px;
+  background: var(--bg);
+  top: -20px
 }
 
 .account-page .account-content {

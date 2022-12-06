@@ -9,11 +9,13 @@ import HelmetTitle from "app/components/ui/HelmetTitle"
 import AppButton from "app/components/ui/AppButton"
 import { monthSelectOptions } from "app/data/general"
 import { useCurrentMonthInvoices } from "app/hooks/statsHooks"
+import { getNumOfDaysInMonth } from "app/utils/dateUtils"
 
 export default function InvoicesPage() {
 
   const { myUser, myUserID, setNavItem1, setNavItem2,
     setNavItem3, setNavItemInfo } = useContext(StoreContext)
+    const yearSelectOptions = useInvoiceYearOptions()
   const [searchString, setSearchString] = useState("")
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -21,13 +23,16 @@ export default function InvoicesPage() {
   const [pageNum, setPageNum] = useState(0)
   const [numOfHits, setNumOfHits] = useState(0)
   const [hitsPerPage, setHitsPerPage] = useState(10)
-  const [selectedYear, setSelectedYear] = useState('all')
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [selectedMonth, setSelectedMonth] = useState('all')
   const limitsNum = 10
   const [invoicesLimit, setInvoicesLimit] = useState(limitsNum)
+  const date = new Date()
+  const monthStart = `${date.getMonth() + 1}, 01, ${date.getFullYear()}`
+  const monthEnd = `${date.getMonth() + 1}, ${getNumOfDaysInMonth(date)}, ${date.getFullYear()}`
   const dbInvoices = useYearMonthOrAllInvoices(myUserID, selectedYear, selectedMonth, invoicesLimit)
-  const thisMonthInvoices = useCurrentMonthInvoices(new Date())
-  const yearSelectOptions = useInvoiceYearOptions()
+  const thisMonthInvoices = useCurrentMonthInvoices(monthStart, monthEnd)
+  const paidInvoices = dbInvoices?.filter(invoice => invoice?.isPaid)
   const filters = `invoiceOwnerID:${myUserID}`
   const showAll = false
 
@@ -54,7 +59,7 @@ export default function InvoicesPage() {
   useEffect(() => {
     setNavItem1({ label: "Total Invoices", icon: 'fas fa-file-invoice-dollar', value: myUser?.invoicesNum })
     setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthInvoices?.length })
-    setNavItem3({ label: "Invoices Paid", icon: 'fas fa-receipt', value: '0/0' })
+    setNavItem3({ label: "Invoices Paid", icon: 'fas fa-receipt', value: `${paidInvoices?.length}/${dbInvoices?.length}` })
     setNavItemInfo({ 
       label: <AppButton 
         label="Invoices Settings"
@@ -70,7 +75,7 @@ export default function InvoicesPage() {
       setNavItem3(null)
       setNavItemInfo(null)
     }
-  },[myUser, thisMonthInvoices])
+  },[myUser, thisMonthInvoices, invoicesLimit])
 
   return (
     <div className="invoices-page">

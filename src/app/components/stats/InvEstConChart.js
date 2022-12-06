@@ -1,7 +1,7 @@
 import { getNameDayOfTheWeekFromDate, monthNames, 
   shortAndLongMonthNames, shortMonthNames, splitDocsIntoMonths, 
   splitDocsIntoWeeksOfMonth, splitMonthDocsIntoDays } from "app/utils/dateUtils"
-import { formatCurrency, objectToArray, sortArrayByProperty } from "app/utils/generalUtils"
+import { objectToArray, sortArrayByProperty } from "app/utils/generalUtils"
 import React from 'react'
 import { AppBarChart } from "../ui/AppChart"
 import StatusToggler from "./StatusToggler"

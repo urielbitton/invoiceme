@@ -9,6 +9,7 @@ import { useEstimateYearOptions, useYearMonthOrAllEstimates } from "app/hooks/es
 import EstimatesList from "app/components/estimates/EstimatesList"
 import { useCurrentMonthEstimates } from "app/hooks/statsHooks"
 import { monthSelectOptions } from "app/data/general"
+import { getNumOfDaysInMonth } from "app/utils/dateUtils"
 
 export default function EstimatesPage() {
 
@@ -20,12 +21,15 @@ export default function EstimatesPage() {
   const [pageNum, setPageNum] = useState(0)
   const [numOfHits, setNumOfHits] = useState(0)
   const [hitsPerPage, setHitsPerPage] = useState(10)
-  const [selectedYear, setSelectedYear] = useState('all')
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [selectedMonth, setSelectedMonth] = useState('all')
   const limitsNum = 10
   const [estimatesLimit, setEstimatesLimit] = useState(limitsNum)
+  const date = new Date()
+  const monthStart = `${date.getMonth() + 1}, 01, ${date.getFullYear()}`
+  const monthEnd = `${date.getMonth() + 1}, ${getNumOfDaysInMonth(date)}, ${date.getFullYear()}`
   const dbEstimates = useYearMonthOrAllEstimates(myUserID, selectedYear, selectedMonth, estimatesLimit)
-  const thisMonthEstimates = useCurrentMonthEstimates(new Date())
+  const thisMonthEstimates = useCurrentMonthEstimates(monthStart, monthEnd)
   const yearSelectOptions = useEstimateYearOptions()
   const filters = `estimateOwnerID:${myUserID}`
   const showAll = false

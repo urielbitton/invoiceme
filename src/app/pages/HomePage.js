@@ -19,6 +19,7 @@ import { useCurrentYearInvoices, useCurrentMonthInvoices,
   useCurrentYearEstimates, useCurrentMonthEstimates, 
   useCurrentYearContacts, useCurrentMonthContacts } from "app/hooks/statsHooks"
 import { StoreContext } from "app/store/store"
+import { getNumOfDaysInMonth } from "app/utils/dateUtils"
 import { displayGreeting } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import './styles/Homepage.css'
@@ -33,13 +34,16 @@ export default function HomePage() {
   const [statusesTimeMode, setStatusesTimeMode] = useState('year')
   const [selectedYear, setSelectedYear] = useState(date.getFullYear())
   const [selectedMonth, setSelectedMonth] = useState(date.getMonth())
-  const [activeDate, setActiveDate] = useState(new Date(date.getFullYear(), date.getMonth(), 1))
-  const thisMonthInvoices = useCurrentMonthInvoices(activeDate)
-  const thisMonthEstimates = useCurrentMonthEstimates(activeDate)
-  const thisMonthContacts = useCurrentMonthContacts(activeDate)
-  const thisYearInvoices = useCurrentYearInvoices(selectedYear)
-  const thisYearEstimates = useCurrentYearEstimates(selectedYear)
-  const thisYearContacts = useCurrentYearContacts(selectedYear)
+  const monthStart = `${date.getMonth() + 1}, 01, ${date.getFullYear()}`
+  const monthEnd = `${date.getMonth() + 1}, ${getNumOfDaysInMonth(date)}, ${date.getFullYear()}`
+  const yearStart = `01, 01, ${date.getFullYear()}`
+  const yearEnd = `12, 31, ${date.getFullYear()}`
+  const thisMonthInvoices = useCurrentMonthInvoices(monthStart, monthEnd)
+  const thisMonthEstimates = useCurrentMonthEstimates(monthStart, monthEnd)
+  const thisMonthContacts = useCurrentMonthContacts(monthStart, monthEnd)
+  const thisYearInvoices = useCurrentYearInvoices(yearStart, yearEnd)
+  const thisYearEstimates = useCurrentYearEstimates(yearStart, yearEnd)
+  const thisYearContacts = useCurrentYearContacts(yearStart, yearEnd)
   const dbInvoices = useInvoices(myUserID, 5)
   const dbEstimates = useEstimates(myUserID, 5)
   const dbContacts = useContacts(myUserID, 5)

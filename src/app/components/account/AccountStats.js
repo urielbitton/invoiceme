@@ -1,5 +1,7 @@
 import { monthSelectOptions } from "app/data/general"
 import { extendedStatsData } from "app/data/statsData"
+import { useContactYearOptions } from "app/hooks/contactsHooks"
+import { useEstimateYearOptions } from "app/hooks/estimateHooks"
 import { useInvoiceYearOptions } from "app/hooks/invoiceHooks"
 import { useCurrentMonthInvoices, useCurrentYearContacts, 
   useCurrentYearEstimates, useCurrentYearInvoices } from "app/hooks/statsHooks"
@@ -28,11 +30,16 @@ export default function AccountStats() {
   const [paidTimeMode, setPaidTimeMode] = useState('month')
   const [statusesTimeMode, setStatusesTimeMode] = useState('month')
   const [allItemsMode, setAllItemsMode] = useState('month')
-  const yearOptions = useInvoiceYearOptions()
-  const activeYearInvoices = useCurrentYearInvoices(activeYear)
-  const activeYearEstimates = useCurrentYearEstimates(activeYear)
-  const activeYearContacts = useCurrentYearContacts(activeYear)
-  const activeMonthInvoices = useCurrentMonthInvoices(activeDate)
+  const invoiceYearOptions = useInvoiceYearOptions()
+  const estimateYearOptions = useEstimateYearOptions()
+  const contactYearOptions = useContactYearOptions()
+  const activeYearInvoices = useCurrentYearInvoices(null, null, activeYear)
+  const activeYearEstimates = useCurrentYearEstimates(null, null, activeYear)
+  const activeYearContacts = useCurrentYearContacts(null, null, activeYear)
+  const activeMonthInvoices = useCurrentMonthInvoices(null, null, activeDate)
+  const allYearsOptions = [...invoiceYearOptions, ...estimateYearOptions, ...contactYearOptions]
+  // @ts-ignore
+  const allYearsSelectOptions = [...new Map(allYearsOptions.map(item => [item['label'], item])).values()]
 
   const extendedStatsList = extendedStatsData(myUser)?.map((stat, index) => {
     return <Dashbox
@@ -57,7 +64,7 @@ export default function AccountStats() {
       <div className="toolbar">
         <AppSelect
           label="Select a year"
-          options={yearOptions}
+          options={allYearsSelectOptions}
           value={selectedYear}
           onChange={(e) => setSelectedYear(e.target.value)}
         />
@@ -87,7 +94,7 @@ export default function AccountStats() {
           paidTimeMode={paidTimeMode}
           setPaidTimeMode={setPaidTimeMode}
           thisYearInvoices={activeYearInvoices}
-          thisMonthInvoices={activeMonthInvoices}
+          thisMonthInvoices={activeMonthInvoices} 
           className="paid-unpaid-chart"
           subtitle={paidTimeMode === 'month' ? `${monthNames[activeMonth]} ${activeYear}` : activeYear }
         />
@@ -102,9 +109,8 @@ export default function AccountStats() {
           mode={allItemsMode}
           setMode={setAllItemsMode}
           className="all-items-chart"
-          selectedYear={selectedYear}
-          selectedMonth={selectedMonth}
-          setSelectedYear={setSelectedYear}
+          selectedYear={activeYear}
+          selectedMonth={activeMonth}
           thisYearInvoices={activeYearInvoices}
           thisYearEstimates={activeYearEstimates}
           thisYearContacts={activeYearContacts}

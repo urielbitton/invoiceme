@@ -231,6 +231,10 @@ export const dateToMonthName = (date, length='long') => {
   return date.toLocaleString('en-CA', { month: length })
 }
 
+export const getNumOfDaysInMonth = (date) => {
+  return new Date(new Date(date).getFullYear(), new Date(date).getMonth() + 1, 0).getDate()
+}
+
 export const getWeekOfMonth = (date) => {
   const firstDayOfMonth = getFirstDayOfMonthAsDate(date)
   const firstDayOfMonthWeekday = firstDayOfMonth.getDay()

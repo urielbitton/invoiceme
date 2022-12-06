@@ -27,6 +27,7 @@ export default function MyAccountPage() {
         title="My Account"
       />  
       <AppTabsBar 
+        sticky
         noSpread 
         spacedOut={15}
       >

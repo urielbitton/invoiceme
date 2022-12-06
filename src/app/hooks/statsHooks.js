@@ -1,84 +1,90 @@
 import { geCurrentYearContacts, geCurrentYearEstimates, 
-  geCurrentYearInvoices, getCurrentMonthContacts, 
-  getCurrentMonthEstimates, getCurrentMonthInvoices 
+  geCurrentYearInvoices, getActiveMonthInvoices, getCurrentMonthContacts, 
+  getCurrentMonthEstimates, getCurrentMonthInvoices, getActiveYearInvoices, 
+  getActiveYearEstimates, getActiveYearContacts
 } from "app/services/statsServices"
 import { StoreContext } from "app/store/store"
 import { useContext, useEffect, useState } from "react"
 
-export const useCurrentMonthInvoices = (date) => {
+export const useCurrentMonthInvoices = (monthStart, monthEnd, date) => {
 
   const { myUserID } = useContext(StoreContext)
   const [invoices, setInvoices] = useState([])
 
   useEffect(() => {
     if(myUserID)
-      getCurrentMonthInvoices(myUserID, date, setInvoices)
-  }, [myUserID, date])
+    !date ? getCurrentMonthInvoices(myUserID, monthStart, monthEnd, setInvoices) :
+    getActiveMonthInvoices(myUserID, date, setInvoices) 
+  }, [myUserID, monthStart, date])
 
   return invoices
 }
 
-export const useCurrentYearInvoices = (year) => {
+export const useCurrentYearInvoices = (yearStart, yearEnd, date) => {
 
   const { myUserID } = useContext(StoreContext)
   const [invoices, setInvoices] = useState([])
 
   useEffect(() => {
     if(myUserID)
-      geCurrentYearInvoices(myUserID, year, setInvoices)
-  }, [myUserID, year])
+      !date ? geCurrentYearInvoices(myUserID, yearStart, yearEnd, setInvoices) :
+      getActiveYearInvoices(myUserID, date, setInvoices)
+  }, [myUserID, yearStart, date])
 
   return invoices
 }
 
-export const useCurrentMonthEstimates = (date) => {
+export const useCurrentMonthEstimates = (monthStart, monthEnd) => {
 
   const { myUserID } = useContext(StoreContext)
   const [estimates, setEstimates] = useState([])
 
   useEffect(() => {
     if(myUserID)
-      getCurrentMonthEstimates(myUserID, date, setEstimates)
-  }, [myUserID, date])
+      getCurrentMonthEstimates(myUserID, monthStart, monthEnd, setEstimates)
+  }, [myUserID, monthStart])
 
   return estimates
 }
 
-export const useCurrentYearEstimates = (year) => {
+export const useCurrentYearEstimates = (yearStart, yearEnd, date) => {
 
   const { myUserID } = useContext(StoreContext)
   const [estimates, setEstimates] = useState([])
 
   useEffect(() => {
     if(myUserID)
-      geCurrentYearEstimates(myUserID, year, setEstimates)
-  }, [myUserID, year])
+      !date ? geCurrentYearEstimates(myUserID, yearStart, yearEnd, setEstimates) :
+      getActiveYearEstimates(myUserID, date, setEstimates)
+  }, [myUserID, yearStart, date])
 
   return estimates
 }
 
-export const useCurrentMonthContacts = (date) => {
+export const useCurrentMonthContacts = (monthStart, monthEnd) => {
 
   const { myUserID } = useContext(StoreContext)
   const [contacts, setContacts] = useState([])
 
   useEffect(() => {
     if(myUserID)
-      getCurrentMonthContacts(myUserID, date, setContacts)
-  }, [myUserID, date])
+      getCurrentMonthContacts(myUserID, monthStart, monthEnd, setContacts)
+  }, [myUserID, monthStart])
 
   return contacts
 }
 
-export const useCurrentYearContacts = (year) => {
+export const useCurrentYearContacts = (yearStart, yearEnd, date) => {
 
   const { myUserID } = useContext(StoreContext)
   const [contacts, setContacts] = useState([])
 
   useEffect(() => {
     if(myUserID)
-      geCurrentYearContacts(myUserID, year, setContacts)
-  }, [myUserID, year])
+      !date ? geCurrentYearContacts(myUserID, yearStart, yearEnd, setContacts) :
+      getActiveYearContacts(myUserID, date, setContacts)
+  }, [myUserID, yearStart, date])
 
   return contacts
 }
+

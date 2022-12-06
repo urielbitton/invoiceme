@@ -9,6 +9,7 @@ import ContactsList from "app/components/contacts/ContactsList"
 import { monthSelectOptions } from "app/data/general"
 import { useCurrentMonthContacts } from "app/hooks/statsHooks"
 import { useContactYearOptions, useYearMonthOrAllContacts } from "app/hooks/contactsHooks"
+import { getNumOfDaysInMonth } from "app/utils/dateUtils"
 
 export default function ContactsPage() {
 
@@ -20,17 +21,20 @@ export default function ContactsPage() {
   const [pageNum, setPageNum] = useState(0)
   const [numOfHits, setNumOfHits] = useState(0)
   const [hitsPerPage, setHitsPerPage] = useState(10)
-  const [selectedYear, setSelectedYear] = useState('all')
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
   const [selectedMonth, setSelectedMonth] = useState('all')
   const limitsNum = 10
   const [contactsLimit, setContactsLimit] = useState(limitsNum)
+  const date = new Date()
+  const monthStart = `${date.getMonth() + 1}, 01, ${date.getFullYear()}`
+  const monthEnd = `${date.getMonth() + 1}, ${getNumOfDaysInMonth(date)}, ${date.getFullYear()}`
   const dbContacts = useYearMonthOrAllContacts(myUserID, selectedYear, selectedMonth, contactsLimit)
-  const thisMonthContacts = useCurrentMonthContacts(new Date())
+  const thisMonthContacts = useCurrentMonthContacts(monthStart, monthEnd)
   const yearSelectOptions = useContactYearOptions()
   const filters = `ownerID:${myUserID}`
   const showAll = false
 
-  const labelText1 = query.length > 0 ? 
+  const labelText1 = query.length > 0 ?
     <>Showing <span className="bold">{hitsPerPage < numOfHits ? hitsPerPage : numOfHits}</span> of {numOfHits} contacts</> :
     <>Showing <span className="bold">
       {contactsLimit <= dbContacts?.length ? contactsLimit : dbContacts?.length}
@@ -43,7 +47,7 @@ export default function ContactsPage() {
   }
 
   const handleOnChange = (e) => {
-    if(e.target.value.length < 1) {
+    if (e.target.value.length < 1) {
       setQuery('')
     }
     setSearchString(e.target.value)
@@ -52,8 +56,8 @@ export default function ContactsPage() {
   useEffect(() => {
     setNavItem1({ label: "Total Contacts", icon: 'fas fa-users', value: myUser?.contactsNum })
     setNavItem2({ label: "This Month", icon: 'fas fa-calendar-alt', value: thisMonthContacts?.length })
-    setNavItemInfo({ 
-      label: <AppButton 
+    setNavItemInfo({
+      label: <AppButton
         label="Contacts Settings"
         buttonType="invertedBtn"
         leftIcon="fas fa-cog"
@@ -66,7 +70,7 @@ export default function ContactsPage() {
       setNavItem2(null)
       setNavItemInfo(null)
     }
-  },[myUser, thisMonthContacts])
+  }, [myUser, thisMonthContacts])
 
   return (
     <div className="invoices-page contacts-page">
@@ -78,7 +82,7 @@ export default function ContactsPage() {
           { value: 'date', label: 'Date Created' },
           { value: 'name', label: 'Contact Name' },
         ]}
-        rightComponent={query.length > 0 && <i className="fas fa-file-search search-mode-icon"/>}
+        rightComponent={query.length > 0 && <i className="fas fa-file-search search-mode-icon" />}
         searchValue={searchString}
         searchOnChange={(e) => handleOnChange(e)}
         handleOnKeyPress={(e) => executeSearch(e)}

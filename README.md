@@ -3,11 +3,12 @@ InvoiceMe App
 ToDos:
 
 Others
-- sytle all auth pages
+- add payment options for business members, show payment subscriptions in payments page, invoices, customer #, account#, etc.
+ (payments page should have AppTabsBar with payments (payments i send and accept), subscriptions, invoices, customer, account tabs)
 - Edit scheduled invoices
+- sytle all auth pages
 - fix scheduled invoices pubsub functions
 - let users delete their account
-- add stripe for upgrade page and account memberships
 - implement settings in settings page against user settings & implement settings throughout app
 - add in-app toasts (notifs instead of alerts)
 - find html to pdf npm that preserves text and css
