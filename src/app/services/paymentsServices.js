@@ -1,25 +1,22 @@
-import { CardElement } from "@stripe/react-stripe-js"
 import { functions } from "app/firebase/fire"
-import { updateDB } from "./CrudDB"
+import { firebaseArrayAdd, updateDB } from "./CrudDB"
 
-export const createPaymentMethodService = (myUser, userID, stripe, elements, setLoading) => {
-  if(myUser?.stripe?.paymentMethodID) return Promise.resolve(myUser.stripe.paymentMethodID)
-  else if (elements == null) return
-    return stripe.createPaymentMethod({
-      type: 'card',
-      card: elements.getElement(CardElement),
-    })
-    .then((res) => {
-      return res.paymentMethod.id
-    })
-    .catch((error) => {
-      setLoading(false)
-      console.log('Error creating payment method', error)
-    })
+export const createPaymentMethodService = (data, setLoading) => {
+  return functions.httpsCallable('createPaymentMethod')(data)
+  .then((res) => {
+    return res.data.id
+  })
+  .catch((error) => {
+    setLoading(false)
+    console.log('Error creating payment method', error)
+  })
 }
 
 export const createCustomerService = (myUser, userID, data, setLoading) => {
-  if(myUser?.stripe?.stripeCustomerID) return Promise.resolve(myUser.stripe.stripeCustomerID)
+  if(myUser?.stripe?.stripeCustomerID) {
+    console.log('Customer already exists')
+    return Promise.resolve(myUser.stripe.stripeCustomerID)
+  }
   return functions.httpsCallable('createStripeCustomer')(data)
   .then((res) => {
     return updateDB('users', userID, {
@@ -45,7 +42,7 @@ export const attachPaymentMethodsService = (userID, data, setLoading) => {
   return functions.httpsCallable('attachPaymentMethod')(data)
   .then((res) => {
     return updateDB('users', userID, {
-      "stripe.paymentMethodID": res.data.id,
+      "stripe.paymentMethods": firebaseArrayAdd(res.data.id),
     })
     .then(() => {
       setLoading(false)
@@ -59,12 +56,15 @@ export const attachPaymentMethodsService = (userID, data, setLoading) => {
   })
 }
 
-export const createSubscriptionService = (userID, data, setLoading) => {
+export const createSubscriptionService = (myUser, userID, data, setLoading) => {
+  if(myUser?.stripe?.subscriptionID) {
+    console.log('Subscription already exists')
+    return Promise.resolve(myUser.stripe.subscriptionID)
+  }
   return functions.httpsCallable('createStripeSubscription')(data)
   .then((res) => {
     return updateDB('users', userID, {
       "stripe.stripeSubscriptionID": res.data.id,
-      "stripe.stripeSubscriptionStatus": res.data.id,
     })
     .then(() => {
       setLoading(false)

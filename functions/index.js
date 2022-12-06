@@ -174,6 +174,20 @@ exports.deleteStripeAccount = functions
   return account
 })
 
+exports.createPaymentMethod = functions
+.https.onCall(async(data, context) => {
+  const paymentMethod = await stripe.paymentMethods.create({
+    type: data.type,
+    card: {
+      number: data.cardNumber,
+      exp_month: data.expiryMonth,
+      exp_year: data.expiryYear,
+      cvc: data.cvc,
+    },
+  })
+  return paymentMethod
+})
+
 exports.createStripeCustomer = functions
 .https.onCall(async(data, context) => {
   console.log(data)

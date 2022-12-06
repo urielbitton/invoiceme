@@ -1,25 +1,35 @@
-import React, { useContext } from 'react'
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
+import React, { useContext, useState } from 'react'
 import { StoreContext } from "app/store/store"
-import AppButton from "../ui/AppButton"
 import { attachPaymentMethodsService, createCustomerService, createPaymentMethodService, 
   createSubscriptionService } from "app/services/paymentsServices"
-import { firebaseArrayAdd, updateDB } from "app/services/CrudDB"
+import { updateDB } from "app/services/CrudDB"
 import { useNavigate } from "react-router-dom"
+import StripeCheckoutForm from "./StripeCheckoutForm"
 
 export default function StripeCreateSubscription(props) {
 
   const { myUserID, myUser, myUserName, setPageLoading } = useContext(StoreContext)
   const { payBtnLabel } = props
-  const stripe = useStripe()
-  const elements = useElements()
-  const pricePlanID = 'price_1MBgssAp3OtccpN9TKmXnu5t'
+  const [cardNumber, setCardNumber] = useState('')
+  const [expiryMonth, setExpiryMonth] = useState('')
+  const [expiryYear, setExpiryYear] = useState('')
+  const [cvc, setCvc] = useState('')
+  const businessMemberPlanID = 'price_1MBgssAp3OtccpN9TKmXnu5t'
   const navigate = useNavigate()
 
   const startSubscription = (e) => {
     e.preventDefault()
     setPageLoading(true)
-    createPaymentMethodService(myUser, myUserID, stripe, elements, setPageLoading)
+    createPaymentMethodService(
+      {
+        cardNumber,
+        expiryMonth,
+        expiryYear,
+        cvc,
+        type: 'card'
+      }, 
+      setPageLoading
+    )
     .then((paymentMethodID) => {
       setPageLoading(true)
       createCustomerService(
@@ -49,10 +59,11 @@ export default function StripeCreateSubscription(props) {
         .then(() => {
           setPageLoading(true)
           createSubscriptionService(
+            myUser,
             myUserID, 
             {
               customerID,
-              priceID: pricePlanID,
+              priceID: businessMemberPlanID,
               quantity: 1,
               paymentMethodID
             }, 
@@ -63,7 +74,7 @@ export default function StripeCreateSubscription(props) {
             alert('Subscription created.')
             return updateDB('users', myUserID, {
               memberType: 'business',
-              "stripe.subscriptions": firebaseArrayAdd(subscriptionID) 
+              "stripe.subscriptionID": subscriptionID
             })
             .then(() => {
               navigate('/my-account/payments')
@@ -81,27 +92,17 @@ export default function StripeCreateSubscription(props) {
   }
 
   return (
-    <form onSubmit={startSubscription}>
-      <CardElement 
-        options={{
-          style: {
-            base: {
-              fontSize: '15px',
-              color: 'var(--grayText)',
-              '::placeholder': {
-                color: '#aaa',
-              },
-            },
-            invalid: {
-              color: '#9e2146',
-            },
-          }
-        }} 
-      />
-      <AppButton 
-        label={payBtnLabel}
-        disabled={!stripe || !elements} 
-      />
-    </form>
+    <StripeCheckoutForm
+      onSubmit={startSubscription}
+      number={cardNumber}
+      setNumber={setCardNumber}
+      expiryMonth={expiryMonth}
+      setExpiryMonth={setExpiryMonth}
+      expiryYear={expiryYear}
+      setExpiryYear={setExpiryYear}
+      cvc={cvc}
+      setCvc={setCvc}
+      payBtnLabel={payBtnLabel}
+    />
   )
 }

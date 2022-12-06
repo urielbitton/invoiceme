@@ -232,8 +232,3 @@
 .upgrade-checkout-page .page-content .payment-container .billing-details form {
   margin: 10px 0;
 }
-.upgrade-checkout-page .page-content .payment-container .billing-details form .appButton {
-  margin-top: 20px;
-  padding: 8px 12px;
-  width: 100%;
-}

@@ -17,3 +17,4 @@ Others
 - add SearchAddressInput for necessary address inputs
 - verifiy email to create account
 - add google and facebook auth
+- protect all business access pages with memberType check

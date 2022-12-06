@@ -1,17 +1,17 @@
 // @ts-nocheck
 
 export const addLeadingZeros = (number) => {
-  return number < 10 ? "0"+number : number
+  return number < 10 ? "0" + number : number
 }
 
 export const truncateText = (text, charsNum) => {
-  return text?.length > charsNum ? (text?.slice(0,charsNum) + "...") : text
+  return text?.length > charsNum ? (text?.slice(0, charsNum) + "...") : text
 }
 
 export const formatPhoneNumber = (phoneNumberString) => {
   let cleaned = ('' + phoneNumberString).replace(/\D/g, '')
   let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-  if(match) {
+  if (match) {
     return '(' + match[1] + ') ' + match[2] + '-' + match[3]
   }
   return null
@@ -19,6 +19,31 @@ export const formatPhoneNumber = (phoneNumberString) => {
 
 export const formatCurrency = (number) => {
   return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+export const formatCardNumber = (number) => {
+  let numeric = number.replace(/\D/g, '')
+  var v = numeric.replace(/\s+/g, '').replace(/[^0-9]/gi, '')
+  var matches = v.match(/\d{4,16}/g);
+  var match = matches && matches[0] || ''
+  var parts = []
+  for (let i = 0, len = match.length; i < len; i += 4) {
+    parts.push(match.substring(i, i + 4))
+  }
+  if (parts.length) {
+    return parts.join(' ')
+  }
+  else {
+    return numeric
+  }
+}
+
+export const formatExpiryNum = (number) => {
+  return number.replace(/\D/g, '')
+} 
+
+export const formatCvcNum = (number) => {
+  return number.replace(/\D/g, '')
 }
 
 export const validateEmail = (email) => {
@@ -29,6 +54,20 @@ export const validateEmail = (email) => {
 export const validatePhone = (phone) => {
   const re = /^\d{10}$/
   return re.test(String(phone))
+}
+
+export const isExpiryInFuture = (expiryMonth, expiryYear) => {
+  const currentYear = new Date().getFullYear()
+  const currentMonth = new Date().getMonth() + 1
+  const expiryYearNum = +(`20${expiryYear}`)
+  const expiryMonthNum = +(expiryMonth)
+  if (expiryYearNum > currentYear) {
+    return true
+  }
+  else if (expiryYearNum === currentYear && expiryMonthNum >= currentMonth) {
+    return true
+  }
+  return false
 }
 
 export const textHasURL = (text) => {
@@ -59,7 +98,7 @@ export const extractAllLinksFromText = (text) => {
 }
 
 export const scrapeTitleFromLink = (fetchedLink) => {
-  if(fetchedLink) {
+  if (fetchedLink) {
     let title = null
     let titleRegex = new RegExp("<title>(.*?)</title>", "g")
     let match = titleRegex.exec(fetchedLink)
@@ -72,7 +111,7 @@ export const scrapeTitleFromLink = (fetchedLink) => {
 
 //keep only the domain from a link
 export const extractDomainFromLink = (link) => {
-  if(link) {
+  if (link) {
     let domain = null
     let domainRegex = new RegExp("(https?:\/\/)?(www\.)?([^\/]*)", "g")
     let match = domainRegex.exec(link)
@@ -84,14 +123,14 @@ export const extractDomainFromLink = (link) => {
 }
 
 export const scrapeImgFromLink = (fetchedLink, link) => {
-  if(fetchedLink) {
+  if (fetchedLink) {
     let img = null
     let imgRegex = new RegExp("<img.*?src=\"(.*?)\"", "g")
     let match = imgRegex.exec(fetchedLink)
     if (match !== null) {
       img = match[1]
     }
-    if(img?.startsWith('/')) {
+    if (img?.startsWith('/')) {
       return `https://${extractDomainFromLink(link)}${img}`
     }
     return img
@@ -99,7 +138,7 @@ export const scrapeImgFromLink = (fetchedLink, link) => {
 }
 
 export const scrapeMetaDescriptionFromLink = (fetchedLink) => {
-  if(fetchedLink) {
+  if (fetchedLink) {
     let metaDescription = null
     let metaDescriptionRegex = new RegExp("<meta.*?name=\"description\".*?content=\"(.*?)\"", "g")
     let match = metaDescriptionRegex.exec(fetchedLink)
@@ -117,11 +156,11 @@ export const detectAndUnderlineAllLinksInText = (text) => {
     newText = newText.replace(link, `<a href="${link}" target="_blank">${link}</a>`)
   })
   return newText
-} 
+}
 
 export const isElementInView = (el) => {
   let rect = el.getBoundingClientRect()
-  return rect.bottom > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight + 300) 
+  return rect.bottom > 0 && rect.top < (window.innerHeight || document.documentElement.clientHeight + 300)
 }
 
 export const isNumbersInRange = (number1, number2, range) => {
@@ -132,11 +171,11 @@ export const toggleFullScreen = () => {
   const elem = document.documentElement
   if (elem.requestFullscreen) {
     elem.requestFullscreen()
-  } else if (elem.mozRequestFullScreen) { 
+  } else if (elem.mozRequestFullScreen) {
     elem.mozRequestFullScreen()
-  } else if (elem.webkitRequestFullscreen) { 
+  } else if (elem.webkitRequestFullscreen) {
     elem.webkitRequestFullscreen()
-  } else if (elem.msRequestFullscreen) { 
+  } else if (elem.msRequestFullscreen) {
     elem.msRequestFullscreen()
   }
 }
@@ -146,13 +185,13 @@ export const convertMetersPerSecondToKmPerHour = (metersPerSecond) => {
 }
 
 export const divideRateByTime = (rate, time) => {
-  if(time === 'Day') 
+  if (time === 'Day')
     return +rate / 24
-  else if(time === 'Week') 
+  else if (time === 'Week')
     return +rate / 168
-  else if(time === 'Month') 
+  else if (time === 'Month')
     return +rate / 720
-  else 
+  else
     return +rate
 }
 
@@ -163,9 +202,9 @@ export const shuffleString = (string) => {
 export const generateOrderID = () => {
   const timestamp = Date.now().toString()
   const scrambledTimestamp = shuffleString(timestamp)
-  const orderID = `${(scrambledTimestamp.slice(0,4))}-`+
-    `${(scrambledTimestamp.slice(4,10))}`+
-    `-${(scrambledTimestamp.slice(10,13))}${Math.floor(Math.random() * 1000)}`
+  const orderID = `${(scrambledTimestamp.slice(0, 4))}-` +
+    `${(scrambledTimestamp.slice(4, 10))}` +
+    `-${(scrambledTimestamp.slice(10, 13))}${Math.floor(Math.random() * 1000)}`
   return orderID
 }
 
@@ -186,9 +225,9 @@ export const printElement = (ref) => {
 
 export const displayGreeting = () => {
   const hour = new Date().getHours()
-  if(hour < 12) {
+  if (hour < 12) {
     return 'Good morning'
-  } else if(hour < 18) {
+  } else if (hour < 18) {
     return 'Good afternoon'
   } else {
     return 'Good evening'
@@ -197,13 +236,13 @@ export const displayGreeting = () => {
 
 //convert object to array of objects with key as property
 export const objectToArray = (obj, keyLabel) => {
-  if(obj) {
-    return Object.entries(obj).map(([key, value]) => ({[keyLabel]: key, ...value}))
+  if (obj) {
+    return Object.entries(obj).map(([key, value]) => ({ [keyLabel]: key, ...value }))
   }
 }
 
 export const sortArrayByProperty = (array, property, order) => {
-  if(order === 'asc') {
+  if (order === 'asc') {
     return array.sort((a, b) => a[property].toString() > b[property].toString() ? 1 : -1)
   } else {
     return array.sort((a, b) => b[property].toString() < a[property].toString() ? 1 : -1)

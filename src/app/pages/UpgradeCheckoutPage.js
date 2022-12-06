@@ -1,15 +1,13 @@
-import { Elements } from "@stripe/react-stripe-js"
-import { loadStripe } from "@stripe/stripe-js"
 import StripeCreateSubscription from "app/components/payments/StripeCreateSubscription"
+import AppButton from "app/components/ui/AppButton"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect } from 'react'
 import './styles/UpgradePage.css'
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_TEST_KEY)
-
 export default function UpgradeCheckoutPage() {
 
-  const { setCompactNav } = useContext(StoreContext)
+  const { setCompactNav, myMemberType } = useContext(StoreContext)
+  const isBusiness = myMemberType === 'business'
 
   useEffect(() => {
     setCompactNav(true)
@@ -17,7 +15,7 @@ export default function UpgradeCheckoutPage() {
   }, [])
 
   return (
-    <div className="upgrade-checkout-page">
+    !isBusiness ? <div className="upgrade-checkout-page">
       <div className="page-content">
         <div className="text-info">
           <h4>Why should you upgrade to business?</h4>
@@ -56,11 +54,9 @@ export default function UpgradeCheckoutPage() {
           <hr />
           <div className="billing-details">
             <h5>Billing Details</h5>
-            <Elements stripe={stripePromise}>
-              <StripeCreateSubscription
-                payBtnLabel="Upgrade Now"
-              />
-            </Elements>
+            <StripeCreateSubscription
+              payBtnLabel="Upgrade Now"
+            />
             <small>
               <i className="fas fa-lock" />
               Card information is securely processed by Stripe.
@@ -68,6 +64,14 @@ export default function UpgradeCheckoutPage() {
           </div>
         </div>
       </div>
-    </div>
+    </div> :
+    <>
+      You are already a business member.
+      <br/><br/>
+      <AppButton
+        label="My Account"
+        url="/my-account"
+      />
+    </>
   )
 }

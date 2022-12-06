@@ -1,0 +1,51 @@
+.stripe-checkout-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+.stripe-checkout-form .card-label i.fa-credit-card {
+  z-index: 1;
+  position: absolute;
+  top: 11px;
+  left: 10px;
+  color: var(--inputBorderColor);
+}
+.stripe-checkout-form label i.fa-credit-card.active {
+  color: var(--primary);
+}
+.stripe-checkout-form .card-label input {
+  padding-left: 35px;
+}
+.stripe-checkout-form label.full,
+.stripe-checkout-form .appButton {
+  grid-column: 1 / -1;
+}
+.stripe-checkout-form input {
+  height: 37px;
+  border: 1px solid var(--inputBorderColor);
+  border-radius: 5px;
+  font-size: 15px;
+}
+.stripe-checkout-form .expiry-input {
+  display: flex;
+  align-items: center;
+  height: 37px;
+  border: 1px solid var(--inputBorderColor);
+  border-radius: 5px;
+  padding: 0 10px;
+}
+.stripe-checkout-form .expiry-input input {
+  border: none;
+  border-radius: 0;
+  background: none;
+  width: 30px;
+  padding: 10px 0;
+}
+.stripe-checkout-form .expiry-input span {
+  color: var(--tableBorderColor);
+  margin-right: 5px;
+  left: -3px;
+  top: 1px;
+  font-size: 20px;
+  user-select: none;
+}

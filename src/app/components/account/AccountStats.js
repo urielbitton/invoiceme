@@ -19,7 +19,7 @@ import './styles/AccountStats.css'
 
 export default function AccountStats() {
 
-  const { myUser } = useContext(StoreContext)
+  const { myUser, myMemberType } = useContext(StoreContext)
   const date = new Date()
   const [selectedYear, setSelectedYear] = useState(date.getFullYear())
   const [selectedMonth, setSelectedMonth] = useState(date.getMonth())
@@ -40,6 +40,7 @@ export default function AccountStats() {
   const allYearsOptions = [...invoiceYearOptions, ...estimateYearOptions, ...contactYearOptions]
   // @ts-ignore
   const allYearsSelectOptions = [...new Map(allYearsOptions.map(item => [item['label'], item])).values()]
+  const isBusiness = myMemberType === 'business'
 
   const extendedStatsList = extendedStatsData(myUser)?.map((stat, index) => {
     return <Dashbox
@@ -55,7 +56,7 @@ export default function AccountStats() {
     setActiveMonth(selectedMonth)
   }
 
-  return (
+  return isBusiness ? (
     <div className="account-stats">
       <h4>All Time Counts</h4>
       <div className="stats-grid">
@@ -118,5 +119,14 @@ export default function AccountStats() {
         />
       </div>
     </div>
-  )
+  ) :
+  <>
+  <br/>
+    Upgrade your membership to view extended stats.<br/><br/>
+    <AppButton
+      label="Upgrade"
+      url="/upgrade"
+      leftIcon="fal fa-rocket-launch"
+    />
+  </>
 }

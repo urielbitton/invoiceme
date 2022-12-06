@@ -7,10 +7,11 @@
 .account-payments .payments-section {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  align-items: flex-start;
+  margin-bottom: 40px;
 }
 .account-payments .payments-section > h4 {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-size: 15px;
   color: var(--darkGrayText);
 }
@@ -66,4 +67,10 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+}
+
+
+.account-payments .payments-section .app-badge h6 {
+  font-size: 15px;
+  font-weight: 600;
 }

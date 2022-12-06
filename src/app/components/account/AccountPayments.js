@@ -4,6 +4,7 @@ import { createStripeAccountService,
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom"
+import AppBadge from "../ui/AppBadge"
 import AppButton from "../ui/AppButton"
 import './styles/AccountPayments.css'
 
@@ -105,6 +106,11 @@ export default function AccountPayments() {
       }
       <div className="payments-section">
         <h4>My Payments</h4>
+        <AppButton
+          label="View My Payments"
+          url="/payments"
+          buttonType="outlineBlueBtn"
+        />
       </div>
       <div className="payments-section">
         <h4>My Cards</h4>
@@ -140,6 +146,13 @@ export default function AccountPayments() {
             </div>
           </div>
         }
+      </div>
+      <div className="payments-section">
+        <h4>Account Type</h4>
+        <AppBadge
+          label={myUser?.memberType}
+          noIcon
+        />
       </div>
     </div>
   )
