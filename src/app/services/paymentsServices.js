@@ -63,8 +63,8 @@ export const createSubscriptionService = (userID, data, setLoading) => {
   return functions.httpsCallable('createStripeSubscription')(data)
   .then((res) => {
     return updateDB('users', userID, {
-      "stripe.stripeSubscriptionID": res.data.subscriptionID,
-      "stripe.stripeSubscriptionStatus": res.data.subscriptionStatus,
+      "stripe.stripeSubscriptionID": res.data.id,
+      "stripe.stripeSubscriptionStatus": res.data.id,
     })
     .then(() => {
       setLoading(false)

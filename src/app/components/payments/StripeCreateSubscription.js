@@ -47,6 +47,7 @@ export default function StripeCreateSubscription(props) {
           setPageLoading
         )
         .then(() => {
+          setPageLoading(true)
           createSubscriptionService(
             myUserID, 
             {
