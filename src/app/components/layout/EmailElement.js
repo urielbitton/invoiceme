@@ -33,14 +33,14 @@ export default function EmailElement(props) {
           bgColor="var(--primary)"
           iconColor="#fff"
           dimensions="32px"
-          iconSize="15px"
+          iconSize="13px"
         />
       </div>
       <div className="text-info">
         <div className="texts">
           <small>{truncateText(from, 30)}</small>
           <small>{truncateText(subject, 30)}</small>
-          <p>{truncateText(html, 28)}</p>
+          <p>{truncateText(html, 60)}</p>
           <small title={convertClassicDate(dateSent?.toDate())}>{getTimeAgo(dateSent?.toDate())}</small>
         </div>  
         <div 

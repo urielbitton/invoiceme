@@ -37,12 +37,12 @@ export default function NotificationElement(props) {
           bgColor="var(--primary)"
           iconColor="#fff"
           dimensions="32px"
-          iconSize="15px"
+          iconSize="13px"
         />
       </div>
       <div className="text-info">
         <div className="texts">
-          <p>{truncateText(text, 94)}</p>
+          <p>{truncateText(text, 60)}</p>
           <small title={convertClassicDate(dateCreated?.toDate())}>{getTimeAgo(dateCreated?.toDate())}</small>
         </div>  
         <div 

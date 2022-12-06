@@ -159,6 +159,19 @@ export default function Account() {
           disabled={!!!allowSave}
         />
       </div>
+      <div className="account-section">
+        <h4>Delete My Account</h4>
+        <div>
+        <AppInput
+          label="Delete Account"
+          placeholder="Type DELETE to confirm"
+        />
+        <AppButton
+          label="Delete My Account"
+          buttonType="outlineRedBtn"
+        />
+        </div>
+      </div>
     </div>
   )
 }

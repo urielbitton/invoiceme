@@ -1,0 +1,239 @@
+.upgrade-page .upgrade-content {
+  width: 100%;
+  padding: 60px 40px;
+  background: #fff;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+.upgrade-page .upgrade-content img {
+  height: 250px;
+  filter: drop-shadow(0 3px 13px rgba(0, 0, 0, 0.4));
+  margin-bottom: 20px;
+}
+.upgrade-page .upgrade-content h4 {
+  font-size: 30px;
+  color: var(--darkGrayText);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.upgrade-page .upgrade-content p {
+  font-size: 15px;
+  color: var(--grayText);
+  font-weight: 400;
+  text-align: center;
+}
+
+.upgrade-page .upgrade-content .plans-flex {
+  display: flex;
+  gap: 40px;
+  margin-top: 100px;
+}
+.upgrade-page .upgrade-content .plans-flex .plan-item {
+  display: flex;
+  flex-direction: column;
+}
+ 
+.upgrade-page .upgrade-content .plan-details {
+  width: 300px;
+  padding: 35px 25px;
+  border-radius: 5px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s;
+  border: 1px solid var(--inputBorderColor);
+}
+.upgrade-page .upgrade-content .plan-details h5 {
+  font-size: 18px;
+  color: var(--darkGrayText);
+  font-weight: 700;
+  margin-bottom: 5px;
+  text-align: center;
+}
+.upgrade-page .upgrade-content .plan-details small {
+  font-size: 13px;
+  color: var(--grayText);
+  opacity: 0.7;
+  text-align: center;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.upgrade-page .upgrade-content .plan-details big {
+  color: #000;
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 45px;
+  text-align: center;
+}
+.upgrade-page .upgrade-content .plan-details big sup {
+  font-size: 13px;
+  font-weight: 600;
+  top: -6px;
+}
+.upgrade-page .upgrade-content .plan-details big sub {
+  font-size: 14px;
+  font-weight: 500;
+  top: -11px;
+}
+.upgrade-page .upgrade-content .plan-details button {
+  width: 100%;
+}
+.upgrade-page .upgrade-content .plan-list {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 20px;
+}
+.upgrade-page .upgrade-content .plan-list h6 {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--darkGrayText);
+  border-bottom: 1px solid var(--inputBorderColor);
+}
+.upgrade-page .upgrade-content .plan-list h6 i {
+  color: var(--primary);
+}
+
+.upgrade-checkout-page {
+  display: flex;
+  flex-direction: column;
+}
+.upgrade-checkout-page .page-content {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 50px;
+  margin-top: 20px;
+}
+.upgrade-checkout-page .page-content .text-info {
+  width: 300px;
+}
+.upgrade-checkout-page .page-content .text-info h4 {
+  font-size: 30px;
+  color: var(--darkGrayText);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.upgrade-checkout-page .page-content .text-info p {
+  font-size: 15px;
+  color: var(--grayText);
+  font-weight: 400;
+}
+.upgrade-checkout-page .page-content .text-info .reasons-list {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.upgrade-checkout-page .page-content .text-info .reasons-list .reason {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid var(--inputBorderColor);
+  padding: 15px 0;
+}
+.upgrade-checkout-page .page-content .text-info .reasons-list .reason .texts {
+  display: flex;
+  flex-direction: column;
+}
+.upgrade-checkout-page .page-content .text-info .reasons-list .reason i {
+  font-size: 22px;
+  color: var(--primary);
+}
+.upgrade-checkout-page .page-content .text-info .reasons-list .reason h5 {
+  font-size: 13px;
+  color: var(--darkGrayText);
+  font-weight: 600;
+}
+.upgrade-checkout-page .page-content .text-info .reasons-list .reason p {
+  font-size: 12px;
+  color: var(--grayText);
+  font-weight: 500;
+}
+
+.upgrade-checkout-page .page-content .payment-container {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  background: #fff;
+  border: 1px solid var(--inputBorderColor);
+  border-radius: 5px;
+}
+.upgrade-checkout-page .page-content .payment-container > h4 {
+  text-align: center;
+  font-size: 20px;
+  color: var(--darkGrayText);
+  font-weight: 600;
+}
+.upgrade-checkout-page .page-content .payment-container .plan-details {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  padding: 15px;
+  width: 100%;
+  background: #fafafa;
+}
+.upgrade-checkout-page .page-content .payment-container .plan-details > span {
+  font-size: 13px;
+  color: var(--grayText);
+}
+.upgrade-checkout-page .page-content .payment-container .plan-details h5 {
+  font-size: 19px;
+  color: var(--darkGrayText);
+  font-weight: 700;
+  margin: 5px 0;
+}
+.upgrade-checkout-page .page-content .payment-container .plan-details h5 small {
+  color: var(--darkGrayText);
+  font-weight: 600;
+  font-size: 14px;
+  opacity: 1;
+}
+.upgrade-checkout-page .page-content .payment-container .plan-details small {
+  font-size: 12px;
+  color: var(--grayText);
+  opacity: 0.7;
+  font-weight: 500;
+}
+.upgrade-checkout-page .page-content .payment-container hr {
+  background: var(--inputBorderColor);
+  width: 100%;
+  height: 1px;
+  margin: 20px 0;
+}
+.upgrade-checkout-page .page-content .payment-container .billing-details {
+  display: flex;
+  flex-direction: column;
+}
+.upgrade-checkout-page .page-content .payment-container .billing-details > h5 {
+  margin-bottom: 10px;
+  color: var(--darkGrayText);
+}
+.upgrade-checkout-page .page-content .payment-container .billing-details small {
+  font-size: 11px;
+  color: var(--grayText);
+  font-weight: 500;
+  opacity: 0.7;
+  font-weight: 500;
+  margin-top: 10px;
+  text-align: center;
+}
+.upgrade-checkout-page .page-content .payment-container .billing-details small i {
+  margin-right: 10px;
+}
+.upgrade-checkout-page .page-content .payment-container .billing-details form {
+  margin: 10px 0;
+}
+.upgrade-checkout-page .page-content .payment-container .billing-details form .appButton {
+  margin-top: 20px;
+  padding: 8px 12px;
+  width: 100%;
+}

@@ -5,7 +5,7 @@ export default function NewPaymentPage() {
   return (
     <div>
       <HelmetTitle title="New Payment" />
-      NewPament
+      NewPayment
     </div>
   )
 }

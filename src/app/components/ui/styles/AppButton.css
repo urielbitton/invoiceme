@@ -128,3 +128,14 @@
 .appButton.tabBlueBtn:hover {
   background: var(--extraLightPrimary);
 }
+
+.appButton.tabRedBtn {
+  font-size: 12px;
+  padding: 8px 10px;
+  color: var(--red);
+  background: none;
+}
+.appButton.tabRedBtn:hover {
+  background: var(--lightRed);
+}
+

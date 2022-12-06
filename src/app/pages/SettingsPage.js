@@ -136,7 +136,7 @@ export default function SettingsPage() {
           Notifications
         </NavLink>
         <NavLink to="emails">
-          Emails
+          Emails & SMS
         </NavLink>
       </AppTabsBar>
       <div className="settings-page-routes">

@@ -1,31 +1,24 @@
 import { createStripeAccountService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import SettingsSection from "./SettingsSection"
 import SettingsTitles from "./SettingsTitles"
 
 export default function PaymentsSettings() {
 
-  const { myMemberType, myUser, myUserName, myUserID,
-    setPageLoading } = useContext(StoreContext)
+  const { myMemberType, myUser, myUserID, setPageLoading } = useContext(StoreContext)
   const isBusiness = myMemberType === "business"
+  const [accountLink, setAccountLink] = useState(null)
 
   const connectStripe = () => {
     setPageLoading(true)
-    const userData = {
-      name: myUserName,
-      email: myUser.email,
-      phone: myUser.phone,
-      metadata: {
-        userID: myUserID,
-        address: myUser.address,
-      }
-    }
-    createStripeAccountService(userData)
-    .then((res) => {
+    createStripeAccountService(myUserID, {
+      country: myUser?.countryCode,
+    })
+    .then((accountLink) => {
       alert("Stripe account connected successfully.")
-      console.log(res)
+      setAccountLink(accountLink.url)
       setPageLoading(false)
     })
     .catch(err => {
@@ -40,7 +33,6 @@ export default function PaymentsSettings() {
         label="Payments"
         sublabel="Manage and choose your payment options."
         icon="fas fa-credit-card"
-        badge="Business"
       />
       <SettingsSection
         label="Stripe Payments"
@@ -48,16 +40,7 @@ export default function PaymentsSettings() {
         flexStart
       >
         <AppButton
-          label={myUser?.stripeCustomerID  ? "Stripe connected" : "Connect Stripe"}
-          buttonType={!myUser?.stripeCustomerID ? "outlineBlueBtn" : 'primary'}
-          leftIcon="fab fa-stripe-s"
-          onClick={() => {
-            isBusiness ? 
-            myUser?.stripeCustomerID ?
-            alert('Stripe account already connected.') :
-            connectStripe() :
-            alert("You must be a business member to access this feature.")
-          }}
+          label="Connect Stripe"
         />
       </SettingsSection>
       <SettingsSection

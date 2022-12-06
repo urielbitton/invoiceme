@@ -4,15 +4,17 @@ const firebase = require("firebase-admin")
 firebase.initializeApp()
 const firestore = firebase.firestore()
 const sgMail = require('@sendgrid/mail')
-// @ts-ignore
-const stripe = require('stripe')('sk_test_51M9uofAp3OtccpN9BHYvw5vnFUiWFPFljepU3FB2RQ2z7udZYeGmiNHE1PiZ01eXZk9FaOZNKGHEXKd9NFUpsGsg00Y8wW8uM8')
 
 const APP_ID = functions.config().algolia.app
 const API_KEY = functions.config().algolia.key
 sgMail.setApiKey(functions.config().sendgrid.key)
 const twilioSid = functions.config().twilio.sid
 const twilioToken = functions.config().twilio.token
+const stripeLiveKey = functions.config().stripe.key
+const stripeTestKey = functions.config().stripe.testkey
 const twilio = require('twilio')(twilioSid, twilioToken)
+// @ts-ignore
+const stripe = require('stripe')(stripeTestKey)
 
 // @ts-ignore
 const client = algoliasearch(APP_ID, API_KEY)
@@ -116,10 +118,9 @@ exports.callPhone = functions
 // Twilio SMS
 exports.sendSMS = functions
   .https.onCall((data, context) => {
-    const { phone, message } = data
     return twilio.messages.create({
-      body: message,
-      to: phone,
+      body: data.message,
+      to: data.phone,
       from: '+15087156100',
       mediaUrl: data.mediaUrl
     })
@@ -131,16 +132,93 @@ exports.sendSMS = functions
 //Stripe calls
 exports.createStripeAccount = functions
 .https.onCall(async(data, context) => {
-  const customer = await stripe.customers.create(data)
-  return customer
+  const account = await stripe.accounts.create({
+    country: data.country,
+    email: data.email,
+    individual: {
+      first_name: data.firstName,
+      last_name: data.lastName,
+      phone: data.phone,
+      address: {
+        city: data.city,
+        state: data.state,
+        country: data.country,
+        line1: data.address,
+        line2: '',
+        postal_code: data.postcode
+      }
+    },
+    type: 'express',
+    capabilities: {card_payments: {requested: true}, transfers: {requested: true}},
+    business_type: 'individual',
+    business_profile: { url: 'https://invoiceme.pro' },
+  })
+  const accountLink = await stripe.accountLinks.create({
+    account: account.id,
+    refresh_url: 'http://localhost:3000/my-account/payments',
+    return_url: 'http://localhost:3000/my-account/payments?details_submitted=true',
+    type: 'account_onboarding',
+  })
+  return {account, accountLink}
 })
 
 exports.retrieveStripeAccount = functions
 .https.onCall(async(data, context) => {
-  const customer = await stripe.customers.retrieve(data.customerID)
+  const account = await stripe.accounts.retrieve(data.accountID)
+  return account
+})
+
+exports.deleteStripeAccount = functions
+.https.onCall(async(data, context) => {
+  const account = await stripe.accounts.del(data.accountID)
+  return account
+})
+
+exports.createStripeCustomer = functions
+.https.onCall(async(data, context) => {
+  console.log(data)
+  const customer = await stripe.customers.create({
+    name: data.name,
+    email: data.email,
+    address: {
+      city: data.city,
+      state: data.state,
+      country: data.country,
+      line1: data.address,
+      line2: '',
+      postal_code: data.postcode
+    },
+    shipping: null
+  })
   return customer
 })
 
+exports.attachPaymentMethod = functions
+.https.onCall(async(data, context) => {
+  const paymentMethod = await stripe.paymentMethods.attach(
+    data.paymentMethodID,
+    {customer: data.customerID}
+  )
+  stripe.customers.update(data.customerID, {
+    invoice_settings: {
+      default_payment_method: data.paymentMethodID,
+    },
+  })
+  return paymentMethod
+})
+
+exports.createStripeSubscription = functions
+.https.onCall(async(data, context) => {
+  const subscription = await stripe.subscriptions.create({
+    customer: data.customerID,
+    items: [{ price: data.priceID, quantity: data.quantity }],
+    default_payment_method: data.paymentMethodID,
+    payment_settings: {
+      payment_method_types: ['card'],
+    },
+  })
+  return subscription
+})
 
 //Scheduled functions
 

@@ -10,9 +10,15 @@
   margin-bottom: 20px;
 }
 .account-payments .payments-section > h4 {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   font-size: 15px;
   color: var(--darkGrayText);
+}
+
+.account-payments .connect-stripe-btn {
+  margin-bottom: 20px;
+  font-size: 13px;
+  padding: 8px 10px;
 }
 
 .account-payments .account-box {
@@ -24,7 +30,7 @@
   background: #fff;
   box-shadow: var(--newCardShadow);
 }
-.account-payments .account-box i {
+.account-payments .account-box > i {
   color: var(--darkGrayText);
   font-size: 30px;
 }
@@ -49,6 +55,15 @@
 .account-payments .account-box .account-box-info h6 span {
   font-weight: 500;
 }
-.account-payments .account-box .account-box-info button {
-  margin-top: 10px;
+.account-payments .account-box .account-box-info h6 i {
+  color: var(--primary);
+}
+.account-payments .account-box .account-box-info h6 i.fa-times-circle {
+  color: var(--grayText);
+}
+.account-payments .account-box .account-box-info .btn-group {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }

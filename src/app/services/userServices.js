@@ -96,21 +96,23 @@ export const saveMyBusinessInfoService = (userID, myUser, data, uploadedImg, con
   })
 }
 
-export const createStripeAccountService = (data) => {
+//Stripe onboarding
+export const createStripeAccountService = (userID, data) => {
   return functions.httpsCallable('createStripeAccount')(data)
   .then(result => {
-    return updateDB('users', data.metadata.userID, {
-      stripeCustomerID: result.data.id
+    return updateDB('users', userID, {
+      "stripe.stripeAccountID": result.data.account.id,
+      "stripe.stripeDetailsSubmitted": result.data.account.details_submitted,
     })
     .then(() => {
       createNotification(
-        data.metadata.userID,
-        'Stripe Account Connected',
-        `Your Stripe account has been connected successfully.`,
+        userID,
+        'Stripe Account Created',
+        `Your Stripe account has been created successfully.`,
         'fab fa-stripe-s',
-        `/settings/payments`
+        `/my-account/payments`
       )
-      return result
+      return result.data.accountLink
     })
     .catch(err => console.log(err))
   })
@@ -120,6 +122,24 @@ export const createStripeAccountService = (data) => {
 export const retrieveStripeAccountService = (customerID) => {
   return functions.httpsCallable('retrieveStripeAccount')({customerID})
   .then(result => {
+    return result.data
+  })
+  .catch(err => console.log(err))
+}
+
+export const deleteStripeAccountService = (userID, customerID) => {
+  return functions.httpsCallable('deleteStripeAccount')({customerID})
+  .then(result => {
+    createNotification(
+      userID,
+      'Stripe Account Deleted',
+      `Your Stripe account has been deleted successfully.`,
+      'fab fa-stripe-s',
+      `/settings/payments`
+    )
+    updateDB('users', userID, {
+      "stripe.stripeAccountID": null 
+    })
     return result
   })
   .catch(err => console.log(err))

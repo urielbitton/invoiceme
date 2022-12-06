@@ -9,7 +9,7 @@ import { AppInput } from "../ui/AppInputs"
 
 export default function Sidebar() {
 
-  const { showMobileSidebar, setShowMobileSidebar } = useContext(StoreContext)
+  const { myMemberType, showMobileSidebar, setShowMobileSidebar } = useContext(StoreContext)
   const location = useLocation()
 
   const navLinksList = menuLinks.map((link, index) => {
@@ -23,10 +23,10 @@ export default function Sidebar() {
   })
 
   useEffect(() => {
-    if(showMobileSidebar) {
+    if (showMobileSidebar) {
       setShowMobileSidebar(false)
     }
-  },[location])
+  }, [location])
 
   return (
     <div className={`sidebar ${showMobileSidebar ? 'show-mobile' : ''}`}>
@@ -48,11 +48,14 @@ export default function Sidebar() {
         />
       </div>
       <div className="bottom">
-        <AppButton
-          label="Upgrade to Business"
-          leftIcon="far fa-rocket-launch"
-          url="/upgrade"
-        />
+        {
+          myMemberType !== 'business' &&
+          <AppButton
+            label="Upgrade to Business"
+            leftIcon="far fa-rocket-launch"
+            url="/upgrade"
+          />
+        }
       </div>
       <i
         className="fal fa-times close-sidebar"
