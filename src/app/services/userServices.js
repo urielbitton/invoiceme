@@ -144,3 +144,11 @@ export const deleteStripeAccountService = (userID, customerID) => {
   })
   .catch(err => console.log(err))
 }
+
+export const getSubscriptionsByCustomerService = (customerID) => {
+  return functions.httpsCallable('getSubscriptionsByCustomerID')({customerID})
+  .then(result => {
+    return result.data
+  })
+  .catch(err => console.log(err))
+}

@@ -77,3 +77,23 @@ export const createSubscriptionService = (userID, data, setLoading) => {
     console.log('Error creating subscription', error)
   })
 }
+
+export const retrievePaymentMethodService = (data) => {
+  return functions.httpsCallable('retrievePaymentMethod')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error retrieving payment method', error)
+  })
+}
+
+export const cancelSubscriptionService = (data) => {
+  return functions.httpsCallable('cancelStripeSubscription')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error cancelling subscription', error)
+  })
+}

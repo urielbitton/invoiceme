@@ -1,6 +1,7 @@
 import PaymentInvoices from "app/components/payments/PaymentInvoices"
 import PaymentsAccount from "app/components/payments/PaymentsAccount"
 import PaymentsGeneral from "app/components/payments/PaymentsGeneral"
+import PaymentsMethods from "app/components/payments/PaymentsMethods"
 import PaymentSubscriptions from "app/components/payments/PaymentSubscriptions"
 import AppTabsBar from "app/components/ui/AppTabsBar"
 import HelmetTitle from "app/components/ui/HelmetTitle"
@@ -30,6 +31,9 @@ export default function PaymentsPage() {
         <NavLink to="subscriptions">
           Subscriptions
         </NavLink>
+        <NavLink to="payment-methods">
+          Payment Methods
+        </NavLink>
         <NavLink to="invoices">
           Invoices
         </NavLink>
@@ -43,6 +47,7 @@ export default function PaymentsPage() {
           <Route path="subscriptions" element={<PaymentSubscriptions />} />
           <Route path="invoices" element={<PaymentInvoices />} />
           <Route path="account-details" element={<PaymentsAccount />} />
+          <Route path="payment-methods" element={<PaymentsMethods />} />
         </Routes>
       </div>
     </div>

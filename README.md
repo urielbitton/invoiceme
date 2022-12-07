@@ -1,10 +1,7 @@
 InvoiceMe App
 
-ToDos:
 
-Others
-- add payment options for business members, show stripe subscriptions in payments page, stripe invoices, stripe customer #, stripe account#, etc.
- (payments page should have AppTabsBar with payments (payments i send and accept), subscriptions, invoices, customer, account tabs)
+ToDos:
 - new payment page - send payout to contact you search for in input, detect if they have a donnected stripe account, and then use stripe to send payment to their account. Send user email with payment details, send app notification to user (quer firebase user by email, can't use userID)
 - Edit scheduled invoices
 - sytle all auth pages
@@ -18,3 +15,4 @@ Others
 - verifiy email to create account
 - add google and facebook auth
 - protect all business access pages with memberType check
+- help and support page

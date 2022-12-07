@@ -194,6 +194,7 @@ exports.createStripeCustomer = functions
   const customer = await stripe.customers.create({
     name: data.name,
     email: data.email,
+    phone: data.phone,
     address: {
       city: data.city,
       state: data.state,
@@ -233,6 +234,27 @@ exports.createStripeSubscription = functions
   })
   return subscription
 })
+
+exports.getSubscriptionsByCustomerID = functions
+.https.onCall(async(data, context) => {
+  const subscriptions = await stripe.subscriptions.list({
+    customer: data.customerID
+  })
+  return subscriptions
+})
+
+exports.retrievePaymentMethod = functions
+.https.onCall(async(data, context) => {
+  const paymentMethod = await stripe.paymentMethods.retrieve(data.paymentMethodID)
+  return paymentMethod
+})
+
+exports.cancelStripeSubscription = functions
+.https.onCall(async(data, context) => {
+  const subscription = await stripe.subscriptions.del(data.subscriptionID)
+  return subscription
+})
+
 
 //Scheduled functions
 

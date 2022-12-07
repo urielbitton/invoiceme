@@ -9,3 +9,41 @@
 .payments-page .payments-content {
   margin-top: 20px;
 }
+
+.payments-page .payments-content .app-table .headers {
+  padding: 0 10px;
+}
+.payments-page .payments-content .app-table .rows h6 {
+  text-transform: capitalize;
+}
+.payments-page .payments-content .app-table .rows .status {
+  color: var(--primary);
+}
+
+.subscription-modal .subscription-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.subscription-modal .subscription-modal-content .section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.subscription-modal .subscription-modal-content .section h5 {
+  font-size: 15px;
+  color: var(--darkGrayText);
+  margin-bottom: 10px;
+}
+.subscription-modal .subscription-modal-content .section h6 {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--darkGrayText);
+}
+.subscription-modal .subscription-modal-content .section h6 span {
+  color: var(--grayText);
+}

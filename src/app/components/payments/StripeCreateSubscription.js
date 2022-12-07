@@ -37,11 +37,13 @@ export default function StripeCreateSubscription(props) {
         myUserID, 
         {
           name: myUserName,
+          email: myUser?.email,
           city: myUser?.city,
           state: myUser?.region,
           country: myUser?.country,
           address: myUser?.address,
           postcode: myUser?.postcode,
+          phone: myUser?.phone,
           shipping: null,
         }, 
         setPageLoading
