@@ -13,7 +13,6 @@ export default function StripeCheckoutForm(props) {
   const monthRef = useRef(null)
   const yearRef = useRef(null)
   const cvcRef = useRef(null)
-  console.log(isExpiryInFuture(expiryMonth, expiryYear))
 
   const allowPay = number?.length > 18 && 
     expiryMonth?.length === 2 && 

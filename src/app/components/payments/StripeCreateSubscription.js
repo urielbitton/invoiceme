@@ -8,14 +8,19 @@ import StripeCheckoutForm from "./StripeCheckoutForm"
 
 export default function StripeCreateSubscription(props) {
 
-  const { myUserID, myUser, myUserName, setPageLoading } = useContext(StoreContext)
+  const { myUserID, myUser, myUserName, setPageLoading,
+    businessMemberPlanID } = useContext(StoreContext)
   const { payBtnLabel } = props
   const [cardNumber, setCardNumber] = useState('')
   const [expiryMonth, setExpiryMonth] = useState('')
   const [expiryYear, setExpiryYear] = useState('')
   const [cvc, setCvc] = useState('')
-  const businessMemberPlanID = 'price_1MBgssAp3OtccpN9TKmXnu5t'
   const navigate = useNavigate()
+
+  const catchCode = (err) => {
+    setPageLoading(false)
+    console.log(err)
+  }
 
   const startSubscription = (e) => {
     e.preventDefault()
@@ -32,7 +37,7 @@ export default function StripeCreateSubscription(props) {
     )
     .then((paymentMethodID) => {
       setPageLoading(true)
-      createCustomerService(
+      return createCustomerService(
         myUser, 
         myUserID, 
         {
@@ -50,7 +55,7 @@ export default function StripeCreateSubscription(props) {
       )
       .then(customerID => {
         setPageLoading(true)
-        attachPaymentMethodsService(
+        return attachPaymentMethodsService(
           myUserID, 
           {
             paymentMethodID,
@@ -60,7 +65,7 @@ export default function StripeCreateSubscription(props) {
         )
         .then(() => {
           setPageLoading(true)
-          createSubscriptionService(
+          return createSubscriptionService(
             myUserID, 
             {
               customerID,
@@ -74,22 +79,22 @@ export default function StripeCreateSubscription(props) {
             setPageLoading(true)
             alert('Subscription created.')
             return updateDB('users', myUserID, {
-              memberType: 'business',
-              "stripe.subscriptionID": subscriptionID
+              memberType: 'business'
             })
             .then(() => {
               navigate('/my-account/payments')
               setPageLoading(false)
               console.log('Member type updated')
             })
-            .catch((error) => {
-              setPageLoading(false)
-              console.log('Error updating member type', error)
-            })
+            .catch((err) => catchCode(err))
           })
+          .catch((err) => catchCode(err))
         })
+        .catch((err) => catchCode(err))
       })
+      .catch((err) => catchCode(err))
     })
+    .catch((err) => catchCode(err))
   }
 
   return (

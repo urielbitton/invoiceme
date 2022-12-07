@@ -1,9 +1,11 @@
 import React from 'react'
 import AppButton from "./AppButton"
+import PageLoader from "./PageLoader"
 import './styles/ProContent.css'
 
-export default function ProContent() {
+export default function ProContent(myUser) {
   return (
+    myUser !== null ? 
     <div className="pro-content">
       <div className="container">
         <i className="fas fa-rocket-launch rocket" />
@@ -22,6 +24,7 @@ export default function ProContent() {
         </div>
         <i className="fas fa-lock lock-icon"/>
       </div>
-    </div>
+    </div> :
+    <PageLoader loading />
   )
 }

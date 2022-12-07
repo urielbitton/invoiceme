@@ -74,7 +74,6 @@ export default function ContactsPage() {
   }, [myUser, thisMonthContacts])
 
   return (
-    dbContacts?.length > 0 ?
     <div className="invoices-page contacts-page">
       <HelmetTitle title="Contacts" />
       <AppSelectBar
@@ -102,43 +101,46 @@ export default function ContactsPage() {
         monthValue={selectedMonth}
         monthOnChange={(e) => setSelectedMonth(e.target.value)}
       />
-      <div className="invoices-content">
-        <ContactsList
-          query={query}
-          searchResults={searchResults}
-          setSearchResults={setSearchResults}
-          filters={filters}
-          setNumOfHits={setNumOfHits}
-          numOfPages={numOfPages}
-          setNumOfPages={setNumOfPages}
-          pageNum={pageNum}
-          setPageNum={setPageNum}
-          hitsPerPage={hitsPerPage}
-          showAll={showAll}
-          dbContacts={dbContacts}
-        />
-        {
-          contactsLimit <= dbContacts?.length &&
-          <AppButton
-            label="Show More"
-            onClick={() => setContactsLimit(contactsLimit + limitsNum)}
-            className="show-more-btn"
+      {
+        dbContacts?.length > 0 ?
+          <div className="invoices-content">
+            <ContactsList
+              query={query}
+              searchResults={searchResults}
+              setSearchResults={setSearchResults}
+              filters={filters}
+              setNumOfHits={setNumOfHits}
+              numOfPages={numOfPages}
+              setNumOfPages={setNumOfPages}
+              pageNum={pageNum}
+              setPageNum={setPageNum}
+              hitsPerPage={hitsPerPage}
+              showAll={showAll}
+              dbContacts={dbContacts}
+            />
+            {
+              contactsLimit <= dbContacts?.length &&
+              <AppButton
+                label="Show More"
+                onClick={() => setContactsLimit(contactsLimit + limitsNum)}
+                className="show-more-btn"
+              />
+            }
+            {
+              query.length > 0 && searchResults.length === 0 &&
+              <div className="no-results">
+                <img src={noResultsImg} alt="no results" />
+                <h5>No results found.</h5>
+              </div>
+            }
+          </div> :
+          <EmptyPage
+            label="No contacts found"
+            sublabel="Refine your search or create a new contact"
+            btnLink="/contacts/new"
+            btnIcon="fal fa-plus"
           />
-        }
-        {
-          query.length > 0 && searchResults.length === 0 &&
-          <div className="no-results">
-            <img src={noResultsImg} alt="no results" />
-            <h5>No results found.</h5>
-          </div>
-        }
-      </div>
-    </div> :
-    <EmptyPage
-      label="You have no contacts yet."
-      sublabel="Add your first contact to view it here."
-      btnLink="/contacts/new"
-      btnIcon="fal fa-plus"
-    />
+      }
+    </div>
   )
 }

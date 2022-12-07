@@ -237,7 +237,7 @@ export default function EstimatePage() {
 
       <EmptyPage
         object={estimate}
-        label="ContacEstimatet Not Found"
+        label="Estimate Not Found"
         sublabel="This estimate does not exist or was deleted."
         btnLabel='All Estimates'
         btnLink='/estimates'

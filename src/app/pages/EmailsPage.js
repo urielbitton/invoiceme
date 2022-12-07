@@ -147,8 +147,8 @@ export default function EmailsPage() {
             }
           </div> :
           <EmptyPage
-            label="You have no emails yet."
-            sublabel="Send your first email to view it here."
+            label="No emails found."
+            sublabel="Refine your search or send a new email."
             btnLabel="Send"
             btnClick={() => setShowNewEmailModal(true)}
             btnIcon="fal fa-paper-plane"

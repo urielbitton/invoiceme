@@ -251,10 +251,21 @@ exports.retrievePaymentMethod = functions
 
 exports.cancelStripeSubscription = functions
 .https.onCall(async(data, context) => {
-  const subscription = await stripe.subscriptions.del(data.subscriptionID)
+  const subscription = await stripe.subscriptions.update(
+    data.subscriptionID,
+    {cancel_at_period_end: true}
+  )
   return subscription
 })
 
+exports.reactivateStripeSubscription = functions
+.https.onCall(async(data, context) => {
+  const subscription = await stripe.subscriptions.update(
+    data.subscriptionID,
+    {cancel_at_period_end: false},
+  )
+  return subscription
+})
 
 //Scheduled functions
 
@@ -519,6 +530,25 @@ exports.runScheduledInvoices6pm = functions.pubsub
               return sgMail.send(msg)
             })
           })
+      })
+  })
+
+exports.checkExpiredSubscriptions = functions.pubsub
+  .schedule('0 9 * * *')
+  .onRun((context) => {
+    const day = new Date().getDate()
+    return firestore.collection('users')
+      .where('stripe.businessPlanExpires.dayNumber', '==', day)
+      .get()
+      .then(users => {
+        const batch = firestore.batch()
+        users.forEach(user => {
+          batch.update(user.ref, { 
+            "stripe.businessPlanExpires": null,
+            memberType: 'basic'
+          })
+        })
+        return batch.commit()
       })
   })
 

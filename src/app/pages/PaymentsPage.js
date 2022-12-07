@@ -20,7 +20,7 @@ export default function PaymentsPage() {
       <AppTabsBar
         sticky
         noSpread
-        spacedOut
+        spacedOut={15}
       >
         <NavLink 
           to=""

@@ -1,4 +1,5 @@
 import { functions } from "app/firebase/fire"
+import { convertUnixDate } from "app/utils/dateUtils"
 import { firebaseArrayAdd, updateDB } from "./CrudDB"
 
 export const createPaymentMethodService = (data, setLoading) => {
@@ -88,12 +89,34 @@ export const retrievePaymentMethodService = (data) => {
   })
 }
 
-export const cancelSubscriptionService = (data) => {
+export const cancelSubscriptionService = (myUserID, data) => {
   return functions.httpsCallable('cancelStripeSubscription')(data)
   .then((res) => {
+    updateDB('users', myUserID, {
+      "stripe.businessPlanExpires": {
+        date: convertUnixDate(res.data.current_period_end),
+        dayNumber: convertUnixDate(res.data.current_period_end)?.getDate(),
+        subscriptionID: res.data.id,
+      }
+    })
+    .catch((error) => console.log(error))
     return res.data
   })
   .catch((error) => {
     console.log('Error cancelling subscription', error)
+  })
+}
+
+export const reactivateStripeSubscriptionService = (myUserID, data) => {
+  return functions.httpsCallable('reactivateStripeSubscription')(data)
+  .then((res) => {
+    updateDB('users', myUserID, {
+      "stripe.businessPlanExpires": null
+    })
+    .catch((error) => console.log(error))
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error reactivating subscription', error)
   })
 }

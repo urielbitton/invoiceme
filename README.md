@@ -2,9 +2,10 @@ InvoiceMe App
 
 
 ToDos:
+- add notifications to all events on app (especiall payments)
+- add search dropdown on email page when entering "to" field
 - new payment page - send payout to contact you search for in input, detect if they have a donnected stripe account, and then use stripe to send payment to their account. Send user email with payment details, send app notification to user (quer firebase user by email, can't use userID)
-- Edit scheduled invoices
-- sytle all auth pages
+- style all auth pages
 - fix scheduled invoices pubsub functions
 - let users delete their account
 - implement settings in settings page against user settings & implement settings throughout app

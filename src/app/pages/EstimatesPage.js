@@ -73,7 +73,7 @@ export default function EstimatesPage() {
     }
   }, [myUser, thisMonthEstimates])
 
-  return dbEstimates?.length > 0 ? (
+  return (
     <div className="invoices-page">
       <HelmetTitle title="Estimates" />
       <AppSelectBar
@@ -102,43 +102,46 @@ export default function EstimatesPage() {
         monthValue={selectedMonth}
         monthOnChange={(e) => setSelectedMonth(e.target.value)}
       />
-      <div className="invoices-content">
-        <EstimatesList
-          query={query}
-          searchResults={searchResults}
-          setSearchResults={setSearchResults}
-          filters={filters}
-          setNumOfHits={setNumOfHits}
-          numOfPages={numOfPages}
-          setNumOfPages={setNumOfPages}
-          pageNum={pageNum}
-          setPageNum={setPageNum}
-          hitsPerPage={hitsPerPage}
-          showAll={showAll}
-          dbEstimates={dbEstimates}
-        />
-        {
-          estimatesLimit <= dbEstimates?.length &&
-          <AppButton
-            label="Show More"
-            onClick={() => setEstimatesLimit(estimatesLimit + limitsNum)}
-            className="show-more-btn"
+      {
+        dbEstimates?.length > 0 ?
+          <div className="invoices-content">
+            <EstimatesList
+              query={query}
+              searchResults={searchResults}
+              setSearchResults={setSearchResults}
+              filters={filters}
+              setNumOfHits={setNumOfHits}
+              numOfPages={numOfPages}
+              setNumOfPages={setNumOfPages}
+              pageNum={pageNum}
+              setPageNum={setPageNum}
+              hitsPerPage={hitsPerPage}
+              showAll={showAll}
+              dbEstimates={dbEstimates}
+            />
+            {
+              estimatesLimit <= dbEstimates?.length &&
+              <AppButton
+                label="Show More"
+                onClick={() => setEstimatesLimit(estimatesLimit + limitsNum)}
+                className="show-more-btn"
+              />
+            }
+            {
+              query.length > 0 && searchResults.length === 0 &&
+              <div className="no-results">
+                <img src={noResultsImg} alt="no results" />
+                <h5>No results found.</h5>
+              </div>
+            }
+          </div> :
+          <EmptyPage
+            label="No estimates found."
+            sublabel="Refine your search or create a new estimate."
+            btnLink="/estimates/new"
+            btnIcon="fal fa-plus"
           />
-        }
-        {
-          query.length > 0 && searchResults.length === 0 &&
-          <div className="no-results">
-            <img src={noResultsImg} alt="no results" />
-            <h5>No results found.</h5>
-          </div>
-        }
-      </div>
+      }
     </div>
-  ) :
-    <EmptyPage
-      label="You have no estimates yet."
-      sublabel="Add your first estimate to view it here."
-      btnLink="/estimates/new"
-      btnIcon="fal fa-plus"
-    />
+  )
 }

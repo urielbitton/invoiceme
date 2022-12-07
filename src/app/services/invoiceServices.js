@@ -78,6 +78,15 @@ export const getScheduledInvoicesByUserID = (userID, setInvoices) => {
   })
 }
 
+export const getScheduledInvoiceByUserID = (userID, scheduleID, setInvoice) => {
+  db.collection('scheduledInvoices')
+  .where('ownerID', '==', userID)
+  .where('scheduleID', '==', scheduleID)
+  .onSnapshot(snapshot => {
+    setInvoice(snapshot.docs.map(doc => doc.data())[0])
+  })
+}
+
 export const getEarliestYearInvoice = (userID) => {
   return db.collection('users')
   .doc(userID)
@@ -206,3 +215,65 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
     }
 }
 
+export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDate, invoiceNumber,
+  invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, invoiceTitle,
+  calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef) => {
+  const pathName = 'scheduledInvoices'
+  const docID = getRandomDocID(pathName)
+  const invoiceTemplate = {
+    currency: myUser?.currency,
+    dateCreated: convertInputDateToDateAndTimeFormat(invoiceDate),
+    dateDue: convertInputDateToDateAndTimeFormat(invoiceDueDate),
+    invoiceNumber: `INV-${invoiceNumber}`,
+    invoiceOwnerID: myUser.userID,
+    invoiceTo: invoiceContact,
+    isPaid: false,
+    isSent: false,
+    items: invoiceItems,
+    monthLabel: dateToMonthName(new Date()),
+    notes: invoiceNotes,
+    partOfTotal: false,
+    status: 'unpaid',
+    subtotal: calculatedSubtotal,
+    taxRate1: +taxRate1,
+    taxRate2: +taxRate2,
+    title: invoiceTitle,
+    total: calculatedTotal
+  }
+  const data = {
+    active: true,
+    dateCreated: new Date(),
+    dayOfMonth: +dayOfMonth,
+    timeOfDay: +timeOfDay,
+    lastSent: null,
+    lastPaid: null,
+    title: scheduleTitle,
+    emailMessage,
+    invoiceTemplate,
+    invoicePaperHTML: invoicePaperRef?.current?.innerHTML,
+    scheduleID: docID,
+    ownerID: myUser.userID,
+  }
+  return setDB(pathName, docID, data)
+}
+
+export const updateScheduledInvoiceService = (scheduleID, updatedProps, setLoading) => {
+  setLoading(true)
+  return updateDB(`scheduledInvoices`, scheduleID, updatedProps)
+  .then(() => {
+    setLoading(false)
+  })
+  .catch(err => catchError(err, setLoading))
+}
+
+export const deleteScheduledInvoiceService = (scheduleID, setLoading) => {
+  const confirm = window.confirm("Are you sure you want to delete this scheduled invoice?")
+  if(!confirm) return 
+  setLoading(true)
+  return deleteDB(`scheduledInvoices`, scheduleID)
+  .then(() => {
+    setLoading(false)
+    alert("Scheduled invoice deleted.")
+  })
+  .catch(err => catchError(err, setLoading))
+}

@@ -1,12 +1,12 @@
 import { currencies, timeOfDaysOptions } from "app/data/general"
-import { useUserScheduledInvoices } from "app/hooks/invoiceHooks"
+import { useScheduledInvoice, useUserScheduledInvoices } from "app/hooks/invoiceHooks"
 import { getRandomDocID, setDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat,
   dateToMonthName, dayOfMonthNumbers
 } from "app/utils/dateUtils"
-import React, { useContext, useRef, useState } from 'react'
-import { useNavigate } from "react-router-dom"
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useNavigate, useSearchParams } from "react-router-dom"
 import InvoiceContact from "../invoices/InvoiceContact"
 import InvoiceItems from "../invoices/InvoiceItems"
 import AppButton from "../ui/AppButton"
@@ -21,6 +21,7 @@ import { formatCurrency, formatPhoneNumber,
 import './styles/CreateScheduledInvoice.css'
 import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
 import ProContent from "../ui/ProContent"
+import { createScheduledInvoiceService, deleteScheduledInvoiceService, updateScheduledInvoiceService } from "app/services/invoiceServices"
 
 export default function CreateScheduledInvoice() {
 
@@ -57,13 +58,17 @@ export default function CreateScheduledInvoice() {
   const [contactImg, setContactImg] = useState("")
   const [showInvoicePreview, setShowInvoicePreview] = useState(false)
   const userScheduledInvoices = useUserScheduledInvoices(myUserID)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const editMode = searchParams.get('edit') === 'true'
+  const editInvoiceID = searchParams.get('scheduleID') 
+  const editSchedule = useScheduledInvoice(myUserID, editInvoiceID)
   const navigate = useNavigate()
   const numOfSlides = 4
   const calculatedSubtotal = invoiceItems?.reduce((acc, item) => (acc + (item?.price * item?.quantity)), 0)
   const calculatedTotal = invoiceItems?.reduce((acc, item) => (acc + ((item?.price + (item?.price * item?.taxRate / 100)) * item?.quantity)), 0)
-  const calculatedTaxRate = invoiceItems?.every(item => item?.taxRate === invoiceItems[0]?.taxRate) ? invoiceItems[0]?.taxRate : null
   const invoicePaperRef = useRef(null)
   const dayOfMonthOptions = dayOfMonthNumbers()
+  const maxScheduledInvoicesNum = 5
 
   const invoice = {
     invoiceNumber,
@@ -84,24 +89,15 @@ export default function CreateScheduledInvoice() {
     myBusiness: myUser?.myBusiness
   }
 
-  const taxNumbersList = myUser?.taxNumbers?.map((taxNum, index) => {
-    return <h5
-      style={invoicePaperStyles?.headerH5}
-      key={index}
-    >
-      {taxNum.name}: {taxNum.number}
-    </h5>
-  })
-
-  const allowSlide2 = invoiceTitle.length > 0 && 
-  invoiceNumber.length > 0 && 
-  invoiceItems.length > 0
+  const allowSlide2 = invoiceTitle?.length > 0 && 
+  invoiceNumber?.length > 0 && 
+  invoiceItems?.length > 0
 
   const allowSlide3 = !!invoiceContact
   
-  const allowSlide4 = scheduleTitle.length > 0 &&
-  emailSubject.length > 0 &&
-  emailMessage.length > 0
+  const allowSlide4 = scheduleTitle?.length > 0 &&
+  emailSubject?.length > 0 &&
+  emailMessage?.length > 0
 
   const allowCreateSchedule = scheduleTitle &&
     invoiceTitle &&
@@ -110,7 +106,7 @@ export default function CreateScheduledInvoice() {
     invoiceDate &&
     invoiceDueDate &&
     invoiceContact &&
-    invoiceItems.length > 0 &&
+    invoiceItems?.length > 0 &&
     dayOfMonth &&
     timeOfDay &&
     emailMessage &&
@@ -156,60 +152,88 @@ export default function CreateScheduledInvoice() {
     if(!confirm) return alert('Scheduled invoice not created.')
     if (!!!allowCreateSchedule)
       return alert("Please fill in all required fields.")
-    if (userScheduledInvoices.length > 2)
-      return alert("You can only have 3 scheduled invoices at a time.")
+    if (userScheduledInvoices?.length > (maxScheduledInvoicesNum - 1))
+      return alert(`You can only have ${maxScheduledInvoicesNum} scheduled invoices at a time.`)
     setPageLoading(true)
-    const pathName = 'scheduledInvoices'
-    const docID = getRandomDocID(pathName)
-    const invoiceTemplate = {
-      currency: myUser?.currency,
-      dateCreated: convertInputDateToDateAndTimeFormat(invoiceDate),
-      dateDue: convertInputDateToDateAndTimeFormat(invoiceDueDate),
-      invoiceNumber: `INV-${invoiceNumber}`,
-      invoiceOwnerID: myUserID,
-      invoiceTo: invoiceContact,
-      isPaid: false,
-      isSent: false,
-      items: invoiceItems,
-      monthLabel: dateToMonthName(new Date()),
-      notes: invoiceNotes,
-      partOfTotal: false,
-      status: 'unpaid',
-      subtotal: calculatedSubtotal,
-      taxRate1: +taxRate1,
-      taxRate2: +taxRate2,
-      title: invoiceTitle,
-      total: calculatedTotal
-    }
-    const data = {
-      active: true,
-      dateCreated: new Date(),
-      dayOfMonth: +dayOfMonth,
-      timeOfDay: +timeOfDay,
-      lastSent: null,
-      lastPaid: null,
-      title: scheduleTitle,
-      emailMessage,
-      scheduledDate: new Date(`${dateToMonthName(new Date())} ${dayOfMonth}, ${new Date().getFullYear()} ${timeOfDay}:00`),
-      invoiceTemplate,
-      invoicePaperHTML: invoicePaperRef?.current?.innerHTML,
-      scheduleID: docID,
-      ownerID: myUserID,
-    }
-    setDB(pathName, docID, data)
-      .then(() => {
-        setPageLoading(false)
-        alert('Scheduled Invoice Created.')
-        navigate('/settings/scheduled-invoices')
-      })
-      .catch(err => {
-        setPageLoading(false)
-        console.log(err)
-      })
+    createScheduledInvoiceService(myUser, invoiceDate, invoiceDueDate, invoiceNumber,
+      invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, invoiceTitle,
+      calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef)
+    .then(() => {
+      setPageLoading(false)
+      alert('Scheduled Invoice Created.')
+      navigate('/settings/scheduled-invoices')
+    })
+    .catch(err => {
+      setPageLoading(false)
+      console.log(err)
+    })
   }
+
+  const updateScheduledInvoice = () => {
+    updateScheduledInvoiceService(
+      editInvoiceID,
+      {
+        dayOfMonth: +dayOfMonth,
+        timeOfDay: +timeOfDay,
+        title: scheduleTitle,
+        emailSubject,
+        emailMessage,
+        invoiceTemplate: {
+          title: invoiceTitle,
+          invoiceNumber,
+          dateCreated: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDate))),
+          dateDue: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDueDate))),
+          invoiceTo: invoiceContact,
+          currency: invoiceCurrency,
+          notes: invoiceNotes,
+          taxRate1: +taxRate1,
+          taxRate2: +taxRate2,
+          items: invoiceItems,
+          subtotal: +calculatedSubtotal,
+          total: +calculatedTotal
+        }
+      },
+      setPageLoading
+    )
+    .then(() => {
+      alert('Scheduled Invoice Updated.')
+      navigate('/settings/scheduled-invoices')
+    })
+  }
+
+  const deleteScheduledInvoice = () => {
+    deleteScheduledInvoiceService(
+      editInvoiceID,
+      setPageLoading
+    )
+    .then(() => {
+      navigate('/settings/scheduled-invoices')
+    })
+  }
+
+  useEffect(() => {
+    if(!editMode) return
+    if(!editSchedule) return
+    setInvoiceTitle(editSchedule.invoiceTemplate.title)
+    setInvoiceNumber(editSchedule.invoiceTemplate.invoiceNumber)
+    setInvoiceDate(convertDateToInputFormat(editSchedule.invoiceTemplate.dateCreated?.toDate()))
+    setInvoiceDueDate(convertDateToInputFormat(editSchedule.invoiceTemplate.dateDue?.toDate()))
+    setInvoiceContact(editSchedule.invoiceTemplate.invoiceTo)
+    setInvoiceItems(editSchedule.invoiceTemplate.items)
+    setInvoiceNotes(editSchedule.invoiceTemplate.notes)
+    setTaxRate1(editSchedule.invoiceTemplate.taxRate1)
+    setTaxRate2(editSchedule.invoiceTemplate.taxRate2)
+    setInvoiceCurrency(editSchedule.invoiceTemplate.currency)
+    setScheduleTitle(editSchedule.title)
+    setEmailSubject(editSchedule.emailSubject)
+    setEmailMessage(editSchedule.emailMessage)
+    setDayOfMonth(editSchedule.dayOfMonth)
+    setTimeOfDay(editSchedule.timeOfDay)
+  }, [editSchedule, editMode])
 
   return (
     myMemberType === 'business' ?
+    editMode && editSchedule?.ownerID === myUserID ?
     <div className="settings-sub-page create-scheduled-page">
       <SettingsTitles
         label="Create a scheduled invoice"
@@ -460,11 +484,25 @@ export default function CreateScheduledInvoice() {
                 <p>{truncateText(emailMessage, 100)}</p>
               </div>
               <div className="btn-group">
-                <AppButton
-                  label="Create Automated Invoice"
-                  onClick={createScheduledInvoice}
-                  rightIcon="far fa-arrow-right"
-                />
+                {
+                  !editMode ? 
+                  <AppButton
+                    label="Create Scheduled Invoice"
+                    onClick={createScheduledInvoice}
+                    rightIcon="far fa-arrow-right"
+                  /> :
+                  <>
+                    <AppButton
+                      label="Save Changes"
+                      onClick={updateScheduledInvoice}
+                    />
+                    <AppButton
+                      label="Delete Scheduled Invoice"
+                      onClick={deleteScheduledInvoice}
+                      buttonType="invertedRedBtn"
+                    />
+                  </>
+                }
               </div>
             </div>
           </SlideElement>
@@ -478,6 +516,7 @@ export default function CreateScheduledInvoice() {
         invoicePaperRef={invoicePaperRef}
       />
     </div> :
+    <>You do not have access to view this page</> :
     <ProContent />
   )
 }

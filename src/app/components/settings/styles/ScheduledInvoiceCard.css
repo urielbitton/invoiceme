@@ -84,6 +84,11 @@
   font-weight: 600;
   color: var(--grayText);
 }
+.scheduled-invoice-card .content h6 small {
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+}
 .scheduled-invoice-card .actions {
   width: 100%;
   display: grid;
