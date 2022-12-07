@@ -276,6 +276,25 @@ exports.retrievePaymentsByCustomer = functions
   return payments
 })
 
+exports.retrieveAttachmentPaymentMethods = functions
+.https.onCall(async(data, context) => {
+  const paymentMethods = await stripe.paymentMethods.list({
+    customer: data.customerID,
+    type: 'card',
+  })
+  return paymentMethods
+})
+
+exports.retrieveInvoicesByCustomer = functions
+.https.onCall(async(data, context) => {
+  const invoices = await stripe.invoices.list({
+    customer: data.customerID,
+    limit: data.limit,
+  })
+  return invoices
+})
+
+
 //Scheduled functions
 
 // 9am EST every day

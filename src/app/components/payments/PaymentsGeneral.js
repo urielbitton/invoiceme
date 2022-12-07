@@ -1,4 +1,4 @@
-import { useCustomerPaymentsList } from "app/hooks/paymentHooks"
+import { useCustomerPayments } from "app/hooks/paymentHooks"
 import { StoreContext } from "app/store/store"
 import { convertClassicUnixDate } from "app/utils/dateUtils"
 import { formatCurrency, truncateText } from "app/utils/generalUtils"
@@ -12,9 +12,9 @@ export default function PaymentsGeneral() {
 
   const { myUser, stripeCustomerPortalLink } = useContext(StoreContext)
   const [paymentsLimit, setPaymentsLimit] = useState(10)
-  const payments = useCustomerPaymentsList(myUser?.stripe.stripeCustomerID, paymentsLimit)
+  const payments = useCustomerPayments(myUser?.stripe.stripeCustomerID, paymentsLimit)
 
-  const paymentsList = payments?.map((payment) => {
+  const paymentsList = payments?.data?.map((payment) => {
     return <AppItemRow
       key={payment.id}
       item1={convertClassicUnixDate(payment.created)}

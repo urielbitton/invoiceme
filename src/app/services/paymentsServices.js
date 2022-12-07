@@ -130,3 +130,23 @@ export const retrievePaymentsByCustomerService = (data) => {
     console.log('Error retrieving payments', error)
   })
 }
+
+export const retrieveAttachmentPaymentMethodsService = (data) => {
+  return functions.httpsCallable('retrieveAttachmentPaymentMethods')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error retrieving payment methods', error)
+  })
+}
+
+export const retrieveInvoicesByCustomerService = (data) => {
+  return functions.httpsCallable('retrieveInvoicesByCustomer')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error retrieving invoices', error)
+  })
+}

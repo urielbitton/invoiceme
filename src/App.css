@@ -123,6 +123,9 @@ hr {
 .uppercase {
   text-transform: uppercase
 }
+.lowercase {
+  text-transform: lowercase
+}
 .underline {
   text-decoration: underline;
   cursor: pointer;
