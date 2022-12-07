@@ -267,6 +267,15 @@ exports.reactivateStripeSubscription = functions
   return subscription
 })
 
+exports.retrievePaymentsByCustomer = functions
+.https.onCall(async(data, context) => {
+  const payments = await stripe.paymentIntents.list({
+    customer: data.customerID,
+    limit: data.limit,
+  })
+  return payments
+})
+
 //Scheduled functions
 
 // 9am EST every day

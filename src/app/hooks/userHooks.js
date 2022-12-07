@@ -1,8 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { doGetUserByID, getSubscriptionsByCustomerService, getUserByID, 
-  getUserContactSettingsByID, 
+import React, { useEffect, useState } from 'react'
+import { doGetUserByID, getUserByID, getUserContactSettingsByID, 
   getUserEstimateSettingsByID, getUserInvoiceSettingsByID } from "app/services/userServices"
-import { StoreContext } from "app/store/store"
 
 export default function useUser(userID) {
 
@@ -70,27 +68,4 @@ export const useUserContactSettings = (userID) => {
   },[userID])
 
   return userSettings
-}
-
-export const useCustomerSubscriptions = (customerID) => {
-  
-    const { setPageLoading } = useContext(StoreContext)
-    const [subscriptions, setSubscriptions] = useState(null)
-  
-    useEffect(() => {
-      if(customerID) {
-        setPageLoading(true)
-        getSubscriptionsByCustomerService(customerID)
-        .then((data) => {
-          setSubscriptions(data)
-          setPageLoading(false)
-        })
-        .catch((error) => {
-          console.log(error)
-          setPageLoading(false)
-        })
-      }
-    },[customerID])
-  
-    return subscriptions
 }

@@ -1,8 +1,8 @@
-import { useCustomerSubscriptions } from "app/hooks/userHooks"
-import { firebaseArrayAdd, firebaseArrayRemove, updateDB } from "app/services/CrudDB"
-import { cancelSubscriptionService, reactivateStripeSubscriptionService, retrievePaymentMethodService } from "app/services/paymentsServices"
+import { useCustomerSubscriptions } from "app/hooks/paymentHooks"
+import { cancelSubscriptionService, reactivateStripeSubscriptionService, 
+  retrievePaymentMethodService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
-import { convertClassicUnixDate, convertUnixDate } from "app/utils/dateUtils"
+import { convertClassicUnixDate } from "app/utils/dateUtils"
 import { formatCurrency } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom"
@@ -14,7 +14,7 @@ import IconContainer from "../ui/IconContainer"
 
 export default function PaymentSubscriptions() {
 
-  const { myUser, myUserID, stripeCustomerPortalLink, setPageLoading } = useContext(StoreContext)
+  const { myUser, stripeCustomerPortalLink, setPageLoading } = useContext(StoreContext)
   const [showSubModal, setShowSubModal] = useState(false)
   const [subscriptionObject, setSubscriptionObject] = useState(null)
   const [paymentMethod, setPaymentMethod] = useState(null)

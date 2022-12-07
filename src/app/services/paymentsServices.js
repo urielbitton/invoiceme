@@ -120,3 +120,13 @@ export const reactivateStripeSubscriptionService = (myUserID, data) => {
     console.log('Error reactivating subscription', error)
   })
 }
+
+export const retrievePaymentsByCustomerService = (data) => {
+  return functions.httpsCallable('retrievePaymentsByCustomer')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error retrieving payments', error)
+  })
+}

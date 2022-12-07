@@ -38,7 +38,7 @@ export default function PaymentsPage() {
           Invoices
         </NavLink>
         <NavLink to="account">
-          Account
+          Account Details
         </NavLink>
       </AppTabsBar>
       <div className="payments-page-routes">
