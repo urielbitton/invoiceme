@@ -155,7 +155,7 @@ export default function CreateScheduledInvoice() {
     if (userScheduledInvoices?.length > (maxScheduledInvoicesNum - 1))
       return alert(`You can only have ${maxScheduledInvoicesNum} scheduled invoices at a time.`)
     setPageLoading(true)
-    createScheduledInvoiceService(myUser, invoiceDate, invoiceDueDate, invoiceNumber,
+    createScheduledInvoiceService(myUser, invoiceDate, invoiceDueDate, invoiceNumber, invoiceCurrency,
       invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, invoiceTitle,
       calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef)
     .then(() => {

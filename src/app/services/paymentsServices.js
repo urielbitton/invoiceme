@@ -89,6 +89,14 @@ export const retrievePaymentMethodService = (data) => {
   })
 }
 
+export const getSubscriptionsByCustomerService = (data) => {
+  return functions.httpsCallable('getSubscriptionsByCustomerID')(data)
+  .then(result => {
+    return result.data
+  })
+  .catch(err => console.log(err))
+}
+
 export const cancelSubscriptionService = (myUserID, data) => {
   return functions.httpsCallable('cancelStripeSubscription')(data)
   .then((res) => {
@@ -148,5 +156,15 @@ export const retrieveInvoicesByCustomerService = (data) => {
   })
   .catch((error) => {
     console.log('Error retrieving invoices', error)
+  })
+}
+
+export const retrieveCustomerService = (data) => {
+  return functions.httpsCallable('retrieveCustomer')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error retrieving customer', error)
   })
 }

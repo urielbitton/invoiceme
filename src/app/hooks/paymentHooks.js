@@ -1,7 +1,6 @@
-import { retrieveAttachmentPaymentMethodsService, 
-  retrieveInvoicesByCustomerService, 
+import { getSubscriptionsByCustomerService, retrieveAttachmentPaymentMethodsService, 
+  retrieveCustomerService, retrieveInvoicesByCustomerService, 
   retrievePaymentsByCustomerService } from "app/services/paymentsServices"
-import { getSubscriptionsByCustomerService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import { useContext, useEffect, useState } from "react"
 
@@ -13,7 +12,7 @@ export const useCustomerSubscriptions = (customerID) => {
   useEffect(() => {
     if(customerID) {
       setPageLoading(true)
-      getSubscriptionsByCustomerService(customerID)
+      getSubscriptionsByCustomerService({customerID})
       .then((data) => {
         setSubscriptions(data)
         setPageLoading(false)
@@ -103,4 +102,27 @@ export const useCustomerInvoices = (customerID, limit) => {
   },[customerID, limit])
 
   return invoices
+}
+
+export const useStripeCustomer = (customerID) => {
+
+  const { setPageLoading } = useContext(StoreContext)
+  const [customer, setCustomer] = useState(null)
+
+  useEffect(() => {
+    if(customerID) {
+      setPageLoading(true)
+      retrieveCustomerService({customerID})
+      .then((data) => {
+        setCustomer(data)
+        setPageLoading(false)
+      })
+      .catch((error) => {
+        console.log(error)
+        setPageLoading(false)
+      })
+    }
+  },[customerID])
+
+  return customer
 }

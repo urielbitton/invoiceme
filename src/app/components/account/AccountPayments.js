@@ -1,23 +1,23 @@
 import { updateDB } from "app/services/CrudDB"
-import { createStripeAccountService, 
-  deleteStripeAccountService } from "app/services/userServices"
+import { createStripeAccountService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom"
-import AppBadge from "../ui/AppBadge"
 import AppButton from "../ui/AppButton"
 import './styles/AccountPayments.css'
 
 export default function AccountPayments() {
 
   const { myUser, myUserID, myUserName, setPageLoading } = useContext(StoreContext)
-  const [loading, setLoading] = useState(false)
   const [accountLink, setAccountLink] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const isDetailsSubmitted = searchParams.get('details_submitted') === 'true'
   const navigate = useNavigate()
 
   const connectStripe = () => {
+    if(myUser?.stripe?.stripeAccountID) return
+    const confirm = window.confirm('Are you sure you want to create an account a Stripe account? This will allow you to send & receive payments on Invoice Me.')
+    if(!confirm) return
     setPageLoading(true)
     createStripeAccountService(myUserID, {
       country: myUser?.countryCode,
@@ -46,24 +46,8 @@ export default function AccountPayments() {
     })
   }
 
-  const deleteStripeContact = () => {
-    const confirm = window.confirm('Are you sure you want to delete your stripe account?')
-    if (confirm) {
-      setPageLoading(true)
-      deleteStripeAccountService(myUserID, myUser?.stripe?.stripeAccountID)
-        .then((res) => {
-          console.log(res)
-          setPageLoading(false)
-        })
-        .catch(err => {
-          console.log(err)
-          setPageLoading(false)
-        })
-    }
-  }
-
   const redirectToAccount = () => {
-    alert('Please update your basic info in your profile before connecting your Stripe account.')
+    alert('Please update your country in your profile before connecting your Stripe account.')
     navigate('/my-account')
   }
 
@@ -110,48 +94,6 @@ export default function AccountPayments() {
           label="View My Payments"
           url="/payments"
           buttonType="outlineBlueBtn"
-        />
-      </div>
-      <div className="payments-section">
-        <h4>My Cards</h4>
-      </div>
-      <div className="payments-section">
-        <h4>Connected Payments</h4>
-        {
-          myUser?.stripe?.stripeAccountID &&
-          <div className="account-box">
-            <i className="fab fa-stripe-s" />
-            <div className="account-box-info">
-              <h5>Stripe</h5>
-              <h6>Connected: <i className={myUser?.stripe?.stripeDetailsSubmitted ? 'fas fa-check-circle' : 'fas fa-times-circle'}/></h6>
-              <h6>Name: <span>{myUserName}</span></h6>
-              <h6>Customer ID: <span>{myUser?.stripe?.stripeAccountID}</span></h6>
-              <h6>Email: <span>{myUser?.email}</span></h6> 
-              <div className="btn-group">
-                <AppButton
-                  label="My Account"
-                  buttonType="tabBlueBtn"
-                  rightIcon={loading ? 'fas fa-spinner fa-spin' : null}
-                  externalLink
-                  useATag
-                  url="https://connect.stripe.com/express_login"
-                />
-                <AppButton
-                  label="Delete"
-                  buttonType="tabRedBtn"
-                  className="delete-btn"
-                  onClick={() => deleteStripeContact()}
-                />
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-      <div className="payments-section">
-        <h4>Account Type</h4>
-        <AppBadge
-          label={myUser?.memberType}
-          noIcon
         />
       </div>
     </div>

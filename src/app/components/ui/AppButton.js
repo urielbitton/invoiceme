@@ -17,6 +17,7 @@ export default function AppButton(props) {
         buttonType === 'outlineBtn' ? 'outlineBtn' :
         buttonType === 'outlineBlueBtn' ? 'outlineBlueBtn' :
         buttonType === 'outlineGrayBtn' ? 'outlineGrayBtn' :
+        buttonType === 'outlineRedBtn' ? 'outlineRedBtn' :
         buttonType === 'invertedRedBtn' ? 'invertedRedBtn' :
         buttonType === 'invertedBtn' ? 'invertedBtn' :
         buttonType === 'white' ? 'white' :

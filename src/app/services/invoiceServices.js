@@ -216,12 +216,13 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
 }
 
 export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDate, invoiceNumber,
-  invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, invoiceTitle,
-  calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef) => {
+  invoiceCurrency, invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, 
+  invoiceTitle, calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef
+  ) => {
   const pathName = 'scheduledInvoices'
   const docID = getRandomDocID(pathName)
   const invoiceTemplate = {
-    currency: myUser?.currency,
+    currency: invoiceCurrency || {name: 'Canadian Dollar', value: 'CAD', symbol: '$'},
     dateCreated: convertInputDateToDateAndTimeFormat(invoiceDate),
     dateDue: convertInputDateToDateAndTimeFormat(invoiceDueDate),
     invoiceNumber: `INV-${invoiceNumber}`,

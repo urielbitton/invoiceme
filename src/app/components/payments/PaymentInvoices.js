@@ -3,6 +3,7 @@ import { StoreContext } from "app/store/store"
 import { convertClassicUnixDate } from "app/utils/dateUtils"
 import { formatCurrency } from "app/utils/generalUtils"
 import React, { useContext, useState } from 'react'
+import AppButton from "../ui/AppButton"
 import AppItemRow from "../ui/AppItemRow"
 import AppTable from "../ui/AppTable"
 import EmptyPage from "../ui/EmptyPage"
@@ -54,6 +55,13 @@ export default function PaymentsInvoices() {
         ]}
         rows={invoicesList}
       />
+      {
+        invoices?.has_more && 
+        <AppButton
+          label="Load More"
+          onClick={() => setInvoicesLimit(invoicesLimit + 10)}
+        />
+      }
     </div>
   ) :
     <EmptyPage

@@ -2,6 +2,7 @@ import { saveAccountInfoService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import { validatePhone } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
+import AppBadge from "../ui/AppBadge"
 import AppButton from "../ui/AppButton"
 import { AppInput } from "../ui/AppInputs"
 import AvatarUploader from "../ui/AvatarUploader"
@@ -20,33 +21,34 @@ export default function Account() {
   const [country, setCountry] = useState("")
   const [postcode, setPostcode] = useState("")
   const [uploadedProfileImg, setUploadedProfileImg] = useState(null)
+  const [deleteConfirmation, setDeleteConfirmation] = useState('')
 
-  const allowSave = (firstName !== myUser?.firstName || 
-  lastName !== myUser?.lastName || 
-  phone !== myUser?.phone || 
-  address !== myUser?.address || 
-  city !== myUser?.city || 
-  region !== `${myUser?.region},${myUser?.regionCode}` || 
-  country !== `${myUser?.country},${myUser?.countryCode}` || 
-  postcode !== myUser?.postcode ||
-  uploadedProfileImg !== null) &&
-  !!(firstName && 
-    lastName && 
-    validatePhone(phone) && 
-    address && 
-    city && 
-    region && 
-    country && 
-    postcode)
+  const allowSave = (firstName !== myUser?.firstName ||
+    lastName !== myUser?.lastName ||
+    phone !== myUser?.phone ||
+    address !== myUser?.address ||
+    city !== myUser?.city ||
+    region !== `${myUser?.region},${myUser?.regionCode}` ||
+    country !== `${myUser?.country},${myUser?.countryCode}` ||
+    postcode !== myUser?.postcode ||
+    uploadedProfileImg !== null) &&
+    !!(firstName &&
+      lastName &&
+      validatePhone(phone) &&
+      address &&
+      city &&
+      region &&
+      country &&
+      postcode)
 
   const saveAccountInfo = () => {
-    if(!!!myUser) return alert('Please fill in all fields.')
+    if (!!!myUser) return alert('Please fill in all fields.')
     setPageLoading(true)
     saveAccountInfoService(
-      myUserID, 
+      myUserID,
       {
         firstName,
-        lastName, 
+        lastName,
         phone,
         address,
         city,
@@ -55,23 +57,29 @@ export default function Account() {
         country: country.split(',')[0],
         countryCode: country.split(',')[1],
         postcode
-      }, 
-      uploadedProfileImg, 
+      },
+      uploadedProfileImg,
       `users/${myUserID}/account`
     )
-    .then(() => {
-      setPageLoading(false)
-      setUploadedProfileImg(null)
-      alert('Account info saved.')
-    })
-    .catch(err => {
-      setPageLoading(false)
-      console.log(err)
-    })
+      .then(() => {
+        setPageLoading(false)
+        setUploadedProfileImg(null)
+        alert('Account info saved.')
+      })
+      .catch(err => {
+        setPageLoading(false)
+        console.log(err)
+      })
+  }
+
+  const deleteMyAccount = () => {
+    const confirm = window.confirm('Are you sure you want to delete your account? This action cannot be undone.')
+    if(!confirm) return alert('Account was not deleted.')
+    
   }
 
   useEffect(() => {
-    if(myUser) {
+    if (myUser) {
       setPhotoURL(myUser.photoURL)
       setFirstName(myUser.firstName)
       setLastName(myUser.lastName)
@@ -82,21 +90,21 @@ export default function Account() {
       setCity(myUser.city)
       setPostcode(myUser.postcode)
     }
-  },[myUser])
+  }, [myUser])
 
   return (
     <div className="account-content">
       <div className="account-section">
         <h4>Account Information</h4>
         <div className="avatar-container">
-        <AvatarUploader
-          src={uploadedProfileImg?.src || photoURL}
-          dimensions={110}
-          uploadedImg={uploadedProfileImg}
-          setUploadedImg={setUploadedProfileImg}
-          setPageLoading={setPageLoading}
-        />
-        {
+          <AvatarUploader
+            src={uploadedProfileImg?.src || photoURL}
+            dimensions={110}
+            uploadedImg={uploadedProfileImg}
+            setUploadedImg={setUploadedProfileImg}
+            setPageLoading={setPageLoading}
+          />
+          {
             uploadedProfileImg &&
             <AppButton
               label="Remove"
@@ -151,25 +159,38 @@ export default function Account() {
           value={postcode}
           onChange={e => setPostcode(e.target.value)}
         />
-      </div>
-      <div className="btn-group">
-        <AppButton
-          label="Save"
-          onClick={() => saveAccountInfo()}
-          disabled={!!!allowSave}
-        />
+        <div className="btn-group">
+          <AppButton
+            label="Save"
+            onClick={() => saveAccountInfo()}
+            disabled={!!!allowSave}
+          />
+        </div>
       </div>
       <div className="account-section">
+        <h4>Account Type</h4>
+        <div style={{display: 'flex'}}>
+          <AppBadge
+            label={myUser?.memberType}
+            noIcon
+          />
+        </div>
+      </div>
+      <div className="account-section delete-account">
         <h4>Delete My Account</h4>
-        <div>
-        <AppInput
-          label="Delete Account"
-          placeholder="Type DELETE to confirm"
-        />
-        <AppButton
-          label="Delete My Account"
-          buttonType="outlineRedBtn"
-        />
+        <div className="form">
+          <AppInput
+            label="Type 'DELETE' to confirm"
+            placeholder="Type DELETE to confirm"
+            value={deleteConfirmation}
+            onChange={e => setDeleteConfirmation(e.target.value)}
+          />
+          <AppButton
+            label="Delete My Account"
+            buttonType="outlineRedBtn"
+            disabled={deleteConfirmation !== 'DELETE'}
+            onClick={() => deleteMyAccount()}
+          />
         </div>
       </div>
     </div>

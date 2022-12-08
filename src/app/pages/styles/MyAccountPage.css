@@ -12,6 +12,7 @@
 .account-page .account-content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 40px;
   margin-top: 20px;
   width: 1000px;
@@ -20,6 +21,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px 20px;
+  width: 100%;
 }
 .account-page .account-content .account-section > h4 {
   grid-column: 1 / -1;
@@ -43,4 +45,28 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--darkGrayText);
+}
+.account-page .account-content .account-section .btn-group {
+  grid-column: 1/-1;
+}
+
+.account-page .account-section .app-badge h6 {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.account-page .account-content .account-section.delete-account {
+  border: 1px solid var(--red);
+  border-radius: 5px;
+  padding: 15px;
+}
+.account-page .account-content .account-section.delete-account h4 {
+  color: var(--red);
+}
+.account-page .account-content .account-section.delete-account .form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
 }
