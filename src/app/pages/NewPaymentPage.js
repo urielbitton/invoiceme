@@ -1,7 +1,6 @@
 import AppButton from "app/components/ui/AppButton"
-import { AppInput } from "app/components/ui/AppInputs"
 import HelmetTitle from "app/components/ui/HelmetTitle"
-import { useUsersSearch } from "app/hooks/searchHooks"
+import { useContactsSearch } from "app/hooks/searchHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useState } from 'react'
 import './styles/NewPaymentPage.css'
@@ -14,7 +13,7 @@ export default function NewPaymentPage() {
   const [loading, setLoading] = useState(false)
   const filters = `ownerID: ${myUserID}`
 
-  const users = useUsersSearch(query, setLoading, filters)
+  const users = useContactsSearch(query, setLoading, filters)
 
   return (
     <div>
@@ -28,7 +27,7 @@ export default function NewPaymentPage() {
           <i className="fab fa-cc-discover"/>
         </div>
         <div className="user-search-row">
-          <AppInput
+          <input
             type="Search"
             placeholder="Enter a name or email"
             value={searchString}

@@ -26,7 +26,17 @@
 
 .new-payment-container .user-search-row {
   width: 600px;
+  display: flex;
+  align-items: center;
 }
-.new-payment-container .user-search-row .appInput {
-  
+.new-payment-container .user-search-row input {
+  height: 45px;
+  width: calc(100% - 44px);
+  border-radius: 5px 0 0 5px;
+  border: 1px solid var(--inputBorderColor);
+}
+.new-payment-container .user-search-row button {
+  width: 44px;
+  height: 44px;
+  border-radius: 0 5px 5px 0;
 }

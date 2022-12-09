@@ -17,6 +17,7 @@
     "algoliasearch": "^4.11.0",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^4.1.0",
+    "html-pdf-node": "^1.0.8",
     "stripe": "^11.1.0",
     "twilio": "^3.83.3"
   },

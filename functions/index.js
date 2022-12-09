@@ -5,6 +5,7 @@ firebase.initializeApp()
 const firestore = firebase.firestore()
 firestore.settings({ ignoreUndefinedProperties: true })
 const sgMail = require('@sendgrid/mail')
+const html_to_pdf = require('html-pdf-node');
 
 const APP_ID = functions.config().algolia.app
 const API_KEY = functions.config().algolia.key
@@ -419,15 +420,16 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
                       subject: data.emailSubject,
                       html: data.emailMessage,
                       attachments: [{
-                        content: data.invoicePaperHTML.toString('base64'),
+                        content: convertHTMLToPDF(data.invoicePaperHTML),
+                        // content: Buffer.from(data.invoicePaperHTML).toString('base64'),
                         filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
                         type: 'application/pdf',
                         disposition: 'attachment'
                       }]
                     }
                     return sgMail.send(msg)
-                    .then(() => console.log('Email sent to all users.'))
-                    .catch((error) => console.error(error.toString()))
+                      .then(() => console.log('Email sent to all users.'))
+                      .catch((error) => console.error(error.toString()))
                   }))
                 })
                 .catch((err) => console.log(err))
@@ -449,8 +451,8 @@ exports.runScheduledInvoicesHourly = functions.pubsub
     const dayOfMonth = new Date().getUTCDate()
     const timeOfDay = new Date().getUTCHours()
     return runScheduledInvoices(dayOfMonth, timeOfDay)
-    .then(() => console.log('Scheduled invoices ran successfully.'))
-    .catch((err) => console.log('Scheduled invoice error', err))
+      .then(() => console.log('Scheduled invoices ran successfully.'))
+      .catch((err) => console.log('Scheduled invoice error', err))
   })
 
 
@@ -481,3 +483,16 @@ exports.checkExpiredSubscriptions = functions.pubsub
 
 
 //utility functions
+export const convertHTMLToPDF = (html) => {
+  let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+  let file = { content: html }
+  html_to_pdf.generatePdf(file, options, (error, result) => {
+    if (error) {
+      console.log(error)
+    } 
+    else {
+      console.log(result)
+      return result
+    }
+  })
+}
