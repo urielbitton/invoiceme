@@ -68,10 +68,10 @@ export default function Navbar() {
             buttonType="outlineBtn"
             rightIcon="fal fa-chevron-down"
             items={[
-              { label: "New Invoice", icon: "fal fa-file-invoice-dollar", url: "/invoices/new" },
-              { label: "New Estimate", icon: "fal fa-file-invoice", url: "/estimates/new" },
-              { label: "New Contact", icon: "fal fa-address-book", url: "/contacts/new" },
-              { label: "New Payment", icon: "fal fa-credit-card", url: "/payments/new" },
+              { label: "New Invoice", icon: "fas fa-file-invoice-dollar", url: "/invoices/new" },
+              { label: "New Estimate", icon: "fas fa-file-invoice", url: "/estimates/new" },
+              { label: "New Contact", icon: "fas fa-address-book", url: "/contacts/new" },
+              { label: "New Payment", icon: "fas fa-credit-card", url: "/payments/new" },
             ]}
           />
           <IconContainer

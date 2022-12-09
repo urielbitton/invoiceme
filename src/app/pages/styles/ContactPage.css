@@ -66,6 +66,14 @@
 .contact-page > header .side.info h5 i {
   margin-right: 10px;
 }
+.contact-page > header .side.favorite {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.contact-page > header .side.favorite button {
+  width: 100%;
+}
 
 
 .new-sms-modal form {

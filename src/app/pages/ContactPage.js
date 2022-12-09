@@ -144,6 +144,11 @@ export default function ContactPage() {
               buttonType={contact.isFavorite ? 'primary' : 'outlineBlueBtn'}
               rightIcon={contact.isFavorite ? 'fas fa-heart' : 'far fa-heart'}
             />
+            <AppButton
+              label="Send Payment"
+              url={`/payments/new?name=${contact.name}`}
+              rightIcon="fas fa-credit-card"
+            />
           </div>
         </header>
         <div className="contact-routes">

@@ -119,8 +119,8 @@ export const createStripeAccountService = (userID, data) => {
   .catch(err => console.log(err))
 }
 
-export const retrieveStripeAccountService = (customerID) => {
-  return functions.httpsCallable('retrieveStripeAccount')({customerID})
+export const retrieveStripeAccountService = (accountID) => {
+  return functions.httpsCallable('retrieveStripeAccount')({accountID})
   .then(result => {
     return result.data
   })

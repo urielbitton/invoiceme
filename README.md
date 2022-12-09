@@ -6,6 +6,7 @@ ToDos:
 - add more details on scheduled invoices emails (say when it was sent, when it's due, total, most info, etc.)
 - protect all business access pages with memberType check
 - add notifications to all events on app (especially payments)
+- implement main navbar search (not a page, just dropdown)
 - add search dropdown on email page when entering "to" field
 - style all auth pages
 - let users delete their account

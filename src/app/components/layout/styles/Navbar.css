@@ -59,6 +59,7 @@
 }
 .navbar .topbar .dropdown-button .dropdown-item {
   font-size: 13px;
+  color: var(--grayText);
 }
 .navbar .topbar .create-new-btn {
   font-size: 12px;

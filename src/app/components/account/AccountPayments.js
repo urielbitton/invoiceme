@@ -8,7 +8,7 @@ import './styles/AccountPayments.css'
 
 export default function AccountPayments() {
 
-  const { myUser, myUserID, myUserName, setPageLoading } = useContext(StoreContext)
+  const { myUser, myUserID, setPageLoading } = useContext(StoreContext)
   const [accountLink, setAccountLink] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const isDetailsSubmitted = searchParams.get('details_submitted') === 'true'
@@ -36,7 +36,8 @@ export default function AccountPayments() {
         setAccountLink(accountLink.url)
       }
       else {
-        alert("There was an error creating your Stripe account. Please try again later.")
+        alert("There was an error creating your Stripe account. Please make sure your personal account information is valid (email, phone, postal code, etc.)")
+        navigate('/my-account')
       }
       setPageLoading(false)
     })

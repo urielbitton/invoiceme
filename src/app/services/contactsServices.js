@@ -189,3 +189,14 @@ export const sendSMSService = (phone, message, mediaUrl, setLoading) => {
       catchError(err, setLoading)
     })
 }
+
+export const getContactStripeAccountIDByEmail = (email) => {
+  return db.collection('users')
+  .where('email', '==', email)
+  .orderBy('stripe.stripeAccountID')
+  .limit(1)
+  .get()
+  .then(snap => {
+    return snap.docs[0]?.data()
+  })
+}
