@@ -113,6 +113,7 @@ export const createContactService = (userID, name, email, phone, address, city,
     photoURL: photoURL ?? 'https://i.imgur.com/D4fLSKa.png'
   }
   return setDB(contactsPath, docID, contactData)
+    .then(() => setLoading(false))
     .catch(err => catchError(err, setLoading))
 }
 
@@ -144,9 +145,7 @@ export const addContactService = (userID, name, email, phone, address,
 export const updateContactService = (userID, contactID, updatedProps, setLoading) => {
   setLoading(true)
   return updateDB(`users/${userID}/contacts`, contactID, updatedProps)
-    .then(() => {
-      setLoading(false)
-    })
+    .then(() => setLoading(false))
     .catch(err => catchError(err, setLoading))
 }
 
@@ -157,12 +156,9 @@ export const deleteContactService = (userID, contactID, storagePath, filenames, 
     return deleteDB(`users/${userID}/contacts`, contactID)
       .then(() => {
         return deleteMultipleStorageFiles(storagePath, filenames)
-          .then(() => {
-            setLoading(false)
-          })
+          .then(() => setLoading(false))
           .catch(err => catchError(err, setLoading))
       })
-      .catch(err => catchError(err, setLoading))
       .catch(err => catchError(err, setLoading))
   }
 }
@@ -187,5 +183,9 @@ export const sendSMSService = (phone, message, mediaUrl, setLoading) => {
       setLoading(false)
       console.log(result)
     })
-    .catch(err => catchError(err, setLoading))
+    .catch(err => {
+      alert('Message failed to send.')
+      setLoading(false)
+      catchError(err, setLoading)
+    })
 }

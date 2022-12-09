@@ -5,7 +5,6 @@ firebase.initializeApp()
 const firestore = firebase.firestore()
 firestore.settings({ ignoreUndefinedProperties: true })
 const sgMail = require('@sendgrid/mail')
-const html_to_pdf = require('html-pdf-node');
 
 const APP_ID = functions.config().algolia.app
 const API_KEY = functions.config().algolia.key
@@ -420,8 +419,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
                       subject: data.emailSubject,
                       html: data.emailMessage,
                       attachments: [{
-                        content: convertHTMLToPDF(data.invoicePaperHTML),
-                        // content: Buffer.from(data.invoicePaperHTML).toString('base64'),
+                        content: Buffer.from(data.invoicePaperHTML).toString('base64'),
                         filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
                         type: 'application/pdf',
                         disposition: 'attachment'
@@ -483,16 +481,3 @@ exports.checkExpiredSubscriptions = functions.pubsub
 
 
 //utility functions
-export const convertHTMLToPDF = (html) => {
-  let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] }
-  let file = { content: html }
-  html_to_pdf.generatePdf(file, options, (error, result) => {
-    if (error) {
-      console.log(error)
-    } 
-    else {
-      console.log(result)
-      return result
-    }
-  })
-}

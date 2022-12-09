@@ -15,7 +15,7 @@ export default function InvoiceRow(props) {
   const navigate = useNavigate()
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, invoiceID, isPaid, total, setPageLoading)
+    deleteInvoiceService(myUserID, invoiceID, setPageLoading)
   }
 
   const togglePaid = () => {

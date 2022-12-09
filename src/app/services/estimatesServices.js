@@ -141,6 +141,7 @@ export const deleteEstimateService = (myUserID, estimateID, setLoading) => {
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/estimates`, estimateID)
+      .then(() => setLoading(false))
       .catch(err => catchError(err, setLoading))
     }
 }

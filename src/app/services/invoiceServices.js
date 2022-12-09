@@ -2,7 +2,7 @@ import { db } from "app/firebase/fire"
 import { convertInputDateToDateAndTimeFormat, 
   dateToMonthName, 
   getYearsBetween} from "app/utils/dateUtils"
-import { deleteDB, firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
+import { deleteDB, getRandomDocID, setDB, updateDB } from "./CrudDB"
 import { sendHtmlToEmailAsPDF } from "./emailServices"
 import { createNotification } from "./notifServices"
 
@@ -158,11 +158,12 @@ export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotal
   .catch(err => catchError(err, setLoading))
 }
 
-export const deleteInvoiceService = (myUserID, invoiceID, isPaid, invoiceTotal, setLoading) => {
+export const deleteInvoiceService = (myUserID, invoiceID, setLoading) => {
   const confirm = window.confirm("Are you sure you want to delete this invoice?")
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/invoices`, invoiceID)
+      .then(() => setLoading(false))
       .catch(err => catchError(err, setLoading))
     }
 }
@@ -186,6 +187,8 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
           isSent: true, 
         })
         .catch(err => console.log(err))
+        setLoading(false)
+        alert("Invoice sent to client.")
         createNotification(
           myUserID,
           'Invoice sent to client',
@@ -194,8 +197,6 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
           `/invoices/${invoiceID}`
         )
         .catch(err => console.log(err))
-        setLoading(false)
-        alert("Invoice sent to client.")
       })
       .catch(err => catchError(err, setLoading))
     }
