@@ -142,10 +142,6 @@ export const createInvoiceService = (userID, myBusiness, taxNumbers, invoiceCurr
         'fas fa-file-invoice-dollar',
         `/invoices/${docID}`
       )
-      return updateDB('users', userID, {
-        invoicesNum: firebaseIncrement(1),
-        ...(status === 'paid' && {totalRevenue: firebaseIncrement(calculatedTotal)})
-      })
     })
     .catch(err => console.log(err))
 }
@@ -167,16 +163,6 @@ export const deleteInvoiceService = (myUserID, invoiceID, isPaid, invoiceTotal, 
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/invoices`, invoiceID)
-      .then(() => {
-        return updateDB('users', myUserID, {
-          invoicesNum: firebaseIncrement(-1),
-          ...(isPaid && {totalRevenue: firebaseIncrement(-invoiceTotal)})
-        })
-        .then(() => {
-          setLoading(false)
-        })
-        .catch(err => catchError(err, setLoading))
-      })
       .catch(err => catchError(err, setLoading))
     }
 }

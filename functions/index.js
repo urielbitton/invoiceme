@@ -23,73 +23,111 @@ const invoicesIndex = client.initIndex('invoices_index')
 const estimatesIndex = client.initIndex('estimates_index')
 const contactsIndex = client.initIndex('contacts_index')
 
-//Algolia Search functions
 
-//invoices collection
+//Algolia functions
+
 exports.addToIndexInvoice = functions
   .region('northamerica-northeast1')
-  .firestore.document('users/{userID}/invoices/{invoiceID}').onCreate(snapshot => {
+  .firestore.document('users/{userID}/invoices/{invoiceID}').onCreate((snapshot, context) => {
     const data = snapshot.data()
-    const objectID = snapshot.id
-    return invoicesIndex.saveObject({ ...data, objectID })
+    const calculatedTotal = data?.items?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
+    return firestore.collection('users')
+      .doc(context.params.userID)
+      .update({
+        invoicesNum: firebase.firestore.FieldValue.increment(1),
+        ...(data.status === 'paid' && { totalRevenue: firebase.firestore.FieldValue.increment(calculatedTotal) })
+      })
+      .then(() => {
+        return invoicesIndex.saveObject({ ...data, objectID: snapshot.id })
+      })
   })
+
 exports.updateIndexInvoices = functions
   .region('northamerica-northeast1')
   .firestore.document('users/{userID}/invoices/{invoiceID}').onUpdate((change) => {
     const newData = change.after.data()
-    const objectID = change.after.id
-    return invoicesIndex.saveObject({ ...newData, objectID })
+    return invoicesIndex.saveObject({ ...newData, objectID: change.after.id })
   })
+
 exports.deleteFromIndexInvoices = functions
   .region('northamerica-northeast1')
-  .firestore.document('users/{userID}/invoices/{invoiceID}').onDelete(snapshot => {
-    invoicesIndex.deleteObject(snapshot.id)
-  })
-
-//contacts collection
-exports.addToIndexContacts = functions
-  .region('northamerica-northeast1')
-  .firestore.document('users/{userID}/contacts/{contactID}').onCreate(snapshot => {
+  .firestore.document('users/{userID}/invoices/{invoiceID}').onDelete((snapshot, context) => {
     const data = snapshot.data()
-    const objectID = snapshot.id
-    return contactsIndex.saveObject({ ...data, objectID })
-  })
-exports.updateIndexContacts = functions
-  .region('northamerica-northeast1')
-  .firestore.document('users/{userID}/contacts/{contactID}').onUpdate((change) => {
-    const newData = change.after.data()
-    const objectID = change.after.id
-    return contactsIndex.saveObject({ ...newData, objectID })
-  })
-exports.deleteFromIndexContacts = functions
-  .region('northamerica-northeast1')
-  .firestore.document('users/{userID}/contacts/{contactID}').onDelete(snapshot => {
-    contactsIndex.deleteObject(snapshot.id)
+    return firestore.collection('users')
+      .doc(context.params.userID)
+      .update({
+        invoicesNum: firebase.firestore.FieldValue.increment(-1),
+        ...(data.status === 'paid' && { totalRevenue: firebase.firestore.FieldValue.increment(-data.total) })
+      })
+      .then(() => {
+        return invoicesIndex.deleteObject(snapshot.id)
+      })
   })
 
-//estimates collection
 exports.addToIndexEstimates = functions
   .region('northamerica-northeast1')
-  .firestore.document('users/{userID}/estimates/{estimateID}').onCreate(snapshot => {
+  .firestore.document('users/{userID}/estimates/{estimateID}').onCreate((snapshot, context) => {
     const data = snapshot.data()
-    const objectID = snapshot.id
-    return estimatesIndex.saveObject({ ...data, objectID })
+    return firestore.collection('users')
+      .doc(context.params.userID)
+      .update({ invoicesNum: firebase.firestore.FieldValue.increment(1) })
+      .then(() => {
+        return estimatesIndex.saveObject({ ...data, objectID: snapshot.id })
+      })
   })
+
 exports.updateIndexEstimates = functions
   .region('northamerica-northeast1')
   .firestore.document('users/{userID}/estimates/{estimateID}').onUpdate((change) => {
     const newData = change.after.data()
-    const objectID = change.after.id
-    return estimatesIndex.saveObject({ ...newData, objectID })
+    return estimatesIndex.saveObject({ ...newData, objectID: change.after.id })
   })
+
 exports.deleteFromIndexEstimates = functions
   .region('northamerica-northeast1')
-  .firestore.document('users/{userID}/estimates/{estimateID}').onDelete(snapshot => {
-    estimatesIndex.deleteObject(snapshot.id)
+  .firestore.document('users/{userID}/estimates/{estimateID}').onDelete((snapshot, context) => {
+    return firestore.collection('users')
+      .doc(context.params.userID)
+      .update({ invoicesNum: firebase.firestore.FieldValue.increment(-1) })
+      .then(() => {
+        return estimatesIndex.deleteObject(snapshot.id)
+      })
   })
 
 
-// Sendgrid email with attachment
+exports.addToIndexContacts = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/contacts/{contactID}').onCreate((snapshot, context) => {
+    const data = snapshot.data()
+    return firestore.collection('users')
+      .doc(context.params.userID)
+      .update({ contactsNum: firebase.firestore.FieldValue.increment(1) })
+      .then(() => {
+        return contactsIndex.saveObject({ ...data, objectID: snapshot.id })
+      })
+  })
+
+exports.updateIndexContacts = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/contacts/{contactID}').onUpdate((change) => {
+    const newData = change.after.data()
+    return contactsIndex.saveObject({ ...newData, objectID: change.after.id })
+  })
+
+exports.deleteFromIndexContacts = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/contacts/{contactID}').onDelete((snapshot, context) => {
+    return firestore.collection('users')
+      .doc(context.params.userID)
+      .update({ contactsNum: firebase.firestore.FieldValue.increment(-1) })
+      .then(() => {
+        return contactsIndex.deleteObject(snapshot.id)
+      })
+  })
+
+
+// Sendgrid functions
+
 exports.sendEmailWithAttachment = functions
   .https.onCall((data, context) => {
     const msg = {
@@ -130,7 +168,7 @@ exports.sendSMS = functions
   })
 
 
-//Stripe calls
+//Stripe functions
 exports.createStripeAccount = functions
   .https.onCall(async (data, context) => {
     const account = await stripe.accounts.create({
@@ -316,16 +354,19 @@ function runScheduledInvoices(timeOfDay) {
       const now = firebase.firestore.Timestamp.now()
       const monthNum = new Date().getMonth()
       const year = new Date().getFullYear()
-      const batch = firestore.batch()
+      const invoicesBatch = firestore.batch()
+      const schedulesBatch = firestore.batch()
       scheduledInvoices.forEach(schedule => {
         const data = schedule.data()
         const path = `users/${data.ownerID}/invoices`
         const docID = firestore.collection(path).doc().id
         const docRef = firestore.collection(path).doc(docID)
-        batch.set(docRef, {
+        const eventsDocID = firestore.collection('scheduledEvents').doc().id
+        const eventsDocRef = firestore.collection('scheduledEvents').doc(eventsDocID)
+        invoicesBatch.set(docRef, {
           currency: data.invoiceTemplate.currency,
-          dateCreated: now,
-          dateDue: data.invoiceTemplate.dateDue,
+          dateCreated: new Date(),
+          dateDue: new Date(),
           invoiceID: docID,
           invoiceNumber: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}`,
           invoiceOwnerID: data.invoiceTemplate.invoiceOwnerID,
@@ -344,125 +385,151 @@ function runScheduledInvoices(timeOfDay) {
           subtotal: data.invoiceTemplate.subtotal,
           total: data.invoiceTemplate.total,
           title: data.invoiceTemplate.title,
+          isScheduled: true,
+        })
+        schedulesBatch.set(eventsDocRef, {
+          dateRan: now,
+          name: 'Scheduled Invoice',
+          scheduleID: data.scheduleID,
+          type: 'scheduledInvoice',
+          ownerID: data.ownerID,
         })
       })
-      return batch.commit()
+      return invoicesBatch.commit()
         .then(() => {
-          scheduledInvoices.forEach(snapshot => {
-            snapshot.ref.update({ lastSent: now })
-            const data = snapshot.data()
-            const msg = {
-              to: data.invoiceTemplate.invoiceTo.email,
-              from: 'info@atomicsdigital.com',
-              subject: data.emailSubject,
-              html: data.emailMessage,
-              attachments: [{
-                content: data.invoicePaperHTML.toString('base64'),
-                filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
-                type: 'application/pdf',
-                disposition: 'attachment'
-              }]
-            }
-            return sgMail.send(msg)
-          })
+          return schedulesBatch.commit()
+            .then(() => {
+              const invoicesBatch = firestore.batch()
+              scheduledInvoices.forEach(schedule => {
+                const data = schedule.data()
+                const docRef = firestore.collection('scheduledInvoices').doc(data.scheduleID)
+                invoicesBatch.update(docRef, {
+                  lastSent: now,
+                })
+              })
+              return invoicesBatch.commit()
+                .then(() => {
+                  return Promise.all(scheduledInvoices.docs.map((doc) => {
+                    const data = doc.data()
+                    const msg = {
+                      to: data.invoiceTemplate.invoiceTo.email,
+                      from: 'info@atomicsdigital.com',
+                      subject: data.emailSubject,
+                      html: data.emailMessage,
+                      attachments: [{
+                        content: data.invoicePaperHTML.toString('base64'),
+                        filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
+                        type: 'application/pdf',
+                        disposition: 'attachment'
+                      }]
+                    }
+                    return sgMail.send(msg)
+                  }))
+                })
+                .catch((err) => console.log(err))
+            })
+            .catch((err) => console.log(err))
         })
+        .catch((err) => console.log(err))
     })
+    .catch((err) => console.log(err))
 }
 
 // 9am EST every day
 exports.runScheduledInvoices9am = functions.pubsub
   .schedule('5 9 * * *')
   .onRun((context) => {
-    runScheduledInvoices(9)
+    return runScheduledInvoices(9)
+  })
+
+//10am EST every day
+exports.runScheduledInvoices9am = functions.pubsub
+  .schedule('5 10 * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(10)
+  })
+
+//11am EST every day
+exports.runScheduledInvoices9am = functions.pubsub
+  .schedule('5 11 * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(11)
   })
 
 // 12pm EST every day
 exports.runScheduledInvoices12pm = functions.pubsub
   .schedule('5 12 * * *')
   .onRun((context) => {
-    runScheduledInvoices(12)
+    return runScheduledInvoices(12)
+  })
+
+// 1pm EST every day
+exports.runScheduledInvoices12pm = functions.pubsub
+  .schedule('5 13 * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(13)
+  })
+
+// 2pm EST every day
+exports.runScheduledInvoices12pm = functions.pubsub
+  .schedule('5 14 * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(14)
   })
 
 // 3pm EST every day
 exports.runScheduledInvoices3pm = functions.pubsub
   .schedule('5 15 * * *')
   .onRun((context) => {
-    runScheduledInvoices(15)
+    return runScheduledInvoices(15)
+  })
+
+// 4pm EST every day
+exports.runScheduledInvoices3pm = functions.pubsub
+  .schedule('5 16 * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(16)
+  })
+
+// 5pm EST every day
+exports.runScheduledInvoices3pm = functions.pubsub
+  .schedule('5 17 * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(17)
   })
 
 // 6pm EST every day
 exports.runScheduledInvoices6pm = functions.pubsub
   .schedule('5 18 * * *')
   .onRun((context) => {
-    runScheduledInvoices(18)
+    return runScheduledInvoices(18)
   })
 
-//test scheduled function
-exports.testSchedule3 = functions.pubsub
-  .schedule('5 * * * *')
+// 7pm EST every day
+exports.runScheduledInvoices6pm = functions.pubsub
+  .schedule('5 19 * * *')
   .onRun((context) => {
-    const dayOfMonth = new Date().getDate()
-    return firestore.collection('scheduledInvoices')
-      .where('dayOfMonth', '==', dayOfMonth)
-      .where('timeOfDay', '==', 15)
-      .where('active', '==', true)
-      .get()
-      .then((scheduledInvoices) => {
-        if (scheduledInvoices.empty) return null
-        const now = firebase.firestore.Timestamp.now()
-        const monthNum = new Date().getMonth()
-        const year = new Date().getFullYear()
-        const batch = firestore.batch()
-        scheduledInvoices.forEach(schedule => {
-          const data = schedule.data()
-          const path = `users/${data.ownerID}/invoices`
-          const docID = firestore.collection(path).doc().id
-          const docRef = firestore.collection(path).doc(docID)
-          batch.set(docRef, {
-            currency: data.invoiceTemplate.currency,
-            dateCreated: now,
-            dateDue: data.invoiceTemplate.dateDue,
-            invoiceID: docID,
-            invoiceNumber: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}`,
-            invoiceOwnerID: data.invoiceTemplate.invoiceOwnerID,
-            invoiceTo: data.invoiceTemplate.invoiceTo,
-            isPaid: false,
-            isSent: true,
-            items: data.invoiceTemplate.items,
-            monthLabel: new Date().toLocaleString('en-CA', { month: 'long' }),
-            myBusiness: data.invoiceTemplate.myBusiness,
-            notes: data.invoiceTemplate.notes,
-            partOfTotal: false,
-            status: data.invoiceTemplate.status,
-            taxNumbers: data.invoiceTemplate.taxNumbers,
-            taxRate1: data.invoiceTemplate.taxRate1,
-            taxRate2: data.invoiceTemplate.taxRate2,
-            subtotal: data.invoiceTemplate.subtotal,
-            total: data.invoiceTemplate.total,
-            title: data.invoiceTemplate.title,
-          })
-        })
-        return batch.commit()
-          .then(() => {
-            scheduledInvoices.forEach(snapshot => {
-              snapshot.ref.update({ lastSent: now })
-              const data = snapshot.data()
-              const msg = {
-                to: data.invoiceTemplate.invoiceTo.email,
-                from: 'info@atomicsdigital.com',
-                subject: data.emailSubject,
-                html: data.emailMessage,
-                attachments: [{
-                  content: data.invoicePaperHTML.toString('base64'),
-                  filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
-                  type: 'application/pdf',
-                  disposition: 'attachment'
-                }]
-              }
-              return sgMail.send(msg)
-            })
-          })
-      })
+    return runScheduledInvoices(19)
+  })
+
+// 8pm EST every day
+exports.runScheduledInvoices6pm = functions.pubsub
+  .schedule('5 20 * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(20)
+  })
+
+// 9pm EST every day
+exports.runScheduledInvoices6pm = functions.pubsub
+  .schedule('5 21 * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(21)
+  })
+
+exports.testSchedule8 = functions.pubsub
+  .schedule('*/5 * * * *')
+  .onRun((context) => {
+    return runScheduledInvoices(20)
   })
 
 exports.checkExpiredSubscriptions = functions.pubsub

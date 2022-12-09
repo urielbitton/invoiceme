@@ -119,7 +119,7 @@ export default function ContactsPage() {
               dbContacts={dbContacts}
             />
             {
-              contactsLimit <= dbContacts?.length &&
+              contactsLimit <= dbContacts?.length && query.length < 1 &&
               <AppButton
                 label="Show More"
                 onClick={() => setContactsLimit(contactsLimit + limitsNum)}

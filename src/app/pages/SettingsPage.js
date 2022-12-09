@@ -145,7 +145,7 @@ export default function SettingsPage() {
           <Route path="invoices" element={<InvoicesSettings />} />
           <Route path="estimates" element={<EstimatesSettings />} />
           <Route path="contacts" element={<ContactsSettings />} />
-          <Route path="scheduled-invoices" element={<ScheduledInvoicesSettings />} />
+          <Route path="scheduled-invoices/*" element={<ScheduledInvoicesSettings />} />
           <Route path="payments" element={<PaymentsSettings />} />
           <Route path="notifications" element={<NotificationsSettings />} />
           <Route path="emails" element={<EmailsSettings />} />

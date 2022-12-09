@@ -173,18 +173,22 @@ export default function CreateScheduledInvoice() {
     updateScheduledInvoiceService(
       editInvoiceID,
       {
+        ...editSchedule,
         dayOfMonth: +dayOfMonth,
         timeOfDay: +timeOfDay,
         title: scheduleTitle,
         emailSubject,
         emailMessage,
         invoiceTemplate: {
+          ...editSchedule?.invoiceTemplate,
           title: invoiceTitle,
           invoiceNumber,
+          invoiceOwnerID: myUserID,
           dateCreated: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDate))),
           dateDue: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDueDate))),
           invoiceTo: invoiceContact,
           currency: invoiceCurrency,
+          myBusiness: myUser?.myBusiness,
           notes: invoiceNotes,
           taxRate1: +taxRate1,
           taxRate2: +taxRate2,

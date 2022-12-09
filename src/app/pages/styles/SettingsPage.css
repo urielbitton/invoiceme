@@ -96,6 +96,9 @@
   color: var(--grayText);
   font-weight: 500;
 }
+.settings-sub-page .app-tabs-bar {
+  margin-top: 25px;
+}
 
 .settings-page .settings-section {
   display: flex; 

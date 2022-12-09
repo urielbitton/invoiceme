@@ -1,8 +1,11 @@
 import { useUserScheduledInvoices } from "app/hooks/invoiceHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useRef, useState } from 'react'
+import { NavLink, Route, Routes, useLocation } from "react-router-dom"
 import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
 import AppButton from "../ui/AppButton"
+import AppTabsBar from "../ui/AppTabsBar"
+import ScheduledEvents from "./ScheduledEvents"
 import { ScheduledInvoiceCard } from "./ScheduledInvoiceCard"
 import SettingsTitles from "./SettingsTitles"
 
@@ -13,6 +16,7 @@ export default function ScheduledInvoicesSettings() {
   const [invoiceData, setInvoiceData] = useState(null)
   const scheduledInvoices = useUserScheduledInvoices(myUserID)
   const invoicePaperRef = useRef(null)
+  const location= useLocation()
 
   const scheduledInvoicesList = scheduledInvoices?.map((scheduled, index) => {
     return <ScheduledInvoiceCard
@@ -38,8 +42,28 @@ export default function ScheduledInvoicesSettings() {
         }
         badge="Business"
       />
-      <div className="scheduled-invoices-grid">
-        {scheduledInvoicesList}
+      <AppTabsBar
+        noSpread
+        spacedOut={15}
+      >
+        <NavLink 
+          to=""
+          className={location.pathname !== '/settings/scheduled-invoices' ? 'not-active' : ''}
+        >
+          Invoices
+        </NavLink>
+        <NavLink to="events">
+          Events
+        </NavLink>
+      </AppTabsBar>
+      <div className="scheduled-routes">
+        <Routes>
+          <Route path="" element={
+            <div className="scheduled-invoices-grid">{scheduledInvoicesList}</div>
+            } 
+          />
+          <Route path="events" element={<ScheduledEvents />} />
+        </Routes>
       </div>
       <InvoicePreviewModal
         invoiceData={invoiceData}

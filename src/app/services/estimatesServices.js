@@ -123,9 +123,6 @@ export const createEstimateService = (userID, myBusiness, taxNumbers, estimateCu
         'fas fa-file-invoice',
         `/estimates/${docID}`
       )
-      return updateDB('users', userID, {
-        estimatesNum: firebaseIncrement(1)
-      })
     })
     .catch(err => console.log(err))
 }
@@ -144,15 +141,6 @@ export const deleteEstimateService = (myUserID, estimateID, setLoading) => {
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/estimates`, estimateID)
-      .then(() => {
-        return updateDB('users', myUserID, {
-          estimatesNum: firebaseIncrement(-1),
-        })
-        .then(() => {
-          setLoading(false)
-        })
-        .catch(err => catchError(err, setLoading))
-      })
       .catch(err => catchError(err, setLoading))
     }
 }

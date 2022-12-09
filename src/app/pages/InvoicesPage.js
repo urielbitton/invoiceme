@@ -125,7 +125,7 @@ export default function InvoicesPage() {
               dbInvoices={dbInvoices}
             />
             {
-              invoicesLimit <= dbInvoices?.length &&
+              invoicesLimit <= dbInvoices?.length && query.length < 1 &&
               <AppButton
                 label="Show More"
                 onClick={() => setInvoicesLimit(invoicesLimit + limitsNum)}

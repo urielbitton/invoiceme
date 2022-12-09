@@ -120,7 +120,7 @@ export default function EstimatesPage() {
               dbEstimates={dbEstimates}
             />
             {
-              estimatesLimit <= dbEstimates?.length &&
+              estimatesLimit <= dbEstimates?.length && query.length < 1 &&
               <AppButton
                 label="Show More"
                 onClick={() => setEstimatesLimit(estimatesLimit + limitsNum)}

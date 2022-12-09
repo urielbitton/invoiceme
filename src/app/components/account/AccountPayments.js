@@ -96,6 +96,14 @@ export default function AccountPayments() {
           buttonType="outlineBlueBtn"
         />
       </div>
+      <div className="payments-section">
+        <h4>Send a Payment</h4>
+        <AppButton
+          label="New Payment"
+          url="/payments/new"
+          buttonType="outlineBlueBtn"
+        />
+      </div>
     </div>
   )
 }
