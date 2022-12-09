@@ -11,25 +11,11 @@ export default function AppButton(props) {
   const button = <button
     id={id}
     className={`appButton 
-      ${className ?? ""} 
-      ${
-        buttonType === 'secondaryBtn' ? 'secondaryBtn' : 
-        buttonType === 'outlineBtn' ? 'outlineBtn' :
-        buttonType === 'outlineBlueBtn' ? 'outlineBlueBtn' :
-        buttonType === 'outlineGrayBtn' ? 'outlineGrayBtn' :
-        buttonType === 'outlineRedBtn' ? 'outlineRedBtn' :
-        buttonType === 'invertedRedBtn' ? 'invertedRedBtn' :
-        buttonType === 'invertedBtn' ? 'invertedBtn' :
-        buttonType === 'white' ? 'white' :
-        buttonType === 'tabBtn' ? 'tabBtn' :
-        buttonType === 'tabBlueBtn' ? 'tabBlueBtn' :
-        buttonType === 'tabRedBtn' ? 'tabRedBtn' :
-        buttonType === 'tabActiveBtn' ? 'tabActiveBtn' :
-        'primaryBtn'
-      }
-      ${disabled ? 'disabled' : ''}
-      ${round ? 'round' : ''}
-      ${iconBtn ? 'iconBtn' : ''}
+      ${ className ?? "" } 
+      ${ buttonType || 'primaryBtn'}
+      ${ disabled ? 'disabled' : '' }
+      ${ round ? 'round' : '' }
+      ${ iconBtn ? 'iconBtn' : '' }
     `}
     onClick={(e) => onClick && onClick(e)}
     style={style}

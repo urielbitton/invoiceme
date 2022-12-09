@@ -1,0 +1,32 @@
+.new-payment-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--inputBorderColor);
+  border-radius: 5px;
+  box-shadow: var(--newCardShadow);
+  padding: 40px 30px;
+}
+.new-payment-container h4 {
+  font-size: 22px;
+  color: var(--darkGrayText);
+  margin-bottom: 20px;
+}
+.new-payment-container .payment-options {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.new-payment-container .payment-options i {
+  font-size: 22px;
+  color: var(--grayText);
+}
+
+.new-payment-container .user-search-row {
+  width: 600px;
+}
+.new-payment-container .user-search-row .appInput {
+  
+}

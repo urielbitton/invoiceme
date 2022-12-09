@@ -22,10 +22,11 @@ const client = algoliasearch(APP_ID, API_KEY)
 const invoicesIndex = client.initIndex('invoices_index')
 const estimatesIndex = client.initIndex('estimates_index')
 const contactsIndex = client.initIndex('contacts_index')
-
+const usersIndex = client.initIndex('users_index')
 
 //Algolia functions
 
+//invoices
 exports.addToIndexInvoice = functions
   .region('northamerica-northeast1')
   .firestore.document('users/{userID}/invoices/{invoiceID}').onCreate((snapshot, context) => {
@@ -64,6 +65,7 @@ exports.deleteFromIndexInvoices = functions
       })
   })
 
+//Estimates
 exports.addToIndexEstimates = functions
   .region('northamerica-northeast1')
   .firestore.document('users/{userID}/estimates/{estimateID}').onCreate((snapshot, context) => {
@@ -94,7 +96,7 @@ exports.deleteFromIndexEstimates = functions
       })
   })
 
-
+//contacts
 exports.addToIndexContacts = functions
   .region('northamerica-northeast1')
   .firestore.document('users/{userID}/contacts/{contactID}').onCreate((snapshot, context) => {
@@ -124,6 +126,7 @@ exports.deleteFromIndexContacts = functions
         return contactsIndex.deleteObject(snapshot.id)
       })
   })
+
 
 
 // Sendgrid functions
@@ -342,8 +345,7 @@ exports.retrieveCustomer = functions
 
 //Scheduled functions
 
-function runScheduledInvoices(timeOfDay) {
-  const dayOfMonth = new Date().getDate()
+function runScheduledInvoices(dayOfMonth, timeOfDay) {
   return firestore.collection('scheduledInvoices')
     .where('dayOfMonth', '==', dayOfMonth)
     .where('timeOfDay', '==', timeOfDay)
@@ -352,8 +354,8 @@ function runScheduledInvoices(timeOfDay) {
     .then((scheduledInvoices) => {
       if (scheduledInvoices.empty) return null
       const now = firebase.firestore.Timestamp.now()
-      const monthNum = new Date().getMonth()
-      const year = new Date().getFullYear()
+      const monthNum = new Date().getUTCMonth() + 1
+      const year = new Date().getUTCFullYear()
       const invoicesBatch = firestore.batch()
       const schedulesBatch = firestore.batch()
       scheduledInvoices.forEach(schedule => {
@@ -424,6 +426,8 @@ function runScheduledInvoices(timeOfDay) {
                       }]
                     }
                     return sgMail.send(msg)
+                    .then(() => console.log('Email sent to all users.'))
+                    .catch((error) => console.error(error.toString()))
                   }))
                 })
                 .catch((err) => console.log(err))
@@ -435,107 +439,31 @@ function runScheduledInvoices(timeOfDay) {
     .catch((err) => console.log(err))
 }
 
-// 9am EST every day
-exports.runScheduledInvoices9am = functions.pubsub
-  .schedule('5 9 * * *')
+
+//Schedules Options
+
+// Every hour between 7am and 9pm
+exports.runScheduledInvoicesHourly = functions.pubsub
+  .schedule('5 7-21 * * *')
   .onRun((context) => {
-    return runScheduledInvoices(9)
+    const dayOfMonth = new Date().getUTCDate()
+    const timeOfDay = new Date().getUTCHours()
+    return runScheduledInvoices(dayOfMonth, timeOfDay)
+    .then(() => console.log('Scheduled invoices ran successfully.'))
+    .catch((err) => console.log('Scheduled invoice error', err))
   })
 
-//10am EST every day
-exports.runScheduledInvoices9am = functions.pubsub
-  .schedule('5 10 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(10)
-  })
 
-//11am EST every day
-exports.runScheduledInvoices9am = functions.pubsub
-  .schedule('5 11 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(11)
-  })
-
-// 12pm EST every day
-exports.runScheduledInvoices12pm = functions.pubsub
-  .schedule('5 12 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(12)
-  })
-
-// 1pm EST every day
-exports.runScheduledInvoices12pm = functions.pubsub
-  .schedule('5 13 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(13)
-  })
-
-// 2pm EST every day
-exports.runScheduledInvoices12pm = functions.pubsub
-  .schedule('5 14 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(14)
-  })
-
-// 3pm EST every day
-exports.runScheduledInvoices3pm = functions.pubsub
-  .schedule('5 15 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(15)
-  })
-
-// 4pm EST every day
-exports.runScheduledInvoices3pm = functions.pubsub
-  .schedule('5 16 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(16)
-  })
-
-// 5pm EST every day
-exports.runScheduledInvoices3pm = functions.pubsub
-  .schedule('5 17 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(17)
-  })
-
-// 6pm EST every day
-exports.runScheduledInvoices6pm = functions.pubsub
-  .schedule('5 18 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(18)
-  })
-
-// 7pm EST every day
-exports.runScheduledInvoices6pm = functions.pubsub
-  .schedule('5 19 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(19)
-  })
-
-// 8pm EST every day
-exports.runScheduledInvoices6pm = functions.pubsub
-  .schedule('5 20 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(20)
-  })
-
-// 9pm EST every day
-exports.runScheduledInvoices6pm = functions.pubsub
-  .schedule('5 21 * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(21)
-  })
-
-exports.testSchedule8 = functions.pubsub
+exports.testSchedule10 = functions.pubsub
   .schedule('*/5 * * * *')
   .onRun((context) => {
-    return runScheduledInvoices(20)
+    return runScheduledInvoices(8, 23)
   })
 
 exports.checkExpiredSubscriptions = functions.pubsub
   .schedule('0 9 * * *')
   .onRun((context) => {
-    const day = new Date().getDate()
+    const day = new Date().getUTCDate()
     return firestore.collection('users')
       .where('stripe.businessPlanExpires.dayNumber', '==', day)
       .get()

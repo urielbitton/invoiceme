@@ -8,8 +8,8 @@ export const algoliaSearchClient = algoliasearch(
   algolia_admin_key
 )
 
-
 export const invoicesIndex = algoliaSearchClient.initIndex('invoices_index')
 export const estimatesIndex = algoliaSearchClient.initIndex('estimates_index')
 export const contactsIndex = algoliaSearchClient.initIndex('contacts_index')
 export const settingsIndex = algoliaSearchClient.initIndex('settings_index')
+export const usersIndex = algoliaSearchClient.initIndex('users_index')
