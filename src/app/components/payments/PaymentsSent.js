@@ -1,5 +1,7 @@
 import { useSentPayments } from "app/hooks/paymentHooks"
 import { StoreContext } from "app/store/store"
+import { convertClassicDate, convertClassicDateAndTime } from "app/utils/dateUtils"
+import { formatCurrency } from "app/utils/generalUtils"
 import React, { useContext, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import AppItemRow from "../ui/AppItemRow"
@@ -9,26 +11,24 @@ import IconContainer from "../ui/IconContainer"
 
 export default function PaymentsSent() {
 
-  const { myUserID } = useContext(StoreContext)
+  const { myUserID, stripeCustomerPortalLink } = useContext(StoreContext)
   const [paymentsLimit, setPaymentsLimit] = useState(10)
   const payments = useSentPayments(myUserID, paymentsLimit)
-  console.log(payments)
 
   const paymentsList = payments?.map((payment) => {
     return <AppItemRow
       key={payment.id}
-      item1=""
-      item2=""
-      item3=""
-      item4=""
-      item5=""
-      item6=""
-      item7=""
+      item1={<span title={convertClassicDateAndTime(payment?.dateCreated?.toDate())}>{convertClassicDate(payment?.dateCreated?.toDate())}</span>}
+      item2={<span className="lowercase">{payment?.contactEmail}</span>}
+      item3={`$${formatCurrency((payment?.amount / 100).toFixed(2))} ${payment?.currency?.toUpperCase()}`}
+      item4={<span className="status">{payment?.status}</span>}
+      item5={payment?.customerID || 'N/A'}
+      item6={payment?.paymentMethodID || 'N/A'}
       actions={<>
         <IconContainer
           icon="fas fa-eye"
           iconSize={14}
-          onClick={() => console.log('View payment')}
+          onClick={() => window.open(stripeCustomerPortalLink, '_blank')}
           dimensions={27}
           tooltip="View Payment"
         />
@@ -42,10 +42,10 @@ export default function PaymentsSent() {
       <AppTable
         headers={[
           'Date Sent',
+          'Sent To',
           'Amount',
           'Status',
-          'Description',
-          'Invoice',
+          'Customer ID',
           'Payment Method',
           'Actions'
         ]}

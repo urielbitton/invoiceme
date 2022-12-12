@@ -73,7 +73,7 @@ export default function PaymentsPage() {
         >
           Payments
         </NavLink>
-        <NavLink to="sent">
+        <NavLink to="sent-payments">
           Sent Payments
         </NavLink>
         <NavLink to="subscriptions">
@@ -89,7 +89,7 @@ export default function PaymentsPage() {
       <div className="payments-page-routes">
         <Routes>
           <Route path="" element={<PaymentsGeneral />} />
-          <Route path="sent" element={<PaymentsSent />} />
+          <Route path="sent-payments" element={<PaymentsSent />} />
           <Route path="subscriptions" element={<PaymentSubscriptions />} />
           <Route path="payment-methods" element={<PaymentsMethods />} />
           <Route path="invoices" element={<PaymentInvoices />} />

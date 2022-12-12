@@ -153,3 +153,12 @@ export const deleteStripeAccountService = (userID, customerID) => {
   .catch(err => console.log(err))
 }
 
+export const getScheduledEventsByUserID = (userID, setEvents, limit) => {
+  db.collection('scheduledEvents')
+  .where('ownerID', '==', userID)
+  .orderBy('dateRan', 'desc')
+  .limit(limit)
+  .onSnapshot(snap => {
+    setEvents(snap.docs.map(doc => doc.data()))
+  })
+}

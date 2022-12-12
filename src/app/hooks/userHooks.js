@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { doGetUserByID, getUserByID, getUserContactSettingsByID, 
+import { doGetUserByID, getScheduledEventsByUserID, getUserByID, getUserContactSettingsByID, 
   getUserEstimateSettingsByID, getUserInvoiceSettingsByID } from "app/services/userServices"
 
 export default function useUser(userID) {
@@ -68,4 +68,17 @@ export const useUserContactSettings = (userID) => {
   },[userID])
 
   return userSettings
+}
+
+export const useScheduledEvents = (userID, limit) => {
+
+  const [scheduledEvents, setScheduledEvents] = useState(null)
+
+  useEffect(() => {
+    if(userID) {
+      getScheduledEventsByUserID(userID, setScheduledEvents, limit)
+    }
+  },[userID, limit])
+
+  return scheduledEvents
 }

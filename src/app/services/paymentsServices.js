@@ -203,7 +203,7 @@ export const capturePaymentIntentService = (data) => {
 export const getSentPaymentsByUserID = (userID, setPayments, limit) => {
   db.collection('users')
   .doc(userID)
-  .collection('sentPayments')
+  .collection('paymentsSent')
   .orderBy('dateCreated', 'desc')
   .limit(limit)
   .onSnapshot((snapshot) => {

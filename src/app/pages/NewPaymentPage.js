@@ -9,10 +9,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import './styles/NewPaymentPage.css'
 import { formatCurrency } from "app/utils/generalUtils"
 import { useNavigate, useSearchParams } from "react-router-dom"
+import ProContent from "app/components/ui/ProContent"
 
 export default function NewPaymentPage() {
 
-  const { myUser, myUserName, myUserID, setPageLoading } = useContext(StoreContext)
+  const { myUser, myUserName, myUserID, myMemberType, setPageLoading } = useContext(StoreContext)
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
   const [stripeLoading, setStripeLoading] = useState(false)
@@ -23,6 +24,7 @@ export default function NewPaymentPage() {
   const loadedContactID = searchParams.get('contactID')
   const filters = `ownerID: ${myUserID}`
   const navigate = useNavigate()
+  const isBusiness = myMemberType === 'business'
 
   const contacts = useContactsSearch(query, setLoading, filters)
 
@@ -80,7 +82,7 @@ export default function NewPaymentPage() {
     if(!contactCustomer) return alert('Please select a contact to send a payment to.')
     setPageLoading(true)
     createPaymentIntentService({
-      amount: +payAmount * 100,
+      amount: (+payAmount * 100).toFixed(0),
       currency: myUser?.currency?.value,
       customerID: contactCustomer.id,
       paymentMethodID: contactCustomer.invoice_settings.default_payment_method,
@@ -96,7 +98,7 @@ export default function NewPaymentPage() {
         setPayAmount('')
         setContactCustomer(null)
         setSelectedContact(null)
-        navigate('/payments')
+        navigate('/payments/sent-payments')
       })
       .catch((error) => {
         console.log(error)
@@ -118,7 +120,7 @@ export default function NewPaymentPage() {
     }
   },[loadedContactID])
 
-  return (
+  return isBusiness ? (
     <div className="new-payment-page">
       <HelmetTitle title="New Payment" />
       <div className="new-payment-container">
@@ -202,5 +204,6 @@ export default function NewPaymentPage() {
         }
       </div>
     </div>
-  )
+  ) :
+  <ProContent />
 }

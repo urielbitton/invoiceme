@@ -198,7 +198,7 @@ exports.createStripeAccount = functions
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
       refresh_url: 'https://invoiceme.pro/my-account/payments',
-      return_url: 'https://invoiceme.pro/my-account/payments',
+      return_url: 'https://invoiceme.pro/my-account/payments?details_submitted=true',
       type: 'account_onboarding',
     })
     return { account, accountLink }
@@ -393,11 +393,11 @@ exports.createPaymentIntent = functions
           .collection('paymentsSent')
           .doc(paymentIntent.id)
           .set({
-            amount: data.amount,
+            amount: +data.amount,
             currency: data.currency,
-            pamentID: paymentIntent.id,
+            paymentIntentID: paymentIntent.id,
             dateCreated: new Date(),
-            payment_method: data.paymentMethodID,
+            paymentMethodID: data.paymentMethodID,
             contactEmail: data.contactEmail,
             customer: data.customerID,
             status: paymentIntent.status,
@@ -474,6 +474,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
           scheduleID: data.scheduleID,
           type: 'scheduledInvoice',
           ownerID: data.ownerID,
+          status: 'success',
         })
       })
       return invoicesBatch.commit()

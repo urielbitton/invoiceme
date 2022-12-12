@@ -15,6 +15,7 @@ export default function AccountPayments() {
     myUserName, stripeCustomerPortalLink } = useContext(StoreContext)
   const [accountLink, setAccountLink] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
+  const detailsSubmitted = searchParams.get('details_submitted') === 'true'
   const customer = useStripeCustomer(myUser?.stripe?.stripeCustomerID)
   const navigate = useNavigate()
   const isBusiness = myMemberType === 'business'
@@ -96,7 +97,7 @@ export default function AccountPayments() {
   }
 
   useEffect(() => {
-    if (myUser?.stripe?.stripeDetailsSubmitted) {
+    if (myUser?.stripe?.stripeDetailsSubmitted && detailsSubmitted) {
       alert(`Your Stripe account has been successfully connected`)
     }
   }, [myUser])
