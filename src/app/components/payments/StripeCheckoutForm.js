@@ -14,11 +14,12 @@ export default function StripeCheckoutForm(props) {
   const yearRef = useRef(null)
   const cvcRef = useRef(null)
 
-  const allowPay = number?.length > 18 && 
+  const allowPay = number?.length >= 18 && 
     expiryMonth?.length === 2 && 
     expiryYear?.length === 2  && 
     isExpiryInFuture(expiryMonth, expiryYear) &&
     cvc?.length === 3 
+
 
   return (
     <form 
@@ -26,7 +27,7 @@ export default function StripeCheckoutForm(props) {
       className="stripe-checkout-form"
     >
       <label className="card-label full">
-        <i className={`fas fa-credit-card ${number?.length > 18 ? 'active' : ''}`} />
+        <i className={`fas fa-credit-card ${number?.length >= 18 ? 'active' : ''}`} />
         <input
           placeholder="Card Number"
           autoComplete="cc-number"

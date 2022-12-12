@@ -1,8 +1,8 @@
 import { auth, db } from 'app/firebase/fire'
 import firebase from 'firebase'
 
-export function setDB(path, doc, value, merge=true) {
-  return db.collection(path).doc(doc).set(value, {merge})
+export function setDB(path, doc, value, merge = true) {
+  return db.collection(path).doc(doc).set(value, { merge })
 }
 
 export function updateDB(path, doc, value) {
@@ -43,16 +43,10 @@ export const clearAuthState = (checked) => {
 
 export const signOut = (setLoading) => {
   setLoading(true)
-  clearAuthState(false)
+  auth.signOut()
   .then(() => {
-    auth.signOut()
-    .then(() => {
-      setLoading(false)
-    })
-    .catch(err => {
-      console.log(err)
-      setLoading(false)
-    })
+    setLoading(false)
+    window.location.reload()
   })
   .catch(err => {
     console.log(err)

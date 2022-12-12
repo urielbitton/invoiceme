@@ -8,6 +8,7 @@ import { clearAuthState, setDB } from 'app/services/CrudDB'
 import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import firebase from "firebase"
+import { validateEmail } from "app/utils/generalUtils"
 
 export default function Register() {
 
@@ -138,7 +139,10 @@ export default function Register() {
             window.alert('An error with facebook has occured. Please try again later.')
         })
     }
-    else if (firstName.length && lastName.length && password === confirmPassword && authMode === 'plain') {
+    else if (authMode === 'plain') {
+      if(!firstName || !lastName) return window.alert('Please enter your first and last name.')
+      if(!validateEmail(email)) return window.alert('Please enter your email and password.')
+      if(password !== confirmPassword) return window.alert('Passwords do not match.')
       setLoading(true)
       auth.createUserWithEmailAndPassword(email.replaceAll(' ', ''), password.replaceAll(' ', ''))
         .then(() => {

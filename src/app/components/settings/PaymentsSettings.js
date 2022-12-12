@@ -41,24 +41,7 @@ export default function PaymentsSettings() {
       >
         <AppButton
           label="Connect Stripe"
-        />
-      </SettingsSection>
-      <SettingsSection
-        label="PayPal Payments"
-        sublabel="Connect your PayPal account to accept and send payments."
-        flexStart
-      >
-        <AppButton
-          label={myUser?.paypalEmail ? "PayPal connected" : "Connect PayPal"}
-          buttonType={!myUser?.paypalEmail ? "outlineBlueBtn" : 'primary'}
-          leftIcon="fab fa-paypal"
-          onClick={() => {
-            isBusiness ? 
-            myUser?.paypalEmail ?
-            alert('PayPal account already connected.') :
-            window.open('https://paypal.com', '_blank') :
-            alert("You must be a business member to access this feature.")
-          }}
+          url="/my-account/payments"
         />
       </SettingsSection>
       <SettingsSection

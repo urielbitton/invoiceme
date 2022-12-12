@@ -342,23 +342,20 @@ exports.retrieveCustomer = functions
     return customer
   })
 
-exports.createPaymentIntent = functions
+exports.createCharge = functions
   .https.onCall(async (data, context) => {
-    const paymentIntent = await stripe.paymentIntents.create({
+    const charge = await stripe.charges.create({
       amount: data.amount,
       currency: data.currency,
       customer: data.customerID,
-      payment_method: data.paymentMethodID,
-      off_session: true,
-      confirm: true,
-    }, {
-      idempotencyKey: data.idempotencyKey,
+      receipt_email: data.contactEmail,
+      source: data.paymentMethodID
     })
     return firestore.collection('users')
     .where('email', '==', data.contactEmail)
     .get()
     .then((users) => {
-      if (users.empty) return paymentIntent
+      if (users.empty) return charge
       const user = users.docs[0].data()
       createNotification(
         user.userID, 
@@ -377,25 +374,21 @@ exports.createPaymentIntent = functions
         return sgMail.send(msg)
         .then(() => {
           console.log('Email sent')
-          return paymentIntent
+          return charge
         })
         .catch((error) => {
           console.error(error)
-          return paymentIntent
+          return charge
         })
       })
       .catch((error) => {
         console.log(error)
-        return paymentIntent
+        return charge
       })
+    })
   })
-})
 
-exports.retrievePaymentIntent = functions
-  .https.onCall(async (data, context) => {
-    const paymentIntent = await stripe.paymentIntents.retrieve(data.paymentIntentID)
-    return paymentIntent
-  })
+
 
 //Scheduled functions
 
@@ -507,12 +500,6 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
 //       .catch((err) => console.log('Scheduled invoice error', err))
 //   })
 
-
-exports.testSchedule10 = functions.pubsub
-  .schedule('*/5 * * * *')
-  .onRun((context) => {
-    return runScheduledInvoices(11, 13)
-  })
 
 exports.checkExpiredSubscriptions = functions.pubsub
   .schedule('0 9 * * *')

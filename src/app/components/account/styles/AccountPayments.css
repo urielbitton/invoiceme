@@ -4,6 +4,11 @@
   align-items: flex-start;
   margin-top: 20px;
 }
+.account-payments > h5 {
+  margin-bottom: 20px;
+  font-size: 15px;
+  color: var(--darkGrayText);
+}
 .account-payments .payments-section {
   display: flex;
   flex-direction: column;
@@ -20,4 +25,92 @@
   margin-bottom: 20px;
   font-size: 13px;
   padding: 8px 10px;
+}
+
+
+.account-payments .payments-content.account-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+}
+.account-payments .payments-content.account-content > .section > h5 {
+  font-size: 15px;
+  color: var(--darkGrayText);
+  margin-bottom: 10px;
+}
+.account-payments .payments-content .info-card {
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: var(--newCardShadow);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 500px;
+  margin-top: 20px;
+}
+.account-payments .payments-content .info-card h6 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
+.account-payments .payments-content .info-card h6 span {
+  font-weight: 500;
+}
+.account-payments .payments-content .info-card button {
+  margin-top: 15px;
+}
+
+.account-payments .account-content .account-box {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: var(--newCardShadow);
+}
+.account-payments .account-content .account-box > i {
+  color: var(--darkGrayText);
+  font-size: 30px;
+}
+.account-payments .account-content .account-box .account-box-info {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+}
+.account-payments .account-content .account-box .account-box-info h5 {
+  font-size: 15px;
+  margin-bottom: 5px;
+  color: var(--darkGrayText);
+}
+.account-payments .account-content .account-box .account-box-info h6 {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--darkGrayText);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.account-payments .account-content .account-box .account-box-info h6 span {
+  font-weight: 500;
+}
+.account-payments .account-content .account-box .account-box-info h6 i {
+  color: var(--primary);
+}
+.account-payments .account-content .account-box .account-box-info h6 i.fa-times-circle {
+  color: var(--grayText);
+}
+.account-payments .account-content .account-box .account-box-info .btn-group {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }

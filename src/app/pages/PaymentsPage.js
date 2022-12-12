@@ -1,5 +1,5 @@
+import PaymentCharges from "app/components/payments/PaymentCharges"
 import PaymentInvoices from "app/components/payments/PaymentInvoices"
-import PaymentsAccount from "app/components/payments/PaymentsAccount"
 import PaymentsGeneral from "app/components/payments/PaymentsGeneral"
 import PaymentsMethods from "app/components/payments/PaymentsMethods"
 import PaymentSubscriptions from "app/components/payments/PaymentSubscriptions"
@@ -10,13 +10,14 @@ import PageTitleBar from "app/components/ui/PageTitleBar"
 import ProContent from "app/components/ui/ProContent"
 import { createCustomerService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { NavLink, Route, Routes } from "react-router-dom"
 import './styles/PaymentsPage.css'
 
 export default function PaymentsPage() {
 
-  const { myUser, myUserID, myUserName, myMemberType, setPageLoading } = useContext(StoreContext)
+  const { myUser, myUserID, myUserName, myMemberType, setPageLoading,
+    setCompactNav } = useContext(StoreContext)
   const customerID = myUser?.stripe?.stripeCustomerID
   const isBusiness = myMemberType === 'business'
 
@@ -42,6 +43,11 @@ export default function PaymentsPage() {
     )
   }
 
+  useEffect(() => {
+    setCompactNav(true)
+    return () => setCompactNav(false)
+  }, [])
+
   return isBusiness ? 
     customerID ? (
     <div className="payments-page">
@@ -60,6 +66,9 @@ export default function PaymentsPage() {
         >
           Payments
         </NavLink>
+        <NavLink to="charges">
+          Charges
+        </NavLink>
         <NavLink to="subscriptions">
           Subscriptions
         </NavLink>
@@ -69,17 +78,14 @@ export default function PaymentsPage() {
         <NavLink to="invoices">
           Invoices
         </NavLink>
-        <NavLink to="account-details">
-          Account Details
-        </NavLink>
       </AppTabsBar>
       <div className="payments-page-routes">
         <Routes>
           <Route path="" element={<PaymentsGeneral />} />
           <Route path="subscriptions" element={<PaymentSubscriptions />} />
-          <Route path="invoices" element={<PaymentInvoices />} />
-          <Route path="account-details" element={<PaymentsAccount />} />
           <Route path="payment-methods" element={<PaymentsMethods />} />
+          <Route path="invoices" element={<PaymentInvoices />} />
+          <Route path="charges" element={<PaymentCharges />} />
         </Routes>
       </div>
     </div>

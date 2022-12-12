@@ -58,13 +58,13 @@ export default function InvoicePaper(props) {
             className="left"
             style={invoicePaperStyles?.headerLeft}
           >
-            <h3 style={invoicePaperStyles?.headerLeftH3}>{invoice?.myBusiness?.name || myBusiness.name}</h3>
-            <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(invoice?.myBusiness?.phone || myBusiness.phone)}</h5>
-            <h5 style={invoicePaperStyles?.headerH5}>{invoice?.myBusiness?.address || myBusiness.address}</h5>
+            <h3 style={invoicePaperStyles?.headerLeftH3}>{invoice?.myBusiness?.name || myBusiness?.name}</h3>
+            <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(invoice?.myBusiness?.phone || myBusiness?.phone)}</h5>
+            <h5 style={invoicePaperStyles?.headerH5}>{invoice?.myBusiness?.address || myBusiness?.address}</h5>
             <h5 style={invoicePaperStyles?.headerH5}>
-              {invoice?.myBusiness?.city || myBusiness.city},&nbsp;
-              {invoice?.myBusiness?.region || myBusiness.region},&nbsp; 
-              {invoice?.myBusiness?.postcode || myBusiness.postcode}
+              {invoice?.myBusiness?.city || myBusiness?.city},&nbsp;
+              {invoice?.myBusiness?.region || myBusiness?.region},&nbsp; 
+              {invoice?.myBusiness?.postcode || myBusiness?.postcode}
             </h5>
             {taxNumbersList}
           </div>

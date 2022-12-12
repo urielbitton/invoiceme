@@ -170,12 +170,13 @@ export const retrieveCustomerService = (data) => {
   })
 }
 
-export const createPaymentIntentService = (data) => {
-  return functions.httpsCallable('createPaymentIntent')(data)
+
+export const createChargeService = (data) => {
+  return functions.httpsCallable('createCharge')(data)
   .then((res) => {
     return res.data
   })
   .catch((error) => {
-    console.log('Error creating payment intent', error)
+    console.log('Error creating charge', error)
   })
 }

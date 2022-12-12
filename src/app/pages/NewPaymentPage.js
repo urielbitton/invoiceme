@@ -3,9 +3,8 @@ import Avatar from "app/components/ui/Avatar"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import { useContactsSearch } from "app/hooks/searchHooks"
 import { getContactStripeCustomerIDByEmail } from "app/services/contactsServices"
-import { createPaymentIntentService, retrieveCustomerService } from "app/services/paymentsServices"
+import { createChargeService, retrieveCustomerService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
-import { v4 as uuidv4 } from 'uuid'
 import React, { useContext, useState } from 'react'
 import './styles/NewPaymentPage.css'
 import { formatCurrency } from "app/utils/generalUtils"
@@ -78,23 +77,22 @@ export default function NewPaymentPage() {
     if(+payAmount < 0.5) return alert(`Amount must be greater than $0.50 ${myUser?.currency?.value}.`)
     if(!contactCustomer) return alert('Please select a contact to send a payment to.')
     setPageLoading(true)
-    createPaymentIntentService({
+    createChargeService({
       amount: +payAmount * 100,
       currency: myUser?.currency?.value?.toLowerCase() || 'cad',
       customerID: contactCustomer.id,
       paymentMethodID: contactCustomer.invoice_settings.default_payment_method,
-      idempotencyKey: uuidv4(),
       contactEmail: selectedContact?.email,
       myName: myUserName,
     })
-      .then((paymentIntent) => {
-        console.log(paymentIntent)
+      .then((charge) => {
+        console.log(charge)
         setPageLoading(false)
         alert('Payment sent!')
         setPayAmount('')
         setContactCustomer(null)
         setSelectedContact(null)
-        navigate('/payments')
+        navigate('/payments/charges')
       })
       .catch((error) => {
         console.log(error)

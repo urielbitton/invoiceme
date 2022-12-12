@@ -21,8 +21,8 @@ export default function PaymentsGeneral() {
       item1={convertClassicUnixDate(payment.created)}
       item2={`$${formatCurrency((payment.amount/100).toFixed(2))} ${payment.currency.toUpperCase()}`}
       item3={<span className="status">{payment.status}</span>}
-      item4={truncateText(payment.description, 40)}
-      item5={truncateText(payment.invoice, 20)}
+      item4={truncateText(payment.description, 40) || 'N/A'}
+      item5={truncateText(payment.invoice, 20) || 'N/A'}
       item6={payment.payment_method_types[0]}
       actions={
         <IconContainer
