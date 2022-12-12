@@ -35,7 +35,7 @@ export default function PaymentsGeneral() {
     />
   })
 
-  return payments ? (
+  return payments?.data?.length ? (
     <div className="payments-content">
       <AppTable
         headers={[

@@ -40,7 +40,7 @@ export default function PaymentsInvoices() {
     />
   })
 
-  return invoicesList ? (
+  return invoicesList?.data?.length ? (
     <div className="payments-content">
       <AppTable
         headers={[

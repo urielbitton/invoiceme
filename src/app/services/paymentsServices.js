@@ -16,6 +16,7 @@ export const createPaymentMethodService = (data, setLoading) => {
 export const createCustomerService = (myUser, userID, data, setLoading) => {
   if(myUser?.stripe?.stripeCustomerID) {
     console.log('Customer already exists')
+    setLoading(false)
     return Promise.resolve(myUser.stripe.stripeCustomerID)
   }
   return functions.httpsCallable('createStripeCustomer')(data)
@@ -166,5 +167,15 @@ export const retrieveCustomerService = (data) => {
   })
   .catch((error) => {
     console.log('Error retrieving customer', error)
+  })
+}
+
+export const createPaymentIntentService = (data) => {
+  return functions.httpsCallable('createPaymentIntent')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error creating payment intent', error)
   })
 }

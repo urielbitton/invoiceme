@@ -10,6 +10,7 @@ import AppButton from "../ui/AppButton"
 import AppItemRow from "../ui/AppItemRow"
 import AppModal from "../ui/AppModal"
 import AppTable from "../ui/AppTable"
+import EmptyPage from "../ui/EmptyPage"
 import IconContainer from "../ui/IconContainer"
 
 export default function PaymentSubscriptions() {
@@ -105,7 +106,7 @@ export default function PaymentSubscriptions() {
     }
   }, [showSubModal])
 
-  return (
+  return subscriptions?.data?.length ? (
     <div className="payments-content">
       <AppTable
         headers={[
@@ -222,5 +223,9 @@ export default function PaymentSubscriptions() {
         }
       </AppModal>
     </div>
-  )
+  ) :
+  <EmptyPage
+  label="No Subscriptions found"
+  sublabel="No subscriptions were found for this customer"
+  />
 }

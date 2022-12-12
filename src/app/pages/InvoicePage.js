@@ -62,7 +62,7 @@ export default function InvoicePage() {
   }
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, invoiceID, invoice?.isPaid, invoice?.total, setPageLoading)
+    deleteInvoiceService(myUserID, invoiceID, setPageLoading)
   }
 
   const downloadAsPDF = () => {

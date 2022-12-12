@@ -87,11 +87,11 @@
 
 .new-payment-container .transaction-flex {
   width: 100%;
-  margin-top: 30px;
+  margin-top: 60px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 40px;
+  justify-content: space-evenly;
+  gap: 40px 20px;
   flex-wrap: wrap;
   visibility: hidden;
   opacity: 0;
@@ -105,4 +105,76 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+.new-payment-container .transaction-flex .side h5 {
+  font-size: 14px;
+  color: var(--darkGrayText);
+  margin-bottom: 20px;
+}
+.new-payment-container .transaction-flex .side .avatar-container {
+  margin-bottom: 15px;
+}
+.new-payment-container .transaction-flex .side h6 {
+  color: var(--darkGrayText);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.new-payment-container .loading-spinner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 60px;
+}
+.new-payment-container .loading-spinner i {
+  font-size: 20px;
+  color: var(--primary);
+}
+
+.new-payment-container .transaction-flex .pay-to {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px
+}
+.new-payment-container .transaction-flex .pay-to h5,
+.new-payment-container .transaction-flex .pay-to i {
+  color: var(--primary);
+  font-size: 17px;
+}
+
+.new-payment-container .amount-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+  width: 100%;
+}
+.new-payment-container .amount-section h5 {
+  font-size: 16px;
+  color: var(--darkGrayText);
+  margin-bottom: 15px;
+}
+.new-payment-container .amount-section input {
+  width: 100%;
+  height: 45px;
+  padding-left: 15px;
+  border-radius: 5px 0 0 5px;
+  border: 1px solid var(--inputBorderColor);
+}
+.new-payment-container .amount-section .pay-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.new-payment-container .amount-section .pay-row input {
+  width: 200px;
+}
+.new-payment-container .amount-section .pay-row button {
+  height: 45px;
+  border-radius: 0 5px 5px 0;
+  text-transform: uppercase;
 }

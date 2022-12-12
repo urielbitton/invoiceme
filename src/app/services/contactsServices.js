@@ -190,10 +190,10 @@ export const sendSMSService = (phone, message, mediaUrl, setLoading) => {
     })
 }
 
-export const getContactStripeAccountIDByEmail = (email) => {
+export const getContactStripeCustomerIDByEmail = (email) => {
   return db.collection('users')
   .where('email', '==', email)
-  .orderBy('stripe.stripeAccountID')
+  .orderBy('stripe.stripeCustomerID')
   .limit(1)
   .get()
   .then(snap => {

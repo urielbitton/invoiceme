@@ -2,7 +2,6 @@ InvoiceMe App
 
 
 ToDos:
-- new payment page - send payout to your contacts only you search for, detect if they have a connected stripe account, and then use stripe to send payment to their account. Send user [detailed] email with payment details (on triggered cloud function), send app notification to user (query firebase user by email, can't use userID)
 - add more details on scheduled invoices emails (say when it was sent, when it's due, total, most info, etc.)
 - protect all business access pages with memberType check
 - add notifications to all events on app (especially payments)
@@ -18,3 +17,4 @@ ToDos:
 - add google and facebook auth
 - help and support page
 - terms and conditions page
+- responsive app

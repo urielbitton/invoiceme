@@ -5,6 +5,7 @@ firebase.initializeApp()
 const firestore = firebase.firestore()
 firestore.settings({ ignoreUndefinedProperties: true })
 const sgMail = require('@sendgrid/mail')
+const puppeteer = require('puppeteer')
 
 const APP_ID = functions.config().algolia.app
 const API_KEY = functions.config().algolia.key
@@ -22,7 +23,6 @@ const client = algoliasearch(APP_ID, API_KEY)
 const invoicesIndex = client.initIndex('invoices_index')
 const estimatesIndex = client.initIndex('estimates_index')
 const contactsIndex = client.initIndex('contacts_index')
-const usersIndex = client.initIndex('users_index')
 
 //Algolia functions
 
@@ -342,6 +342,60 @@ exports.retrieveCustomer = functions
     return customer
   })
 
+exports.createPaymentIntent = functions
+  .https.onCall(async (data, context) => {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: data.amount,
+      currency: data.currency,
+      customer: data.customerID,
+      payment_method: data.paymentMethodID,
+      off_session: true,
+      confirm: true,
+    }, {
+      idempotencyKey: data.idempotencyKey,
+    })
+    return firestore.collection('users')
+    .where('email', '==', data.contactEmail)
+    .get()
+    .then((users) => {
+      if (users.empty) return paymentIntent
+      const user = users.docs[0].data()
+      createNotification(
+        user.userID, 
+        'New Payment', 
+        `You received a payment from ${data.myName} for $${formatCurrency((data.amount/100).toFixed(2))} ${data.currency || 'CAD'}.`, 
+        'fas fa-credit-card',
+        '/payments'
+      )
+      .then(() => {
+        const msg = {
+          from: 'info@atomicsdigital.com',
+          to: data.contactEmail,
+          subject: 'New Payment',
+          html: `Hi.<br/><br/>You received a payment from ${data.myName} for $${formatCurrency((data.amount/100).toFixed(2))} ${data.currency || 'CAD'}.<br/><br/> View your payments here: https://atomicsdigital.com/payments<br/><br/>Invoice Me`,
+        }
+        return sgMail.send(msg)
+        .then(() => {
+          console.log('Email sent')
+          return paymentIntent
+        })
+        .catch((error) => {
+          console.error(error)
+          return paymentIntent
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+        return paymentIntent
+      })
+  })
+})
+
+exports.retrievePaymentIntent = functions
+  .https.onCall(async (data, context) => {
+    const paymentIntent = await stripe.paymentIntents.retrieve(data.paymentIntentID)
+    return paymentIntent
+  })
 
 //Scheduled functions
 
@@ -406,7 +460,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
                 const data = schedule.data()
                 const docRef = firestore.collection('scheduledInvoices').doc(data.scheduleID)
                 invoicesBatch.update(docRef, {
-                  lastSent: now,
+                  lastRan: now,
                 })
               })
               return invoicesBatch.commit()
@@ -419,7 +473,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
                       subject: data.emailSubject,
                       html: data.emailMessage,
                       attachments: [{
-                        content: Buffer.from(data.invoicePaperHTML).toString('base64'),
+                        content: Buffer.from(data.invoicePaperHTML, 'utf8').toString('base64'),
                         filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
                         type: 'application/pdf',
                         disposition: 'attachment'
@@ -443,21 +497,21 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
 //Schedules Options
 
 // Every hour between 7am and 9pm
-exports.runScheduledInvoicesHourly = functions.pubsub
-  .schedule('5 7-21 * * *')
-  .onRun((context) => {
-    const dayOfMonth = new Date().getUTCDate()
-    const timeOfDay = new Date().getUTCHours()
-    return runScheduledInvoices(dayOfMonth, timeOfDay)
-      .then(() => console.log('Scheduled invoices ran successfully.'))
-      .catch((err) => console.log('Scheduled invoice error', err))
-  })
+// exports.runScheduledInvoicesHourly = functions.pubsub
+//   .schedule('5 7-21 * * *')
+//   .onRun((context) => {
+//     const dayOfMonth = new Date().getUTCDate()
+//     const timeOfDay = new Date().getUTCHours()
+//     return runScheduledInvoices(dayOfMonth, timeOfDay)
+//       .then(() => console.log('Scheduled invoices ran successfully.'))
+//       .catch((err) => console.log('Scheduled invoice error', err))
+//   })
 
 
 exports.testSchedule10 = functions.pubsub
   .schedule('*/5 * * * *')
   .onRun((context) => {
-    return runScheduledInvoices(8, 23)
+    return runScheduledInvoices(11, 13)
   })
 
 exports.checkExpiredSubscriptions = functions.pubsub
@@ -481,3 +535,22 @@ exports.checkExpiredSubscriptions = functions.pubsub
 
 
 //utility functions
+function createNotification(userID, title, text, icon, url) {
+  const notifPath = `users/${userID}/notifications`
+  const docID = firestore.collection(notifPath).doc().id
+  return firestore.collection(notifPath)
+  .doc(docID)
+  .set({
+    notificationID: docID,
+    dateCreated: new Date(),
+    isRead: false,
+    title: title,
+    text: text,
+    icon: icon,
+    url: url,
+  })
+}
+
+function formatCurrency(number) {
+  return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}

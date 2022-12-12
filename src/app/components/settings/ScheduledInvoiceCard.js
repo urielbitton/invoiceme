@@ -10,7 +10,7 @@ export function ScheduledInvoiceCard(props) {
 
   const { setPageLoading } = useContext(StoreContext)
   const { title, dateCreated, dayOfMonth, timeOfDay, active,
-    lastSent, invoiceTemplate, scheduleID } = props.scheduled
+    lastRan, invoiceTemplate, scheduleID } = props.scheduled
   const { setInvoiceData, setShowInvoicePreview } = props
   const monthName = new Date(dateCreated?.toDate()).toLocaleString('default', { month: 'short' })
   const navigate = useNavigate()
@@ -69,7 +69,7 @@ export function ScheduledInvoiceCard(props) {
         </h6>
         <h6>
           <i className="fas fa-history" />
-          Last sent: {lastSent ? convertClassicDateAndTime(lastSent?.toDate()) : 'Never'}
+          Last Rab: {lastRan ? convertClassicDateAndTime(lastRan?.toDate()) : 'Never'}
         </h6>
       </div>
       <div className="content">

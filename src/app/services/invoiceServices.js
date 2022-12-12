@@ -233,7 +233,7 @@ export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDat
     dateCreated: new Date(),
     dayOfMonth: +dayOfMonth,
     timeOfDay: +timeOfDay,
-    lastSent: null,
+    lastRan: null,
     lastPaid: null,
     title: scheduleTitle,
     emailMessage,

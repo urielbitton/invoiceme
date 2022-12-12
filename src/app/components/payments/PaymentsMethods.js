@@ -32,7 +32,7 @@ export default function PaymentsMethods() {
     />
   })
 
-  return paymentMethods ? (
+  return paymentMethods?.data?.length ? (
     <div className="payments-content">
       <AppTable
         headers={[
