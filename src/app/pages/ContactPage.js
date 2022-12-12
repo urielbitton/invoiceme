@@ -146,7 +146,7 @@ export default function ContactPage() {
             />
             <AppButton
               label="Send Payment"
-              url={`/payments/new?name=${contact.name}`}
+              url={`/payments/new?contactID=${contact.contactID}`}
               rightIcon="fas fa-credit-card"
             />
           </div>

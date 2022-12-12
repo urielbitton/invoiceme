@@ -1,4 +1,4 @@
-import { getSubscriptionsByCustomerService, retrieveAttachmentPaymentMethodsService, 
+import { getSentPaymentsByUserID, getSubscriptionsByCustomerService, listCustomerChargesService, retrieveAttachmentPaymentMethodsService, 
   retrieveCustomerService, retrieveInvoicesByCustomerService, 
   retrievePaymentsByCustomerService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
@@ -51,6 +51,32 @@ export const useCustomerPayments = (customerID, limit) => {
   },[customerID, limit])
 
   return payments
+}
+
+export const useCustomerCharges = (customerID, limit) => {
+
+  const { setPageLoading } = useContext(StoreContext)
+  const [charges, setCharges] = useState(null)
+
+  useEffect(() => {
+    if(customerID) {
+      setPageLoading(true)
+      listCustomerChargesService({
+        customerID,
+        limit
+      })
+      .then((data) => {
+        setCharges(data)
+        setPageLoading(false)
+      })
+      .catch((error) => {
+        console.log(error)
+        setPageLoading(false)
+      })
+    }
+  },[customerID, limit])
+
+  return charges
 }
 
 export const useAttachedPaymentMethods = (customerID) => {
@@ -125,4 +151,17 @@ export const useStripeCustomer = (customerID) => {
   },[customerID])
 
   return customer
+}
+
+export const useSentPayments = (myUserID, limit) => {
+
+  const [sentPayments, setSentPayments] = useState([])
+
+  useEffect(() => {
+    if(myUserID) {
+      getSentPaymentsByUserID(myUserID, setSentPayments, limit)
+    }
+  },[myUserID, limit])
+
+  return sentPayments
 }

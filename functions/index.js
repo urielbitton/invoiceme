@@ -197,11 +197,22 @@ exports.createStripeAccount = functions
     })
     const accountLink = await stripe.accountLinks.create({
       account: account.id,
-      refresh_url: 'http://localhost:3000/my-account/payments',
-      return_url: 'http://localhost:3000/my-account/payments?details_submitted=true',
+      refresh_url: 'https://invoiceme.pro/my-account/payments',
+      return_url: 'https://invoiceme.pro/my-account/payments',
       type: 'account_onboarding',
     })
     return { account, accountLink }
+  })
+
+exports.createAccountLink = functions
+  .https.onCall(async (data, context) => {
+    const accountLink = await stripe.accountLinks.create({
+      account: data.accountID,
+      refresh_url: 'https://invoiceme.pro/my-account/payments',
+      return_url: 'https://invoiceme.pro/my-account/payments',
+      type: 'account_onboarding',
+    })
+    return accountLink
   })
 
 exports.retrieveStripeAccount = functions
@@ -342,25 +353,29 @@ exports.retrieveCustomer = functions
     return customer
   })
 
-exports.createCharge = functions
+exports.createPaymentIntent = functions
   .https.onCall(async (data, context) => {
-    const charge = await stripe.charges.create({
+    const paymentIntent = await stripe.paymentIntents.create({
       amount: data.amount,
       currency: data.currency,
       customer: data.customerID,
       receipt_email: data.contactEmail,
-      source: data.paymentMethodID
+      payment_method: data.paymentMethodID,
+      payment_method_types: ['card'],
+      confirm: true,
+      off_session: true,
+      description: data.description,
     })
     return firestore.collection('users')
     .where('email', '==', data.contactEmail)
     .get()
     .then((users) => {
-      if (users.empty) return charge
+      if (users.empty) return paymentIntent
       const user = users.docs[0].data()
       createNotification(
         user.userID, 
         'New Payment', 
-        `You received a payment from ${data.myName} for $${formatCurrency((data.amount/100).toFixed(2))} ${data.currency || 'CAD'}.`, 
+        `You received a payment from ${data.myName} for $${formatCurrency((data.amount/100).toFixed(2))} ${data.currency || 'CAD'}. It has been automatically deposited into your Stripe account.`, 
         'fas fa-credit-card',
         '/payments'
       )
@@ -373,21 +388,38 @@ exports.createCharge = functions
         }
         return sgMail.send(msg)
         .then(() => {
-          console.log('Email sent')
-          return charge
+          firestore.collection('users')
+          .doc(data.myUserID)
+          .collection('paymentsSent')
+          .doc(paymentIntent.id)
+          .set({
+            amount: data.amount,
+            currency: data.currency,
+            pamentID: paymentIntent.id,
+            dateCreated: new Date(),
+            payment_method: data.paymentMethodID,
+            contactEmail: data.contactEmail,
+            customer: data.customerID,
+            status: paymentIntent.status,
+          })
+          .then(() => {
+            console.log('Email sent')
+            return paymentIntent
+          })
+          .catch((error) => console.error(error))
         })
-        .catch((error) => {
-          console.error(error)
-          return charge
-        })
+        .catch((error) => console.error(error))
       })
-      .catch((error) => {
-        console.log(error)
-        return charge
-      })
+      .catch((error) => console.log(error))
     })
+    .catch((error) => console.log(error))
   })
 
+exports.capturePaymentIntent = functions
+  .https.onCall(async (data, context) => {
+    const paymentIntent = await stripe.paymentIntents.capture(data.paymentIntentID)
+    return paymentIntent
+  })
 
 
 //Scheduled functions

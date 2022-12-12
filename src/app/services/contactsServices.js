@@ -21,6 +21,17 @@ export const getContactByID = (userID, contactID, setContact) => {
     })
 }
 
+export const doGetContactByID = (userID, contactID) => {
+  return db.collection('users')
+    .doc(userID)
+    .collection('contacts')
+    .doc(contactID)
+    .get()
+    .then(snapshot => {
+      return snapshot.data()
+    })
+}
+
 export const getContactsByUserID = (userID, setContacts, limit) => {
   db.collection('users')
     .doc(userID)

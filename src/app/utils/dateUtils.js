@@ -182,6 +182,10 @@ export const convertClassicUnixDate = (date) => {
   return convertClassicDate(convertUnixDate(date))
 }
 
+export const convertClassicUnixDateAndTime = (date) => {
+  return convertClassicDateAndTime(convertUnixDate(date))
+}
+
 export const getNameDayOfTheWeekFromDate = (date) => {
   return date.toLocaleString('en-CA', { weekday: 'long' })
 }

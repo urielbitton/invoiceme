@@ -9,6 +9,9 @@
 .payments-page .payments-content {
   margin-top: 20px;
 }
+.payments-page .payments-content .appButton {
+  margin-top: 20px;
+}
 
 .payments-page .payments-content .app-table .headers {
   padding: 0 10px;

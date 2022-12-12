@@ -2,13 +2,13 @@ import AppButton from "app/components/ui/AppButton"
 import Avatar from "app/components/ui/Avatar"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import { useContactsSearch } from "app/hooks/searchHooks"
-import { getContactStripeCustomerIDByEmail } from "app/services/contactsServices"
-import { createChargeService, retrieveCustomerService } from "app/services/paymentsServices"
+import { doGetContactByID, getContactStripeCustomerIDByEmail } from "app/services/contactsServices"
+import { createPaymentIntentService, retrieveCustomerService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './styles/NewPaymentPage.css'
 import { formatCurrency } from "app/utils/generalUtils"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 export default function NewPaymentPage() {
 
@@ -19,6 +19,8 @@ export default function NewPaymentPage() {
   const [selectedContact, setSelectedContact] = useState(null)
   const [contactCustomer, setContactCustomer] = useState(null)
   const [payAmount, setPayAmount] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const loadedContactID = searchParams.get('contactID')
   const filters = `ownerID: ${myUserID}`
   const navigate = useNavigate()
 
@@ -51,7 +53,7 @@ export default function NewPaymentPage() {
     getContactStripeCustomerIDByEmail(contact.email)
       .then((user) => {
         setQuery('')
-        if(user?.stripe?.stripeCustomerID) {
+        if(user?.stripe?.stripeAccountID && user?.stripe?.stripeDetailsSubmitted) {
           retrieveCustomerService({customerID: user.stripe.stripeCustomerID})
           .then((customer) => {
             setContactCustomer(customer)
@@ -64,7 +66,7 @@ export default function NewPaymentPage() {
         }
         else {
           setStripeLoading(false)
-          alert('This user either does not have a Stripe account or is not a business member on Invoice Me.')
+          alert('This user either did not complete their Stripe account or is not a business member on Invoice Me.')
         }
       })
       .catch((error) => {
@@ -77,13 +79,15 @@ export default function NewPaymentPage() {
     if(+payAmount < 0.5) return alert(`Amount must be greater than $0.50 ${myUser?.currency?.value}.`)
     if(!contactCustomer) return alert('Please select a contact to send a payment to.')
     setPageLoading(true)
-    createChargeService({
+    createPaymentIntentService({
       amount: +payAmount * 100,
-      currency: myUser?.currency?.value?.toLowerCase() || 'cad',
+      currency: myUser?.currency?.value,
       customerID: contactCustomer.id,
       paymentMethodID: contactCustomer.invoice_settings.default_payment_method,
-      contactEmail: selectedContact?.email,
+      contactEmail: selectedContact.email,
       myName: myUserName,
+      description: `Payment from ${myUserName} automatically deposited.`,
+      myUserID
     })
       .then((charge) => {
         console.log(charge)
@@ -92,13 +96,27 @@ export default function NewPaymentPage() {
         setPayAmount('')
         setContactCustomer(null)
         setSelectedContact(null)
-        navigate('/payments/charges')
+        navigate('/payments')
       })
       .catch((error) => {
         console.log(error)
         setPageLoading(false)
       })
   }
+
+  useEffect(() => {
+    if(loadedContactID) {
+      setStripeLoading(true)
+      doGetContactByID(myUserID, loadedContactID)
+      .then((data) => {
+        initiateTransactionDetails(data)
+      })
+      .catch((error) => {
+        console.log(error)
+        setStripeLoading(false)
+      })
+    }
+  },[loadedContactID])
 
   return (
     <div className="new-payment-page">

@@ -1,6 +1,7 @@
 import { useCustomerPayments } from "app/hooks/paymentHooks"
+import { capturePaymentIntentService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
-import { convertClassicUnixDate } from "app/utils/dateUtils"
+import { convertClassicUnixDate, convertClassicUnixDateAndTime } from "app/utils/dateUtils"
 import { formatCurrency, truncateText } from "app/utils/generalUtils"
 import React, { useContext, useState } from 'react'
 import AppButton from "../ui/AppButton"
@@ -11,29 +12,56 @@ import IconContainer from "../ui/IconContainer"
 
 export default function PaymentsGeneral() {
 
-  const { myUser, stripeCustomerPortalLink } = useContext(StoreContext)
+  const { myUser, stripeCustomerPortalLink, setPageLoading } = useContext(StoreContext)
   const [paymentsLimit, setPaymentsLimit] = useState(10)
   const payments = useCustomerPayments(myUser?.stripe.stripeCustomerID, paymentsLimit)
 
   const paymentsList = payments?.data?.map((payment) => {
     return <AppItemRow
       key={payment.id}
-      item1={convertClassicUnixDate(payment.created)}
-      item2={`$${formatCurrency((payment.amount/100).toFixed(2))} ${payment.currency.toUpperCase()}`}
+      item1={<span title={convertClassicUnixDateAndTime(payment.created)}>{convertClassicUnixDate(payment.created)}</span>}
+      item2={`$${formatCurrency((payment.amount / 100).toFixed(2))} ${payment.currency.toUpperCase()}`}
       item3={<span className="status">{payment.status}</span>}
-      item4={truncateText(payment.description, 40) || 'N/A'}
+      item4={<span title={payment.description}>{truncateText(payment.description, 40) || 'N/A'}</span>}
       item5={truncateText(payment.invoice, 20) || 'N/A'}
       item6={payment.payment_method_types[0]}
-      actions={
+      actions={<>
+        {
+          payment.amount_received < payment.amount &&
+          <IconContainer
+            icon="fas fa-wallet"
+            iconSize={14}
+            onClick={() => capturePayment(payment.id)}
+            dimensions={27}
+            tooltip="Withdraw Funds"
+          />
+        }
         <IconContainer
           icon="fas fa-link"
           iconSize={14}
           onClick={() => window.open(stripeCustomerPortalLink, '_blank')}
           dimensions={27}
+          tooltip="View Payment"
         />
+      </>
       }
     />
   })
+
+  const capturePayment = (paymentIntentID) => {
+    setPageLoading(true)
+    capturePaymentIntentService({ paymentIntentID  })
+    .then((data) => {
+      console.log(data)
+      alert('Payment captured successfully')
+      setPageLoading(false)
+    })
+    .catch((err) => {
+      console.log(err)
+      alert('Error capturing payment')
+      setPageLoading(false)
+    })
+  }
 
   return payments?.data?.length ? (
     <div className="payments-content">

@@ -1,7 +1,7 @@
-import PaymentCharges from "app/components/payments/PaymentCharges"
 import PaymentInvoices from "app/components/payments/PaymentInvoices"
 import PaymentsGeneral from "app/components/payments/PaymentsGeneral"
 import PaymentsMethods from "app/components/payments/PaymentsMethods"
+import PaymentsSent from "app/components/payments/PaymentsSent"
 import PaymentSubscriptions from "app/components/payments/PaymentSubscriptions"
 import AppButton from "app/components/ui/AppButton"
 import AppTabsBar from "app/components/ui/AppTabsBar"
@@ -54,6 +54,13 @@ export default function PaymentsPage() {
       <HelmetTitle title="Payments" />
       <PageTitleBar
         title="Payments"
+        rightComponent={
+          <AppButton
+            label="New Payment"
+            url="/payments/new"
+            rightIcon="far fa-plus"
+          />
+        }
       />
       <AppTabsBar
         sticky
@@ -66,8 +73,8 @@ export default function PaymentsPage() {
         >
           Payments
         </NavLink>
-        <NavLink to="charges">
-          Charges
+        <NavLink to="sent">
+          Sent Payments
         </NavLink>
         <NavLink to="subscriptions">
           Subscriptions
@@ -82,10 +89,10 @@ export default function PaymentsPage() {
       <div className="payments-page-routes">
         <Routes>
           <Route path="" element={<PaymentsGeneral />} />
+          <Route path="sent" element={<PaymentsSent />} />
           <Route path="subscriptions" element={<PaymentSubscriptions />} />
           <Route path="payment-methods" element={<PaymentsMethods />} />
           <Route path="invoices" element={<PaymentInvoices />} />
-          <Route path="charges" element={<PaymentCharges />} />
         </Routes>
       </div>
     </div>

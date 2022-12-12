@@ -1,4 +1,4 @@
-import { functions } from "app/firebase/fire"
+import { db, functions } from "app/firebase/fire"
 import { convertUnixDate } from "app/utils/dateUtils"
 import { firebaseArrayAdd, updateDB } from "./CrudDB"
 
@@ -140,6 +140,16 @@ export const retrievePaymentsByCustomerService = (data) => {
   })
 }
 
+export const listCustomerChargesService = (data) => {
+  return functions.httpsCallable('listAllCharges')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error retrieving charges', error)
+  })
+}
+
 export const retrieveAttachmentPaymentMethodsService = (data) => {
   return functions.httpsCallable('retrieveAttachmentPaymentMethods')(data)
   .then((res) => {
@@ -170,13 +180,33 @@ export const retrieveCustomerService = (data) => {
   })
 }
 
-
-export const createChargeService = (data) => {
-  return functions.httpsCallable('createCharge')(data)
+export const createPaymentIntentService = (data) => {
+  return functions.httpsCallable('createPaymentIntent')(data)
   .then((res) => {
     return res.data
   })
   .catch((error) => {
-    console.log('Error creating charge', error)
+    console.log('Error creating payment intent', error)
+  })
+}
+
+export const capturePaymentIntentService = (data) => {
+  return functions.httpsCallable('capturePaymentIntent')(data)
+  .then((res) => {
+    return res.data
+  })
+  .catch((error) => {
+    console.log('Error capturing payment intent', error)
+  })
+}
+
+export const getSentPaymentsByUserID = (userID, setPayments, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('sentPayments')
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot((snapshot) => {
+    setPayments(snapshot.docs.map((doc) => doc.data()))
   })
 }
