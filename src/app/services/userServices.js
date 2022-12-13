@@ -163,12 +163,8 @@ export const getScheduledEventsByUserID = (userID, setEvents, limit) => {
     })
 }
 
-export const completeRegistrationService = (user, res, authMode, photoURLPlaceholder, firstName, 
-  lastName, email, setLoading, navigate) => {
-  user.updateProfile({
-    displayName: authMode === 'plain' ? `${firstName} ${lastName}` : authMode === 'google' ? res.additionalUserInfo.profile.name : res.name,
-    photoURL: authMode === 'facebook' ? res.picture.data.url : photoURLPlaceholder
-  })
+export const createUserDocService = (user, res, authMode, photoURLPlaceholder, firstName,
+  lastName, email, setLoading) => {
   return setDB('users', user.uid, {
     firstName: authMode === 'plain' ? firstName : authMode === 'google' ? res.additionalUserInfo.profile.given_name : res.first_name,
     lastName: authMode === 'plain' ? lastName : authMode === 'google' ? res.additionalUserInfo.profile.family_name : res.last_name,
@@ -216,7 +212,10 @@ export const completeRegistrationService = (user, res, authMode, photoURLPlaceho
           setDB(`users/${user.uid}/settings`, 'notifications', {})
           setDB(`users/${user.uid}/settings`, 'emails', {})
           setLoading(false)
-          navigate('/')
+        })
+        .catch(err => {
+          console.log(err)
+          setLoading(false)
         })
     })
     .catch(err => {

@@ -27,10 +27,6 @@ export default function ResetPassword() {
     }
   }
 
-  const generateStrongPassword = () => {
-    setPassword(Math.random().toString(36).substring(2, 20))
-  }
-
   return <div className="forgot-password-page">
     <div className="content">
       <header>
@@ -43,18 +39,12 @@ export default function ResetPassword() {
         <AppInput 
           onChange={(e) => setPassword(e.target.value)}
           value={password}
+          type="password"
         />
         <button 
           onClick={() => handleReset()}
           className="shadow-hover"
         >Reset Password</button>
-        <small 
-          className="generate-pass"
-          onClick={() => generateStrongPassword()}
-        >
-          <i className="far fa-sync-alt"/>
-          Generate strong password
-        </small>
         <Link 
           to="/" 
           className="back-to-login linkable"

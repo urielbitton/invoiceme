@@ -4,12 +4,12 @@ import { StoreContext } from 'app/store/store'
 import { auth } from 'app/firebase/fire'
 import { AppInput } from 'app/components/ui/AppInputs'
 import { Link, useNavigate } from 'react-router-dom'
-import { clearAuthState, setDB } from 'app/services/CrudDB'
+import { clearAuthState } from 'app/services/CrudDB'
 import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import firebase from "firebase"
 import { validateEmail } from "app/utils/generalUtils"
-import { completeRegistrationService } from "app/services/userServices"
+import { createUserDocService } from "app/services/userServices"
 
 export default function Register() {
 
@@ -32,8 +32,24 @@ export default function Register() {
   }
 
   const completeRegistration = (user, authMode, res) => {
-    completeRegistrationService(user, res, authMode, photoURLPlaceholder, 
-      firstName, lastName, email, setLoading, navigate)
+    user.updateProfile({
+      displayName: authMode === 'plain' ? `${firstName} ${lastName}` : authMode === 'google' ? res.additionalUserInfo.profile.name : res.name,
+      photoURL: authMode === 'facebook' ? res.picture.data.url : photoURLPlaceholder
+    })
+    if (authMode !== 'plain') {
+      createUserDocService(user, res, authMode, photoURLPlaceholder, firstName, lastName, email, setLoading)
+        .then(() => {
+          navigate('/')
+          setLoading(false)
+        })
+        .catch(err => {
+          console.log(err)
+          setLoading(false)
+        })
+    }
+    else {
+      navigate('/')
+    }
   }
 
   const handleSignup = (authMode) => {
@@ -87,9 +103,9 @@ export default function Register() {
         })
     }
     else if (authMode === 'plain') {
-      if(!firstName || !lastName) return window.alert('Please enter your first and last name.')
-      if(!validateEmail(email)) return window.alert('Please enter your email and password.')
-      if(password !== confirmPassword) return window.alert('Passwords do not match.')
+      if (!firstName || !lastName) return window.alert('Please enter your first and last name.')
+      if (!validateEmail(email)) return window.alert('Please enter your email and password.')
+      if (password !== confirmPassword) return window.alert('Passwords do not match.')
       setLoading(true)
       auth.createUserWithEmailAndPassword(email.replaceAll(' ', ''), password.replaceAll(' ', ''))
         .then(() => {

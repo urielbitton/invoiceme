@@ -1,8 +1,9 @@
 import AuthSwitch from "app/auth/AuthSwitch"
 import AppLoadingPage from "app/components/ui/AppLoadingPage"
+import UnverifiedEmailPage from "app/pages/UnverifiedEmailPage"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
-import AppContainer from "./app/containers/AppContainer"
+import AppContainer from "./AppContainer"
 
 export default function AppSwitcher() {
 
@@ -10,7 +11,9 @@ export default function AppSwitcher() {
 
   return (
     user ?
+    user?.emailVerified ?
     <AppContainer /> :
+    <UnverifiedEmailPage /> :
     myUser === null ?
     <AppLoadingPage /> :
     <AuthSwitch />

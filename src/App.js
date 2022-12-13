@@ -2,7 +2,7 @@ import React from "react";
 import './App.css';
 import { BrowserRouter } from 'react-router-dom';
 import StoreContextProvider from './app/store/store'
-import AppSwitcher from './AppSwitcher'
+import AppSwitcher from './app/containers/AppSwitcher'
 import ErrorBoundary from './app/components/ui/ErrorBoundary'
 import InstantSearches from "app/containers/InstantSearches"
 
