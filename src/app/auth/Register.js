@@ -9,6 +9,7 @@ import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import firebase from "firebase"
 import { validateEmail } from "app/utils/generalUtils"
+import { completeRegistrationService } from "app/services/userServices"
 
 export default function Register() {
 
@@ -31,62 +32,8 @@ export default function Register() {
   }
 
   const completeRegistration = (user, authMode, res) => {
-    user.updateProfile({
-      displayName: authMode === 'plain' ? `${firstName} ${lastName}` : authMode === 'google' ? res.additionalUserInfo.profile.name : res.name,
-      photoURL: authMode === 'facebook' ? res.picture.data.url : photoURLPlaceholder
-    })
-    setDB('users', user.uid, {
-      firstName: authMode === 'plain' ? firstName : authMode === 'google' ? res.additionalUserInfo.profile.given_name : res.first_name,
-      lastName: authMode === 'plain' ? lastName : authMode === 'google' ? res.additionalUserInfo.profile.family_name : res.last_name,
-      email: authMode === 'plain' ? email : authMode === 'google' ? res.additionalUserInfo.profile.email : res.email,
-      photoURL: authMode === 'facebook' ? res.picture.data.url : photoURLPlaceholder,
-      address: '',
-      phone: '',
-      city: '',
-      region: '',
-      regionCode: '',
-      country: '',
-      countryCode: '',
-      invoicesNum: 0,
-      estimatesNum: 0,
-      contactsNum: 0,
-      paymentsNum: 0,
-      userID: user.uid,
-      dateJoined: new Date(),
-      memberType: 'basic',
-      myBusiness: null,
-      taxNumbers: [],
-      totalRevenue: 0,
-      currency: { 
-        name: 'Canadian Dollar',
-        symbol: '$',
-        value: 'CAD'
-       }
-    })
-      .then(() => {
-        setDB(`users/${user.uid}/notifications`, 'welcome', {
-          notificationID: 'welcome',
-          dateCreated: new Date(),
-          icon: 'fas fa-house-user',
-          isRead: false,
-          title: 'Welcome to Invoice Me!',
-          text: `Welcome to Invoice Me! We're glad you're here. Click here to create your first invoice.`,
-          url: '/invoices/new',
-        })
-        setDB(`users/${user.uid}/settings`, 'general', {})
-        setDB(`users/${user.uid}/settings`, 'invoices', {})
-        setDB(`users/${user.uid}/settings`, 'estimates', {})
-        setDB(`users/${user.uid}/settings`, 'contacts', {})
-        setDB(`users/${user.uid}/settings`, 'payments', {})
-        setDB(`users/${user.uid}/settings`, 'notifications', {})
-        setDB(`users/${user.uid}/settings`, 'emails', {})
-        navigate('/')
-        setLoading(false)
-      })
-      .catch(err => {
-        console.log(err)
-        setLoading(false)
-      })
+    completeRegistrationService(user, res, authMode, photoURLPlaceholder, 
+      firstName, lastName, email, setLoading, navigate)
   }
 
   const handleSignup = (authMode) => {
