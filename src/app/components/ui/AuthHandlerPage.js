@@ -9,7 +9,8 @@ import './styles/AuthHandlerPage.css'
 export default function AuthHandlerPage(props) {
 
   const { setPageLoading } = useContext(StoreContext)
-  const { contentImg, title, description, btnLabel, btnOnClick, loading=false } = props
+  const { contentImg, title, description, btnLabel, btnOnClick, 
+    loading=false, customComponent } = props
   const navigate = useNavigate()
 
   return (
@@ -26,11 +27,15 @@ export default function AuthHandlerPage(props) {
           <img src={contentImg} alt="content" />
           <h3>{title}</h3>
           <p>{description}</p>
-          <AppButton
-            label={btnLabel}
-            onClick={btnOnClick}
-            rightIcon={loading ? 'far fa-spinner fa-spin' : null}
-          />
+          {
+            btnLabel &&
+            <AppButton
+              label={btnLabel}
+              onClick={btnOnClick}
+              rightIcon={loading ? 'far fa-spinner fa-spin' : null}
+            />
+          }
+          { customComponent }
         </div>
       </div>
     </div>
