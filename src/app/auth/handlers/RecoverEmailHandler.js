@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function RecoverEmailHandler({mode, oobCode}) {
+export default function RecoverEmailHandler({oobCode}) {
   return (
     <div>RecoverEmailHandler</div>
   )

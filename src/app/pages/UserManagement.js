@@ -13,20 +13,16 @@ export default function UserManagement() {
   return (
     mode === 'resetPassword' ?
       <ResetPasswordHandler
-        mode={mode}
-        oobCode={oobCode}
+        oobCode={oobCode} 
       /> :
       mode === 'recoverEmail' ?
-        <RecoverEmailHandler
-          mode={mode}
-          oobCode={oobCode}
-        /> :
-        mode === 'verifyEmail' ?
-          <VerifyEmailHandler
-            mode={mode}
-            oobCode={oobCode}
-          /> :
-          <>Mode is invalid. Please make sure your email link is valid.</>
-
+      <RecoverEmailHandler 
+        oobCode={oobCode} 
+      /> :
+      mode === 'verifyEmail' ? 
+      <VerifyEmailHandler 
+        oobCode={oobCode} 
+      /> :
+      <>Mode is invalid. Please make sure your email link is valid.</>
   )
 }
