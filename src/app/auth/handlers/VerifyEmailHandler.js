@@ -12,10 +12,11 @@ export default function VerifyEmailHandler({mode, oobCode}) {
   const navigate = useNavigate()
   const auth = firebase.auth()
 
-  const handleVerifyEmail = (auth, actionCode) => {
-    if(!actionCode) return alert('Invalid action code. Please make sure your email link is valid.')
-    auth.applyActionCode(actionCode)
+  const handleVerifyEmail = (auth, oobCode) => {
+    if(!oobCode) return alert('Invalid action code. Please make sure your email link is valid.')
+    auth.applyActionCode(oobCode)
     .then((res) => {
+      console.log(res)
       alert('Email verified!')
       createUserDocService(
         user,
@@ -33,6 +34,7 @@ export default function VerifyEmailHandler({mode, oobCode}) {
       .catch((error) => console.log(error))
     })
     .catch((error) => {
+      console.log(error)
       alert('The link is invalid or has expired. Please verify your email again.')
     })
   }

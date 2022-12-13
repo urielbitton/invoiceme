@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import './styles/VerifyEmailPage.css'
 import verifyEmailImg from 'app/assets/images/verify-email.png'
 import AuthHandlerPage from "app/components/ui/AuthHandlerPage"
 import { auth } from "app/firebase/fire"
@@ -28,7 +27,7 @@ export default function UnverifiedEmailPage() {
       contentImg={verifyEmailImg}
       title="Verify your email"
       description="We've created an account for you, all you need to do now is verify it by clicking on the link we sent to your email."
-      btnLabel="Send Verification Email"
+      btnLabel="Resend Verification"
       btnOnClick={sendVerificationEmail}
       loading={loading}
     />

@@ -1,15 +1,16 @@
-.verify-email-page {
+.auth-handler-page {
   display: flex;
   flex-direction: column;
 }
-.verify-email-page .header {
+.auth-handler-page .header {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 20px;
   border-bottom: 1px solid var(--tableBorderColor);
 }
-.verify-email-page .header h5 {
+.auth-handler-page .header h5 {
   color: var(--darkGrayText);
   font-size: 16px;
   display: flex;
@@ -17,26 +18,36 @@
   gap: 10px;
   cursor: pointer;
 }
-.verify-email-page .header img {
+.auth-handler-page .header img {
   width: 30px;
   top: -2px;
 }
-.verify-email-page .content {
+.auth-handler-page .header small {
+  cursor: pointer;
+  color: var(--darkGrayText);
+  font-size: 13px;
+  font-weight: 600;
+}
+.auth-handler-page .header small:hover {
+  text-decoration: underline;
+}
+
+.auth-handler-page .content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 40px;
 }
-.verify-email-page .content img {
+.auth-handler-page .content img {
   width: 300px;
 }
-.verify-email-page .content h3 {
+.auth-handler-page .content h3 {
   font-size: 30px;
   color: var(--darkGrayText);
   text-align: center;
 }
-.verify-email-page .content p {
+.auth-handler-page .content p {
   color: var(--grayText);
   font-size: 15px;
   font-weight: 500;
@@ -44,7 +55,7 @@
   width: 500px;
   margin-top: 10px;
 }
-.verify-email-page .content button {
+.auth-handler-page .content button {
   margin-top: 40px;
   padding: 17px 25px;
 }

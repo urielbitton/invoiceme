@@ -48,6 +48,11 @@ export default function Register() {
         })
     }
     else {
+      user.sendEmailVerification()
+      .then(() => {
+        console.log('Email verification sent!')
+      })
+      .catch((error) => console.log(error))
       navigate('/')
     }
   }
