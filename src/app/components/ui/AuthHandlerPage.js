@@ -1,15 +1,17 @@
 import React from 'react'
 import logo from 'app/assets/images/logo2.png'
 import AppButton from "./AppButton"
+import { useNavigate } from "react-router-dom"
 
 export default function AuthHandlerPage(props) {
 
   const { contentImg, title, description, btnLabel, btnOnClick, loading=false } = props
+  const navigate = useNavigate()
 
   return (
     <div className="verify-email-page">
       <div className="header">
-        <h5>
+        <h5 onClick={() => navigate('/')}>
           <img src={logo} alt="logo" />
           <span>Invoice Me</span>
         </h5>

@@ -4,6 +4,7 @@ import UnverifiedEmailPage from "app/pages/UnverifiedEmailPage"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
 import AppContainer from "./AppContainer"
+import VerifySwitcher from "./VerifySwitcher"
 
 export default function AppSwitcher() {
 
@@ -13,7 +14,7 @@ export default function AppSwitcher() {
     user ?
     user?.emailVerified ?
     <AppContainer /> :
-    <UnverifiedEmailPage /> :
+    <VerifySwitcher /> :
     myUser === null ?
     <AppLoadingPage /> :
     <AuthSwitch />

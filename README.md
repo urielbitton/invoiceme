@@ -2,7 +2,7 @@ InvoiceMe App
 
 
 ToDos:
-- verifiy email to create account
+- verify email to create account
 - add notifications to all events on app (especially payments)
 - add wysiwg editor on all email writing inputs
 - add search dropdown on email page when entering "to" field

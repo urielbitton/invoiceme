@@ -1,6 +1,5 @@
 import React from 'react'
 import { useSearchParams } from "react-router-dom"
-import firebase from 'firebase'
 import ResetPasswordHandler from "app/auth/handlers/ResetPasswordHandler"
 import RecoverEmailHandler from "app/auth/handlers/RecoverEmailHandler"
 import VerifyEmailHandler from "app/auth/handlers/VerifyEmailHandler"
@@ -11,28 +10,21 @@ export default function UserManagement() {
   const mode = searchParams.get('mode')
   const oobCode = searchParams.get('oobCode')
 
-  const config = { 'apiKey': process.env.REACT_APP_apiKey }
-  const app = firebase.initializeApp(config)
-  const auth = app.auth()
-
   return (
     mode === 'resetPassword' ?
       <ResetPasswordHandler
         mode={mode}
         oobCode={oobCode}
-        auth={auth}
       /> :
       mode === 'recoverEmail' ?
         <RecoverEmailHandler
           mode={mode}
           oobCode={oobCode}
-          auth={auth}
         /> :
         mode === 'verifyEmail' ?
           <VerifyEmailHandler
             mode={mode}
             oobCode={oobCode}
-            auth={auth}
           /> :
           <>Mode is invalid. Please make sure your email link is valid.</>
 

@@ -22,7 +22,6 @@ import EstimatePage from "app/pages/EstimatePage"
 import ContactPage from "app/pages/ContactPage"
 import HelpAndContact from "app/pages/HelpAndContact"
 import UpgradeCheckoutPage from "app/pages/UpgradeCheckoutPage"
-import UserManagement from "app/pages/UserManagement"
 
 export default function RoutesContainer() {
 
@@ -58,7 +57,6 @@ export default function RoutesContainer() {
         <Route path="upgrade" element={<UpgradePage />} />
         <Route path="upgrade-checkout" element={<UpgradeCheckoutPage />} />
         <Route path="help-and-contact" element={<HelpAndContact />} />
-        <Route path="user-management" element={<UserManagement />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>
