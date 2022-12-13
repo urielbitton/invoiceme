@@ -1,3 +1,4 @@
+import UserManagement from "app/pages/UserManagement"
 import React from 'react'
 import { Route, Routes } from "react-router-dom"
 import ForgotPassword from "./ForgotPassword"
@@ -12,6 +13,7 @@ export default function AuthSwitch() {
       <Route path="/register" element={<Register />}/>
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/user-management" element={<UserManagement />} />
     </Routes>
   )
 }
