@@ -23,6 +23,8 @@ const client = algoliasearch(APP_ID, API_KEY)
 const invoicesIndex = client.initIndex('invoices_index')
 const estimatesIndex = client.initIndex('estimates_index')
 const contactsIndex = client.initIndex('contacts_index')
+const emailsIndex = client.initIndex('emails_index')
+const paymentsIndex = client.initIndex('payments_index')
 
 //Algolia functions
 
@@ -127,6 +129,47 @@ exports.deleteFromIndexContacts = functions
       })
   })
 
+//emails index
+exports.addToIndexEmails = functions
+  .region('northamerica-northeast1')
+  .firestore.document('mail/{emailID}').onCreate((snapshot, context) => {
+    const data = snapshot.data()
+    return emailsIndex.saveObject({ ...data, objectID: snapshot.id })
+  })
+
+exports.updateIndexEmails = functions
+  .region('northamerica-northeast1')
+  .firestore.document('mail/{emailID}').onUpdate((change) => {
+    const newData = change.after.data()
+    return emailsIndex.saveObject({ ...newData, objectID: change.after.id })
+  })
+
+exports.deleteFromIndexEmails = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/emails/{emailID}').onDelete((snapshot, context) => {
+    return emailsIndex.deleteObject(snapshot.id)
+  })
+
+//payments index
+exports.addToIndexPayments = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/paymentsSent/{paymentID}').onCreate((snapshot, context) => {
+    const data = snapshot.data()
+    return paymentsIndex.saveObject({ ...data, objectID: snapshot.id })
+  })
+
+exports.updateIndexPayments = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/paymentsSent/{paymentID}').onUpdate((change) => {
+    const newData = change.after.data()
+    return paymentsIndex.saveObject({ ...newData, objectID: change.after.id })
+  })
+
+exports.deleteFromIndexPayments = functions
+  .region('northamerica-northeast1')
+  .firestore.document('users/{userID}/paymentsSent/{paymentID}').onDelete((snapshot, context) => {
+    return paymentsIndex.deleteObject(snapshot.id)
+  })
 
 
 // Sendgrid functions
@@ -401,6 +444,7 @@ exports.createPaymentIntent = functions
             contactEmail: data.contactEmail,
             customer: data.customerID,
             status: paymentIntent.status,
+            ownerID: data.myUserID
           })
           .then(() => {
             console.log('Email sent')

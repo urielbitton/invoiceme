@@ -1,6 +1,6 @@
 import { deleteInvoiceService, updateInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
-import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
+import { convertAlgoliaDate, convertClassicDate, convertClassicDateAndTime } from "app/utils/dateUtils"
 import { formatCurrency, truncateText } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
@@ -43,7 +43,7 @@ export default function InvoiceRow(props) {
       item3={truncateText(invoiceTo.name, 16)}
       item4={items.length}
       item5={`${currency?.symbol}${formatCurrency(total?.toFixed(2))}`}
-      item6={convertClassicDate(convertAlgoliaDate(dateCreated))}
+      item6={<span title={convertClassicDateAndTime(convertAlgoliaDate(dateCreated))}>{convertClassicDate(convertAlgoliaDate(dateCreated))}</span>}
       item7={isPaid}
       handleCheckChange={() => togglePaid()}
       actions={

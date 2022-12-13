@@ -1,6 +1,6 @@
 import { deleteEstimateService } from "app/services/estimatesServices"
 import { StoreContext } from "app/store/store"
-import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
+import { convertAlgoliaDate, convertClassicDate, convertClassicDateAndTime } from "app/utils/dateUtils"
 import { formatCurrency, truncateText } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
@@ -25,7 +25,7 @@ export default function EstimateRow(props) {
       item3={truncateText(estimateTo.name, 16)}
       item4={items.length}
       item5={`${currency?.symbol}${formatCurrency(total)}`}
-      item6={convertClassicDate(convertAlgoliaDate(dateCreated))}
+      item6={<span title={convertClassicDateAndTime(convertAlgoliaDate(dateCreated))}>{convertClassicDate(convertAlgoliaDate(dateCreated))}</span>}
       actions={
         <>
           <IconContainer

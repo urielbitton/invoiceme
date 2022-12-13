@@ -1,6 +1,6 @@
 import { deleteContactService } from "app/services/contactsServices"
 import { StoreContext } from "app/store/store"
-import { convertAlgoliaDate, convertClassicDate } from "app/utils/dateUtils"
+import { convertAlgoliaDate, convertClassicDate, convertClassicDateAndTime } from "app/utils/dateUtils"
 import { formatPhoneNumber, truncateText } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
@@ -34,7 +34,7 @@ export default function ContactRow(props) {
       item4={address}
       item5={city}
       item6={country}
-      item7={convertClassicDate(convertAlgoliaDate(dateCreated))}
+      item7={<span title={convertClassicDateAndTime(convertAlgoliaDate(dateCreated))}>{convertClassicDate(convertAlgoliaDate(dateCreated))}</span>}
       actions={
         actions ??
         <>

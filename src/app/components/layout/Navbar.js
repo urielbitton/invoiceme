@@ -8,6 +8,7 @@ import IconContainer from "../ui/IconContainer"
 import EmailElement from "./EmailElement"
 import NavBottomBar from "./NavBottomBar"
 import NavDropdown from "./NavDropdown"
+import NavSearch from "./NavSearch"
 import NotificationElement from "./NotificationElement"
 import ProfileDropdown from "./ProfileDropdown"
 import './styles/Navbar.css'
@@ -46,10 +47,8 @@ export default function Navbar() {
     <nav className={`navbar ${compactNav ? 'compact-nav' : ''}`}>
       <div className="topbar">
         <div className="left">
-          <AppInput
-            placeholder="Search"
-            iconright={<i className="fal fa-search" />}
-            enterKeyHint="go"
+          <NavSearch 
+            
           />
           <div 
             className="mobile-btn"
