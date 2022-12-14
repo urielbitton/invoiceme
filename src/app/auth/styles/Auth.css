@@ -251,13 +251,15 @@
 
 
 
-@media (max-width: 1200px) {
+@media (max-width: 1080px) {
+  .login-page {
+    grid-template-columns: 100%;
+  }
   .login-page .login-cover {
     display: none;
   }
   .login-page .login-info {
     width: 100%;
-    flex-basis: 100%;
   }
   
 }
