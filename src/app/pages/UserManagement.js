@@ -9,6 +9,7 @@ export default function UserManagement() {
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode')
   const oobCode = searchParams.get('oobCode')
+  const continueUrl = searchParams.get('continueUrl')
 
   return (
     mode === 'resetPassword' ?
@@ -22,6 +23,7 @@ export default function UserManagement() {
       mode === 'verifyEmail' ? 
       <VerifyEmailHandler 
         oobCode={oobCode} 
+        continueUrl={continueUrl}
       /> :
       <>Mode is invalid. Please make sure your email link is valid.</>
   )

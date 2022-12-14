@@ -11,7 +11,7 @@ import { validateEmail } from "app/utils/generalUtils"
 
 export default function Register() {
 
-  const { setMyUser, photoURLPlaceholder } = useContext(StoreContext)
+  const { setMyUser } = useContext(StoreContext)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')

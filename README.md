@@ -3,6 +3,7 @@ InvoiceMe App
 
 ToDos:
 - style all auth pages
+- convert useful console.log errors into toasts notifs
 - add in-app toasts (notifs instead of all JS alerts)
 - add notifications to all events on app (especially payments)
 - add wysiwg editor on all email writing inputs
