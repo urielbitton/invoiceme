@@ -8,10 +8,11 @@ import Sidebar from "app/components/layout/Sidebar"
 import Navbar from "app/components/layout/Navbar"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import HelmetTitle from "app/components/ui/HelmetTitle"
+import ToastsColumn from "./ToastsColumn"
 
 export default function AppContainer() {
 
-  const { darkMode, pageLoading, showMobileSidebar, setShowMobileSidebar } = useContext(StoreContext)
+  const { darkMode, pageLoading } = useContext(StoreContext)
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -32,14 +33,8 @@ export default function AppContainer() {
       <div className="main-content">
         <Navbar />
         <RoutesContainer />
-        { 
-          showMobileSidebar && 
-          <div 
-            className="mobile-sidebar-overlay" 
-            onClick={() => setShowMobileSidebar(false)}
-          /> 
-        }
       </div>
+      <ToastsColumn />
       <PageLoader loading={pageLoading} />
     </div>
   )

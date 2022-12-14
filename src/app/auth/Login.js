@@ -12,10 +12,11 @@ import loginCover from 'app/assets/images/login-cover.png'
 import logo from 'app/assets/images/logo.png'
 import AppButton from "app/components/ui/AppButton"
 import { createAccountOnLoginService } from "app/services/authServices"
+import { warningToast } from "app/data/toastsTemplates"
 
 export default function Login() {
 
-  const { setMyUser } = useContext(StoreContext)
+  const { setMyUser, setToasts } = useContext(StoreContext)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('')
@@ -39,7 +40,7 @@ export default function Login() {
         }
         else {
           const user = userCredential.user
-          if(user.uid !== userID) return alert('Unauthorized login. Please try again.')
+          if(user.uid !== userID) return setToasts(warningToast('Unauthorized login. Please try again'))
           createAccountOnLoginService(user, setLoading)
           .then(() => {
             setLoading(false)
@@ -75,12 +76,12 @@ export default function Login() {
         }
         else {
           setMyUser(null)
-          window.alert('This info is not associated with a google account.')
+          setToasts(warningToast('This info is not associated with a google account.'))
         }
       })
       .catch((error) => {
         console.log(error)
-        window.alert('An errror occurred with the google login. Please try again.')
+        setToasts(warningToast('An errror occurred with the google login. Please try again.'))
       })
   }
 
@@ -97,11 +98,11 @@ export default function Login() {
       .catch((err) => {
         console.log(err)
         if (err.code === 'auth/account-exists-with-different-credential')
-          window.alert('You have already signed up with a different provider. Please sign in with that provider.')
+          setToasts(warningToast('You have already signed up with a different provider. Please sign in with that provider.'))
         else if (err.code === 'auth/popup-blocked')
-          window.alert('Popup blocked. Please allow popups for this site.')
+          setToasts(warningToast('Popup blocked. Please allow popups for this site.'))
         else
-          window.alert('An error with facebook has occured. Please try again later.')
+          setToasts(warningToast('An error with facebook has occured. Please try again later.'))
       })
   }
 

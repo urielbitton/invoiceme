@@ -1,0 +1,59 @@
+.app-toast {
+  width: 100%;
+  border-radius: 5px;
+  background: var(--primarToast);
+  padding: 13px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  animation: enter 0.2s ease-in forwards;
+}
+@keyframes enter {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.app-toast.closing {
+  animation: exit 0.2s ease-in forwards;
+}
+@keyframes exit {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+.app-toast .side {
+  display: flex;
+  align-items: center;
+}
+.app-toast .side.left {
+  gap: 15px;
+}
+.app-toast .side.right {
+  gap: 5px;
+}
+.app-toast h6 {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 600;
+}
+.app-toast .side > i {
+  color: #fff;
+}
+.app-toast .icon-container:hover {
+  background: rgba(255, 255, 255, 0.2)!important;
+}
+.app-toast .side .toast-btn {
+  padding: 6px 10px;
+}

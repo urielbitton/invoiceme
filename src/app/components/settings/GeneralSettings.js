@@ -1,4 +1,5 @@
 import { currencies, themeColors } from "app/data/general"
+import { warningToast } from "app/data/toastsTemplates"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
@@ -10,7 +11,7 @@ import SettingsTitles from "./SettingsTitles"
 export default function GeneralSettings() {
 
   const { myUserID, myUser, themeColor, setThemeColor,
-    darkMode, setDarkMode, setPageLoading } = useContext(StoreContext)
+    darkMode, setDarkMode, setPageLoading, setToasts, toasts } = useContext(StoreContext)
   const [currency, setCurrency] = useState('CAD')
   const currencyObject = currencies.find(c => c.value === currency) || currencies[0]
 
@@ -116,6 +117,7 @@ export default function GeneralSettings() {
           label="Save"
           onClick={saveSettings}
         />
+        <h5 onClick={() => setToasts(warningToast('Hello there. Im obi wan'))}>Add Toast</h5>
       </div>
     </div>
   )

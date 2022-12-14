@@ -29,38 +29,47 @@ export default function Sidebar() {
   }, [location])
 
   return (
-    <div className={`sidebar ${showMobileSidebar ? 'show-mobile' : ''}`}>
-      <div className="top">
-        <div className="logo">
-          <img
-            src={logo}
-            alt="logo"
+    <>
+      <div className={`sidebar ${showMobileSidebar ? 'show-mobile' : ''}`}>
+        <div className="top">
+          <div className="logo">
+            <img
+              src={logo}
+              alt="logo"
+            />
+            <h4>Invoice Me</h4>
+          </div>
+          <div className="menu">
+            {navLinksList}
+          </div>
+          <AppInput
+            placeholder="Search"
+            iconright={<i className="fal fa-search" />}
+            enterKeyHint="go"
           />
-          <h4>Invoice Me</h4>
         </div>
-        <div className="menu">
-          {navLinksList}
+        <div className="bottom">
+          {
+            myMemberType !== 'business' &&
+            <AppButton
+              label="Upgrade to Business"
+              leftIcon="far fa-rocket-launch"
+              url="/upgrade"
+            />
+          }
         </div>
-        <AppInput
-          placeholder="Search"
-          iconright={<i className="fal fa-search" />}
-          enterKeyHint="go"
+        <i
+          className="fal fa-times close-sidebar"
+          onClick={() => setShowMobileSidebar(false)}
         />
       </div>
-      <div className="bottom">
-        {
-          myMemberType !== 'business' &&
-          <AppButton
-            label="Upgrade to Business"
-            leftIcon="far fa-rocket-launch"
-            url="/upgrade"
-          />
-        }
-      </div>
-      <i
-        className="fal fa-times close-sidebar"
-        onClick={() => setShowMobileSidebar(false)}
-      />
-    </div>
+      {
+        showMobileSidebar &&
+        <div
+          className="mobile-sidebar-overlay"
+          onClick={() => setShowMobileSidebar(false)}
+        />
+      }
+    </>
   )
 }

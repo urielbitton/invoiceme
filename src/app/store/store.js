@@ -26,6 +26,7 @@ const StoreContextProvider = ({children}) => {
   const [navItemInfo, setNavItemInfo] = useState(null)
   const [compactNav, setCompactNav] = useState(false)
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
+  const [toasts, setToasts] = useState([])
   const stripeCustomerPortalLink = 'https://billing.stripe.com/p/login/6oE9Da0qm0Sq8RGfYY'
   const businessMemberPlanID = 'price_1MBgssAp3OtccpN9TKmXnu5t'
 
@@ -72,7 +73,8 @@ const StoreContextProvider = ({children}) => {
     compactNav, setCompactNav,
     themeColor, setThemeColor,
     showMobileSidebar, setShowMobileSidebar,
-    stripeCustomerPortalLink, businessMemberPlanID
+    stripeCustomerPortalLink, businessMemberPlanID,
+    toasts, setToasts
   }}>
     {children}
   </StoreContext.Provider>

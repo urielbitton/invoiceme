@@ -139,6 +139,17 @@
   background: var(--extraLightPrimary);
 }
 
+.appButton.tabWhiteBtn {
+  font-size: 12px;
+  padding: 8px 10px;
+  color: #fff;
+  background: none;
+}
+.appButton.tabWhiteBtn:hover {
+  background: #fff;
+  color: var(--primary);
+}
+
 .appButton.tabRedBtn {
   font-size: 12px;
   padding: 8px 10px;
