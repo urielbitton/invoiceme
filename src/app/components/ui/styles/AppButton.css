@@ -77,6 +77,14 @@
   color: #fff;
 }
 
+.appButton.redBtn {
+  background: var(--red);
+  color: #fff;
+}
+.appButton.redBtn:hover {
+  filter: brightness(105%);
+}
+
 .appButton.outlineBlueBtn {
   border: 1px solid var(--primary);
   color: var(--primary);

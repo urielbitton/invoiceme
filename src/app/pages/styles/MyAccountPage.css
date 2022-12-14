@@ -70,3 +70,14 @@
   gap: 20px;
   width: 100%;
 }
+
+.delete-account-modal .appInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.delete-account-modal .appInput h6 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}

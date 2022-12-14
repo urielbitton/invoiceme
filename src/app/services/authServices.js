@@ -1,7 +1,8 @@
-import { auth } from "app/firebase/fire"
+import { auth, db } from "app/firebase/fire"
 import { createUserDocService, doGetUserByID } from "./userServices"
 import firebase from "firebase"
-
+import { successToast, warningToast } from "app/data/toastsTemplates"
+import { deleteDB } from "./CrudDB"
 
 export const completeRegistrationService = (user, authMode, res, userName, setLoading) => {
   const photoURLPlaceholder = 'https://firebasestorage.googleapis.com/v0/b/your-app.appspot.com/o/placeholder.png?alt=media&token=your-token'
@@ -126,5 +127,41 @@ export const createAccountOnLoginService = (loggedInUser, setLoading) => {
         return createUserDocService(loggedInUser, null, 'plain', setLoading)
       }
       else return alert('User already exists.')
+    })
+}
+
+export const deleteAccountService = (setToasts, setLoading) => {
+  setLoading(true)
+  const settingsArr = ['general', 'invoices', 'estimates', 'contacts', 'payments', 'notifications', 'emails']
+  const batch = db.batch()
+  settingsArr.forEach(setting => {
+    const docRef = db.collection('users').doc(auth.currentUser.uid).collection('settings').doc(setting)
+    batch.delete(docRef)
+  })
+  return batch.commit()
+    .then(() => {
+      return deleteDB('users', auth.currentUser.uid)
+        .then(() => {
+          firebase.auth().currentUser.delete()
+            .then(() => {
+              setToasts(successToast('Account deleted.'))
+              setLoading(false)
+            })
+            .catch(err => {
+              setToasts(warningToast('There was an error deleting your account. Please try again.'))
+              console.log(err)
+              setLoading(false)
+            })
+        })
+        .catch(err => {
+          setLoading(false)
+          setToasts(warningToast('There was an error deleting your account. Please try again.'))
+          console.log(err)
+        })
+    })
+    .catch(err => {
+      setLoading(false)
+      setToasts(warningToast('There was an error deleting your account. Please try again.'))
+      console.log(err)
     })
 }

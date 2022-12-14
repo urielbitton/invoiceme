@@ -1,4 +1,6 @@
 import { successToast, warningToast } from "app/data/toastsTemplates"
+import { auth } from "app/firebase/fire"
+import { deleteAccountService } from "app/services/authServices"
 import { saveAccountInfoService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import { validatePhone } from "app/utils/generalUtils"
@@ -6,6 +8,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import AppBadge from "../ui/AppBadge"
 import AppButton from "../ui/AppButton"
 import { AppInput } from "../ui/AppInputs"
+import AppModal from "../ui/AppModal"
 import AvatarUploader from "../ui/AvatarUploader"
 import CountryStateCity from "../ui/CountryStateCity"
 
@@ -22,7 +25,10 @@ export default function Account() {
   const [country, setCountry] = useState("")
   const [postcode, setPostcode] = useState("")
   const [uploadedProfileImg, setUploadedProfileImg] = useState(null)
-  const [deleteConfirmation, setDeleteConfirmation] = useState('')
+  const [deleteConfirmationText, setDeleteConfirmationText] = useState('')
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [password, setPassword] = useState('')
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
 
   const allowSave = (firstName !== myUser?.firstName ||
     lastName !== myUser?.lastName ||
@@ -74,9 +80,21 @@ export default function Account() {
   }
 
   const deleteMyAccount = () => {
-    const confirm = window.confirm('Are you sure you want to delete your account? This action cannot be undone.')
-    if(!confirm) return alert('Account was not deleted.')
-    
+    if(deleteConfirmationText !== 'DELETE') return setToasts(warningToast('Please type "DELETE" to confirm.'))
+    deleteAccountService(setToasts, setPageLoading)
+  }
+
+  const signInUser = () => {
+    auth.signInWithEmailAndPassword(myUser.email, password)
+      .then(() => {
+        setToasts(successToast('Password verification passed. You can now delete our account by clicking on the delete button.'))
+        setShowPasswordModal(false)
+        setShowDeleteConfirmation(true)
+      })
+      .catch(err => {
+        console.log(err)
+        setToasts(warningToast('Incorrect password.'))
+      })
   }
 
   useEffect(() => {
@@ -170,7 +188,7 @@ export default function Account() {
       </div>
       <div className="account-section">
         <h4>Account Type</h4>
-        <div style={{display: 'flex'}}>
+        <div style={{ display: 'flex' }}>
           <AppBadge
             label={myUser?.memberType}
             noIcon
@@ -180,20 +198,71 @@ export default function Account() {
       <div className="account-section delete-account">
         <h4>Delete My Account</h4>
         <div className="form">
-          <AppInput
-            label="Type 'DELETE' to confirm"
-            placeholder="Type DELETE to confirm"
-            value={deleteConfirmation}
-            onChange={e => setDeleteConfirmation(e.target.value)}
-          />
           <AppButton
             label="Delete My Account"
-            buttonType="outlineRedBtn"
-            disabled={deleteConfirmation !== 'DELETE'}
-            onClick={() => deleteMyAccount()}
+            buttonType="redBtn"
+            onClick={() => setShowPasswordModal(true)}
           />
         </div>
       </div>
+      <AppModal
+        showModal={showDeleteConfirmation}
+        setShowModal={setShowDeleteConfirmation}
+        label="Delete My Account"
+        portalClassName="delete-account-modal"
+        actions={
+          <>
+            <AppButton
+              label="Delete"
+              onClick={() => deleteMyAccount()}
+              buttonType="redBtn"
+              disabled={deleteConfirmationText !== 'DELETE'}
+            />
+            <AppButton
+              label="Cancel"
+              onClick={() => setShowDeleteConfirmation(false)}
+              buttonType="invertedBtn"
+            />
+          </>
+        }
+      >
+        <AppInput
+          label="Type DELETE to confirm"
+          placeholder="Type DELETE to confirm"
+          value={deleteConfirmationText}
+          onChange={e => setDeleteConfirmationText(e.target.value)}
+        />
+      </AppModal>
+      <AppModal
+        showModal={showPasswordModal}
+        setShowModal={setShowPasswordModal}
+        label="Enter your password"
+        portalClassName="delete-account-modal"
+        actions={
+          <>
+            <AppButton
+              label="Submit"
+              onClick={() => signInUser()}
+              buttonType="redBtn"
+              disabled={password.length < 5}
+            />
+            <AppButton
+              label="Cancel"
+              onClick={() => setShowPasswordModal(false)}
+              buttonType="invertedBtn"
+            />
+          </>
+        }
+      >
+        <h5>Enter your account password to verify your identity.</h5>
+        <br/>
+        <AppInput
+          label="Password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+      </AppModal>
     </div>
   )
 }
