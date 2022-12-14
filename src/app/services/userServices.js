@@ -163,12 +163,14 @@ export const getScheduledEventsByUserID = (userID, setEvents, limit) => {
     })
 }
 
-export const createUserDocService = (user, res, authMode, photoURLPlaceholder, firstName,
-  lastName, email, setLoading) => {
+export const createUserDocService = (user, res, authMode, setLoading) => {
+  const firstName = user?.displayName?.split(' ')[0] || ''
+  const lastName = user?.displayName?.split(' ')[1] || ''
+  const photoURLPlaceholder = 'https://firebasestorage.googleapis.com/v0/b/familia-app-1f5a8.appspot.com/o/admin%2Fprofile-placeholder.png?alt=media'
   return setDB('users', user.uid, {
     firstName: authMode === 'plain' ? firstName : authMode === 'google' ? res.additionalUserInfo.profile.given_name : res.first_name,
     lastName: authMode === 'plain' ? lastName : authMode === 'google' ? res.additionalUserInfo.profile.family_name : res.last_name,
-    email: authMode === 'plain' ? email : authMode === 'google' ? res.additionalUserInfo.profile.email : res.email,
+    email: authMode === 'plain' ? user.email : authMode === 'google' ? res.additionalUserInfo.profile.email : res.email,
     photoURL: authMode === 'facebook' ? res.picture.data.url : photoURLPlaceholder,
     address: '',
     phone: '',

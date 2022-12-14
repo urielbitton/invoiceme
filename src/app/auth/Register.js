@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './styles/Auth.css'
 import { StoreContext } from 'app/store/store'
-import { auth } from 'app/firebase/fire'
 import { AppInput } from 'app/components/ui/AppInputs'
 import { Link, useNavigate } from 'react-router-dom'
 import { clearAuthState } from 'app/services/CrudDB'
 import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
-import firebase from "firebase"
+import { facebookAuthService, googleAuthService, plainAuthService } from "app/services/authServices"
 import { validateEmail } from "app/utils/generalUtils"
-import { createUserDocService } from "app/services/userServices"
 
 export default function Register() {
 
@@ -31,122 +29,38 @@ export default function Register() {
     setPassError('')
   }
 
-  const completeRegistration = (user, authMode, res) => {
-    user.updateProfile({
-      displayName: authMode === 'plain' ? `${firstName} ${lastName}` : authMode === 'google' ? res.additionalUserInfo.profile.name : res.name,
-      photoURL: authMode === 'facebook' ? res.picture.data.url : photoURLPlaceholder
-    })
-    if (authMode !== 'plain') {
-      createUserDocService(user, res, authMode, photoURLPlaceholder, firstName, lastName, email, setLoading)
-        .then(() => {
-          navigate('/')
-          setLoading(false)
-        })
-        .catch(err => {
-          console.log(err)
-          setLoading(false)
-        })
-    }
-    else {
-      user.sendEmailVerification()
+  const googleAuth = () => {
+    googleAuthService(setMyUser, setLoading)
       .then(() => {
-        console.log('Email verification sent!')
+        navigate('/')
       })
-      .catch((error) => console.log(error))
-      navigate('/')
-    }
   }
 
-  const handleSignup = (authMode) => {
-    if (authMode === 'google') {
-      const provider = new firebase.auth.GoogleAuthProvider()
-      provider.addScope('email')
-      auth.signInWithPopup(provider)
-        .then((res) => {
-          if (res.additionalUserInfo.isNewUser) {
-            completeRegistration(res.user, authMode, res)
-          }
-          else {
-            setMyUser(res.user)
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          if (error.code === 'auth/account-exists-with-different-credential')
-            window.alert('You have already signed up with a different provider for that email. Please sign in with that provider.')
-          else
-            window.alert('An errror occurred with the google login. Please try again.')
-        })
-    }
-    else if (authMode === 'facebook') {
-      const provider = new firebase.auth.FacebookAuthProvider()
-      firebase.auth().signInWithPopup(provider)
-        .then((res) => {
-          const credential = res.credential
-          const user = res.user
-          // @ts-ignore
-          const accessToken = credential.accessToken
-          fetch(`https://graph.facebook.com/me?access_token=${accessToken}&fields=name,first_name,last_name,email,picture.width(720).height(720)`)
-            .then(fbRes => fbRes.json())
-            .then(fbRes => {
-              console.log(fbRes)
-              completeRegistration(user, authMode, fbRes)
-            })
-            .catch(err => {
-              console.log(err)
-              setLoading(false)
-            })
-        })
-        .catch((err) => {
-          console.log(err)
-          if (err.code === 'auth/account-exists-with-different-credential')
-            window.alert('You have already signed up with a different provider. Please sign in with that provider.')
-          else if (err.code === 'auth/popup-blocked')
-            window.alert('Popup blocked. Please allow popups for this site.')
-          else
-            window.alert('An error with facebook has occured. Please try again later.')
-        })
-    }
-    else if (authMode === 'plain') {
-      if (!firstName || !lastName) return window.alert('Please enter your first and last name.')
-      if (!validateEmail(email)) return window.alert('Please enter your email and password.')
-      if (password !== confirmPassword) return window.alert('Passwords do not match.')
-      setLoading(true)
-      auth.createUserWithEmailAndPassword(email.replaceAll(' ', ''), password.replaceAll(' ', ''))
-        .then(() => {
-          auth.onAuthStateChanged(user => {
-            if (user) {
-              completeRegistration(user, authMode)
-            }
-            else {
-              setLoading(false)
-            }
-          })
-        })
-        .catch(err => {
-          setLoading(false)
-          switch (err.code) {
-            case "auth/email-already-in-use":
-              setEmailError('Please enter a valid email address.'); break;
-            case "auth/invalid-email":
-              setEmailError('Please enter a valid email address.'); break;
-            case "auth/weak-password":
-              setPassError('The password is not long enough or too easy to guess.')
-              break
-            default:
-          }
-        })
-    }
-    else {
-      window.alert('Please fill in all fields.')
-      setLoading(false)
-    }
-    clearErrors()
+  const facebookAuth = () => {
+    facebookAuthService(setLoading)
+      .then(() => {
+        navigate('/')
+      })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    handleSignup('plain')
+    if (!firstName || !lastName) return window.alert('Please enter your first and last name.')
+    if (!validateEmail(email)) return window.alert('Please enter your email and password.')
+    if (password !== confirmPassword) return window.alert('Passwords do not match.')
+    plainAuthService(
+      firstName, 
+      lastName,
+      email,
+      password,
+      setLoading,
+      setEmailError,
+      setPassError
+    )
+    .then(() => {
+      navigate('/')
+    })
+    clearErrors()
   }
 
   useEffect(() => {
@@ -160,14 +74,14 @@ export default function Register() {
           <div className="social-logins">
             <div
               className="google-btn btn"
-              onClick={() => handleSignup('google')}
+              onClick={() => googleAuth()}
             >
               <img src={googleIcon} className="img-icon" alt="google-icon" />
               <span>Sign Up with Google</span>
             </div>
             <div
               className="facebook-btn btn"
-              onClick={() => handleSignup('facebook')}
+              onClick={() => facebookAuth()}
             >
               <img src={facebookIcon} className="img-icon" alt="facebook-icon" />
               <span>Sign Up with Facebook</span>

@@ -8,7 +8,7 @@ import verifyAccountImg from 'app/assets/images/verify-account.png'
 
 export default function VerifyEmailHandler({oobCode}) {
 
-  const { user, photoURLPlaceholder, setPageLoading } = useContext(StoreContext)
+  const { user, setPageLoading } = useContext(StoreContext)
   const navigate = useNavigate()
   const auth = firebase.auth()
 
@@ -21,10 +21,6 @@ export default function VerifyEmailHandler({oobCode}) {
         user,
         null,
         'plain',
-        photoURLPlaceholder,
-        user?.displayName?.split(' ')[0],
-        user?.displayName?.split(' ')[1],
-        user?.email,
         setPageLoading
       )
       .then(() => {
