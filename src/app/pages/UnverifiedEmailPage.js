@@ -12,7 +12,6 @@ export default function UnverifiedEmailPage() {
     setLoading(true)
     const ActionCodeSettings = {
       url: `https://invoiceme.pro/user-management?userID=${user.uid}`,
-      handleCodeInApp: true
     }
     user.sendEmailVerification(ActionCodeSettings)
     .then(() => {
