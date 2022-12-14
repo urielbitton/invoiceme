@@ -1,3 +1,4 @@
+import { successToast, warningToast } from "app/data/toastsTemplates"
 import { saveAccountInfoService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import { validatePhone } from "app/utils/generalUtils"
@@ -10,7 +11,7 @@ import CountryStateCity from "../ui/CountryStateCity"
 
 export default function Account() {
 
-  const { setPageLoading, myUser, myUserID } = useContext(StoreContext)
+  const { setPageLoading, myUser, myUserID, setToasts } = useContext(StoreContext)
   const [photoURL, setPhotoURL] = useState("")
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
@@ -42,7 +43,7 @@ export default function Account() {
       postcode)
 
   const saveAccountInfo = () => {
-    if (!!!myUser) return alert('Please fill in all fields.')
+    if (!!!myUser) return setToasts(warningToast('Please fill in all fields.'))
     setPageLoading(true)
     saveAccountInfoService(
       myUserID,
@@ -64,7 +65,7 @@ export default function Account() {
       .then(() => {
         setPageLoading(false)
         setUploadedProfileImg(null)
-        alert('Account info saved.')
+        setToasts(successToast('Account info saved.'))
       })
       .catch(err => {
         setPageLoading(false)

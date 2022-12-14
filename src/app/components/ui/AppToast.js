@@ -8,8 +8,8 @@ import './styles/AppToast.css'
 export default function AppToast(props) {
 
   const { setToasts, toasts } = useContext(StoreContext)
-  const { title, message, icon, url, onClick, 
-    btnLabel='View', toastID } = props.toast
+  const { title, message, icon, url, onClick, btnLabel = 'View',
+    toastID } = props.toast
   const [markClosing, setMarkClosing] = useState([])
 
   const closeToast = (id) => {
@@ -29,7 +29,7 @@ export default function AppToast(props) {
         }
       })
     }
-  },[toasts])
+  }, [toasts])
 
   return (
     <div className={`app-toast entering ${markClosing.includes(toastID) && 'closing'}`}>

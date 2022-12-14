@@ -54,13 +54,12 @@ export const plainAuthService = (firstName, lastName, email, password, setLoadin
       setLoading(false)
       switch (err.code) {
         case "auth/email-already-in-use":
-          setEmailError('Please enter a valid email address.'); break;
+          setEmailError('This email address is already in use.'); break;
         case "auth/invalid-email":
           setEmailError('Please enter a valid email address.'); break;
         case "auth/weak-password":
-          setPassError('The password is not long enough or too easy to guess.')
-          break
-        default:
+          setPassError('The password is not long enough or too easy to guess.'); break
+        default: setEmailError('An error occurred. Please try again.')
       }
     })
 }
@@ -122,10 +121,10 @@ export const facebookAuthService = (setLoading) => {
 
 export const createAccountOnLoginService = (loggedInUser, setLoading) => {
   return doGetUserByID(loggedInUser.uid)
-  .then((user) => {
-    if (!user) {
-      return createUserDocService(loggedInUser, null, 'plain', setLoading)
-    }
-    else return alert('User already exists.')
-  })
+    .then((user) => {
+      if (!user) {
+        return createUserDocService(loggedInUser, null, 'plain', setLoading)
+      }
+      else return alert('User already exists.')
+    })
 }

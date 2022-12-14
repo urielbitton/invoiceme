@@ -5,10 +5,11 @@ import { createUserDocService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import firebase from 'firebase'
 import verifyAccountImg from 'app/assets/images/verify-account.png'
+import { errorToast, successToast } from "app/data/toastsTemplates"
 
 export default function VerifyEmailHandler({ oobCode, continueUrl }) {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, setToasts } = useContext(StoreContext)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const auth = firebase.auth()
@@ -16,12 +17,12 @@ export default function VerifyEmailHandler({ oobCode, continueUrl }) {
   const userID = continueUrl.split('userID=')[1]
 
   const handleVerifyEmail = (auth, oobCode) => {
-    if (!oobCode) return alert('Invalid action code. Please make sure your email link is valid.')
+    if (!oobCode) return setToasts(errorToast('Invalid action code. Please make sure your email link is valid.'))
     setLoading(true)
     auth.applyActionCode(oobCode)
       .then(() => {
         if (user) {
-          alert('Your email has been verified. Redirecting to homepage...')
+          setToasts(successToast('Your email has been verified. Redirecting to homepage...'))
           createUserDocService(
             user,
             null,
@@ -36,18 +37,18 @@ export default function VerifyEmailHandler({ oobCode, continueUrl }) {
             .catch((error) => {
               console.log(error)
               setLoading(false)
-              alert('Error creating user document. Please try again.')
+              setToasts(errorToast('Error creating user document. Please try again.'))
             })
         }
         else {
-          alert('Your email has been verified. You can now log in to your account.')
+          setToasts(successToast('Your email has been verified. You can now log in to your account.'))
           navigate(`/login?createAccount=true&userID=${userID}`)
           setLoading(false)
         }
       })
       .catch((error) => {
         console.log(error)
-        alert('The link is invalid or has expired. Please verify your email again.')
+        setToasts(errorToast('The link is invalid or has expired. Please verify your email again.'))
       })
   }
 

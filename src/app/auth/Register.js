@@ -11,10 +11,11 @@ import { validateEmail } from "app/utils/generalUtils"
 import loginCover from 'app/assets/images/login-cover.png'
 import logo from 'app/assets/images/logo.png'
 import AppButton from "app/components/ui/AppButton"
+import { warningToast } from "app/data/toastsTemplates"
 
 export default function Register() {
 
-  const { setMyUser } = useContext(StoreContext)
+  const { setMyUser, setToasts } = useContext(StoreContext)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -48,9 +49,9 @@ export default function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!firstName || !lastName) return window.alert('Please enter your first and last name.')
-    if (!validateEmail(email)) return window.alert('Please enter your email and password.')
-    if (password !== confirmPassword) return window.alert('Passwords do not match.')
+    if (!firstName || !lastName) return setToasts(warningToast('Please enter your first and last name.'))
+    if (!validateEmail(email)) return setToasts(warningToast('Please enter your email and password.'))
+    if (password !== confirmPassword) return setToasts(warningToast('Passwords do not match.'))
     plainAuthService(
       firstName,
       lastName,
@@ -60,9 +61,6 @@ export default function Register() {
       setEmailError,
       setPassError
     )
-      .then(() => {
-        navigate('/')
-      })
     clearErrors()
   }
 
