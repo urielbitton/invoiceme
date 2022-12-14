@@ -20,6 +20,7 @@ export default function VerifyEmailHandler({oobCode, continueUrl}) {
     .then(() => {
       alert('Email verified! You will now be redirected to the home page.')
       const userID = continueUrl.split('userID%3D')[1]
+      console.log(userID)
       doGetUserByID(userID)
       .then((user) => {
         createUserDocService(
