@@ -1,18 +1,10 @@
 .login-page {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  height: 100vh;
+  width: 100vw;
 }
-.login-page.standalone {
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
-  margin: 50px auto;
-}
-.login-page.standalone .login-info {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 30px;
-}
+
 .login-page .login-info {
   padding: 10px 20px;
   padding-top: 0;
@@ -21,25 +13,34 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 100%;
 }
 .login-page .login-info .container {
   display: flex;
   flex-direction: column;
   width: 100%;
+  padding: 30px 40px;
+  width: 500px;
 }
-.login-page .login-info img.logo {
+.login-page .login-info .logo-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+.login-page .login-info .logo-container img {
   width: 40px;
 }
-.login-page .login-info .container .site-title {
-  font-size: 15px;
-  color: var(--grayText);
-  margin-top: 10px;
-  margin-bottom: 20px;
-  font-weight: 700;
+.login-page .login-info .logo-container h5 {
+  font-size: 20px;
+  color: var(--darkGrayText);
 }
+
 .login-page .login-info .container > h4 {
   font-size: 30px;
-  color: var(--darkText);
+  color: var(--darkGrayText);
 }
 .login-page .login-info .container > h6 {
   font-size: 15px;
@@ -113,37 +114,42 @@
   font-weight: 600;
 }
 .login-page .login-info .appInput {
-  margin-top: 10px;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.login-page .login-info .appInput h6 {
+  font-size: 12px;
+  color: var(--darkGrayText);
 }
 .login-page .login-info .password-input input {
   padding-right: 30px;
 }
 .login-page .login-info .password-input i {
   position: absolute;
-  top: 30px;
+  top: 33px;
   right: 10px;
   color: var(--grayText);
   cursor: pointer;
 }
 .login-page .login-info input {
-  border: none;
-  border-bottom: 1px solid #ddd;
-  border-radius: 0;
-  font-size: 15px;
-  background: none;
+  height: 40px;
+  border: 1px solid var(--inputBorderColor);
+  border-radius: 5px;
 }
 .login-page .login-info input:focus {
   border-color: var(--primary);
 }
 .login-page .login-info input[type="checkbox"] {
   border: none;
+  height: 15px;
 }
 .login-page .login-info .login-options {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 10px 0;
 }
 .login-page .login-info .login-options label {
   display: flex;
@@ -163,43 +169,37 @@
 }
 .login-page .login-info button.submit-btn {
   padding: 15px;
-  border-radius: 10px;
-  margin-top: 10px;
-  margin-bottom: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
   font-size: 16px;
   box-shadow: var(--primaryShadow);
 }
 .login-page .login-info button.submit-btn i {
   transition: all 0.3s;
-  left: 0;
+  left: 5px;
 }
 .login-page .login-info button.submit-btn:hover i {
-  left: 8px;
+  left: 15px;
 }
-.login-page .login-info .no-account-text {
-  font-weight: 700;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.login-page .login-info .no-account-text h6 {
-  text-decoration: underline;
-  color: var(--primary);
-  margin-left: 5px;
+.login-page .login-info h6.no-account-text {
   font-size: 13px;
-  cursor: pointer;
+  color: var(--darkGrayText);
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  top: 90px;
+}
+.login-page .login-info .no-account-text a {
+  color: var(--primary);
+}
+.login-page .login-info .no-account-text a:hover {
+  text-decoration: underline;
 }
 
 .login-page .double-row {
   width: 100%;
   display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 30px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 15px;
 }
 
 .back-home-link {
@@ -219,6 +219,37 @@
 .back-home-link i {
   margin-right: 10px;
 }
+
+.login-page .login-cover {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' width='700' height='900' preserveAspectRatio='none' viewBox='0 0 700 900'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1046%26quot%3b)' fill='none'%3e%3crect width='700' height='900' x='0' y='0' fill='rgba(23%2c 143%2c 255%2c 1)'%3e%3c/rect%3e%3cpath d='M0%2c312.872C58.101%2c306.409%2c112.176%2c282.322%2c158.623%2c246.823C202.526%2c213.269%2c222.6%2c160.855%2c256.249%2c117.025C301.768%2c57.734%2c401.007%2c17.855%2c391.31%2c-56.262C381.658%2c-130.032%2c271.508%2c-137.528%2c216.405%2c-187.516C170.294%2c-229.346%2c155.752%2c-309.644%2c95.354%2c-324.745C34.807%2c-339.883%2c-15.254%2c-272.42%2c-76.567%2c-260.764C-148.036%2c-247.178%2c-233.728%2c-297.325%2c-290.192%2c-251.452C-345.22%2c-206.745%2c-335.299%2c-119.42%2c-337.762%2c-48.563C-340.011%2c16.158%2c-331.013%2c79.976%2c-303.753%2c138.719C-276.611%2c197.207%2c-238.984%2c252.756%2c-183.047%2c284.827C-128.389%2c316.164%2c-62.618%2c319.837%2c0%2c312.872' fill='%230988ff'%3e%3c/path%3e%3cpath d='M700 1281.882C770.115 1286.133 816.202 1210.537 873.082 1169.32 926.336 1130.731 993.315 1106.179 1023.271 1047.633 1053.687 988.188 1039.924 918.385 1035.5720000000001 851.752 1030.8600000000001 779.602 1037.008 702.909 996.829 642.796 954.671 579.722 884.45 541.006 812.266 517.658 738.783 493.89 655.472 477.241 585.404 509.723 517.395 541.25 493.985 622.9449999999999 451.669 684.8199999999999 414.672 738.918 372.262 787.523 352.65 850.059 330.323 921.254 291.8 1005.095 331.396 1068.336 371.768 1132.816 474.073 1110.984 539.9 1149.12 601.128 1184.592 629.369 1277.6 700 1281.882' fill='%232596ff'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1046'%3e%3crect width='700' height='900' fill='white'%3e%3c/rect%3e%3c/mask%3e%3c/defs%3e%3c/svg%3e");
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.login-page .login-cover img {
+  width: 350px;
+}
+.login-page .login-cover h5 {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 20px;
+}
+.login-page .login-cover p {
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 20px;
+  line-height: 1.8;
+  text-align: center;
+  width: 500px;
+}
+
+
 
 @media (max-width: 1200px) {
   .login-page .login-cover {

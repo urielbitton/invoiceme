@@ -8,6 +8,9 @@ import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import { facebookAuthService, googleAuthService, plainAuthService } from "app/services/authServices"
 import { validateEmail } from "app/utils/generalUtils"
+import loginCover from 'app/assets/images/login-cover.png'
+import logo from 'app/assets/images/logo.png'
+import AppButton from "app/components/ui/AppButton"
 
 export default function Register() {
 
@@ -49,7 +52,7 @@ export default function Register() {
     if (!validateEmail(email)) return window.alert('Please enter your email and password.')
     if (password !== confirmPassword) return window.alert('Passwords do not match.')
     plainAuthService(
-      firstName, 
+      firstName,
       lastName,
       email,
       password,
@@ -57,9 +60,9 @@ export default function Register() {
       setEmailError,
       setPassError
     )
-    .then(() => {
-      navigate('/')
-    })
+      .then(() => {
+        navigate('/')
+      })
     clearErrors()
   }
 
@@ -71,6 +74,10 @@ export default function Register() {
     <div className="login-page register-page">
       <div className="login-info">
         <div className="container">
+          <div className="logo-container">
+            <img src={logo} className="logo" alt="logo" />
+            <h5>Invoice Me</h5>
+          </div>
           <div className="social-logins">
             <div
               className="google-btn btn"
@@ -113,13 +120,13 @@ export default function Register() {
                 placeholder="5 characters or more"
                 type={showPassword ? 'text' : 'password'}
                 onChange={(e) => setPassword(e.target.value)}
+                className="password-input"
                 iconright={
                   <i
                     className={`fas fa-eye${showPassword ? '-slash' : ''}`}
                     onClick={() => setShowPassword(prev => !prev)}
                   />
                 }
-                className="password-input"
               />
               <AppInput
                 label="Confirm Password"
@@ -127,6 +134,12 @@ export default function Register() {
                 type={showPassword ? 'text' : 'password'}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="password-input"
+                iconright={
+                  <i
+                    className={`fas fa-eye${showPassword ? '-slash' : ''}`}
+                    onClick={() => setShowPassword(prev => !prev)}
+                  />
+                }
               />
             </div>
             <h6 className="email-error">{passError}</h6>
@@ -144,24 +157,23 @@ export default function Register() {
               </label>
               <Link to="/forgot-password" className="linkable">Forgot password?</Link>
             </div>
-            <button
-              className="submit-btn"
+            <AppButton
+              label="Register"
               onClick={(e) => handleSubmit(e)}
-            >
-              Create Account
-              {!loading ? <i className="fal fa-arrow-right" /> : <i className="fas fa-spinner fa-spin" />}
-            </button>
-            <Link
-              to="/login"
-              className="no-account-text"
-            >
-              <h6>Login</h6>
-            </Link>
+              rightIcon={!loading ? "fal fa-arrow-right" : "fas fa-spinner fa-spin"}
+              className="submit-btn"
+            />
           </form>
+          <h6 className="no-account-text">
+            Alread have an account?&nbsp;
+            <Link to="/login">Login here</Link>
+          </h6>
         </div>
       </div>
       <div className="login-cover register-cover">
-
+        <img src={loginCover} alt="login-cover" />
+        <h5>Boost your business' invoicing efficiency.</h5>
+        <p>Try it now and take advantage of exclusive features like scheduled invoices, one-click sending and in-app payouts.</p>
       </div>
     </div>
   )

@@ -20,7 +20,11 @@ export const completeRegistrationService = (user, authMode, res, userName, setLo
       })
   }
   else {
-    user.sendEmailVerification()
+    const ActionCodeSettings = {
+      url: `https:///invoiceme.pro/user-management?userID=${user.uid}`,
+      handleCodeInApp: true
+    }
+    user.sendEmailVerification(ActionCodeSettings)
       .then(() => {
         console.log('Email verification sent!')
         setLoading(false)

@@ -31,7 +31,6 @@ export default function VerifyEmailHandler({oobCode, continueUrl}) {
         .then(() => {
           setLoading(false)
           navigate('/')
-          // window.location.reload()
         })
         .catch((error) => {
           console.log(error)

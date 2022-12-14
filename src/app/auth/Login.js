@@ -2,29 +2,35 @@ import React, { useContext, useState } from 'react'
 import './styles/Auth.css'
 import { StoreContext } from 'app/store/store'
 import { AppInput } from 'app/components/ui/AppInputs'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import { auth } from 'app/firebase/fire'
 import firebase from "firebase"
 import { clearAuthState } from "app/services/CrudDB"
+import loginCover from 'app/assets/images/login-cover.png'
+import logo from 'app/assets/images/logo.png'
+import AppButton from "app/components/ui/AppButton"
 
 export default function Login() {
 
-  const { setMyUser, user } = useContext(StoreContext)
+  const { setMyUser } = useContext(StoreContext)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passError, setPassError] = useState('')
   const [rememberMe, setRememberMe] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
- 
+  const navigate = useNavigate()
+
   const handleLogin = () => {
     setLoading(true)
     clearErrors()
     auth.signInWithEmailAndPassword(email.replaceAll(' ', ''), password.replaceAll(' ', ''))
       .then(() => {
         setLoading(false)
+        navigate('/')
       })
       .catch(err => {
         setLoading(false)
@@ -97,6 +103,10 @@ export default function Login() {
     <div className="login-page">
       <div className="login-info">
         <div className="container">
+          <div className="logo-container">
+            <img src={logo} className="logo" alt="logo" />
+            <h5>Invoice Me</h5>
+          </div>
           <div className="social-logins">
             <div
               className="google-btn btn"
@@ -124,8 +134,15 @@ export default function Login() {
             <AppInput
               label="Password"
               placeholder="5 characters or more"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               onChange={(e) => setPassword(e.target.value)}
+              className="password-input"
+              iconright={
+                <i
+                  className={`fas fa-eye${showPassword ? '-slash' : ''}`}
+                  onClick={() => setShowPassword(prev => !prev)}
+                />
+              }
             />
             <h6 className="email-error">{passError}</h6>
             <div className="login-options">
@@ -142,21 +159,23 @@ export default function Login() {
               </label>
               <Link to="/forgot-password" className="linkable">Forgot password?</Link>
             </div>
-            <button
-              className="submit-btn"
+            <AppButton
+              label="Login"
               onClick={(e) => handleSubmit(e)}
-            >
-              Login
-              {!loading ? <i className="fal fa-arrow-right" /> : <i className="fas fa-spinner fa-spin" />}
-            </button>
-            <Link
-              to="/register"
-              className="no-account-text"
-            >
-              <h6>Create An Account</h6>
-            </Link>
+              rightIcon={!loading ? "fal fa-arrow-right" : "fas fa-spinner fa-spin"}
+              className="submit-btn"
+            />
           </form>
+          <h6 className="no-account-text">
+            Don't have an account yet?&nbsp;
+            <Link to="/register">Join Invoice Me</Link>
+          </h6>
         </div>
+      </div>
+      <div className="login-cover">
+        <img src={loginCover} alt="login-cover" />
+        <h5>Boost your business' invoicing efficiency.</h5>
+        <p>Try it now and take advantage of exclusive features like scheduled invoices, one-click sending and in-app payouts.</p>
       </div>
     </div>
   )

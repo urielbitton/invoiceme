@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import logo from 'app/assets/images/logo2.png'
+import logo from 'app/assets/images/logo.png'
 import AppButton from "./AppButton"
 import { useNavigate } from "react-router-dom"
 import { signOut } from "app/services/CrudDB"
