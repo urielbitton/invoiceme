@@ -2,7 +2,6 @@ import { auth } from "app/firebase/fire"
 import { createUserDocService } from "./userServices"
 import firebase from "firebase"
 
-const authUser = firebase.auth().currentUser
 
 export const completeRegistrationService = (user, authMode, res, userName, setLoading) => {
   const photoURLPlaceholder = 'https://firebasestorage.googleapis.com/v0/b/your-app.appspot.com/o/placeholder.png?alt=media&token=your-token'
@@ -21,7 +20,7 @@ export const completeRegistrationService = (user, authMode, res, userName, setLo
       })
   }
   else {
-    return authUser.sendEmailVerification()
+    user.sendEmailVerification()
       .then(() => {
         console.log('Email verification sent!')
         setLoading(false)
