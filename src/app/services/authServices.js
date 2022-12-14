@@ -1,5 +1,5 @@
 import { auth } from "app/firebase/fire"
-import { createUserDocService } from "./userServices"
+import { createUserDocService, doGetUserByID } from "./userServices"
 import firebase from "firebase"
 
 
@@ -21,7 +21,7 @@ export const completeRegistrationService = (user, authMode, res, userName, setLo
   }
   else {
     const ActionCodeSettings = {
-      url: `https://invoiceme.pro?userID=${user.uid}`,
+      url: `http://localhost:3000?userID=${user.uid}&firstName=${userName.firstName}&lastName=${userName.lastName}`,
     }
     user.sendEmailVerification(ActionCodeSettings)
       .then(() => {
@@ -118,4 +118,14 @@ export const facebookAuthService = (setLoading) => {
       else
         window.alert('An error with facebook has occured. Please try again later.')
     })
+}
+
+export const createAccountOnLoginService = (loggedInUser, setLoading) => {
+  return doGetUserByID(loggedInUser.uid)
+  .then((user) => {
+    if (!user) {
+      return createUserDocService(loggedInUser, null, 'plain', setLoading)
+    }
+    else return alert('User already exists.')
+  })
 }

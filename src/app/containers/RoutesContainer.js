@@ -57,6 +57,8 @@ export default function RoutesContainer() {
         <Route path="upgrade" element={<UpgradePage />} />
         <Route path="upgrade-checkout" element={<UpgradeCheckoutPage />} />
         <Route path="help-and-contact" element={<HelpAndContact />} />
+        <Route path="login" element={<HomePage />} />
+        <Route path="register" element={<HomePage />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>

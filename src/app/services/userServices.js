@@ -206,14 +206,18 @@ export const createUserDocService = (user, res, authMode, setLoading) => {
         url: '/invoices/new',
       })
         .then(() => {
-          setDB(`users/${user.uid}/settings`, 'general', {})
-          setDB(`users/${user.uid}/settings`, 'invoices', {})
-          setDB(`users/${user.uid}/settings`, 'estimates', {})
-          setDB(`users/${user.uid}/settings`, 'contacts', {})
-          setDB(`users/${user.uid}/settings`, 'payments', {})
-          setDB(`users/${user.uid}/settings`, 'notifications', {})
-          setDB(`users/${user.uid}/settings`, 'emails', {})
-          setLoading(false)
+          const batch = db.batch()
+          const settingsArr = ['general', 'invoices', 'estimates', 'contacts', 'payments', 'notifications', 'emails']
+          settingsArr.forEach(setting => {
+            const docRef = db.collection(`users/${user.uid}/settings`).doc(setting)
+            batch.set(docRef, {})
+          })
+          return batch.commit()
+          .then(() => setLoading(false))
+          .catch(err => {
+            console.log(err)
+            setLoading(false)
+          })
         })
         .catch(err => {
           console.log(err)

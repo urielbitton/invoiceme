@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import './styles/Auth.css'
 import { StoreContext } from 'app/store/store'
 import { AppInput } from 'app/components/ui/AppInputs'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import { auth } from 'app/firebase/fire'
@@ -11,6 +11,7 @@ import { clearAuthState } from "app/services/CrudDB"
 import loginCover from 'app/assets/images/login-cover.png'
 import logo from 'app/assets/images/logo.png'
 import AppButton from "app/components/ui/AppButton"
+import { createAccountOnLoginService } from "app/services/authServices"
 
 export default function Login() {
 
@@ -23,14 +24,29 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const createAccount = searchParams.get('createAccount') === 'true'
+  const userID = searchParams.get('userID')
 
   const handleLogin = () => {
     setLoading(true)
     clearErrors()
     auth.signInWithEmailAndPassword(email.replaceAll(' ', ''), password.replaceAll(' ', ''))
-      .then(() => {
-        setLoading(false)
-        navigate('/')
+      .then((userCredential) => {
+        if (!createAccount || !userID) {
+          setLoading(false)
+          navigate('/')
+        }
+        else {
+          const user = userCredential.user
+          if(user.uid !== userID) return alert('Unauthorized login. Please try again.')
+          createAccountOnLoginService(user, setLoading)
+          .then(() => {
+            setLoading(false)
+            navigate('/')
+          })
+          .catch((error) => console.log(error))
+        }
       })
       .catch(err => {
         setLoading(false)

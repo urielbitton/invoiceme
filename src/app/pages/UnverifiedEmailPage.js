@@ -11,7 +11,7 @@ export default function UnverifiedEmailPage() {
   const sendVerificationEmail = () => {
     setLoading(true)
     const ActionCodeSettings = {
-      url: `https://invoiceme.pro?userID=${user.uid}`,
+      url: `http://localhost:3000?userID=${user.uid}&firstName=${user.displayName.split(' ')[0]}&lastName=${user.displayName.split(' ')[1]}`,
     }
     user.sendEmailVerification(ActionCodeSettings)
     .then(() => {
