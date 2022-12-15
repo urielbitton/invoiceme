@@ -7,7 +7,7 @@ export default function ToastsColumn() {
 
   const { toasts } = useContext(StoreContext)
 
-  const toastsList = toasts.map((toast, index) => {
+  const toastsList = toasts?.map((toast, index) => {
     return <AppToast
       key={index}
       toast={toast}

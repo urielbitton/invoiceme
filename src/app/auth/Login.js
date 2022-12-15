@@ -11,7 +11,7 @@ import { clearAuthState } from "app/services/CrudDB"
 import loginCover from 'app/assets/images/login-cover.png'
 import logo from 'app/assets/images/logo.png'
 import AppButton from "app/components/ui/AppButton"
-import { createAccountOnLoginService } from "app/services/authServices"
+import { createAccountOnLoginService, facebookAuthService, googleAuthService } from "app/services/authServices"
 import { infoToast } from "app/data/toastsTemplates"
 
 export default function Login() {
@@ -66,43 +66,17 @@ export default function Login() {
       })
   }
 
-  const googleLogin = () => {
-    const provider = new firebase.auth.GoogleAuthProvider()
-    provider.addScope('email')
-    firebase.auth().signInWithPopup(provider)
-      .then((res) => {
-        if (!res.additionalUserInfo.isNewUser) {
-          setMyUser(res.user)
-        }
-        else {
-          setMyUser(null)
-          setToasts(infoToast('This info is not associated with a google account.'))
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-        setToasts(infoToast('An errror occurred with the google login. Please try again.'))
+  const googleAuth = () => {
+    googleAuthService(setMyUser, setLoading, setToasts)
+      .then(() => {
+        navigate('/')
       })
   }
 
-  const facebookLogin = () => {
-    const provider = new firebase.auth.FacebookAuthProvider()
-    firebase.auth().signInWithPopup(provider)
-      .then((res) => {
-        const credential = res.credential
-        const user = res.user
-        // @ts-ignore
-        const accessToken = credential.accessToken
-        console.log(accessToken, user)
-      })
-      .catch((err) => {
-        console.log(err)
-        if (err.code === 'auth/account-exists-with-different-credential')
-          setToasts(infoToast('You have already signed up with a different provider. Please sign in with that provider.'))
-        else if (err.code === 'auth/popup-blocked')
-          setToasts(infoToast('Popup blocked. Please allow popups for this site.'))
-        else
-          setToasts(infoToast('An error with facebook has occured. Please try again later.'))
+  const facebookAuth = () => {
+    facebookAuthService(setLoading, setToasts)
+      .then(() => {
+        navigate('/')
       })
   }
 
@@ -127,14 +101,14 @@ export default function Login() {
           <div className="social-logins">
             <div
               className="google-btn btn"
-              onClick={() => googleLogin()}
+              onClick={() => googleAuth()}
             >
               <img src={googleIcon} className="img-icon" alt="google-icon" />
               <span>Sign In with Google</span>
             </div>
             <div
               className="facebook-btn btn"
-              onClick={() => facebookLogin()}
+              onClick={() => facebookAuth()}
             >
               <img src={facebookIcon} className="img-icon" alt="facebook-icon" />
               <span>Sign In with Facebook</span>
