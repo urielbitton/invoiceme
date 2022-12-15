@@ -1,3 +1,4 @@
+import { errorToast, successToast } from "app/data/toastsTemplates"
 import { db, functions } from "app/firebase/fire"
 import { getYearsBetween } from "app/utils/dateUtils"
 import {
@@ -182,7 +183,7 @@ export const callPhoneService = (phone) => {
     .catch(err => console.log(err))
 }
 
-export const sendSMSService = (phone, message, mediaUrl, setLoading) => {
+export const sendSMSService = (phone, message, mediaUrl, setLoading, setToasts) => {
   setLoading(true)
   return functions.httpsCallable('sendSMS')({
     phone,
@@ -190,12 +191,12 @@ export const sendSMSService = (phone, message, mediaUrl, setLoading) => {
     ...(mediaUrl ? { mediaUrl } : null)
   })
     .then(result => {
-      alert('Message sent successfully.')
+      setToasts(successToast('Message sent successfully.'))
       setLoading(false)
       console.log(result)
     })
     .catch(err => {
-      alert('Message failed to send.')
+      setToasts(errorToast('Message failed to send.'))
       setLoading(false)
       catchError(err, setLoading)
     })

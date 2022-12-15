@@ -1,38 +1,26 @@
-import { contactsIndex } from "app/algolia"
-import AddContactModal from "app/components/contacts/AddContactModal"
-import ContactRow from "app/components/contacts/ContactRow"
 import InvoiceContact from "app/components/invoices/InvoiceContact"
 import InvoiceItems from "app/components/invoices/InvoiceItems"
 import AppButton from "app/components/ui/AppButton"
 import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
-import AppPagination from "app/components/ui/AppPagination"
-import AppTable from "app/components/ui/AppTable"
 import HelmetTitle from "app/components/ui/HelmetTitle"
-import IconContainer from "app/components/ui/IconContainer"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
-import { useFavoriteContacts } from "app/hooks/contactsHooks"
+import { infoToast } from "app/data/toastsTemplates"
 import { useEstimate } from "app/hooks/estimateHooks"
-import { useInstantSearch } from "app/hooks/searchHooks"
-import { addContactService, createContactService } from "app/services/contactsServices"
-import { getRandomDocID } from "app/services/CrudDB"
-import {
-  createEstimateService, deleteEstimateService,
+import { createEstimateService, deleteEstimateService,
   updateEstimateService
 } from "app/services/estimatesServices"
 import { StoreContext } from "app/store/store"
 import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat, dateToMonthName } from "app/utils/dateUtils"
-import {
-  calculatePriceTotal, formatCurrency, validateEmail,
-  validatePhone
-} from "app/utils/generalUtils"
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import { formatCurrency } from "app/utils/generalUtils"
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom"
 import './styles/NewInvoicePage.css'
 
 export default function NewEstimatePage() {
 
-  const { myUserID, myUser, setNavItemInfo, setPageLoading } = useContext(StoreContext)
+  const { myUserID, myUser, setNavItemInfo, setPageLoading,
+    setToasts } = useContext(StoreContext)
   const [estimateName, setEstimateName] = useState("")
   const [estimateNumber, setEstimateNumber] = useState("")
   const [estimateDate, setEstimateDate] = useState(convertDateToInputFormat(new Date()))
@@ -106,7 +94,7 @@ export default function NewEstimatePage() {
   }
 
   const createEstimate = () => {
-    if (!allowCreateEstimate) return alert("Please fill out all required fields.")
+    if (!allowCreateEstimate) return setToasts(infoToast("Please fill out all required fields."))
     setPageLoading(true)
     createEstimateService(
       myUserID, myUser?.myBusiness, myUser?.taxNumbers, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
@@ -124,7 +112,7 @@ export default function NewEstimatePage() {
   }
 
   const updateEstimate = () => {
-    if (!allowCreateEstimate) return alert("Please fill out all required fields.")
+    if (!allowCreateEstimate) return setToasts(infoToast("Please fill out all required fields."))
     const updatedProps = {
       title: estimateName,
       estimateNumber,

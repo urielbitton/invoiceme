@@ -1,4 +1,5 @@
 import { monthlyReportOptions, overdueDaysOptions } from "app/data/general"
+import { infoToast } from "app/data/toastsTemplates"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useState } from 'react'
@@ -10,7 +11,7 @@ import SettingsTitles from "./SettingsTitles"
 
 export default function NotificationsSettings() {
 
-  const { myMemberType, myUserID } = useContext(StoreContext)
+  const { myMemberType, myUserID, setToasts } = useContext(StoreContext)
   const [showNotifications, setShowNotifications] = useState(true)
   const [showInvoicesNotifs, setShowInvoicesNotifs] = useState(true)
   const [showEstimateNotifs, setShowEstimateNotifs] = useState(true)
@@ -95,7 +96,7 @@ export default function NotificationsSettings() {
           onChange={(e) => {
             isBusiness ? 
             setMonthlyReports(e.target.value) : 
-            alert('You need to be a business member to turn on this feature.')
+            setToasts(infoToast('You need to be a business member to turn on this feature.'))
           }}
         />
       </SettingsSection>

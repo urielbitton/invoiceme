@@ -1,3 +1,4 @@
+import { infoToast } from "app/data/toastsTemplates"
 import domToPdf from 'atomics-dom-to-pdf'
 import html2canvas from 'html2canvas'
 
@@ -43,13 +44,13 @@ export const fileTypePathConverter = (string) => {
     return 'other'
 }
 
-export const uploadMultipleFilesLocal = (e, maxSize, setFiles, setLoading=setLoadingDef) => {
+export const uploadMultipleFilesLocal = (e, maxSize, setFiles, setLoading=setLoadingDef, setToasts) => {
   setLoading(true)
   let files = e.target.files
   for(let i = 0; i < files.length; i++) {
     if(files[i].size > maxSize) {
       setLoading(false)
-      return alert(`One or more of the uploaded files are too large. Max file size is ${maxSize/1000000} MB`)
+      return setToasts(infoToast(`One or more of the uploaded files are too large. Max file size is ${maxSize/1000000} MB`))
     }
   }
   let filesArray = []
@@ -85,12 +86,12 @@ export const uploadMultipleFilesLocal = (e, maxSize, setFiles, setLoading=setLoa
   })
 }
 
-export const uploadFileLocal = (e, maxSize, setFile, setLoading=setLoadingDef) => {
+export const uploadFileLocal = (e, maxSize, setFile, setLoading=setLoadingDef, setToasts) => {
   setLoading(true)
   let file = e.target.files[0]
   if(file.size > maxSize) {
     setLoading(false)
-    return alert(`The uploaded file is too large. Max file size is ${maxSize/1000000} MB`)
+    return setToasts(infoToast(`The uploaded file is too large. Max file size is ${maxSize/1000000} MB`))
   }
   let reader = new FileReader()
   reader.onloadend = function() {

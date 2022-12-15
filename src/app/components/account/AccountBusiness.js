@@ -1,3 +1,4 @@
+import { infoToast } from "app/data/toastsTemplates"
 import { saveMyBusinessInfoService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
@@ -8,7 +9,7 @@ import CountryStateCity from "../ui/CountryStateCity"
 
 export default function AccountBusiness() {
 
-  const { setPageLoading, myUser, myUserID } = useContext(StoreContext)
+  const { setPageLoading, myUser, myUserID, setToasts } = useContext(StoreContext)
   const [businessAddress, setBusinessAddress] = useState("")
   const [businessCity, setBusinessCity] = useState("")
   const [businessCountry, setBusinessCountry] = useState("")
@@ -41,7 +42,7 @@ export default function AccountBusiness() {
     businessEmail)
 
   const saveBusinessAccountInfo = () => {
-    if(!!!allowSave) return alert('Please fill in all fields.')
+    if(!!!allowSave) return setToasts(infoToast('Please fill out all fields.'))
     setPageLoading(true)
     saveMyBusinessInfoService(
       myUserID, 
@@ -63,7 +64,7 @@ export default function AccountBusiness() {
     .then(() => {
       setPageLoading(false)
       setUploadedBusinessLogo(null)
-      alert('Business info saved.')
+      setToasts(infoToast('Business info saved.'))
     })
     .catch(err => {
       setPageLoading(false)

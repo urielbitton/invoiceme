@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import './styles/AvatarUploader.css'
 import { uploadFileLocal } from "app/utils/fileUtils"
 import PreventTabClose from "./PreventTabClose"
+import { StoreContext } from "app/store/store"
 
 export default function AvatarUploader(props) {
 
+  const { setToasts } = useContext(StoreContext)
   const { dimensions=140, className, imgOnClick, saveOnClick, src, alt, 
     editRights=true, setLoading, uploadedImg, setUploadedImg,
     directSaving } = props
@@ -33,7 +35,7 @@ export default function AvatarUploader(props) {
               type="file" 
               accept="image/*"
               hidden
-              onChange={(e) => uploadFileLocal(e, maxFileUploadSize, setUploadedImg, setLoading)}
+              onChange={(e) => uploadFileLocal(e, maxFileUploadSize, setUploadedImg, setLoading, setToasts)}
             />
           </label>
           {

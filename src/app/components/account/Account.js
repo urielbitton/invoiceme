@@ -1,4 +1,4 @@
-import { successToast, warningToast } from "app/data/toastsTemplates"
+import { successToast, infoToast } from "app/data/toastsTemplates"
 import { auth } from "app/firebase/fire"
 import { deleteAccountService } from "app/services/authServices"
 import { saveAccountInfoService } from "app/services/userServices"
@@ -49,7 +49,7 @@ export default function Account() {
       postcode)
 
   const saveAccountInfo = () => {
-    if (!!!myUser) return setToasts(warningToast('Please fill in all fields.'))
+    if (!!!myUser) return setToasts(infoToast('Please fill in all fields.'))
     setPageLoading(true)
     saveAccountInfoService(
       myUserID,
@@ -80,7 +80,7 @@ export default function Account() {
   }
 
   const deleteMyAccount = () => {
-    if(deleteConfirmationText !== 'DELETE') return setToasts(warningToast('Please type "DELETE" to confirm.'))
+    if(deleteConfirmationText !== 'DELETE') return setToasts(infoToast('Please type "DELETE" to confirm.'))
     deleteAccountService(setToasts, setPageLoading)
   }
 
@@ -93,7 +93,7 @@ export default function Account() {
       })
       .catch(err => {
         console.log(err)
-        setToasts(warningToast('Incorrect password.'))
+        setToasts(infoToast('Incorrect password.'))
       })
   }
 

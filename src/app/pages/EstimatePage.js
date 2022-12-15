@@ -14,10 +14,12 @@ import { useEstimate } from "app/hooks/estimateHooks"
 import { deleteEstimateService, sendEstimateService } from "app/services/estimatesServices"
 import EstimatePaper from "app/components/estimates/EstimatePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
+import { infoToast } from "app/data/toastsTemplates"
 
 export default function EstimatePage() {
 
-  const { setPageLoading, myUserID, myUser, setNavItemInfo } = useContext(StoreContext)
+  const { setPageLoading, myUserID, myUser, setNavItemInfo,
+    setToasts } = useContext(StoreContext)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [contactEmail, setContactEmail] = useState('')
@@ -65,7 +67,7 @@ export default function EstimatePage() {
   })
 
   const sendEstimate = () => {
-    if (!allowSendEstimate) return alert('Please fill in all fields.')
+    if (!allowSendEstimate) return setToasts(infoToast('Please fill in all fields.'))
     const confirm = estimate?.isSent ? window.confirm('This estimate has already been sent, would you like to send it again?') : true
     if (confirm) {
       sendEstimateService(
@@ -79,7 +81,8 @@ export default function EstimatePage() {
         myUserID,
         estimateID,
         estimate.estimateNumber,
-        setPageLoading
+        setPageLoading,
+        setToasts
       )
     }
   }

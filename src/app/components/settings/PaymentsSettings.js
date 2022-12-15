@@ -1,3 +1,4 @@
+import { successToast } from "app/data/toastsTemplates"
 import { createStripeAccountService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useState } from 'react'
@@ -7,7 +8,8 @@ import SettingsTitles from "./SettingsTitles"
 
 export default function PaymentsSettings() {
 
-  const { myMemberType, myUser, myUserID, setPageLoading } = useContext(StoreContext)
+  const { myMemberType, myUser, myUserID, setPageLoading,
+    setToasts } = useContext(StoreContext)
   const isBusiness = myMemberType === "business"
   const [accountLink, setAccountLink] = useState(null)
 
@@ -17,7 +19,7 @@ export default function PaymentsSettings() {
       country: myUser?.countryCode,
     })
     .then((accountLink) => {
-      alert("Stripe account connected successfully.")
+      setToasts(successToast("Stripe account connected successfully."))
       setAccountLink(accountLink.url)
       setPageLoading(false)
     })

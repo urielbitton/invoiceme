@@ -5,11 +5,12 @@ import { attachPaymentMethodsService, createCustomerService, createPaymentMethod
 import { updateDB } from "app/services/CrudDB"
 import { useNavigate } from "react-router-dom"
 import StripeCheckoutForm from "./StripeCheckoutForm"
+import { successToast } from "app/data/toastsTemplates"
 
 export default function StripeCreateSubscription(props) {
 
   const { myUserID, myUser, myUserName, setPageLoading,
-    businessMemberPlanID } = useContext(StoreContext)
+    businessMemberPlanID, setToasts } = useContext(StoreContext)
   const { payBtnLabel } = props
   const [cardNumber, setCardNumber] = useState('')
   const [expiryMonth, setExpiryMonth] = useState('')
@@ -77,7 +78,7 @@ export default function StripeCreateSubscription(props) {
           )
           .then((subscriptionID) => {
             setPageLoading(true)
-            alert('Subscription created.')
+            setToasts(successToast('Subscription created.'))
             return updateDB('users', myUserID, {
               memberType: 'business'
             })

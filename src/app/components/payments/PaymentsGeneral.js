@@ -1,3 +1,4 @@
+import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useCustomerPayments } from "app/hooks/paymentHooks"
 import { capturePaymentIntentService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
@@ -12,7 +13,8 @@ import IconContainer from "../ui/IconContainer"
 
 export default function PaymentsGeneral() {
 
-  const { myUser, stripeCustomerPortalLink, setPageLoading } = useContext(StoreContext)
+  const { myUser, stripeCustomerPortalLink, setPageLoading,
+    setToasts } = useContext(StoreContext)
   const [paymentsLimit, setPaymentsLimit] = useState(10)
   const payments = useCustomerPayments(myUser?.stripe.stripeCustomerID, paymentsLimit)
 
@@ -53,12 +55,12 @@ export default function PaymentsGeneral() {
     capturePaymentIntentService({ paymentIntentID  })
     .then((data) => {
       console.log(data)
-      alert('Payment captured successfully')
+      setToasts(successToast('Payment captured successfully'))
       setPageLoading(false)
     })
     .catch((err) => {
       console.log(err)
-      alert('Error capturing payment')
+      setToasts(errorToast('Error capturing payment'))
       setPageLoading(false)
     })
   }

@@ -1,3 +1,4 @@
+import { successToast } from "app/data/toastsTemplates"
 import { deleteDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import { convertClassicDateAndTime, displayThStNdRd } from "app/utils/dateUtils"
@@ -8,7 +9,7 @@ import './styles/ScheduledInvoiceCard.css'
 
 export function ScheduledInvoiceCard(props) {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, setToasts } = useContext(StoreContext)
   const { title, dateCreated, dayOfMonth, timeOfDay, active,
     lastRan, invoiceTemplate, scheduleID } = props.scheduled
   const { setInvoiceData, setShowInvoicePreview } = props
@@ -35,7 +36,7 @@ export function ScheduledInvoiceCard(props) {
       deleteDB('scheduledInvoices', scheduleID)
       .then(() => {
         navigate('/settings/scheduled-invoices')
-        alert("Scheduled invoice deleted.")
+        setToasts(successToast("Scheduled invoice deleted."))
         setPageLoading(false)
       })
       .catch(err => {

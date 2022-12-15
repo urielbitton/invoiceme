@@ -1,3 +1,4 @@
+import { infoToast } from "app/data/toastsTemplates"
 import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
@@ -11,7 +12,7 @@ import SettingsTitles from "./SettingsTitles"
 
 export default function InvoicesSettings() {
 
-  const { myUserID, myUser, setPageLoading } = useContext(StoreContext)
+  const { myUserID, myUser, setPageLoading, setToasts } = useContext(StoreContext)
   const [showMyName, setShowMyName] = useState(true)
   const [showMyAddress, setShowMyAddress] = useState(true)
   const [showMyPhone, setShowMyPhone] = useState(true)
@@ -103,7 +104,7 @@ export default function InvoicesSettings() {
   }
 
   const addTaxNumber = () => {
-    if (!!!allowAddTax) return alert('Please fill out the tax name, number and rate.')
+    if (!!!allowAddTax) return setToasts(infoToast('Please fill out the tax name, number and rate.'))
     setTaxNumbers([...taxNumbers, { name: taxName, number: taxNumber, value: taxRate }])
     setTaxName('')
     setTaxNumber('')

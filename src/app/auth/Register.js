@@ -11,7 +11,7 @@ import { validateEmail } from "app/utils/generalUtils"
 import loginCover from 'app/assets/images/login-cover.png'
 import logo from 'app/assets/images/logo.png'
 import AppButton from "app/components/ui/AppButton"
-import { warningToast } from "app/data/toastsTemplates"
+import { infoToast } from "app/data/toastsTemplates"
 
 export default function Register() {
 
@@ -34,14 +34,14 @@ export default function Register() {
   }
 
   const googleAuth = () => {
-    googleAuthService(setMyUser, setLoading)
+    googleAuthService(setMyUser, setLoading, setToasts)
       .then(() => {
         navigate('/')
       })
   }
 
   const facebookAuth = () => {
-    facebookAuthService(setLoading)
+    facebookAuthService(setLoading, setToasts)
       .then(() => {
         navigate('/')
       })
@@ -49,9 +49,9 @@ export default function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!firstName || !lastName) return setToasts(warningToast('Please enter your first and last name.'))
-    if (!validateEmail(email)) return setToasts(warningToast('Please enter your email and password.'))
-    if (password !== confirmPassword) return setToasts(warningToast('Passwords do not match.'))
+    if (!firstName || !lastName) return setToasts(infoToast('Please enter your first and last name.'))
+    if (!validateEmail(email)) return setToasts(infoToast('Please enter your email and password.'))
+    if (password !== confirmPassword) return setToasts(infoToast('Passwords do not match.'))
     plainAuthService(
       firstName,
       lastName,

@@ -5,6 +5,7 @@ import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
+import { infoToast } from "app/data/toastsTemplates"
 import { useInvoice } from "app/hooks/invoiceHooks"
 import { createInvoiceService, deleteInvoiceService,
   updateInvoiceService
@@ -19,7 +20,8 @@ import './styles/NewInvoicePage.css'
 
 export default function NewInvoicePage() {
 
-  const { myUserID, myUser, setNavItemInfo, setPageLoading } = useContext(StoreContext)
+  const { myUserID, myUser, setNavItemInfo, setPageLoading,
+    setToasts } = useContext(StoreContext)
   const [invoiceName, setInvoiceName] = useState("")
   const [invoiceNumber, setInvoiceNumber] = useState("")
   const [invoiceDate, setInvoiceDate] = useState(convertDateToInputFormat(new Date()))
@@ -100,7 +102,7 @@ export default function NewInvoicePage() {
   }
 
   const createInvoice = () => {
-    if (!!!allowCreateInvoice) return alert("Please fill out all required fields.")
+    if (!!!allowCreateInvoice) return setToasts(infoToast("Please fill out all required fields."))
     setPageLoading(true)
     createInvoiceService(
       myUserID, myUser?.myBusiness, myUser?.taxNumbers, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, invoiceContact,
@@ -118,7 +120,7 @@ export default function NewInvoicePage() {
   }
 
   const updateInvoice = () => {
-    if (!!!allowCreateInvoice) return alert("Please fill out all required fields.")
+    if (!!!allowCreateInvoice) return setToasts(infoToast("Please fill out all required fields."))
     const newTotalRevenue = status === 'paid' ?
       !editInvoice?.partOfTotal ?
         myUser?.totalRevenue + calculatedTotal :
@@ -157,7 +159,7 @@ export default function NewInvoicePage() {
   }
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, editInvoiceID, editInvoice?.isPaid, editInvoice?.total, setPageLoading)
+    deleteInvoiceService(myUserID, editInvoiceID, setPageLoading)
     .then(() => {
       navigate('/invoices')
     })

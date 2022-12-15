@@ -1,3 +1,4 @@
+import { infoToast, successToast } from "app/data/toastsTemplates"
 import { useCustomerSubscriptions } from "app/hooks/paymentHooks"
 import { cancelSubscriptionService, reactivateStripeSubscriptionService, 
   retrievePaymentMethodService } from "app/services/paymentsServices"
@@ -15,7 +16,7 @@ import IconContainer from "../ui/IconContainer"
 
 export default function PaymentSubscriptions() {
 
-  const { myUser, stripeCustomerPortalLink, setPageLoading } = useContext(StoreContext)
+  const { myUser, stripeCustomerPortalLink, setPageLoading, setToasts } = useContext(StoreContext)
   const [showSubModal, setShowSubModal] = useState(false)
   const [subscriptionObject, setSubscriptionObject] = useState(null)
   const [paymentMethod, setPaymentMethod] = useState(null)
@@ -77,7 +78,7 @@ export default function PaymentSubscriptions() {
     cancelSubscriptionService({ subscriptionID })
     .then(() => {
       setPageLoading(false)
-      alert('Subscription will be cancelled at the end of your current billing cycle.')
+      setToasts(infoToast('Subscription will be cancelled at the end of your current billing cycle.'))
       navigate(0)
     })
     .catch((error) => {
@@ -93,7 +94,7 @@ export default function PaymentSubscriptions() {
     reactivateStripeSubscriptionService({subscriptionID})
     .then(() => {
       setPageLoading(false)
-      alert('Subscription has been reactivated successfully.')
+      setToasts(successToast('Subscription has been reactivated successfully.'))
       navigate(0)
     })
     .catch((error) => console.log(error))

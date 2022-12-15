@@ -5,7 +5,7 @@ import resetPasswordImg from 'app/assets/images/reset-password.png'
 import AppButton from "app/components/ui/AppButton"
 import { useNavigate } from "react-router-dom"
 import { StoreContext } from "app/store/store"
-import { errorToast, successToast, warningToast } from "app/data/toastsTemplates"
+import { errorToast, successToast, infoToast } from "app/data/toastsTemplates"
 
 export default function ResetPasswordHandler({oobCode}) {
 
@@ -16,7 +16,7 @@ export default function ResetPasswordHandler({oobCode}) {
   const navigate = useNavigate()
 
   const handleResetPassword = (oobCode) => {
-    if(newPassword.length < 5) return setToasts(warningToast('Password must be at least 5 characters long.'))
+    if(newPassword.length < 5) return setToasts(infoToast('Password must be at least 5 characters long.'))
     setLoading(true)
     auth.verifyPasswordResetCode(oobCode)
     .then((email) => {

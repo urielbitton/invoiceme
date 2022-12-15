@@ -21,10 +21,12 @@ import React, { useContext, useState } from 'react'
 import { NavLink, Route, Routes, useLocation, useParams } from "react-router-dom"
 import './styles/ContactPage.css'
 import EmptyPage from "app/components/ui/EmptyPage"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 
 export default function ContactPage() {
 
-  const { myUserID, myUser, setPageLoading, myMemberType } = useContext(StoreContext)
+  const { myUserID, myUser, setPageLoading, myMemberType,
+    setToasts } = useContext(StoreContext)
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showSMSModal, setShowSMSModal] = useState(false)
   const [textMessage, setTextMessage] = useState('')
@@ -53,7 +55,7 @@ export default function ContactPage() {
 
   const sendEmail = () => {
     if (!emailSubject || !emailMessage)
-      return alert('Please fill in all fields')
+      return setToasts(infoToast('Please fill in all fields'))
     setLoading(true)
     sendAppEmail(
       myUser?.email,
@@ -66,18 +68,18 @@ export default function ContactPage() {
         setLoading(false)
         resetInputFields()
         setShowEmailModal(false)
-        alert('Email sent to contact.')
+        setToasts(successToast('Email sent to contact.'))
       })
       .catch(err => {
         setLoading(false)
-        alert(err.message)
+        setToasts(errorToast('Error sending email. Please try again later.'))
       })
   }
 
   const sendSMS = () => {
     if (!validatePhone(contact?.phone) || !textMessage)
-      return alert('Please enter a valid phone number and message.')
-    sendSMSService(contact?.phone, textMessage, textMediaUrl, setLoading)
+      return setToasts(infoToast('Please enter a valid phone number and message.'))
+    sendSMSService(contact?.phone, textMessage, textMediaUrl, setLoading, setToasts)
       .then(() => {
         setShowSMSModal(false)
         resetInputFields()
@@ -105,7 +107,7 @@ export default function ContactPage() {
               />
               <AppButton
                 label="Send SMS"
-                onClick={() => isBusiness ? setShowSMSModal(true) : alert('Sending SMS is only available to business members.')}
+                onClick={() => isBusiness ? setShowSMSModal(true) : setToasts(infoToast('Sending SMS is only available to business members.'))}
                 buttonType="outlineBlueBtn"
                 rightIcon="far fa-comment"
               />
@@ -228,7 +230,7 @@ export default function ContactPage() {
             <>
               <AppButton
                 label="Send SMS"
-                onClick={() => isBusiness ? sendSMS() : alert('Sending SMS is only available for business accounts.')}
+                onClick={() => isBusiness ? sendSMS() : setToasts(infoToast('Sending SMS is only available for business accounts.'))}
                 rightIcon={loading ? 'fas fa-spinner fa-spin' : 'far fa-comment'}
               />
               <AppButton

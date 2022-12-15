@@ -1,5 +1,5 @@
 import { currencies, themeColors } from "app/data/general"
-import { warningToast } from "app/data/toastsTemplates"
+import { infoToast } from "app/data/toastsTemplates"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'

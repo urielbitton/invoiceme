@@ -4,6 +4,7 @@ import AvatarUploader from "app/components/ui/AvatarUploader"
 import CountryStateCity from "app/components/ui/CountryStateCity"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
+import { infoToast, successToast } from "app/data/toastsTemplates"
 import { useContact } from "app/hooks/contactsHooks"
 import { createContactService, deleteContactService, 
   updateContactService } from "app/services/contactsServices"
@@ -17,7 +18,7 @@ import '../pages/styles/NewInvoicePage.css'
 
 export default function NewContactPage() {
 
-  const { myUserID, setPageLoading } = useContext(StoreContext)
+  const { myUserID, setPageLoading, setToasts } = useContext(StoreContext)
   const [searchParams, setSearchParams] = useSearchParams()
   const editMode = searchParams.get('edit') === 'true'
   const editContactID = searchParams.get('contactID')
@@ -43,7 +44,7 @@ export default function NewContactPage() {
     postcode
 
   const createContact = () => {
-    if(!!!allowSave) return alert('Please fill all required fields')
+    if(!!!allowSave) return setToasts(infoToast('Please fill all required fields'))
     setPageLoading(true)
     const storagePath = `users/${myUserID}/contacts`
     const storageDocID = getRandomDocID(storagePath)
@@ -58,7 +59,7 @@ export default function NewContactPage() {
       )
       .then(() => {
         navigate('/contacts')
-        alert('Contact created successfully')
+        setToasts(successToast('Contact created successfully'))
       })
     })
     .catch(err => {
@@ -68,7 +69,7 @@ export default function NewContactPage() {
   }
 
   const updateContact = () => {
-    if(!!!allowSave) return alert('Please fill all the fields.')
+    if(!!!allowSave) return setToasts(infoToast('Please fill all the fields.'))
     setPageLoading(true)
     uploadMultipleFilesToFireStorage(uploadedImg ? [uploadedImg.file] : null, contactStoragePath, ['photo-url'])
     .then(fileURLS => {
@@ -88,7 +89,7 @@ export default function NewContactPage() {
       )
       .then(() => {
         navigate(`/contacts/${editContactID}`)
-        alert('Contact updated successfully.')
+        setToasts(successToast('Contact updated successfully.'))
       })
     })
     .catch(err => {
@@ -101,7 +102,7 @@ export default function NewContactPage() {
     deleteContactService(myUserID, editContactID, contactStoragePath, ['photo-url'], setPageLoading)
     .then(() => {
       navigate('/contacts')
-      alert('Contact deleted successfully.')
+      setToasts(successToast('Contact deleted successfully.'))
     })
   }
 

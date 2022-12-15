@@ -10,10 +10,12 @@ import './styles/NewPaymentPage.css'
 import { formatCurrency } from "app/utils/generalUtils"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import ProContent from "app/components/ui/ProContent"
+import { infoToast, successToast } from "app/data/toastsTemplates"
 
 export default function NewPaymentPage() {
 
-  const { myUser, myUserName, myUserID, myMemberType, setPageLoading } = useContext(StoreContext)
+  const { myUser, myUserName, myUserID, myMemberType, 
+    setPageLoading, setToasts } = useContext(StoreContext)
   const [query, setQuery] = useState('')
   const [loading, setLoading] = useState(false)
   const [stripeLoading, setStripeLoading] = useState(false)
@@ -68,7 +70,7 @@ export default function NewPaymentPage() {
         }
         else {
           setStripeLoading(false)
-          alert('This user either did not complete their Stripe account or is not a business member on Invoice Me.')
+          setToasts(infoToast('This user either did not complete their Stripe account or is not a business member on Invoice Me.'))
         }
       })
       .catch((error) => {
@@ -78,8 +80,8 @@ export default function NewPaymentPage() {
   }
 
   const sendPayment = () => {
-    if(+payAmount < 0.5) return alert(`Amount must be greater than $0.50 ${myUser?.currency?.value}.`)
-    if(!contactCustomer) return alert('Please select a contact to send a payment to.')
+    if(+payAmount < 0.5) return setToasts(infoToast(`Amount must be greater than $0.50 ${myUser?.currency?.value}.`))
+    if(!contactCustomer) return setToasts(infoToast('Please select a contact to send a payment to.'))
     setPageLoading(true)
     createPaymentIntentService({
       amount: (+payAmount * 100).toFixed(0),
@@ -94,7 +96,7 @@ export default function NewPaymentPage() {
       .then((charge) => {
         console.log(charge)
         setPageLoading(false)
-        alert('Payment sent!')
+        setToasts(successToast('Payment sent!'))
         setPayAmount('')
         setContactCustomer(null)
         setSelectedContact(null)

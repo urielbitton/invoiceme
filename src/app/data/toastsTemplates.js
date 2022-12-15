@@ -1,4 +1,4 @@
-export const warningToast = (message) => {
+export const infoToast = (message) => {
   return prev => [...prev, {
     message,
     icon: 'fas fa-exclamation-circle',

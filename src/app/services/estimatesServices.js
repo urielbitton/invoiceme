@@ -1,3 +1,4 @@
+import { successToast } from "app/data/toastsTemplates"
 import { db } from "app/firebase/fire"
 import { convertInputDateToDateAndTimeFormat, 
   dateToMonthName, 
@@ -147,7 +148,7 @@ export const deleteEstimateService = (myUserID, estimateID, setLoading) => {
 }
 
 export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement, estimateFilename, uploadedFiles,
-  myUserID, estimateID, estimateNumber, setLoading) => {
+  myUserID, estimateID, estimateNumber, setLoading, setToasts) => {
     const confirm = window.confirm("Send estimate to client?")
     if(confirm) {
       setLoading(true)
@@ -174,7 +175,7 @@ export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement
         )
         .catch(err => console.log(err))
         setLoading(false)
-        alert("Estimate sent to client.")
+        setToasts(successToast("Estimate sent to client."))
       })
       .catch(err => catchError(err, setLoading))
     }

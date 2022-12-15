@@ -1,3 +1,4 @@
+import { errorToast, successToast, infoToast } from "app/data/toastsTemplates"
 import { useStripeCustomer } from "app/hooks/paymentHooks"
 import { updateDB } from "app/services/CrudDB"
 import { createAccountLinkService, createStripeAccountService, deleteStripeAccountService } from "app/services/userServices"
@@ -12,7 +13,7 @@ import './styles/AccountPayments.css'
 export default function AccountPayments() {
 
   const { myUser, myUserID, setPageLoading, myMemberType,
-    myUserName, stripeCustomerPortalLink } = useContext(StoreContext)
+    myUserName, stripeCustomerPortalLink, setToasts } = useContext(StoreContext)
   const [accountLink, setAccountLink] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const detailsSubmitted = searchParams.get('details_submitted') === 'true'
@@ -38,12 +39,12 @@ export default function AccountPayments() {
     })
       .then((accountLink) => {
         if (accountLink) {
-          alert("Stripe account created successfully. You will now be redirected to your Stripe dashboard to complete your account setup.")
+          setToasts(successToast("Stripe account created successfully. You will now be redirected to your Stripe dashboard to complete your account setup."))
           window.location.href = accountLink.url
           setAccountLink(accountLink.url)
         }
         else {
-          alert("There was an error creating your Stripe account. Please make sure your personal account information is valid (email, phone, postal code, etc.)")
+          setToasts(errorToast("There was an error creating your Stripe account. Please make sure your personal account information is valid (email, phone, postal code, etc.)"))
           navigate('/my-account')
         }
         setPageLoading(false)
@@ -55,7 +56,7 @@ export default function AccountPayments() {
   }
 
   const redirectToAccount = () => {
-    alert('Please update your personal information in your profile before connecting your Stripe account.')
+    setToasts(infoToast('Please update your personal information in your profile before connecting your Stripe account.'))
     navigate('/my-account')
   }
 
@@ -88,7 +89,7 @@ export default function AccountPayments() {
           window.location.href = accountLink.url
         }
         else {
-          alert("There was an error creating your Stripe account. Please make sure your personal account information is valid (email, phone, postal code, etc.)")
+          setToasts(errorToast("There was an error creating your Stripe account. Please make sure your personal account information is valid (email, phone, postal code, etc.)"))
           navigate('/my-account')
         }
         setPageLoading(false)
@@ -98,7 +99,7 @@ export default function AccountPayments() {
 
   useEffect(() => {
     if (myUser?.stripe?.stripeDetailsSubmitted && detailsSubmitted) {
-      alert(`Your Stripe account has been successfully connected`)
+      setToasts(successToast(`Your Stripe account has been successfully connected`))
     }
   }, [myUser])
 

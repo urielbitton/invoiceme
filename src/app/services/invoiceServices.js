@@ -1,3 +1,4 @@
+import { successToast } from "app/data/toastsTemplates"
 import { db } from "app/firebase/fire"
 import { convertInputDateToDateAndTimeFormat, 
   dateToMonthName, 
@@ -169,7 +170,7 @@ export const deleteInvoiceService = (myUserID, invoiceID, setLoading) => {
 }
 
 export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement, invoiceFilename, uploadedFiles,
-  myUserID, invoiceID, invoiceNumber, setLoading) => {
+  myUserID, invoiceID, invoiceNumber, setLoading, setToasts) => {
     const confirm = window.confirm("Send invoice to client?")
     if(confirm) {
       setLoading(true)
@@ -188,7 +189,7 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
         })
         .catch(err => console.log(err))
         setLoading(false)
-        alert("Invoice sent to client.")
+        setToasts(successToast("Invoice sent to client."))
         createNotification(
           myUserID,
           'Invoice sent to client',
@@ -254,14 +255,14 @@ export const updateScheduledInvoiceService = (scheduleID, updatedProps, setLoadi
   .catch(err => catchError(err, setLoading))
 }
 
-export const deleteScheduledInvoiceService = (scheduleID, setLoading) => {
+export const deleteScheduledInvoiceService = (scheduleID, setLoading, setToasts) => {
   const confirm = window.confirm("Are you sure you want to delete this scheduled invoice?")
   if(!confirm) return 
   setLoading(true)
   return deleteDB(`scheduledInvoices`, scheduleID)
   .then(() => {
     setLoading(false)
-    alert("Scheduled invoice deleted.")
+    setToasts(successToast("Scheduled invoice deleted."))
   })
   .catch(err => catchError(err, setLoading))
 }

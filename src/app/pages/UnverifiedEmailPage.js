@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import verifyEmailImg from 'app/assets/images/verify-email.png'
 import AuthHandlerPage from "app/components/ui/AuthHandlerPage"
 import { auth } from "app/firebase/fire"
+import { errorToast, successToast } from "app/data/toastsTemplates"
+import { StoreContext } from "app/store/store"
 
 export default function UnverifiedEmailPage() {
 
+  const { setToasts } = useContext(StoreContext)
   const user = auth.currentUser
   const [loading, setLoading] = useState(false)
 
@@ -15,11 +18,11 @@ export default function UnverifiedEmailPage() {
     }
     user.sendEmailVerification(ActionCodeSettings)
     .then(() => {
-      alert('Verification email sent!')
+      setToasts(successToast('Verification email sent!'))
       setLoading(false)
     })
     .catch((error) => {
-      alert('Error sending verification email. Please try again.')
+      setToasts(errorToast('Error sending verification email. Please try again.'))
       console.log(error)
       setLoading(false)
     })

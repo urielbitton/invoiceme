@@ -7,6 +7,7 @@ import EmptyPage from "app/components/ui/EmptyPage"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { showXResultsOptions } from "app/data/general"
+import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useEmailsByType, useUnreadEmails } from "app/hooks/emailHooks"
 import { sendAppEmail } from "app/services/emailServices"
 import { StoreContext } from "app/store/store"
@@ -17,7 +18,7 @@ import './styles/EmailsPage.css'
 
 export default function EmailsPage() {
 
-  const { myUser, setCompactNav } = useContext(StoreContext)
+  const { myUser, setCompactNav, setToasts } = useContext(StoreContext)
   const [emailsType, setEmailsType] = useState('inbox')
   const limitsNum = showXResultsOptions[0].value
   const [emailsLimit, setEmailsLimit] = useState(limitsNum)
@@ -54,11 +55,11 @@ export default function EmailsPage() {
         setLoading(false)
         setShowNewEmailModal(false)
         clearInputs()
-        alert('Email sent!')
+        setToasts(successToast('Email sent!'))
       })
       .catch(err => {
         setLoading(false)
-        alert(err)
+        setToasts(errorToast('Error sending email. Try again later'))
       })
   }
 

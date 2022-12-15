@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './styles/FileUploader.css'
-import { convertBytesToKbMbGb, fileTypeConverter, uploadMultipleFilesLocal } from "app/utils/fileUtils"
+import { convertBytesToKbMbGb, fileTypeConverter, 
+  uploadMultipleFilesLocal } from "app/utils/fileUtils"
 import DotsLoader from "./DotsLoader"
 import PreventTabClose from "./PreventTabClose"
 import IconContainer from "./IconContainer"
 import { truncateText } from "app/utils/generalUtils"
+import { StoreContext } from "app/store/store"
 
 export default function FileUploader(props) {
 
+  const { setToasts } = useContext(StoreContext)
   const { inputRef, isDragging, setIsDragging, uploadedFiles, setUploadedFiles,
     maxFileSize, icon, text, accept="image/*, application/*",
     truncateFilenameAmpount=25 } = props
@@ -53,7 +56,7 @@ export default function FileUploader(props) {
           multiple 
           accept={accept}
           ref={inputRef}
-          onChange={(e) => uploadMultipleFilesLocal(e, maxFileSize, setUploadedFiles, setLoading)}
+          onChange={(e) => uploadMultipleFilesLocal(e, maxFileSize, setUploadedFiles, setLoading, setToasts)}
           onDragEnter={() => setIsDragging(true)}
           onDrop={() => setIsDragging(false)}
           onDragLeave={() => setIsDragging(false)}

@@ -1,7 +1,7 @@
 import { auth, db } from "app/firebase/fire"
 import { createUserDocService, doGetUserByID } from "./userServices"
 import firebase from "firebase"
-import { successToast, warningToast } from "app/data/toastsTemplates"
+import { successToast, infoToast, errorToast } from "app/data/toastsTemplates"
 import { deleteDB } from "./CrudDB"
 
 export const completeRegistrationService = (user, authMode, res, userName, setLoading) => {
@@ -65,7 +65,7 @@ export const plainAuthService = (firstName, lastName, email, password, setLoadin
     })
 }
 
-export const googleAuthService = (setMyUser, setLoading) => {
+export const googleAuthService = (setMyUser, setToasts, setLoading) => {
   setLoading(true)
   const provider = new firebase.auth.GoogleAuthProvider()
   provider.addScope('email')
@@ -83,13 +83,13 @@ export const googleAuthService = (setMyUser, setLoading) => {
       setLoading(false)
       console.log(error)
       if (error.code === 'auth/account-exists-with-different-credential')
-        window.alert('You have already signed up with a different provider for that email. Please sign in with that provider.')
+      setToasts(infoToast('You have already signed up with a different provider for that email. Please sign in with that provider.'))
       else
-        window.alert('An errror occurred with the google login. Please try again.')
+      setToasts(errorToast('An errror occurred with the google login. Please try again.'))
     })
 }
 
-export const facebookAuthService = (setLoading) => {
+export const facebookAuthService = (setLoading, setToasts) => {
   setLoading(true)
   const provider = new firebase.auth.FacebookAuthProvider()
   return firebase.auth().signInWithPopup(provider)
@@ -112,21 +112,21 @@ export const facebookAuthService = (setLoading) => {
     .catch((err) => {
       console.log(err)
       if (err.code === 'auth/account-exists-with-different-credential')
-        window.alert('You have already signed up with a different provider. Please sign in with that provider.')
+      setToasts(infoToast('You have already signed up with a different provider. Please sign in with that provider.'))
       else if (err.code === 'auth/popup-blocked')
-        window.alert('Popup blocked. Please allow popups for this site.')
+      setToasts(infoToast('Popup blocked. Please allow popups for this site.'))
       else
-        window.alert('An error with facebook has occured. Please try again later.')
+      setToasts(errorToast('An error with facebook has occured. Please try again later.'))
     })
 }
 
-export const createAccountOnLoginService = (loggedInUser, setLoading) => {
+export const createAccountOnLoginService = (loggedInUser, setLoading, setToasts) => {
   return doGetUserByID(loggedInUser.uid)
     .then((user) => {
       if (!user) {
         return createUserDocService(loggedInUser, null, 'plain', setLoading)
       }
-      else return alert('User already exists.')
+      else return setToasts(infoToast('User already exists.'))
     })
 }
 
@@ -148,20 +148,20 @@ export const deleteAccountService = (setToasts, setLoading) => {
               setLoading(false)
             })
             .catch(err => {
-              setToasts(warningToast('There was an error deleting your account. Please try again.'))
+              setToasts(infoToast('There was an error deleting your account. Please try again.'))
               console.log(err)
               setLoading(false)
             })
         })
         .catch(err => {
           setLoading(false)
-          setToasts(warningToast('There was an error deleting your account. Please try again.'))
+          setToasts(infoToast('There was an error deleting your account. Please try again.'))
           console.log(err)
         })
     })
     .catch(err => {
       setLoading(false)
-      setToasts(warningToast('There was an error deleting your account. Please try again.'))
+      setToasts(infoToast('There was an error deleting your account. Please try again.'))
       console.log(err)
     })
 }

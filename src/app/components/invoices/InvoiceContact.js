@@ -1,4 +1,5 @@
 import { contactsIndex } from "app/algolia"
+import { infoToast } from "app/data/toastsTemplates"
 import { useFavoriteContacts } from "app/hooks/contactsHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { addContactService, createContactService } from "app/services/contactsServices"
@@ -15,7 +16,7 @@ import './styles/InvoiceContact.css'
 
 export default function InvoiceContact(props) {
 
-  const { myUserID, pageLoading, setPageLoading } = useContext(StoreContext)
+  const { myUserID, pageLoading, setPageLoading, setToasts } = useContext(StoreContext)
   const { contactName, setContactName, contactEmail, setContactEmail,
     contactPhone, setContactPhone, contactAddress, setContactAddress,
     contactCity, setContactCity, contactRegion, setContactRegion,
@@ -132,7 +133,7 @@ export default function InvoiceContact(props) {
   }
 
   const addContact = () => {
-    if (!!!allowAddContact) return alert('Please fill out all required fields')
+    if (!!!allowAddContact) return setToasts(infoToast('Please fill out all required fields'))
     if (addToContacts) {
       createContactService(myUserID, contactName, contactEmail, contactPhone, contactAddress,
         contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,

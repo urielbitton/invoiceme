@@ -12,7 +12,7 @@ import loginCover from 'app/assets/images/login-cover.png'
 import logo from 'app/assets/images/logo.png'
 import AppButton from "app/components/ui/AppButton"
 import { createAccountOnLoginService } from "app/services/authServices"
-import { warningToast } from "app/data/toastsTemplates"
+import { infoToast } from "app/data/toastsTemplates"
 
 export default function Login() {
 
@@ -40,8 +40,8 @@ export default function Login() {
         }
         else {
           const user = userCredential.user
-          if(user.uid !== userID) return setToasts(warningToast('Unauthorized login. Please try again'))
-          createAccountOnLoginService(user, setLoading)
+          if(user.uid !== userID) return setToasts(infoToast('Unauthorized login. Please try again'))
+          createAccountOnLoginService(user, setLoading, setToasts)
           .then(() => {
             setLoading(false)
             navigate('/')
@@ -76,12 +76,12 @@ export default function Login() {
         }
         else {
           setMyUser(null)
-          setToasts(warningToast('This info is not associated with a google account.'))
+          setToasts(infoToast('This info is not associated with a google account.'))
         }
       })
       .catch((error) => {
         console.log(error)
-        setToasts(warningToast('An errror occurred with the google login. Please try again.'))
+        setToasts(infoToast('An errror occurred with the google login. Please try again.'))
       })
   }
 
@@ -98,11 +98,11 @@ export default function Login() {
       .catch((err) => {
         console.log(err)
         if (err.code === 'auth/account-exists-with-different-credential')
-          setToasts(warningToast('You have already signed up with a different provider. Please sign in with that provider.'))
+          setToasts(infoToast('You have already signed up with a different provider. Please sign in with that provider.'))
         else if (err.code === 'auth/popup-blocked')
-          setToasts(warningToast('Popup blocked. Please allow popups for this site.'))
+          setToasts(infoToast('Popup blocked. Please allow popups for this site.'))
         else
-          setToasts(warningToast('An error with facebook has occured. Please try again later.'))
+          setToasts(infoToast('An error with facebook has occured. Please try again later.'))
       })
   }
 

@@ -1,9 +1,8 @@
 import { currencies, timeOfDaysOptions } from "app/data/general"
 import { useScheduledInvoice, useUserScheduledInvoices } from "app/hooks/invoiceHooks"
-import { getRandomDocID, setDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
-import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat,
-  dateToMonthName, dayOfMonthNumbers
+import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat, 
+  dayOfMonthNumbers
 } from "app/utils/dateUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom"
@@ -15,17 +14,19 @@ import SlideContainer from "../ui/SlideContainer"
 import SlideElement from "../ui/SlideElement"
 import SettingsTitles from "./SettingsTitles"
 import firebase from 'firebase'
-import { invoicePaperStyles } from "../invoices/invoicePaperStyles"
 import { formatCurrency, formatPhoneNumber, 
   truncateText } from "app/utils/generalUtils"
 import './styles/CreateScheduledInvoice.css'
 import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
 import ProContent from "../ui/ProContent"
-import { createScheduledInvoiceService, deleteScheduledInvoiceService, updateScheduledInvoiceService } from "app/services/invoiceServices"
+import { createScheduledInvoiceService, deleteScheduledInvoiceService, 
+  updateScheduledInvoiceService } from "app/services/invoiceServices"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 
 export default function CreateScheduledInvoice() {
 
-  const { myUserID, myUser, setPageLoading, myMemberType } = useContext(StoreContext)
+  const { myUserID, myUser, setPageLoading, myMemberType,
+    setToasts } = useContext(StoreContext)
   const [slidePosition, setSlidePosition] = useState(0)
   const [scheduleTitle, setScheduleTitle] = useState('')
   const [invoiceTitle, setInvoiceTitle] = useState('')
@@ -115,15 +116,15 @@ export default function CreateScheduledInvoice() {
   const handleNextSlide = () => {
     if(slidePosition === 0) {
       allowSlide2 ? setSlidePosition(slidePosition + 1) :
-      alert('Please add an invoice name, number and at least one item.')
+      setToasts(infoToast('Please add an invoice name, number and at least one item.'))
     }
     else if(slidePosition === 1) {
       allowSlide3 ? setSlidePosition(slidePosition + 1) :
-      alert('Please select a contact')
+      setToasts(infoToast('Please select a contact'))
     }
     else if(slidePosition === 2) {
       allowSlide4 ? setSlidePosition(slidePosition + 1) :
-      alert('Please add a schedule title, email subject and message')
+      setToasts(infoToast('Please add a schedule title, email subject and message'))
     }
     else {
       slidePosition < numOfSlides - 1 && setSlidePosition(slidePosition + 1)
@@ -149,18 +150,18 @@ export default function CreateScheduledInvoice() {
 
   const createScheduledInvoice = () => {
     const confirm = window.confirm('Are you sure you want to create this scheduled invoice?')
-    if(!confirm) return alert('Scheduled invoice not created.')
+    if(!confirm) return setToasts(infoToast('Scheduled invoice not created.'))
     if (!!!allowCreateSchedule)
-      return alert("Please fill in all required fields.")
+      return setToasts(infoToast("Please fill in all required fields."))
     if (userScheduledInvoices?.length > (maxScheduledInvoicesNum - 1))
-      return alert(`You can only have ${maxScheduledInvoicesNum} scheduled invoices at a time.`)
+      return setToasts(errorToast(`You can only have ${maxScheduledInvoicesNum} scheduled invoices at a time.`))
     setPageLoading(true)
     createScheduledInvoiceService(myUser, invoiceDate, invoiceDueDate, invoiceNumber, invoiceCurrency,
       invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, invoiceTitle,
       calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef)
     .then(() => {
       setPageLoading(false)
-      alert('Scheduled Invoice Created.')
+      setToasts(successToast('Scheduled Invoice Created.'))
       navigate('/settings/scheduled-invoices')
     })
     .catch(err => {
@@ -200,7 +201,7 @@ export default function CreateScheduledInvoice() {
       setPageLoading
     )
     .then(() => {
-      alert('Scheduled Invoice Updated.')
+      setToasts(successToast('Scheduled Invoice Updated.'))
       navigate('/settings/scheduled-invoices')
     })
   }
@@ -208,7 +209,8 @@ export default function CreateScheduledInvoice() {
   const deleteScheduledInvoice = () => {
     deleteScheduledInvoiceService(
       editInvoiceID,
-      setPageLoading
+      setPageLoading,
+      setToasts
     )
     .then(() => {
       navigate('/settings/scheduled-invoices')

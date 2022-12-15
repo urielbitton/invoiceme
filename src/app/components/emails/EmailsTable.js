@@ -1,3 +1,4 @@
+import { infoToast } from "app/data/toastsTemplates"
 import { deleteDB, updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
@@ -9,8 +10,7 @@ import IconContainer from "../ui/IconContainer"
 
 export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal }) {
 
-  const { setPageLoading } = useContext(StoreContext)
-
+  const { setPageLoading, setToasts } = useContext(StoreContext)
   
   const markAsRead = (email) => {
     updateDB('mail', email.emailID, { 
@@ -32,7 +32,7 @@ export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal 
       deleteDB('mail', email.emailID)
       .then(() => {
         setPageLoading(false)
-        alert('Email deleted!')
+        setToasts(infoToast('Email deleted!'))
       })
       .catch(err => {
         setPageLoading(false)

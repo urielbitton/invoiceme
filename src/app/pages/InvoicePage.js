@@ -14,10 +14,12 @@ import './styles/InvoicePage.css'
 import AppModal from "app/components/ui/AppModal"
 import InvoicePaper from "app/components/invoices/InvoicePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
+import { infoToast } from "app/data/toastsTemplates"
 
 export default function InvoicePage() {
 
-  const { setPageLoading, myUserID, myUser, setNavItemInfo } = useContext(StoreContext)
+  const { setPageLoading, myUserID, myUser, setNavItemInfo,
+    setToasts } = useContext(StoreContext)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [contactEmail, setContactEmail] = useState('')
@@ -42,7 +44,7 @@ export default function InvoicePage() {
     invoice
 
   const sendInvoice = () => {
-    if (!allowSendInvoice) return alert('Please fill in all fields.')
+    if (!allowSendInvoice) return setToasts(infoToast('Please fill in all fields.'))
     const confirm = invoice?.isSent ? window.confirm('This invoice has already been sent, would you like to send it again?') : true
     if (confirm) {
       sendInvoiceService(
@@ -56,7 +58,8 @@ export default function InvoicePage() {
         myUserID,
         invoiceID,
         invoice.invoiceNumber,
-        setPageLoading
+        setPageLoading,
+        setToasts
       )
     }
   }
