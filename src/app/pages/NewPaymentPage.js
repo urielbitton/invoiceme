@@ -1,7 +1,6 @@
 import AppButton from "app/components/ui/AppButton"
 import Avatar from "app/components/ui/Avatar"
 import HelmetTitle from "app/components/ui/HelmetTitle"
-import { useContactsSearch } from "app/hooks/searchHooks"
 import { doGetContactByID, getContactStripeCustomerIDByEmail } from "app/services/contactsServices"
 import { createPaymentIntentService, retrieveCustomerService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
@@ -12,6 +11,7 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 import ProContent from "app/components/ui/ProContent"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { createNotification } from "app/services/notifServices"
+import ContactSearchDropdown from "app/components/contacts/ContactSearchDropdown"
 
 export default function NewPaymentPage() {
 
@@ -29,35 +29,11 @@ export default function NewPaymentPage() {
   const navigate = useNavigate()
   const isBusiness = myMemberType === 'business'
 
-  const contacts = useContactsSearch(query, setLoading, filters)
-
-  const usersResults = contacts
-    ?.filter(contact => contact.email !== myUser?.email)
-    .map((contact, index) => {
-      return (
-        <div
-          key={index}
-          className="user-row"
-          onClick={() => initiateTransactionDetails(contact)}
-        >
-          <Avatar
-            src={contact.photoURL}
-            dimensions={30}
-            alt="user"
-          />
-          <h6>{contact.name}</h6>
-          -
-          <span>{contact.email}</span>
-        </div>
-      )
-    })
-
   const initiateTransactionDetails = (contact) => {
     setSelectedContact(contact)
     setStripeLoading(true)
     getContactStripeCustomerIDByEmail(contact.email)
       .then((user) => {
-        setQuery('')
         if(user?.stripe?.stripeAccountID && user?.stripe?.stripeDetailsSubmitted) {
           retrieveCustomerService({customerID: user.stripe.stripeCustomerID})
           .then((customer) => {
@@ -145,25 +121,14 @@ export default function NewPaymentPage() {
           <i className="fab fa-cc-amex" />
           <i className="fab fa-cc-discover" />
         </div>
-        <div className="user-search-row">
-          <input
-            type="Search"
-            placeholder="Enter a name or email"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            enterKeyHint="go"
-          />
-          <AppButton
-            buttonType="iconBtn"
-            rightIcon={!loading ? 'far fa-search' : 'fas fa-spinner fa-spin'}
-          />
-          {
-            query.length > 0 &&
-            <div className="results-dropdown">
-              {usersResults}
-            </div>
-          }
-        </div>
+        <ContactSearchDropdown 
+          query={query}
+          setQuery={setQuery}
+          loading={loading}
+          setLoading={setLoading}
+          filters={filters}
+          onUserClick={initiateTransactionDetails}
+        />
         <p className="transaction-details-text">
           Select a contact to send a payment to. If the contact has their payments setup the transaction details will
           open below. Otherwise they will be prompted to setup their payments.

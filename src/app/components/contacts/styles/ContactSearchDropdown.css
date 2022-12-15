@@ -1,0 +1,52 @@
+.contact-search-container {
+  width: 600px;
+  display: flex;
+  align-items: center;
+}
+.contact-search-container input {
+  height: 45px;
+  width: calc(100% - 44px);
+  padding-left: 15px;
+  border-radius: 5px 0 0 5px;
+  border: 1px solid var(--inputBorderColor);
+}
+.contact-search-container button {
+  width: 44px;
+  height: 44px;
+  border-radius: 0 5px 5px 0;
+}
+.contact-search-container .results-dropdown {
+  position: absolute;
+  top: 50px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 0 0 5px 5px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--inputBorderColor);
+  box-shadow: var(--shadow);
+  z-index: 100;
+}
+.contact-search-container .results-dropdown .user-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.contact-search-container .results-dropdown .user-row h6 {
+  font-size: 13px;
+  color: var(--darkGrayText);
+  font-weight: 600;
+}
+.contact-search-container .results-dropdown .user-row span {
+  font-size: 13px;
+  color: var(--darkGrayText);
+  font-weight: 500;
+}
+.contact-search-container .results-dropdown .user-row:hover {
+  background: var(--bg);
+}

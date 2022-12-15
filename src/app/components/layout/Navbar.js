@@ -47,9 +47,7 @@ export default function Navbar() {
     <nav className={`navbar ${compactNav ? 'compact-nav' : ''}`}>
       <div className="topbar">
         <div className="left">
-          <NavSearch 
-            
-          />
+          <NavSearch />
           <div 
             className="mobile-btn"
             onClick={() => setShowMobileSidebar(true)}
@@ -70,6 +68,7 @@ export default function Navbar() {
               { label: "New Invoice", icon: "fas fa-file-invoice-dollar", url: "/invoices/new" },
               { label: "New Estimate", icon: "fas fa-file-invoice", url: "/estimates/new" },
               { label: "New Contact", icon: "fas fa-address-book", url: "/contacts/new" },
+              { label: "New Email", icon: "fas fa-envelope", url: "/emails?new=true" },
               { label: "New Payment", icon: "fas fa-credit-card", url: "/payments/new" },
             ]}
           />

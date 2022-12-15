@@ -192,3 +192,11 @@
 .contact-invoices-content {
   gap: 5px;
 }
+
+form .rsw-editor,
+form .rsw-editor .rsw-toolbar {
+  border: none;
+}
+form .rsw-editor button {
+  width: 100px;
+}

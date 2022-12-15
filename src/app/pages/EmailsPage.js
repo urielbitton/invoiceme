@@ -7,13 +7,13 @@ import EmptyPage from "app/components/ui/EmptyPage"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { showXResultsOptions } from "app/data/general"
-import { errorToast, successToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useEmailsByType, useUnreadEmails } from "app/hooks/emailHooks"
 import { sendAppEmail } from "app/services/emailServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDateAndTime } from "app/utils/dateUtils"
 import React, { useContext, useEffect, useState } from 'react'
-import { NavLink, Route, Routes, useLocation } from "react-router-dom"
+import { NavLink, Route, Routes, useLocation, useSearchParams } from "react-router-dom"
 import './styles/EmailsPage.css'
 
 export default function EmailsPage() {
@@ -33,7 +33,9 @@ export default function EmailsPage() {
   const emails = useEmailsByType(myUser?.email, emailsType, emailsLimit)
   const unreadEmails = useUnreadEmails(myUser?.email)
   const location = useLocation()
-
+  const [searchParams, setSearchParams] = useSearchParams()
+  const newEmail = searchParams.get('new') === 'true'
+  const allowSendEmail = toEmail && subject && message
 
   const clearInputs = () => {
     setToEmail('')
@@ -43,6 +45,7 @@ export default function EmailsPage() {
   }
 
   const sendEmail = () => {
+    if(!allowSendEmail) return setToasts(infoToast('Please fill out a subject, message and recipient email.'))
     setLoading(true)
     sendAppEmail(
       myUser?.email,
@@ -93,6 +96,13 @@ export default function EmailsPage() {
       setActiveEmail(null)
     }
   }, [showEmailModal])
+
+  useEffect(() => {
+    if (newEmail) {
+      setShowNewEmailModal(true)
+      setSearchParams({})
+    }
+  },[])
 
   return (
     <div className="emails-page">
@@ -198,7 +208,7 @@ export default function EmailsPage() {
           </h6>
         </div>
         <div className="body">
-          <p>{activeEmail?.html}</p>
+          <p>{activeEmail?.html.replaceAll('</br>', '\n')}</p>
         </div>
         {
           activeEmail?.files?.length > 0 &&

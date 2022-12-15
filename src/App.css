@@ -137,9 +137,6 @@ hr {
 .commoninput h6 {
   cursor: auto;
 }
-.wysiwyg {
-  white-space: pre-wrap;
-}
 
 .error-boundary {
   width: 100%;

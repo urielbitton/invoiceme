@@ -22,7 +22,7 @@ export const completeRegistrationService = (user, authMode, res, userName, setLo
   }
   else {
     const ActionCodeSettings = {
-      url: `http://localhost:3000?userID=${user.uid}&firstName=${userName.firstName}&lastName=${userName.lastName}`,
+      url: `https://invoiceme.pro?userID=${user.uid}&firstName=${userName.firstName}&lastName=${userName.lastName}`,
     }
     user.sendEmailVerification(ActionCodeSettings)
       .then(() => {

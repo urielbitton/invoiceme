@@ -34,6 +34,31 @@
   flex-direction: column;
   gap: 10px;
 }
+.new-email-modal form .to-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--inputBorderColor);
+}
+.new-email-modal form .to-row.has-email {
+  padding-bottom: 5px;
+}
+.new-email-modal form .to-row .to-email {
+  color: var(--darkGrayText);
+  font-size: 14px;
+  padding: 4px 8px;
+  background: #fff;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+.new-email-modal form .to-row .to-email i {
+  color: var(--grayText);
+  top: 1px;
+  padding: 3px;
+}
 .new-email-modal form input, 
 .new-email-modal form textarea {
   border: none;
@@ -44,7 +69,8 @@
   gap: 8px;
   border-bottom: 1px solid var(--inputBorderColor);
 }
-.new-email-modal .appInput h6 {
+.new-email-modal .appInput h6,
+.new-email-modal form .to-row h6 {
   font-weight: 600;
   font-size: 14px;
   color: var(--darkGrayText);
@@ -57,9 +83,24 @@
   background: none;
   color: #aaa;
 }
-.new-email-modal form textarea {
+.new-email-modal form textarea,
+.new-email-modal form .text-editor {
   padding: 10px 0;
   border-bottom: 1px solid var(--inputBorderColor);
   resize: none;
   height: 200px;
+  font-size: 14px;
+}
+
+.new-email-modal .contact-search-container {
+  width: 100%;
+}
+.new-email-modal .contact-search-container .results-dropdown {
+  top: 40px;
+}
+.new-email-modal .contact-search-container input {
+  height: 37px;
+}
+.new-email-modal .contact-search-container button {
+  display: none;
 }
