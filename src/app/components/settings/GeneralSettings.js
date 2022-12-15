@@ -112,7 +112,10 @@ export default function GeneralSettings() {
       >
         <AppSwitch
           checked={darkMode}
-          onChange={() => setDarkMode(prev => !prev)}
+          onChange={() => {
+            setDarkMode(prev => !prev)
+            setToasts(infoToast(`Dark mode has been turned ${darkMode ? 'off' : 'on'}.`))
+          }}
         />
       </SettingsSection>
       <div className="btn-group">

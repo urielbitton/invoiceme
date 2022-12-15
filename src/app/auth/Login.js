@@ -192,7 +192,7 @@ export default function Login() {
       <div className="login-cover">
         <img src={loginCover} alt="login-cover" />
         <h5>Boost your business' invoicing efficiency.</h5>
-        <p>Try it now and take advantage of exclusive features like scheduled invoices, one-click sending and in-app payouts.</p>
+        <p>Try Invoice Me now and take advantage of exclusive features like scheduled invoices, one-click sending and in-app payouts.</p>
       </div>
     </div>
   )

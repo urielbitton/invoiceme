@@ -11,3 +11,4 @@ ToDos:
 - responsive app
 - implement mobile sidebar search 
 - try to get puppeteer to download invoices properly & send invoice emails
+- finish and verify schedule dinvoices flow

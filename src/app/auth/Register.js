@@ -8,7 +8,7 @@ import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import { facebookAuthService, googleAuthService, plainAuthService } from "app/services/authServices"
 import { validateEmail } from "app/utils/generalUtils"
-import loginCover from 'app/assets/images/login-cover.png'
+import registerCover from 'app/assets/images/register-cover.png'
 import logo from 'app/assets/images/logo.png'
 import AppButton from "app/components/ui/AppButton"
 import { infoToast } from "app/data/toastsTemplates"
@@ -169,9 +169,9 @@ export default function Register() {
         </div>
       </div>
       <div className="login-cover register-cover">
-        <img src={loginCover} alt="login-cover" />
+        <img src={registerCover} alt="register-cover" />
         <h5>Boost your business' invoicing efficiency.</h5>
-        <p>Try it now and take advantage of exclusive features like scheduled invoices, one-click sending and in-app payouts.</p>
+        <p>Try Invoice Me now and take advantage of exclusive features like scheduled invoices, one-click sending and in-app payouts.</p>
       </div>
     </div>
   )
