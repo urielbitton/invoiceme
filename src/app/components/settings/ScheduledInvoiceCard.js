@@ -34,16 +34,16 @@ export function ScheduledInvoiceCard(props) {
     if (confirm) {
       setPageLoading(true)
       deleteDB('scheduledInvoices', scheduleID)
-      .then(() => {
-        navigate('/settings/scheduled-invoices')
-        setToasts(successToast("Scheduled invoice deleted."))
-        setPageLoading(false)
-      })
-      .catch(err => {
-        console.log(err)
-        setPageLoading(false)
-        setToasts(errorToast('There was an error while trying to delete your scheduled invoice. Please try again.'))
-      })
+        .then(() => {
+          navigate('/settings/scheduled-invoices')
+          setToasts(successToast("Scheduled invoice deleted."))
+          setPageLoading(false)
+        })
+        .catch(err => {
+          console.log(err)
+          setPageLoading(false)
+          setToasts(errorToast('There was an error while trying to delete your scheduled invoice. Please try again.'))
+        })
     }
   }
 
@@ -71,7 +71,7 @@ export function ScheduledInvoiceCard(props) {
         </h6>
         <h6>
           <i className="fas fa-history" />
-          Last Rab: {lastRan ? convertClassicDateAndTime(lastRan?.toDate()) : 'Never'}
+          Last Ran: {lastRan ? convertClassicDateAndTime(lastRan?.toDate()) : 'Never'}
         </h6>
       </div>
       <div className="content">
@@ -103,6 +103,11 @@ export function ScheduledInvoiceCard(props) {
       </div>
     </div>
     <div className="actions">
+      <AppButton
+        label="View"
+        buttonType="invertedBtn"
+        onClick={() => navigate(`/settings/scheduled-invoices/new?scheduleID=${scheduleID}&edit=true&mode=view`)}
+      />
       <AppButton
         label="Edit"
         buttonType="invertedBtn"

@@ -8,6 +8,7 @@ import AppTabsBar from "app/components/ui/AppTabsBar"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import ProContent from "app/components/ui/ProContent"
+import { createNotification } from "app/services/notifServices"
 import { createCustomerService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect } from 'react'
@@ -41,6 +42,15 @@ export default function PaymentsPage() {
       },
       setPageLoading
     )
+    .then(() => {
+      createNotification(
+        myUserID,
+        'Customer account created',
+        'A new customer account has been created for you.',
+        'fas fa-user-tag',
+        '/payments'
+      )
+    })
   }
 
   useEffect(() => {

@@ -152,9 +152,20 @@ export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotal
   return updateDB(`users/${myUserID}/invoices`, invoiceID, updatedProps)
   .then(() => {
     setLoading(false)
-    updateDB('users', myUserID, {
+    return updateDB('users', myUserID, {
       totalRevenue: newTotalRevenue,
     })
+    .then(() => {
+      setLoading(false)
+      createNotification(
+        myUserID,
+        'Invoice Updated',
+        `Invoice ${updatedProps.title} (${updatedProps.invoiceNumber}) has been updated.`,
+        'fas fa-file-invoice-dollar',
+        `/invoices/${invoiceID}`
+      )
+    })
+    .catch(err => catchError(err, setLoading))
   })
   .catch(err => catchError(err, setLoading))
 }
@@ -164,7 +175,16 @@ export const deleteInvoiceService = (myUserID, invoiceID, setLoading) => {
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/invoices`, invoiceID)
-      .then(() => setLoading(false))
+      .then(() => {
+        setLoading(false)
+        createNotification(
+          myUserID,
+          'Invoice Deleted',
+          `Invoice has been deleted.`,
+          'fas fa-file-invoice-dollar',
+          `/invoices`
+        )
+      })
       .catch(err => catchError(err, setLoading))
     }
 }
@@ -244,6 +264,16 @@ export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDat
     ownerID: myUser.userID,
   }
   return setDB(pathName, docID, data)
+  .then(() => {
+    createNotification(
+      myUser.userID,
+      'Scheduled Invoice Created',
+      `Scheduled invoice ${scheduleTitle} has been created.`,
+      'fas fa-clock',
+      `/settings/scheduled-invoices/new?scheduleID=${docID}&edit=true&mode=view`
+    )
+  })
+  .catch(err => console.log(err))
 }
 
 export const updateScheduledInvoiceService = (scheduleID, updatedProps, setLoading) => {

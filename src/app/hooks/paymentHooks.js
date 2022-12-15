@@ -1,5 +1,5 @@
 import { errorToast } from "app/data/toastsTemplates"
-import { getSentPaymentsByUserID, getSubscriptionsByCustomerService, listCustomerChargesService, retrieveAttachmentPaymentMethodsService, 
+import { getSentContactPaymentsByUserID, getSentPaymentsByUserID, getSubscriptionsByCustomerService, listCustomerChargesService, retrieveAttachmentPaymentMethodsService, 
   retrieveCustomerService, retrieveInvoicesByCustomerService, 
   retrievePaymentsByCustomerService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
@@ -167,6 +167,19 @@ export const useSentPayments = (myUserID, limit) => {
   useEffect(() => {
     if(myUserID) {
       getSentPaymentsByUserID(myUserID, setSentPayments, limit)
+    }
+  },[myUserID, limit])
+
+  return sentPayments
+}
+
+export const useContactSentPayments = (myUserID, contactEmail, limit) => {
+
+  const [sentPayments, setSentPayments] = useState([])
+
+  useEffect(() => {
+    if(myUserID) {
+      getSentContactPaymentsByUserID(myUserID, contactEmail, setSentPayments, limit)
     }
   },[myUserID, limit])
 

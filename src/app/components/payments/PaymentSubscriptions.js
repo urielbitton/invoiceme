@@ -1,5 +1,6 @@
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useCustomerSubscriptions } from "app/hooks/paymentHooks"
+import { createNotification } from "app/services/notifServices"
 import { cancelSubscriptionService, reactivateStripeSubscriptionService, 
   retrievePaymentMethodService } from "app/services/paymentsServices"
 import { StoreContext } from "app/store/store"
@@ -79,6 +80,13 @@ export default function PaymentSubscriptions() {
     cancelSubscriptionService({ subscriptionID })
     .then(() => {
       setPageLoading(false)
+      createNotification(
+        myUser?.userID,
+        'Subscription Cancelled',
+        `Your subscription has been cancelled. You will not be charged again.`,
+        'fas fa-times-circle',
+        '/my-account'
+      )
       setToasts(infoToast('Subscription will be cancelled at the end of your current billing cycle.'))
       navigate(0)
     })
@@ -97,6 +105,13 @@ export default function PaymentSubscriptions() {
     .then(() => {
       setPageLoading(false)
       setToasts(successToast('Subscription has been reactivated successfully.'))
+      createNotification(
+        myUser?.userID,
+        'Subscription Reactivated',
+        `Your subscription has been reactivated. You will be charged again and can continue using the business member plan.`,
+        'fas fa-check-circle',
+        '/my-account'
+      )
       navigate(0)
     })
     .catch((error) => {

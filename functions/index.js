@@ -410,53 +410,53 @@ exports.createPaymentIntent = functions
       description: data.description,
     })
     return firestore.collection('users')
-    .where('email', '==', data.contactEmail)
-    .get()
-    .then((users) => {
-      if (users.empty) return paymentIntent
-      const user = users.docs[0].data()
-      createNotification(
-        user.userID, 
-        'New Payment', 
-        `You received a payment from ${data.myName} for $${formatCurrency((data.amount/100).toFixed(2))} ${data.currency || 'CAD'}. It has been automatically deposited into your Stripe account.`, 
-        'fas fa-credit-card',
-        '/payments'
-      )
-      .then(() => {
-        const msg = {
-          from: 'info@atomicsdigital.com',
-          to: data.contactEmail,
-          subject: 'New Payment',
-          html: `Hi.<br/><br/>You received a payment from ${data.myName} for $${formatCurrency((data.amount/100).toFixed(2))} ${data.currency || 'CAD'}.<br/><br/> View your payments here: https://atomicsdigital.com/payments<br/><br/>Invoice Me`,
-        }
-        return sgMail.send(msg)
-        .then(() => {
-          firestore.collection('users')
-          .doc(data.myUserID)
-          .collection('paymentsSent')
-          .doc(paymentIntent.id)
-          .set({
-            amount: +data.amount,
-            currency: data.currency,
-            paymentIntentID: paymentIntent.id,
-            dateCreated: new Date(),
-            paymentMethodID: data.paymentMethodID,
-            contactEmail: data.contactEmail,
-            customer: data.customerID,
-            status: paymentIntent.status,
-            ownerID: data.myUserID
-          })
+      .where('email', '==', data.contactEmail)
+      .get()
+      .then((users) => {
+        if (users.empty) return paymentIntent
+        const user = users.docs[0].data()
+        createNotification(
+          user.userID,
+          'New Payment',
+          `You received a payment from ${data.myName} for $${formatCurrency((data.amount / 100).toFixed(2))} ${data.currency || 'CAD'}. It has been automatically deposited into your Stripe account.`,
+          'fas fa-credit-card',
+          '/payments'
+        )
           .then(() => {
-            console.log('Email sent')
-            return paymentIntent
+            const msg = {
+              from: 'info@atomicsdigital.com',
+              to: data.contactEmail,
+              subject: 'New Payment',
+              html: `Hi.<br/><br/>You received a payment from ${data.myName} for $${formatCurrency((data.amount / 100).toFixed(2))} ${data.currency || 'CAD'}.<br/><br/> View your payments here: https://atomicsdigital.com/payments<br/><br/>Invoice Me`,
+            }
+            return sgMail.send(msg)
+              .then(() => {
+                firestore.collection('users')
+                  .doc(data.myUserID)
+                  .collection('paymentsSent')
+                  .doc(paymentIntent.id)
+                  .set({
+                    amount: +data.amount,
+                    currency: data.currency,
+                    paymentIntentID: paymentIntent.id,
+                    dateCreated: new Date(),
+                    paymentMethodID: data.paymentMethodID,
+                    contactEmail: data.contactEmail,
+                    customer: data.customerID,
+                    status: paymentIntent.status,
+                    ownerID: data.myUserID
+                  })
+                  .then(() => {
+                    console.log('Email sent')
+                    return paymentIntent
+                  })
+                  .catch((error) => console.error(error))
+              })
+              .catch((error) => console.error(error))
           })
-          .catch((error) => console.error(error))
-        })
-        .catch((error) => console.error(error))
+          .catch((error) => console.log(error))
       })
       .catch((error) => console.log(error))
-    })
-    .catch((error) => console.log(error))
   })
 
 exports.capturePaymentIntent = functions
@@ -484,9 +484,9 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
       scheduledInvoices.forEach(schedule => {
         const data = schedule.data()
         const path = `users/${data.ownerID}/invoices`
-        const docID = firestore.collection(path).doc().id
+        const docID = getRandomDocID(path)
         const docRef = firestore.collection(path).doc(docID)
-        const eventsDocID = firestore.collection('scheduledEvents').doc().id
+        const eventsDocID = getRandomDocID('scheduledEvents')
         const eventsDocRef = firestore.collection('scheduledEvents').doc(eventsDocID)
         invoicesBatch.set(docRef, {
           currency: data.invoiceTemplate.currency,
@@ -513,6 +513,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
           isScheduled: true,
         })
         schedulesBatch.set(eventsDocRef, {
+          eventID: eventsDocID,
           dateRan: now,
           name: 'Scheduled Invoice',
           scheduleID: data.scheduleID,
@@ -543,15 +544,35 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
                       subject: data.emailSubject,
                       html: data.emailMessage,
                       attachments: [{
-                        content: Buffer.from(data.invoicePaperHTML, 'utf8').toString('base64'),
+                        content: Buffer.from(data.invoicePaperHTML).toString('base64'),
                         filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
                         type: 'application/pdf',
                         disposition: 'attachment'
                       }]
                     }
                     return sgMail.send(msg)
-                      .then(() => console.log('Email sent to all users.'))
-                      .catch((error) => console.error(error.toString()))
+                      .then(() => {
+                        console.log('Email sent to all users.')
+                        const notifsBatch = firestore.batch()
+                        scheduledInvoices.forEach(schedule => {
+                          const data = schedule.data()
+                          const docID = getRandomDocID(`users/${data.ownerID}/notifications`)
+                          const docRef = firestore.collection('users').doc(data.ownerID).collection('notifications').doc(docID)
+                          notifsBatch.set(docRef, {
+                            notificationID: docID,
+                            dateCreated: new Date(),
+                            isRead: false,
+                            title: 'Scheduled Invoice Sent',
+                            text: `Your scheduled invoice ${data.title} has been sent to your client. You can view it here.`,
+                            icon: 'fas fa-clock',
+                            url: `/invoices/${data.scheduleID}`,
+                          })
+                        })
+                        return notifsBatch.commit()
+                          .then(() => console.log('Notifications sent to all users.'))
+                          .catch((err) => console.log(err))
+                      })
+                      .catch((err) => console.log(err))
                   }))
                 })
                 .catch((err) => console.log(err))
@@ -594,6 +615,27 @@ exports.checkExpiredSubscriptions = functions.pubsub
           })
         })
         return batch.commit()
+        .then(() => {
+          //send notification to all users
+          const notifsBatch = firestore.batch()
+          users.forEach(user => {
+            const data = user.data()
+            const docID = getRandomDocID(`users/${data.userID}/notifications`)
+            const docRef = firestore.collection('users').doc(data.userID).collection('notifications').doc(docID)
+            notifsBatch.set(docRef, {
+              notificationID: docID,
+              dateCreated: new Date(),
+              isRead: false,
+              title: 'Business Plan Expired',
+              text: `Your business plan has expired. If you would like to continue your plan you can upgrade your it here.`,
+              icon: 'fas fa-clock',
+              url: `/upgrade`,
+            })
+          })
+          return notifsBatch.commit()
+            .then(() => console.log('Notifications sent to all users.'))
+            .catch((err) => console.log(err))
+        })
       })
   })
 
@@ -601,20 +643,24 @@ exports.checkExpiredSubscriptions = functions.pubsub
 //utility functions
 function createNotification(userID, title, text, icon, url) {
   const notifPath = `users/${userID}/notifications`
-  const docID = firestore.collection(notifPath).doc().id
+  const docID = getRandomDocID(notifPath)
   return firestore.collection(notifPath)
-  .doc(docID)
-  .set({
-    notificationID: docID,
-    dateCreated: new Date(),
-    isRead: false,
-    title: title,
-    text: text,
-    icon: icon,
-    url: url,
-  })
+    .doc(docID)
+    .set({
+      notificationID: docID,
+      dateCreated: new Date(),
+      isRead: false,
+      title: title,
+      text: text,
+      icon: icon,
+      url: url,
+    })
 }
 
 function formatCurrency(number) {
   return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+function getRandomDocID(path) {
+  return firestore.collection(path).doc().id
 }

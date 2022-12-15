@@ -133,6 +133,13 @@ export const updateEstimateService = (userID, estimateID, updatedProps, setLoadi
   return updateDB(`users/${userID}/estimates`, estimateID, updatedProps)
   .then(() => {
     setLoading(false)
+    createNotification(
+      userID,
+      'Estimate Updated',
+      `Estimate ${updatedProps.title} (${updatedProps.estimateNumber}) has been updated.`,
+      'fas fa-file-invoice',
+      `/estimates/${estimateID}`
+    )
   })
   .catch(err => catchError(err, setLoading))
 }
@@ -142,7 +149,16 @@ export const deleteEstimateService = (myUserID, estimateID, setLoading) => {
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/estimates`, estimateID)
-      .then(() => setLoading(false))
+      .then(() => {
+        setLoading(false)
+        createNotification(
+          myUserID,
+          'Estimate Deleted',
+          `Estimate has been deleted.`,
+          'fas fa-file-invoice',
+          `/estimates`
+        )
+      })
       .catch(err => catchError(err, setLoading))
     }
 }

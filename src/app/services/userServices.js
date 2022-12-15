@@ -80,7 +80,7 @@ export const saveAccountInfoService = (userID, data, uploadedImg, contactStorage
       })
         .catch(err => console.log(err))
     })
-}
+} 
 
 export const saveMyBusinessInfoService = (userID, myUser, data, uploadedImg, contactStoragePath) => {
   return uploadMultipleFilesToFireStorage(uploadedImg ? [uploadedImg.file] : null, contactStoragePath, ['photo-url'])
@@ -196,15 +196,13 @@ export const createUserDocService = (user, res, authMode, setLoading) => {
     }
   })
     .then(() => {
-      return setDB(`users/${user.uid}/notifications`, 'welcome', {
-        notificationID: 'welcome',
-        dateCreated: new Date(),
-        icon: 'fas fa-house-user',
-        isRead: false,
-        title: 'Welcome to Invoice Me!',
-        text: `Welcome to Invoice Me! We're glad you're here. Click here to create your first invoice.`,
-        url: '/invoices/new',
-      })
+      return createNotification(
+        user.uid, 
+        'Welcome to Invoice Me!', 
+        "Welcome to Invoice Me! We're glad you're here. Click here to create your first invoice.", 
+        'fas fa-house-user', 
+        '/invoices/new'
+      )
         .then(() => {
           const batch = db.batch()
           const settingsArr = ['general', 'invoices', 'estimates', 'contacts', 'payments', 'notifications', 'emails']

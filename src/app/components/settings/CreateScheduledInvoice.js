@@ -62,6 +62,7 @@ export default function CreateScheduledInvoice() {
   const [searchParams, setSearchParams] = useSearchParams()
   const editMode = searchParams.get('edit') === 'true'
   const editInvoiceID = searchParams.get('scheduleID') 
+  const paramViewMode = searchParams.get('mode') === 'view'
   const editSchedule = useScheduledInvoice(myUserID, editInvoiceID)
   const navigate = useNavigate()
   const numOfSlides = 4
@@ -237,6 +238,11 @@ export default function CreateScheduledInvoice() {
     setDayOfMonth(editSchedule.dayOfMonth)
     setTimeOfDay(editSchedule.timeOfDay)
   }, [editSchedule, editMode])
+
+  useEffect(() => {
+    if(paramViewMode)
+      setSlidePosition(3)
+  },[])
 
   return (
     myMemberType === 'business' ?

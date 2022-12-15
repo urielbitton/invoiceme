@@ -79,7 +79,7 @@ export default function ContactPage() {
   const sendSMS = () => {
     if (!validatePhone(contact?.phone) || !textMessage)
       return setToasts(infoToast('Please enter a valid phone number and message.'))
-    sendSMSService(contact?.phone, textMessage, textMediaUrl, setLoading, setToasts)
+    sendSMSService(myUserID, contact?.phone, textMessage, textMediaUrl, setLoading, setToasts)
       .then(() => {
         setShowSMSModal(false)
         resetInputFields()
@@ -194,14 +194,10 @@ export default function ContactPage() {
               <ContactEstimates estimates={contactEstimates} />}
             />
             <Route path="payments" element={
-              <ContactPayments
-
-              />}
+              <ContactPayments contactEmail={contact?.email} />}
             />
             <Route path="events" element={
-              <ContactEvents
-
-              />}
+              <ContactEvents />}
             />
           </Routes>
         </div>

@@ -24,7 +24,7 @@ export const createCustomerService = (myUser, userID, data, setLoading) => {
     return updateDB('users', userID, {
       "stripe.stripeCustomerID": res.data.id,
     })
-    .then(() => {
+    .then(() => { 
       setLoading(false)
       console.log('Customer created')
       return res.data.id
@@ -204,6 +204,18 @@ export const getSentPaymentsByUserID = (userID, setPayments, limit) => {
   db.collection('users')
   .doc(userID)
   .collection('paymentsSent')
+  .orderBy('dateCreated', 'desc')
+  .limit(limit)
+  .onSnapshot((snapshot) => {
+    setPayments(snapshot.docs.map((doc) => doc.data()))
+  })
+}
+
+export const getSentContactPaymentsByUserID = (userID, contactEmail, setPayments, limit) => {
+  db.collection('users')
+  .doc(userID)
+  .collection('paymentsSent')
+  .where('contactEmail', '==', contactEmail)
   .orderBy('dateCreated', 'desc')
   .limit(limit)
   .onSnapshot((snapshot) => {

@@ -1,6 +1,7 @@
 import { errorToast, successToast, infoToast } from "app/data/toastsTemplates"
 import { useStripeCustomer } from "app/hooks/paymentHooks"
 import { updateDB } from "app/services/CrudDB"
+import { createNotification } from "app/services/notifServices"
 import { createAccountLinkService, createStripeAccountService, deleteStripeAccountService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicUnixDate } from "app/utils/dateUtils"
@@ -40,6 +41,13 @@ export default function AccountPayments() {
       .then((accountLink) => {
         if (accountLink) {
           setToasts(successToast("Stripe account created successfully. You will now be redirected to your Stripe dashboard to complete your account setup."))
+          createNotification(
+            myUserID,
+            'Stripe Account Created',
+            `Your Stripe account has been created successfully.`,
+            'fab fa-stripe-s',
+            `/my-account/payments`
+          )
           window.location.href = accountLink.url
           setAccountLink(accountLink.url)
         }
@@ -62,13 +70,21 @@ export default function AccountPayments() {
   }
 
   const deleteStripeContact = () => {
-    const confirm = window.confirm('Are you sure you want to delete your stripe account?')
+    const confirm = window.confirm('Are you sure you want to delete your stripe account? This will remove all your payment information and you will no longer be able to send or receive payments on Invoice Me.')
     if (confirm) {
       setPageLoading(true)
       deleteStripeAccountService(myUserID, myUser?.stripe?.stripeAccountID)
         .then((res) => {
           console.log(res)
           setPageLoading(false)
+          setToasts(successToast('Stripe account deleted successfully.'))
+          createNotification(
+            myUserID,
+            'Stripe Account Deleted',
+            `Your Stripe account has been deleted successfully.`,
+            'fab fa-stripe-s',
+            `/my-account/payments`
+          )
         })
         .catch(err => {
           console.log(err)

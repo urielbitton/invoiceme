@@ -11,6 +11,7 @@ import { formatCurrency } from "app/utils/generalUtils"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import ProContent from "app/components/ui/ProContent"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
+import { createNotification } from "app/services/notifServices"
 
 export default function NewPaymentPage() {
 
@@ -98,7 +99,14 @@ export default function NewPaymentPage() {
       .then((charge) => {
         console.log(charge)
         setPageLoading(false)
-        setToasts(successToast('Payment sent!'))
+        setToasts(successToast(`Payment sent to ${selectedContact.name}.`))
+        createNotification(
+          myUserID,
+          'Payment Sent',
+          `You sent a payment of ${formatCurrency(payAmount)} to ${selectedContact.name}.`,
+          'fas fa-credit-card',
+          '/payments/sent-payments'
+        )
         setPayAmount('')
         setContactCustomer(null)
         setSelectedContact(null)

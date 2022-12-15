@@ -4,6 +4,7 @@ import { getYearsBetween } from "app/utils/dateUtils"
 import { deleteDB, getRandomDocID,
   setDB, updateDB
 } from "./CrudDB"
+import { createNotification } from "./notifServices"
 import { deleteMultipleStorageFiles } from "./storageServices"
 
 const catchError = (err, setLoading) => {
@@ -124,7 +125,16 @@ export const createContactService = (userID, name, email, phone, address, city,
     photoURL: photoURL ?? 'https://i.imgur.com/D4fLSKa.png'
   }
   return setDB(contactsPath, docID, contactData)
-    .then(() => setLoading(false))
+    .then(() => {
+      setLoading(false)
+      createNotification(
+        userID,
+        'Contact Created',
+        `${name} was added to your contacts.`,
+        'fas fa-user-plus',
+        `/contacts/${docID}`
+      )
+    })
     .catch(err => catchError(err, setLoading))
 }
 
@@ -156,7 +166,16 @@ export const addContactService = (userID, name, email, phone, address,
 export const updateContactService = (userID, contactID, updatedProps, setLoading) => {
   setLoading(true)
   return updateDB(`users/${userID}/contacts`, contactID, updatedProps)
-    .then(() => setLoading(false))
+    .then(() => {
+      setLoading(false)
+      createNotification(
+        userID,
+        'Contact Updated',
+        `${updatedProps.name} was updated.`,
+        'fas fa-user-edit',
+        `/contacts/${contactID}`
+      )
+    })
     .catch(err => catchError(err, setLoading))
 }
 
@@ -167,7 +186,16 @@ export const deleteContactService = (userID, contactID, storagePath, filenames, 
     return deleteDB(`users/${userID}/contacts`, contactID)
       .then(() => {
         return deleteMultipleStorageFiles(storagePath, filenames)
-          .then(() => setLoading(false))
+          .then(() => {
+            setLoading(false)
+            createNotification(
+              userID,
+              'Contact Deleted',
+              `Contact was deleted.`,
+              'fas fa-user-minus',
+              `/contacts`
+            )
+          })
           .catch(err => catchError(err, setLoading))
       })
       .catch(err => catchError(err, setLoading))
@@ -182,7 +210,7 @@ export const callPhoneService = (phone) => {
     .catch(err => console.log(err))
 }
 
-export const sendSMSService = (phone, message, mediaUrl, setLoading, setToasts) => {
+export const sendSMSService = (userID, phone, message, mediaUrl, setLoading, setToasts) => {
   setLoading(true)
   return functions.httpsCallable('sendSMS')({
     phone,
@@ -191,6 +219,13 @@ export const sendSMSService = (phone, message, mediaUrl, setLoading, setToasts) 
   })
     .then(result => {
       setToasts(successToast('Message sent successfully.'))
+      createNotification(
+        userID,
+        'SMS Sent',
+        `SMS sent to ${phone}.`,
+        'fas fa-comment-dots',
+        '/contacts'
+      )
       setLoading(false)
       console.log(result)
     })

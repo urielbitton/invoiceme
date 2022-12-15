@@ -1,7 +1,7 @@
 import { useSentPayments } from "app/hooks/paymentHooks"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate, convertClassicDateAndTime } from "app/utils/dateUtils"
-import { formatCurrency } from "app/utils/generalUtils"
+import { formatCurrency, truncateText } from "app/utils/generalUtils"
 import React, { useContext, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import AppItemRow from "../ui/AppItemRow"
@@ -23,7 +23,7 @@ export default function PaymentsSent() {
       item3={`$${formatCurrency((payment?.amount / 100).toFixed(2))} ${payment?.currency?.toUpperCase()}`}
       item4={<span className="status">{payment?.status}</span>}
       item5={payment?.customerID || 'N/A'}
-      item6={payment?.paymentMethodID || 'N/A'}
+      item6={truncateText(payment?.paymentMethodID, 20) || 'N/A'}
       actions={<>
         <IconContainer
           icon="fas fa-eye"
@@ -52,7 +52,7 @@ export default function PaymentsSent() {
         rows={paymentsList}
       />
       {
-        payments.length <= paymentsLimit &&
+        payments.length >= paymentsLimit &&
         <AppButton
           label="Load More"
           onClick={() => setPaymentsLimit(paymentsLimit + 10)}

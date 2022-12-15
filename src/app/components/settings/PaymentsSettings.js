@@ -1,34 +1,9 @@
-import { errorToast, successToast } from "app/data/toastsTemplates"
-import { createStripeAccountService } from "app/services/userServices"
-import { StoreContext } from "app/store/store"
-import React, { useContext, useState } from 'react'
+import React from 'react'
 import AppButton from "../ui/AppButton"
 import SettingsSection from "./SettingsSection"
 import SettingsTitles from "./SettingsTitles"
 
 export default function PaymentsSettings() {
-
-  const { myMemberType, myUser, myUserID, setPageLoading,
-    setToasts } = useContext(StoreContext)
-  const isBusiness = myMemberType === "business"
-  const [accountLink, setAccountLink] = useState(null)
-
-  const connectStripe = () => {
-    setPageLoading(true)
-    createStripeAccountService(myUserID, {
-      country: myUser?.countryCode,
-    })
-    .then((accountLink) => {
-      setToasts(successToast("Stripe account connected successfully."))
-      setAccountLink(accountLink.url)
-      setPageLoading(false)
-    })
-    .catch(err => {
-      console.log(err)
-      setPageLoading(false)
-      setToasts(errorToast('There was an error connecting your Stripe account. Please try again.'))
-    })
-  }
 
   return (
     <div className="settings-sub-page">

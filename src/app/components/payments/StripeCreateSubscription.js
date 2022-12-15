@@ -6,6 +6,7 @@ import { updateDB } from "app/services/CrudDB"
 import { useNavigate } from "react-router-dom"
 import StripeCheckoutForm from "./StripeCheckoutForm"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
+import { createNotification } from "app/services/notifServices"
 
 export default function StripeCreateSubscription(props) {
 
@@ -79,7 +80,6 @@ export default function StripeCreateSubscription(props) {
           )
           .then((subscriptionID) => {
             setPageLoading(true)
-            setToasts(successToast('Subscription created.'))
             return updateDB('users', myUserID, {
               memberType: 'business'
             })
@@ -88,6 +88,13 @@ export default function StripeCreateSubscription(props) {
               setPageLoading(false)
               console.log('Member type updated')
               setToasts(successToast('Subscription Created!'))
+              createNotification(
+                myUserID,
+                'Subscription created!',
+                'Your subscription for the Business Member Plan has been created.',
+                'fa fa-rocket-alt',
+                '/my-account'
+              )
             })
             .catch((err) => catchCode(err))
           })

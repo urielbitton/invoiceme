@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { StoreContext } from "app/store/store"
 import { createPaymentMethodService } from "app/services/paymentsServices"
 import StripeCheckoutForm from "./StripeCheckoutForm"
+import { createNotification } from "app/services/notifServices"
 
 export default function StripeCreatePaymentMethod(props) {
 
@@ -16,6 +17,15 @@ export default function StripeCreatePaymentMethod(props) {
     e.preventDefault()
     setPageLoading(true)
     createPaymentMethodService(myUserID, setPageLoading)
+    .then(() => {
+      createNotification(
+        myUserID,
+        'Payment method created',
+        'A new payment method has been created and attached to your account.',
+        'fas fa-credit-card',
+        '/payments/payment-methods'
+      )
+    })
   }
 
   return (
