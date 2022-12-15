@@ -5,7 +5,7 @@ import { attachPaymentMethodsService, createCustomerService, createPaymentMethod
 import { updateDB } from "app/services/CrudDB"
 import { useNavigate } from "react-router-dom"
 import StripeCheckoutForm from "./StripeCheckoutForm"
-import { successToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 
 export default function StripeCreateSubscription(props) {
 
@@ -21,6 +21,7 @@ export default function StripeCreateSubscription(props) {
   const catchCode = (err) => {
     setPageLoading(false)
     console.log(err)
+    setToasts(errorToast('There was an erro creating your subscription. Please try again.'))
   }
 
   const startSubscription = (e) => {
@@ -86,6 +87,7 @@ export default function StripeCreateSubscription(props) {
               navigate('/my-account/payments')
               setPageLoading(false)
               console.log('Member type updated')
+              setToasts(successToast('Subscription Created!'))
             })
             .catch((err) => catchCode(err))
           })

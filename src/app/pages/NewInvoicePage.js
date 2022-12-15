@@ -5,7 +5,7 @@ import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
-import { infoToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useInvoice } from "app/hooks/invoiceHooks"
 import { createInvoiceService, deleteInvoiceService,
   updateInvoiceService
@@ -112,10 +112,12 @@ export default function NewInvoicePage() {
       .then(() => {
         setPageLoading(false)
         navigate('/invoices')
+        setToasts(successToast('Invoice created successfully.'))
       })
       .catch(err => {
         setPageLoading(false)
         console.log(err)
+        setToasts(errorToast('An error occured while creating invoice.'))
       })
   }
 

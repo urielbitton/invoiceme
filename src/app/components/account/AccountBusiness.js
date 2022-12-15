@@ -1,4 +1,4 @@
-import { infoToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { saveMyBusinessInfoService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
@@ -64,11 +64,12 @@ export default function AccountBusiness() {
     .then(() => {
       setPageLoading(false)
       setUploadedBusinessLogo(null)
-      setToasts(infoToast('Business info saved.'))
+      setToasts(successToast('Business info saved.'))
     })
     .catch(err => {
       setPageLoading(false)
       console.log(err)
+      setToasts(errorToast('An error occured. Please try again.'))
     })
   }
 

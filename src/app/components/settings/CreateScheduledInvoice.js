@@ -167,6 +167,7 @@ export default function CreateScheduledInvoice() {
     .catch(err => {
       setPageLoading(false)
       console.log(err)
+      setToasts(errorToast('Error creating scheduled invoice.'))
     })
   }
 

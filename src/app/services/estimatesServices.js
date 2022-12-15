@@ -3,7 +3,7 @@ import { db } from "app/firebase/fire"
 import { convertInputDateToDateAndTimeFormat, 
   dateToMonthName, 
   getYearsBetween} from "app/utils/dateUtils"
-import { deleteDB, firebaseIncrement, getRandomDocID, setDB, updateDB } from "./CrudDB"
+import { deleteDB, getRandomDocID, setDB, updateDB } from "./CrudDB"
 import { sendHtmlToEmailAsPDF } from "./emailServices"
 import { createNotification } from "./notifServices"
 

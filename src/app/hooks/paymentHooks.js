@@ -1,3 +1,4 @@
+import { errorToast } from "app/data/toastsTemplates"
 import { getSentPaymentsByUserID, getSubscriptionsByCustomerService, listCustomerChargesService, retrieveAttachmentPaymentMethodsService, 
   retrieveCustomerService, retrieveInvoicesByCustomerService, 
   retrievePaymentsByCustomerService } from "app/services/paymentsServices"
@@ -6,7 +7,7 @@ import { useContext, useEffect, useState } from "react"
 
 export const useCustomerSubscriptions = (customerID) => {
   
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, setToasts } = useContext(StoreContext)
   const [subscriptions, setSubscriptions] = useState(null)
 
   useEffect(() => {
@@ -20,6 +21,7 @@ export const useCustomerSubscriptions = (customerID) => {
       .catch((error) => {
         console.log(error)
         setPageLoading(false)
+        setToasts(errorToast('An error occured. Please try again.'))
       })
     }
   },[customerID])
@@ -29,7 +31,7 @@ export const useCustomerSubscriptions = (customerID) => {
 
 export const useCustomerPayments = (customerID, limit) => {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, setToasts } = useContext(StoreContext)
   const [payments, setPayments] = useState(null)
 
   useEffect(() => {
@@ -45,6 +47,7 @@ export const useCustomerPayments = (customerID, limit) => {
       })
       .catch((error) => {
         console.log(error)
+        setToasts(errorToast('An error occured. Please try again.'))
         setPageLoading(false)
       })
     }
@@ -55,7 +58,7 @@ export const useCustomerPayments = (customerID, limit) => {
 
 export const useCustomerCharges = (customerID, limit) => {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, setToasts } = useContext(StoreContext)
   const [charges, setCharges] = useState(null)
 
   useEffect(() => {
@@ -71,6 +74,7 @@ export const useCustomerCharges = (customerID, limit) => {
       })
       .catch((error) => {
         console.log(error)
+        setToasts(errorToast('An error occured. Please try again.'))
         setPageLoading(false)
       })
     }
@@ -81,7 +85,7 @@ export const useCustomerCharges = (customerID, limit) => {
 
 export const useAttachedPaymentMethods = (customerID) => {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, setToasts } = useContext(StoreContext)
   const [paymentMethods, setPaymentMethods] = useState(null)
 
   useEffect(() => {
@@ -96,6 +100,7 @@ export const useAttachedPaymentMethods = (customerID) => {
       })
       .catch((error) => {
         console.log(error)
+        setToasts(errorToast('An error occured. Please try again.'))
         setPageLoading(false)
       })
     }
@@ -106,7 +111,7 @@ export const useAttachedPaymentMethods = (customerID) => {
 
 export const useCustomerInvoices = (customerID, limit) => {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, setToasts} = useContext(StoreContext)
   const [invoices, setInvoices] = useState(null)
 
   useEffect(() => {
@@ -122,6 +127,7 @@ export const useCustomerInvoices = (customerID, limit) => {
       })
       .catch((error) => {
         console.log(error)
+        setToasts(errorToast('An error occured. Please try again.'))
         setPageLoading(false)
       })
     }
@@ -132,7 +138,7 @@ export const useCustomerInvoices = (customerID, limit) => {
 
 export const useStripeCustomer = (customerID) => {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, setToasts } = useContext(StoreContext)
   const [customer, setCustomer] = useState(null)
 
   useEffect(() => {
@@ -145,6 +151,7 @@ export const useStripeCustomer = (customerID) => {
       })
       .catch((error) => {
         console.log(error)
+        setToasts(errorToast('An error occured. Please try again.'))
         setPageLoading(false)
       })
     }

@@ -1,5 +1,5 @@
 import { currencies, themeColors } from "app/data/general"
-import { infoToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
@@ -11,7 +11,7 @@ import SettingsTitles from "./SettingsTitles"
 export default function GeneralSettings() {
 
   const { myUserID, myUser, themeColor, setThemeColor,
-    darkMode, setDarkMode, setPageLoading } = useContext(StoreContext)
+    darkMode, setDarkMode, setPageLoading, setToasts } = useContext(StoreContext)
   const [currency, setCurrency] = useState('CAD')
   const currencyObject = currencies.find(c => c.value === currency) || currencies[0]
 
@@ -28,15 +28,18 @@ export default function GeneralSettings() {
         })
           .then(() => {
             setPageLoading(false)
+            setToasts(successToast('Your settings have been saved.'))
           })
           .catch(err => {
             console.log(err)
             setPageLoading(false)
+            setToasts(errorToast('There was an error while saving your settings. Please try again.'))
           })
       })
       .catch(err => {
         setPageLoading(false)
         console.log(err)
+        setToasts(errorToast('There was an error while saving your settings. Please try again.'))
       })
   }
 

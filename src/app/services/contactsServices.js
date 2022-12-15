@@ -1,8 +1,7 @@
 import { errorToast, successToast } from "app/data/toastsTemplates"
 import { db, functions } from "app/firebase/fire"
 import { getYearsBetween } from "app/utils/dateUtils"
-import {
-  deleteDB, firebaseIncrement, getRandomDocID,
+import { deleteDB, getRandomDocID,
   setDB, updateDB
 } from "./CrudDB"
 import { deleteMultipleStorageFiles } from "./storageServices"

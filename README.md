@@ -2,7 +2,6 @@ InvoiceMe App
 
 
 ToDos:
-- add in-app toasts & convert useful console.log errors into toasts notifs
 - add notifications to all events on app (especially payments)
 - add wysiwg editor on all email writing inputs
 - add search dropdown on email page when entering "to" field

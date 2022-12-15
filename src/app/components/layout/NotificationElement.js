@@ -6,10 +6,11 @@ import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import './styles/NotificationElement.css'
 import IconContainer from "../ui/IconContainer"
+import { errorToast } from "app/data/toastsTemplates"
 
 export default function NotificationElement(props) {
 
-  const { myUserID } = useContext(StoreContext)
+  const { myUserID, setToasts } = useContext(StoreContext)
   const { notificationID, text, dateCreated, url, isRead, icon } = props.notif
   const navigate = useNavigate()
 
@@ -21,7 +22,10 @@ export default function NotificationElement(props) {
       if(goToURL)
         navigate(url)
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err)
+      setToasts(errorToast('An error occured. Please try again.'))
+    })
   }
 
   return (

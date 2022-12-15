@@ -1,3 +1,4 @@
+import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useUserEstimateSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
@@ -10,7 +11,7 @@ import SettingsTitles from "./SettingsTitles"
 
 export default function EstimatesSettings() {
 
-  const { myUserID, setPageLoading } = useContext(StoreContext)
+  const { myUserID, setPageLoading, setToasts } = useContext(StoreContext)
   const [showMyName, setShowMyName] = useState(true)
   const [showMyAddress, setShowMyAddress] = useState(true)
   const [showMyPhone, setShowMyPhone] = useState(true)
@@ -52,10 +53,12 @@ export default function EstimatesSettings() {
     })
       .then(() => {
         setPageLoading(false)
+        setToasts(successToast('Your settings have been saved.'))
       })
       .catch(err => {
         console.log(err)
         setPageLoading(false)
+        setToasts(errorToast('There was an error while saving your settings. Please try again.'))
       })
   }
 

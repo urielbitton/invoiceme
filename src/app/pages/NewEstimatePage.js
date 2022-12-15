@@ -5,7 +5,7 @@ import { AppInput, AppSelect, AppTextarea } from "app/components/ui/AppInputs"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
-import { infoToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useEstimate } from "app/hooks/estimateHooks"
 import { createEstimateService, deleteEstimateService,
   updateEstimateService
@@ -104,10 +104,12 @@ export default function NewEstimatePage() {
       .then(() => {
         setPageLoading(false)
         navigate('/estimates')
+        setToasts(successToast('Estimate created successfully.'))
       })
       .catch(err => {
         setPageLoading(false)
         console.log(err)
+        setToasts(errorToast('Error creating estimate.'))
       })
   }
 

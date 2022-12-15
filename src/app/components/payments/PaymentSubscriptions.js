@@ -1,4 +1,4 @@
-import { infoToast, successToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useCustomerSubscriptions } from "app/hooks/paymentHooks"
 import { cancelSubscriptionService, reactivateStripeSubscriptionService, 
   retrievePaymentMethodService } from "app/services/paymentsServices"
@@ -68,6 +68,7 @@ export default function PaymentSubscriptions() {
       .catch((error) => {
         setPaymentLoading(false)
         console.log('Error retrieving payment method', error)
+        setToasts(errorToast('Error retrieving payment method. Please try again.'))
       })
   }
 
@@ -84,6 +85,7 @@ export default function PaymentSubscriptions() {
     .catch((error) => {
       console.log(error)
       setPageLoading(false)
+      setToasts(errorToast('Error cancelling subscription. Please try again.'))
     })
   }
 
@@ -97,7 +99,10 @@ export default function PaymentSubscriptions() {
       setToasts(successToast('Subscription has been reactivated successfully.'))
       navigate(0)
     })
-    .catch((error) => console.log(error))
+    .catch((error) => {
+      console.log(error)
+      setToasts(errorToast('There was an error trying to reactivate subscription. Please try again.'))
+    })
   }
 
   useEffect(() => {

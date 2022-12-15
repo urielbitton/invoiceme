@@ -10,7 +10,7 @@ import './styles/NewPaymentPage.css'
 import { formatCurrency } from "app/utils/generalUtils"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import ProContent from "app/components/ui/ProContent"
-import { infoToast, successToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 
 export default function NewPaymentPage() {
 
@@ -66,6 +66,7 @@ export default function NewPaymentPage() {
           .catch((error) => {
             console.log(error)
             setStripeLoading(false)
+            setToasts(errorToast('An error occured. Please try again.'))
           })
         }
         else {
@@ -76,6 +77,7 @@ export default function NewPaymentPage() {
       .catch((error) => {
         console.log(error)
         setStripeLoading(false)
+        setToasts(errorToast('An error occured. Please try again.'))
       })
   }
 
@@ -105,6 +107,7 @@ export default function NewPaymentPage() {
       .catch((error) => {
         console.log(error)
         setPageLoading(false)
+        setToasts(errorToast('An error occured while sending payment. Please try again.'))
       })
   }
 
@@ -117,6 +120,7 @@ export default function NewPaymentPage() {
       })
       .catch((error) => {
         console.log(error)
+        setToasts(errorToast('An error occured. Please try again.'))
         setStripeLoading(false)
       })
     }

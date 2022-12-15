@@ -1,4 +1,4 @@
-import { infoToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
@@ -91,15 +91,18 @@ export default function InvoicesSettings() {
         })
           .then(() => {
             setPageLoading(false)
+            setToasts(successToast('Settings saved successfully.'))
           })
           .catch(err => {
             console.log(err)
             setPageLoading(false)
+            setToasts(errorToast('There was an error while saving our settings. Please try again.'))
           })
       })
       .catch(err => {
         console.log(err)
         setPageLoading(false)
+        setToasts(errorToast('There was an error while saving our settings. Please try again.'))
       })
   }
 

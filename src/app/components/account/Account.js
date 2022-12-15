@@ -1,4 +1,4 @@
-import { successToast, infoToast } from "app/data/toastsTemplates"
+import { successToast, infoToast, errorToast } from "app/data/toastsTemplates"
 import { auth } from "app/firebase/fire"
 import { deleteAccountService } from "app/services/authServices"
 import { saveAccountInfoService } from "app/services/userServices"
@@ -76,6 +76,7 @@ export default function Account() {
       .catch(err => {
         setPageLoading(false)
         console.log(err)
+        setToasts(errorToast('An error occured. Please try again.'))
       })
   }
 
@@ -93,7 +94,7 @@ export default function Account() {
       })
       .catch(err => {
         console.log(err)
-        setToasts(infoToast('Incorrect password.'))
+        setToasts(errorToast('Incorrect password.'))
       })
   }
 

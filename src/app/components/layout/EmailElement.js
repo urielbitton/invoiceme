@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { truncateText } from "app/utils/generalUtils"
 import { convertClassicDate, getTimeAgo } from "app/utils/dateUtils"
 import { useNavigate } from "react-router-dom"
 import { updateDB } from "app/services/CrudDB"
 import './styles/NotificationElement.css'
 import IconContainer from "../ui/IconContainer"
+import { StoreContext } from "app/store/store"
+import { errorToast } from "app/data/toastsTemplates"
 
 export default function EmailElement(props) {
 
+  const { setToasts } = useContext(StoreContext)
   const { emailID, subject, html, from, to, dateSent, files,
     isRead } = props.email
   const navigate = useNavigate()
@@ -16,7 +19,10 @@ export default function EmailElement(props) {
     updateDB('mail', emailID, {
       isRead: read 
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err)
+      setToasts(errorToast('An error occured. Please try again.'))
+    })
     navigate(`/emails`)
   }
 

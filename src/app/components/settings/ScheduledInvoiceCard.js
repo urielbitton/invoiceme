@@ -1,4 +1,4 @@
-import { successToast } from "app/data/toastsTemplates"
+import { errorToast, successToast } from "app/data/toastsTemplates"
 import { deleteDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import { convertClassicDateAndTime, displayThStNdRd } from "app/utils/dateUtils"
@@ -42,6 +42,7 @@ export function ScheduledInvoiceCard(props) {
       .catch(err => {
         console.log(err)
         setPageLoading(false)
+        setToasts(errorToast('There was an error while trying to delete your scheduled invoice. Please try again.'))
       })
     }
   }

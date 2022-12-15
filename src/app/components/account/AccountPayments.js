@@ -52,6 +52,7 @@ export default function AccountPayments() {
       .catch(err => {
         console.log(err)
         setPageLoading(false)
+        setToasts(errorToast('There was an error creating your Stripe account. Please try again.'))
       })
   }
 
@@ -71,6 +72,7 @@ export default function AccountPayments() {
         })
         .catch(err => {
           console.log(err)
+          setToasts(errorToast('An error occured. Please try again.'))
           setPageLoading(false)
         })
     }

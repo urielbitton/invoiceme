@@ -1,4 +1,4 @@
-import { successToast } from "app/data/toastsTemplates"
+import { errorToast, successToast } from "app/data/toastsTemplates"
 import { createStripeAccountService } from "app/services/userServices"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useState } from 'react'
@@ -26,6 +26,7 @@ export default function PaymentsSettings() {
     .catch(err => {
       console.log(err)
       setPageLoading(false)
+      setToasts(errorToast('There was an error connecting your Stripe account. Please try again.'))
     })
   }
 

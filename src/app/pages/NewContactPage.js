@@ -4,7 +4,7 @@ import AvatarUploader from "app/components/ui/AvatarUploader"
 import CountryStateCity from "app/components/ui/CountryStateCity"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
-import { infoToast, successToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useContact } from "app/hooks/contactsHooks"
 import { createContactService, deleteContactService, 
   updateContactService } from "app/services/contactsServices"
@@ -65,6 +65,7 @@ export default function NewContactPage() {
     .catch(err => {
       setPageLoading(false)
       console.log(err)
+      setToasts(errorToast('An error occured while creating the contact. Please try again.'))
     })
   }
 
@@ -95,6 +96,7 @@ export default function NewContactPage() {
     .catch(err => {
       setPageLoading(false)
       console.log(err)
+      setToasts(errorToast('An error occured while updating the contact. Please try again.'))
     })
   }
 

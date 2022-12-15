@@ -1,4 +1,4 @@
-import { infoToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast } from "app/data/toastsTemplates"
 import { deleteDB, updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
@@ -16,7 +16,10 @@ export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal 
     updateDB('mail', email.emailID, { 
       isRead: true 
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err)
+      setToasts(errorToast('An error occured. Please try again.'))
+    })
   }
 
   const openEmail = (email) => {
@@ -37,6 +40,7 @@ export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal 
       .catch(err => {
         setPageLoading(false)
         console.log(err)
+        setToasts(errorToast('An error occured. Please try again.'))
       })
     }
   }
