@@ -2,7 +2,7 @@ import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useUserEstimateSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import { AppTextarea } from "../ui/AppInputs"
 import SettingsSection from "./SettingsSection"
@@ -26,10 +26,29 @@ export default function EstimatesSettings() {
   const [showClientCompanyName, setShowClientCompanyName] = useState(false)
   const [showMyTaxNumbers, setShowMyTaxNumbers] = useState(true)
   const [showNotes, setShowNotes] = useState(true)
-  const [invoiceNotes, setInvoiceNotes] = useState('')
+  const [estimateNotes, setInvoiceNotes] = useState('')
   const [showThankYouMessage, setShowThankYouMessage] = useState(true)
   const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
   const myUserEstimateSettings = useUserEstimateSettings(myUserID)
+
+  const allowSave = myUserEstimateSettings?.showMyName === undefined ||
+    myUserEstimateSettings?.showMyAddress !== showMyAddress ||
+    myUserEstimateSettings?.showMyName !== showMyName ||
+    myUserEstimateSettings?.showMyPhone !== showMyPhone ||
+    myUserEstimateSettings?.showMyEmail !== showMyEmail ||
+    myUserEstimateSettings?.showMyLogo !== showMyLogo ||
+    myUserEstimateSettings?.showMyCompanyName !== showMyCompanyName ||
+    myUserEstimateSettings?.showDueDate !== showDueDate ||
+    myUserEstimateSettings?.showClientName !== showClientName ||
+    myUserEstimateSettings?.showClientAddress !== showClientAddress ||
+    myUserEstimateSettings?.showClientPhone !== showClientPhone ||
+    myUserEstimateSettings?.showClientEmail !== showClientEmail ||
+    myUserEstimateSettings?.showClientCompanyName !== showClientCompanyName ||
+    myUserEstimateSettings?.showMyTaxNumbers !== showMyTaxNumbers ||
+    myUserEstimateSettings?.showNotes !== showNotes ||
+    myUserEstimateSettings?.estimateNotes !== estimateNotes ||
+    myUserEstimateSettings?.showThankYouMessage !== showThankYouMessage ||
+    myUserEstimateSettings?.showInvoiceMeTag !== showInvoiceMeTag
 
   const saveSettings = () => {
     setPageLoading(true)
@@ -47,7 +66,7 @@ export default function EstimatesSettings() {
       showClientEmail,
       showClientCompanyName,
       showNotes,
-      invoiceNotes,
+      estimateNotes,
       showThankYouMessage,
       showInvoiceMeTag
     })
@@ -62,13 +81,43 @@ export default function EstimatesSettings() {
       })
   }
 
+  useEffect(() => {
+    if (myUserEstimateSettings?.showMyName !== undefined) {
+      setShowMyName(myUserEstimateSettings?.showMyName)
+      setShowMyAddress(myUserEstimateSettings?.showMyAddress)
+      setShowMyPhone(myUserEstimateSettings?.showMyPhone)
+      setShowMyEmail(myUserEstimateSettings?.showMyEmail)
+      setShowMyLogo(myUserEstimateSettings?.showMyLogo)
+      setShowMyCompanyName(myUserEstimateSettings?.showMyCompanyName)
+      setShowDueDate(myUserEstimateSettings?.showDueDate)
+      setShowClientName(myUserEstimateSettings?.showClientName)
+      setShowClientAddress(myUserEstimateSettings?.showClientAddress)
+      setShowClientPhone(myUserEstimateSettings?.showClientPhone)
+      setShowClientEmail(myUserEstimateSettings?.showClientEmail)
+      setShowClientCompanyName(myUserEstimateSettings?.showClientCompanyName)
+      setShowMyTaxNumbers(myUserEstimateSettings?.showMyTaxNumbers)
+      setShowNotes(myUserEstimateSettings?.showNotes)
+      setInvoiceNotes(myUserEstimateSettings?.estimateNotes)
+      setShowThankYouMessage(myUserEstimateSettings?.showThankYouMessage)
+      setShowInvoiceMeTag(myUserEstimateSettings?.showInvoiceMeTag)
+    }
+  },[myUserEstimateSettings])
+
   return (
     <div className="settings-sub-page">
       <SettingsTitles
         label="Estimates"
         sublabel="Customize your estimate creation experience."
         icon="fas fa-file-invoice"
-        />
+        button={
+          <AppButton
+            label="Save Settings"
+            onClick={saveSettings}
+            disabled={!allowSave}
+          />
+        }
+        isSticky
+      />
       <SettingsSectionSwitch
         label="Show my name"
         sublabel="Show my name on estimate headers"
@@ -173,7 +222,7 @@ export default function EstimatesSettings() {
         className="estimateNotes"
       >
         <AppTextarea
-          value={invoiceNotes}
+          value={estimateNotes}
           onChange={e => setInvoiceNotes(e.target.value)}
         />
       </SettingsSection>
@@ -193,12 +242,6 @@ export default function EstimatesSettings() {
         businessAccess
         className="est-showWatermark"
       />
-      <div className="btn-group">
-        <AppButton
-          label="Save"
-          onClick={saveSettings}
-        />
-      </div>
     </div>
   )
 }

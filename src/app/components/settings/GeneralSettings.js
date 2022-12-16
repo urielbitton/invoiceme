@@ -1,5 +1,6 @@
 import { currencies, themeColors } from "app/data/general"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
+import { useUserGeneralSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
@@ -14,6 +15,11 @@ export default function GeneralSettings() {
     darkMode, setDarkMode, setPageLoading, setToasts } = useContext(StoreContext)
   const [currency, setCurrency] = useState('CAD')
   const currencyObject = currencies.find(c => c.value === currency) || currencies[0]
+  const myUserGeneralSettings = useUserGeneralSettings(myUserID)
+
+  const allowSave = myUserGeneralSettings?.themeColor === undefined ||
+  currency !== myUser?.currency?.value ||
+    themeColor !== myUserGeneralSettings?.themeColor
 
   const saveSettings = () => {
     setPageLoading(true)
@@ -47,12 +53,26 @@ export default function GeneralSettings() {
     setCurrency(myUser?.currency?.value || 'CAD')
   }, [myUser])
 
+  useEffect(() => {
+    if(myUserGeneralSettings?.themeColor !== undefined){
+      setThemeColor(myUserGeneralSettings?.themeColor)
+    }
+  },[myUserGeneralSettings])
+  
+
   return (
     <div className="settings-sub-page">
       <SettingsTitles
         label="General"
         sublabel="Fine tune your own experience on the app"
         icon="fas fa-cog"
+        button={
+          <AppButton
+            label="Save Settings"
+            onClick={saveSettings}
+            disabled={!allowSave}
+          />
+        }
       />
       <SettingsSection
         label="Language"
@@ -87,7 +107,7 @@ export default function GeneralSettings() {
           value={themeColor}
           onChange={e => setThemeColor(e.target.value)}
         />
-        <div style={{display:'flex', gap:15}}>
+        <div style={{ display: 'flex', gap: 15 }}>
           <AppButton
             label="Preview"
             onClick={() => document.documentElement.style.setProperty('--primary', themeColor)}
@@ -118,12 +138,6 @@ export default function GeneralSettings() {
           }}
         />
       </SettingsSection>
-      <div className="btn-group">
-        <AppButton
-          label="Save"
-          onClick={saveSettings}
-        />
-      </div>
     </div>
   )
 }

@@ -30,7 +30,7 @@ export default function RoutesContainer() {
   const location = useLocation()
 
   useEffect(() => {
-    if (windowRef.current) {
+    if (windowRef.current && !location.pathname.includes('/settings')) {
       windowRef.current.scrollTop = 0
     }
   },[location])

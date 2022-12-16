@@ -6,7 +6,6 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import googleIcon from 'app/assets/images/google-icon.png'
 import facebookIcon from 'app/assets/images/facebook-icon.png'
 import { auth } from 'app/firebase/fire'
-import firebase from "firebase"
 import { clearAuthState } from "app/services/CrudDB"
 import loginCover from 'app/assets/images/login-cover.png'
 import logo from 'app/assets/images/logo.png'
@@ -40,13 +39,13 @@ export default function Login() {
         }
         else {
           const user = userCredential.user
-          if(user.uid !== userID) return setToasts(infoToast('Unauthorized login. Please try again'))
+          if (user.uid !== userID) return setToasts(infoToast('Unauthorized login. Please try again'))
           createAccountOnLoginService(user, setLoading, setToasts)
-          .then(() => {
-            setLoading(false)
-            navigate('/')
-          })
-          .catch((error) => console.log(error))
+            .then(() => {
+              setLoading(false)
+              navigate('/')
+            })
+            .catch((error) => console.log(error))
         }
       })
       .catch(err => {
@@ -94,9 +93,11 @@ export default function Login() {
     <div className="login-page">
       <div className="login-info">
         <div className="container">
-          <div className="logo-container">
-            <img src={logo} className="logo" alt="logo" />
-            <h5>Invoice Me</h5>
+          <div className="auth-titles">
+            <h4>Sign In</h4>
+            <div className="logo-container">
+              <img src={logo} className="logo" alt="logo" />
+            </div>
           </div>
           <div className="social-logins">
             <div

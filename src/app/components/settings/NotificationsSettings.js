@@ -1,8 +1,9 @@
 import { monthlyReportOptions, overdueDaysOptions } from "app/data/general"
-import { infoToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
+import { useUserNotifSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import { AppSelect } from "../ui/AppInputs"
 import SettingsSection from "./SettingsSection"
@@ -11,7 +12,7 @@ import SettingsTitles from "./SettingsTitles"
 
 export default function NotificationsSettings() {
 
-  const { myMemberType, myUserID, setToasts } = useContext(StoreContext)
+  const { myMemberType, myUserID, setToasts, setPageLoading } = useContext(StoreContext)
   const [showNotifications, setShowNotifications] = useState(true)
   const [showInvoicesNotifs, setShowInvoicesNotifs] = useState(true)
   const [showEstimateNotifs, setShowEstimateNotifs] = useState(true)
@@ -20,8 +21,19 @@ export default function NotificationsSettings() {
   const [overdueDays, setOverdueDays] = useState(2)
   const [monthlyReports, setMonthlyReports] = useState('none')
   const isBusiness = myMemberType === 'business'
+  const myUserNotifSettings = useUserNotifSettings(myUserID)
+
+  const allowSave = myUserNotifSettings?.showNotifications === undefined ||
+    myUserNotifSettings?.showNotifications !== showNotifications ||
+    myUserNotifSettings?.showInvoicesNotifs !== showInvoicesNotifs ||
+    myUserNotifSettings?.showEstimateNotifs !== showEstimateNotifs ||
+    myUserNotifSettings?.showPaymentsNotifs !== showPaymentsNotifs ||
+    myUserNotifSettings?.showScheduleNotifs !== showScheduleNotifs ||
+    myUserNotifSettings?.overdueDays !== overdueDays ||
+    myUserNotifSettings?.monthlyReports !== monthlyReports
 
   const saveSettings = () => {
+    setPageLoading(true)
     updateDB(`users/${myUserID}/settings`, 'notifications', {
       showNotifications,
       showInvoicesNotifs,
@@ -31,7 +43,28 @@ export default function NotificationsSettings() {
       overdueDays,
       monthlyReports
     })
+    .then(() => {
+      setPageLoading(false)
+      setToasts(successToast('Your settings have been saved.'))
+    })
+    .catch(err => {
+      console.log(err)
+      setPageLoading(false)
+      setToasts(errorToast('There was an error while saving your settings. Please try again.'))
+    })
   }
+
+  useEffect(() => {
+    if (myUserNotifSettings?.showNotifications !== undefined) {
+      setShowNotifications(myUserNotifSettings.showNotifications)
+      setShowInvoicesNotifs(myUserNotifSettings.showInvoicesNotifs)
+      setShowEstimateNotifs(myUserNotifSettings.showEstimateNotifs)
+      setShowPaymentsNotifs(myUserNotifSettings.showPaymentsNotifs)
+      setShowScheduleNotifs(myUserNotifSettings.showScheduleNotifs)
+      setOverdueDays(myUserNotifSettings.overdueDays)
+      setMonthlyReports(myUserNotifSettings.monthlyReports)
+    }
+  },[myUserNotifSettings])
 
   return (
     <div className="settings-sub-page">
@@ -39,6 +72,13 @@ export default function NotificationsSettings() {
         label="Notifications"
         sublabel="Choose how you see and receive notifications on the app."
         icon="fas fa-bell"
+        button={
+          <AppButton
+            label="Save Settings"
+            onClick={saveSettings}
+            disabled={!allowSave}
+          />
+        }
       />
       <SettingsSectionSwitch
         label="Show popup notifications"
@@ -100,12 +140,6 @@ export default function NotificationsSettings() {
           }}
         />
       </SettingsSection>
-      <div className="btn-group">
-        <AppButton
-          label="Save"
-          onClick={saveSettings}
-        />
-      </div>
     </div>
   )
 }

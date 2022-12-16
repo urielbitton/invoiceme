@@ -1,18 +1,21 @@
 // @ts-nocheck
+import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency, formatPhoneNumber } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import AppTable from "../ui/AppTable"
 import { invoicePaperStyles } from "./invoicePaperStyles"
+import './styles/InvoicePaper.css'
 
 export default function InvoicePaper(props) {
 
-  const { myUser } = useContext(StoreContext)
+  const { myUser, myUserID } = useContext(StoreContext)
   const { invoice, myBusiness, taxNumbers, invoiceItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
     invoicePaperRef } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
+  const invSetttings = useUserInvoiceSettings(myUserID)
 
   const invoiceItemsList = invoiceItems?.map((item, index) => {
     return <div
@@ -30,7 +33,7 @@ export default function InvoicePaper(props) {
   })
 
   const taxNumbersList = myTaxNumbers?.map((taxNum, index) => {
-    return <h5 
+    return <h5
       style={invoicePaperStyles?.headerH5}
       key={index}
     >
@@ -39,8 +42,9 @@ export default function InvoicePaper(props) {
   })
 
   return (
+    invSetttings &&
     <div
-      className="paper-container"
+      className="invoice-paper-container"
       style={invoicePaperStyles?.container}
       ref={invoicePaperRef}
     >
@@ -58,12 +62,12 @@ export default function InvoicePaper(props) {
             className="left"
             style={invoicePaperStyles?.headerLeft}
           >
-            <h3 style={invoicePaperStyles?.headerLeftH3}>{invoice?.myBusiness?.name || myBusiness?.name}</h3>
-            <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(invoice?.myBusiness?.phone || myBusiness?.phone)}</h5>
-            <h5 style={invoicePaperStyles?.headerH5}>{invoice?.myBusiness?.address || myBusiness?.address}</h5>
+            { invSetttings.showMyName && <h3 style={invoicePaperStyles?.headerLeftH3}>{invoice?.myBusiness?.name || myBusiness?.name}</h3>}
+            { invSetttings.showMyPhone && <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(invoice?.myBusiness?.phone || myBusiness?.phone)}</h5>}
+            { invSetttings.showMyAddress && <h5 style={invoicePaperStyles?.headerH5}>{invoice?.myBusiness?.address || myBusiness?.address}</h5>}
             <h5 style={invoicePaperStyles?.headerH5}>
               {invoice?.myBusiness?.city || myBusiness?.city},&nbsp;
-              {invoice?.myBusiness?.region || myBusiness?.region},&nbsp; 
+              {invoice?.myBusiness?.region || myBusiness?.region},&nbsp;
               {invoice?.myBusiness?.postcode || myBusiness?.postcode}
             </h5>
             {taxNumbersList}

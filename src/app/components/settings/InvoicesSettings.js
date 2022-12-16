@@ -36,7 +36,25 @@ export default function InvoicesSettings() {
   const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
   const allowAddTax = taxName && taxNumber && taxRate
   const myUserInvoiceSettings = useUserInvoiceSettings(myUserID)
-  const location = useLocation()
+
+  const allowSave = myUserInvoiceSettings?.showMyName === undefined ||
+    showMyName !== myUserInvoiceSettings?.showMyName ||
+    showMyAddress !== myUserInvoiceSettings?.showMyAddress ||
+    showMyPhone !== myUserInvoiceSettings?.showMyPhone ||
+    showMyEmail !== myUserInvoiceSettings?.showMyEmail ||
+    showMyLogo !== myUserInvoiceSettings?.showMyLogo ||
+    showMyCompanyName !== myUserInvoiceSettings?.showMyCompanyName ||
+    showDueDate !== myUserInvoiceSettings?.showDueDate ||
+    showClientName !== myUserInvoiceSettings?.showClientName ||
+    showClientAddress !== myUserInvoiceSettings?.showClientAddress ||
+    showClientPhone !== myUserInvoiceSettings?.showClientPhone ||
+    showClientEmail !== myUserInvoiceSettings?.showClientEmail ||
+    showClientCompanyName !== myUserInvoiceSettings?.showClientCompanyName ||
+    showMyTaxNumbers !== myUserInvoiceSettings?.showMyTaxNumbers ||
+    showNotes !== myUserInvoiceSettings?.showNotes ||
+    invoiceNotes !== myUserInvoiceSettings?.invoiceNotes ||
+    showThankYouMessage !== myUserInvoiceSettings?.showThankYouMessage ||
+    showInvoiceMeTag !== myUserInvoiceSettings?.showInvoiceMeTag
 
   const deleteTaxNumber = (taxNumber) => {
     const confirm = window.confirm(`Are you sure you want to delete tax item: ${taxNumber.name}?`)
@@ -118,12 +136,42 @@ export default function InvoicesSettings() {
     setTaxNumbers(myUser?.taxNumbers)
   }, [myUser])
 
+  useEffect(() => {
+    if (myUserInvoiceSettings?.showMyName !== undefined) {
+      setShowMyName(myUserInvoiceSettings?.showMyName)
+      setShowMyAddress(myUserInvoiceSettings?.showMyAddress)
+      setShowMyPhone(myUserInvoiceSettings?.showMyPhone)
+      setShowMyEmail(myUserInvoiceSettings?.showMyEmail)
+      setShowMyLogo(myUserInvoiceSettings?.showMyLogo)
+      setShowMyCompanyName(myUserInvoiceSettings?.showMyCompanyName)
+      setShowDueDate(myUserInvoiceSettings?.showDueDate)
+      setShowClientName(myUserInvoiceSettings?.showClientName)
+      setShowClientAddress(myUserInvoiceSettings?.showClientAddress)
+      setShowClientPhone(myUserInvoiceSettings?.showClientPhone)
+      setShowClientEmail(myUserInvoiceSettings?.showClientEmail)
+      setShowClientCompanyName(myUserInvoiceSettings?.showClientCompanyName)
+      setShowMyTaxNumbers(myUserInvoiceSettings?.showMyTaxNumbers)
+      setShowNotes(myUserInvoiceSettings?.showNotes)
+      setInvoiceNotes(myUserInvoiceSettings?.invoiceNotes)
+      setShowThankYouMessage(myUserInvoiceSettings?.showThankYouMessage)
+      setShowInvoiceMeTag(myUserInvoiceSettings?.showInvoiceMeTag)
+    }
+  },[myUserInvoiceSettings])
+
   return (
     <div className="settings-sub-page">
       <SettingsTitles
         label="Invoices"
         sublabel="Customize your invoice creation experience."
         icon="fas fa-file-invoice-dollar"
+        button={
+          <AppButton
+            label="Save Settings"
+            onClick={saveSettings}
+            disabled={!allowSave}
+          />
+        }
+        isSticky
       />
       <SettingsSectionSwitch
         label="Show my name"
@@ -284,12 +332,6 @@ export default function InvoicesSettings() {
         businessAccess
         className="inv-showWatermark"
       />
-      <div className="btn-group">
-        <AppButton
-          label="Save"
-          onClick={saveSettings}
-        />
-      </div>
     </div>
   )
 }

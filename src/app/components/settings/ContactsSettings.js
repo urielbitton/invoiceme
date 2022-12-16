@@ -1,22 +1,46 @@
+import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useUserContactSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import SettingsSectionSwitch from "./SettingsSectionSwitch"
 import SettingsTitles from "./SettingsTitles"
 
 export default function ContactsSettings() {
 
-  const { myUserID } = useContext(StoreContext)
+  const { myUserID, setPageLoading, setToasts } = useContext(StoreContext)
   const [showFavorites, setShowFavorites] = useState(true)
+  const [showContactAvatar, setShowContactAvatar] = useState(true)
   const myUserContactSettings = useUserContactSettings(myUserID)
 
+  const allowSave = myUserContactSettings?.showFavorites === undefined || 
+    myUserContactSettings?.showFavorites !== showFavorites || 
+    myUserContactSettings?.showContactAvatar !== showContactAvatar
+
   const saveSettings = () => {
+    setPageLoading(true)
     updateDB(`users/${myUserID}/settings`, 'contacts', {
-      showFavorites
+      showFavorites,
+      showContactAvatar
+    })
+    .then(() => {
+      setPageLoading(false)
+      setToasts(successToast('Your settings have been saved.'))
+    })
+    .catch(err => {
+      console.log(err)
+      setPageLoading(false)
+      setToasts(errorToast('There was an error while saving your settings. Please try again.'))
     })
   }
+
+  useEffect(() => {
+    if (myUserContactSettings?.showFavorites !== undefined) {
+      setShowFavorites(myUserContactSettings.showFavorites)
+      setShowContactAvatar(myUserContactSettings.showContactAvatar)
+    }
+  },[myUserContactSettings])
 
   return (
     <div className="settings-sub-page">
@@ -24,6 +48,13 @@ export default function ContactsSettings() {
         label="Contacts"
         sublabel="Customize your contact creation experience."
         icon="fas fa-users"
+        button={
+          <AppButton
+            label="Save Settings"
+            onClick={saveSettings}
+            disabled={!allowSave}
+          />
+        }
       />
       <SettingsSectionSwitch
         label="Show Favorite Contacts"
@@ -32,12 +63,13 @@ export default function ContactsSettings() {
         setValue={setShowFavorites}
         className="showFavoriteContacts"
       />
-      <div className="btn-group">
-        <AppButton
-          label="Save"
-          onClick={saveSettings}
-        />
-      </div>
+      <SettingsSectionSwitch
+        label="Show Contact Avatar"
+        sublabel="Show contact avatar on my contacts page."
+        value={showContactAvatar}
+        setValue={setShowContactAvatar}
+        className="showContactAvatar"
+      />
     </div>
   )
 }

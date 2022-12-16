@@ -71,6 +71,36 @@ export const getUserContactSettingsByID = (userID, setSettings) => {
     })
 }
 
+export const getUserNotifSettingsByID = (userID, setSettings) => {
+  db.collection('users')
+    .doc(userID)
+    .collection('settings')
+    .doc('notifications')
+    .onSnapshot(snap => {
+      setSettings(snap.data())
+    })
+}
+
+export const getUserGeneralSettingsByID = (userID, setSettings) => {
+  db.collection('users')
+    .doc(userID)
+    .collection('settings')
+    .doc('general')
+    .onSnapshot(snap => {
+      setSettings(snap.data())
+    })
+}
+
+export const getUserEmailSettingsByID = (userID, setSettings) => {
+  db.collection('users')
+    .doc(userID)
+    .collection('settings')
+    .doc('emails')
+    .onSnapshot(snap => {
+      setSettings(snap.data())
+    })
+}
+
 export const saveAccountInfoService = (userID, data, uploadedImg, contactStoragePath) => {
   return uploadMultipleFilesToFireStorage(uploadedImg ? [uploadedImg.file] : null, contactStoragePath, ['photo-url'])
     .then(imgURL => {

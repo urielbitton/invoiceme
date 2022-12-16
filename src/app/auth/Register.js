@@ -72,9 +72,11 @@ export default function Register() {
     <div className="login-page register-page">
       <div className="login-info">
         <div className="container">
-          <div className="logo-container">
-            <img src={logo} className="logo" alt="logo" />
-            <h5>Invoice Me</h5>
+        <div className="auth-titles">
+            <h4>Sign Up</h4>
+            <div className="logo-container">
+              <img src={logo} className="logo" alt="logo" />
+            </div>
           </div>
           <div className="social-logins">
             <div

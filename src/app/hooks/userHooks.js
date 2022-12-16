@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { doGetUserByID, getScheduledEventsByUserID, getUserByID, getUserContactSettingsByID, 
-  getUserEstimateSettingsByID, getUserInvoiceSettingsByID } from "app/services/userServices"
+  getUserEmailSettingsByID, 
+  getUserEstimateSettingsByID, getUserGeneralSettingsByID, getUserInvoiceSettingsByID, getUserNotifSettingsByID } from "app/services/userServices"
 
 export default function useUser(userID) {
 
@@ -64,6 +65,45 @@ export const useUserContactSettings = (userID) => {
   useEffect(() => {
     if(userID) {
       getUserContactSettingsByID(userID, setUserSettings)
+    }
+  },[userID])
+
+  return userSettings
+}
+
+export const useUserNotifSettings = (userID) => {
+
+  const [userSettings, setUserSettings] = useState(null)
+
+  useEffect(() => {
+    if(userID) {
+      getUserNotifSettingsByID(userID, setUserSettings)
+    }
+  },[userID])
+
+  return userSettings
+}
+
+export const useUserGeneralSettings = (userID) => {
+
+  const [userSettings, setUserSettings] = useState(null)
+
+  useEffect(() => {
+    if(userID) {
+      getUserGeneralSettingsByID(userID, setUserSettings)
+    }
+  },[userID])
+
+  return userSettings
+}
+
+export const useUserEmailSettings = (userID) => {
+
+  const [userSettings, setUserSettings] = useState(null)
+
+  useEffect(() => {
+    if(userID) {
+      getUserEmailSettingsByID(userID, setUserSettings)
     }
   },[userID])
 

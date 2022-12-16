@@ -1,8 +1,9 @@
 import { monthlyReportOptions } from "app/data/general"
-import { infoToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
+import { useUserEmailSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import { AppSelect } from "../ui/AppInputs"
 import SettingsSection from "./SettingsSection"
@@ -11,17 +12,47 @@ import SettingsTitles from "./SettingsTitles"
 
 export default function EmailsSettings() {
 
-  const { myMemberType, myUserID, setToasts } = useContext(StoreContext)
+  const { myMemberType, myUserID, setToasts, setPageLoading } = useContext(StoreContext)
   const [monthlyReports, setMonthlyReports] = useState('none')
   const [unpaidInvoicesEmail, setUnpaidInvoicesEmail] = useState(false)
+  const [emailInvoiceNotifs, setEmailInvoiceNotifs] = useState(false)
   const [smsInvoiceNotifs, setSmsInvoiceNotifs] = useState(false)
   const isBusiness = myMemberType === 'business'
+  const myUserEmailsSettings = useUserEmailSettings(myUserID)
+
+  const allowSave = myUserEmailsSettings?.monthlyReports === undefined ||
+    myUserEmailsSettings?.monthlyReports !== monthlyReports ||
+    myUserEmailsSettings?.unpaidInvoicesEmail !== unpaidInvoicesEmail ||
+    myUserEmailsSettings?.emailInvoiceNotifs !== emailInvoiceNotifs ||
+    myUserEmailsSettings?.smsInvoiceNotifs !== smsInvoiceNotifs
 
   const saveSettings = () => {
+    setPageLoading(true)
     updateDB(`users/${myUserID}/settings`, 'emails', {
-      monthlyReports
+      monthlyReports,
+      unpaidInvoicesEmail,
+      emailInvoiceNotifs,
+      smsInvoiceNotifs
+    })
+    .then(() => {
+      setPageLoading(false)
+      setToasts(successToast('Settings saved successfully.'))
+    })
+    .catch(err => {
+      console.log(err)
+      setPageLoading(false)
+      setToasts(errorToast('There was an error while saving our settings. Please try again.'))
     })
   }
+
+  useEffect(() => {
+    if (myUserEmailsSettings?.monthlyReports !== undefined) {
+      setMonthlyReports(myUserEmailsSettings?.monthlyReports)
+      setUnpaidInvoicesEmail(myUserEmailsSettings?.unpaidInvoicesEmail)
+      setEmailInvoiceNotifs(myUserEmailsSettings?.emailInvoiceNotifs)
+      setSmsInvoiceNotifs(myUserEmailsSettings?.smsInvoiceNotifs)
+    }
+  },[myUserEmailsSettings])
 
   return (
     <div className="settings-sub-page">
@@ -29,13 +60,29 @@ export default function EmailsSettings() {
         label="Emails & SMS"
         sublabel="Choose how you send and receive emails and SMS."
         icon="fas fa-mail-bulk"
+        button={
+          <AppButton
+            label="Save Settings"
+            onClick={saveSettings}
+            disabled={!allowSave}
+          />
+        }
       />
       <SettingsSectionSwitch
         label="Send me unpaid status emails"
-        sublabel="Send me monthl emails of all unpaid invoices."
+        sublabel="Send me monthly emails of all unpaid invoices."
         value={unpaidInvoicesEmail}
         setValue={setUnpaidInvoicesEmail}
         className="sendUnpaidStatusEmails"
+        badge="Business"
+        businessAccess
+      />
+      <SettingsSectionSwitch
+        label="Send email invoice notifications"
+        sublabel="Send me an email when I receive a new invoice."
+        value={emailInvoiceNotifs}
+        setValue={setEmailInvoiceNotifs}
+        className="sendEmailInvoiceNotifs"
         badge="Business"
         businessAccess
       />
@@ -66,12 +113,6 @@ export default function EmailsSettings() {
           }}
         />
       </SettingsSection>
-      <div className="btn-group">
-        <AppButton
-          label="Save"
-          onClick={saveSettings}
-        />
-      </div>
     </div>
   )
 }
