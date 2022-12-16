@@ -2,6 +2,7 @@ import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useUserEstimateSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
+import { isEmptyObject } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import { AppTextarea } from "../ui/AppInputs"
@@ -16,6 +17,7 @@ export default function EstimatesSettings() {
   const [showMyAddress, setShowMyAddress] = useState(true)
   const [showMyPhone, setShowMyPhone] = useState(true)
   const [showMyEmail, setShowMyEmail] = useState(false)
+  const [showMyCountry, setShowMyCountry] = useState(false)
   const [showMyLogo, setShowMyLogo] = useState(true)
   const [showMyCompanyName, setShowMyCompanyName] = useState(false)
   const [showDueDate, setShowDueDate] = useState(true)
@@ -23,6 +25,7 @@ export default function EstimatesSettings() {
   const [showClientAddress, setShowClientAddress] = useState(true)
   const [showClientPhone, setShowClientPhone] = useState(true)
   const [showClientEmail, setShowClientEmail] = useState(false)
+  const [showClientCountry, setShowClientCountry] = useState(false)
   const [showClientCompanyName, setShowClientCompanyName] = useState(false)
   const [showMyTaxNumbers, setShowMyTaxNumbers] = useState(true)
   const [showNotes, setShowNotes] = useState(true)
@@ -31,11 +34,11 @@ export default function EstimatesSettings() {
   const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
   const myUserEstimateSettings = useUserEstimateSettings(myUserID)
 
-  const allowSave = myUserEstimateSettings?.showMyName === undefined ||
+  const allowSave = myUserEstimateSettings?.showMyName !== showMyName ||
     myUserEstimateSettings?.showMyAddress !== showMyAddress ||
-    myUserEstimateSettings?.showMyName !== showMyName ||
     myUserEstimateSettings?.showMyPhone !== showMyPhone ||
     myUserEstimateSettings?.showMyEmail !== showMyEmail ||
+    myUserEstimateSettings?.showMyCountry !== showMyCountry ||
     myUserEstimateSettings?.showMyLogo !== showMyLogo ||
     myUserEstimateSettings?.showMyCompanyName !== showMyCompanyName ||
     myUserEstimateSettings?.showDueDate !== showDueDate ||
@@ -43,6 +46,7 @@ export default function EstimatesSettings() {
     myUserEstimateSettings?.showClientAddress !== showClientAddress ||
     myUserEstimateSettings?.showClientPhone !== showClientPhone ||
     myUserEstimateSettings?.showClientEmail !== showClientEmail ||
+    myUserEstimateSettings?.showClientCountry !== showClientCountry ||
     myUserEstimateSettings?.showClientCompanyName !== showClientCompanyName ||
     myUserEstimateSettings?.showMyTaxNumbers !== showMyTaxNumbers ||
     myUserEstimateSettings?.showNotes !== showNotes ||
@@ -57,14 +61,17 @@ export default function EstimatesSettings() {
       showMyAddress,
       showMyPhone,
       showMyEmail,
+      showMyCountry,
       showMyLogo,
       showMyCompanyName,
       showDueDate,
       showClientName,
       showClientAddress,
       showClientPhone,
+      showClientCountry,
       showClientEmail,
       showClientCompanyName,
+      showMyTaxNumbers,
       showNotes,
       estimateNotes,
       showThankYouMessage,
@@ -82,24 +89,26 @@ export default function EstimatesSettings() {
   }
 
   useEffect(() => {
-    if (myUserEstimateSettings?.showMyName !== undefined) {
-      setShowMyName(myUserEstimateSettings?.showMyName)
-      setShowMyAddress(myUserEstimateSettings?.showMyAddress)
-      setShowMyPhone(myUserEstimateSettings?.showMyPhone)
-      setShowMyEmail(myUserEstimateSettings?.showMyEmail)
-      setShowMyLogo(myUserEstimateSettings?.showMyLogo)
-      setShowMyCompanyName(myUserEstimateSettings?.showMyCompanyName)
-      setShowDueDate(myUserEstimateSettings?.showDueDate)
-      setShowClientName(myUserEstimateSettings?.showClientName)
-      setShowClientAddress(myUserEstimateSettings?.showClientAddress)
-      setShowClientPhone(myUserEstimateSettings?.showClientPhone)
-      setShowClientEmail(myUserEstimateSettings?.showClientEmail)
-      setShowClientCompanyName(myUserEstimateSettings?.showClientCompanyName)
-      setShowMyTaxNumbers(myUserEstimateSettings?.showMyTaxNumbers)
-      setShowNotes(myUserEstimateSettings?.showNotes)
-      setInvoiceNotes(myUserEstimateSettings?.estimateNotes)
-      setShowThankYouMessage(myUserEstimateSettings?.showThankYouMessage)
-      setShowInvoiceMeTag(myUserEstimateSettings?.showInvoiceMeTag)
+    if (!isEmptyObject(myUserEstimateSettings)) {
+      setShowMyName(myUserEstimateSettings?.showMyName || true)
+      setShowMyAddress(myUserEstimateSettings?.showMyAddress || true)
+      setShowMyPhone(myUserEstimateSettings?.showMyPhone || true)
+      setShowMyEmail(myUserEstimateSettings?.showMyEmail || false)
+      setShowMyCountry(myUserEstimateSettings?.showMyCountry || false)
+      setShowMyLogo(myUserEstimateSettings?.showMyLogo || true)
+      setShowMyCompanyName(myUserEstimateSettings?.showMyCompanyName || false)
+      setShowDueDate(myUserEstimateSettings?.showDueDate || true)
+      setShowClientName(myUserEstimateSettings?.showClientName || true)
+      setShowClientAddress(myUserEstimateSettings?.showClientAddress || true)
+      setShowClientPhone(myUserEstimateSettings?.showClientPhone || true)
+      setShowClientEmail(myUserEstimateSettings?.showClientEmail || false)
+      setShowClientCountry(myUserEstimateSettings?.showClientCountry || false)
+      setShowClientCompanyName(myUserEstimateSettings?.showClientCompanyName || false)
+      setShowMyTaxNumbers(myUserEstimateSettings?.showMyTaxNumbers || true)
+      setShowNotes(myUserEstimateSettings?.showNotes || true)
+      setInvoiceNotes(myUserEstimateSettings?.estimateNotes || '')
+      setShowThankYouMessage(myUserEstimateSettings?.showThankYouMessage || true)
+      setShowInvoiceMeTag(myUserEstimateSettings?.showInvoiceMeTag || true)
     }
   },[myUserEstimateSettings])
 
@@ -145,6 +154,13 @@ export default function EstimatesSettings() {
         value={showMyEmail}
         setValue={setShowMyEmail}
         className="est-showMyEmail"
+      />
+      <SettingsSectionSwitch
+        label="Show my country"
+        sublabel="Show my country on estimates"
+        value={showMyCountry}
+        setValue={setShowMyCountry}
+        className="est-showClientInfo"
       />
       <SettingsSectionSwitch
         label="Show my logo"
@@ -200,6 +216,13 @@ export default function EstimatesSettings() {
         sublabel="Show client email on estimates"
         value={showClientEmail}
         setValue={setShowClientEmail}
+        className="est-showClientInfo"
+      />
+      <SettingsSectionSwitch
+        label="Show client country"
+        sublabel="Show client country on estimates"
+        value={showClientCountry}
+        setValue={setShowClientCountry}
         className="est-showClientInfo"
       />
       <SettingsSectionSwitch

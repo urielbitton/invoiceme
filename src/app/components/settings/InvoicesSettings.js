@@ -2,8 +2,8 @@ import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
+import { isEmptyObject } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
-import { useLocation } from "react-router-dom"
 import AppButton from "../ui/AppButton"
 import { AppInput, AppTextarea } from "../ui/AppInputs"
 import SettingsSection from "./SettingsSection"
@@ -17,6 +17,7 @@ export default function InvoicesSettings() {
   const [showMyAddress, setShowMyAddress] = useState(true)
   const [showMyPhone, setShowMyPhone] = useState(true)
   const [showMyEmail, setShowMyEmail] = useState(false)
+  const [showMyCountry, setShowMyCountry] = useState(false)
   const [showMyLogo, setShowMyLogo] = useState(true)
   const [showMyCompanyName, setShowMyCompanyName] = useState(false)
   const [showDueDate, setShowDueDate] = useState(true)
@@ -24,6 +25,7 @@ export default function InvoicesSettings() {
   const [showClientAddress, setShowClientAddress] = useState(true)
   const [showClientPhone, setShowClientPhone] = useState(true)
   const [showClientEmail, setShowClientEmail] = useState(false)
+  const [showClientCountry, setShowClientCountry] = useState(false)
   const [showClientCompanyName, setShowClientCompanyName] = useState(false)
   const [showMyTaxNumbers, setShowMyTaxNumbers] = useState(true)
   const [showNotes, setShowNotes] = useState(true)
@@ -37,11 +39,11 @@ export default function InvoicesSettings() {
   const allowAddTax = taxName && taxNumber && taxRate
   const myUserInvoiceSettings = useUserInvoiceSettings(myUserID)
 
-  const allowSave = myUserInvoiceSettings?.showMyName === undefined ||
-    showMyName !== myUserInvoiceSettings?.showMyName ||
+  const allowSave = showMyName !== myUserInvoiceSettings?.showMyName ||
     showMyAddress !== myUserInvoiceSettings?.showMyAddress ||
     showMyPhone !== myUserInvoiceSettings?.showMyPhone ||
     showMyEmail !== myUserInvoiceSettings?.showMyEmail ||
+    showMyCountry !== myUserInvoiceSettings?.showMyCountry ||
     showMyLogo !== myUserInvoiceSettings?.showMyLogo ||
     showMyCompanyName !== myUserInvoiceSettings?.showMyCompanyName ||
     showDueDate !== myUserInvoiceSettings?.showDueDate ||
@@ -49,18 +51,19 @@ export default function InvoicesSettings() {
     showClientAddress !== myUserInvoiceSettings?.showClientAddress ||
     showClientPhone !== myUserInvoiceSettings?.showClientPhone ||
     showClientEmail !== myUserInvoiceSettings?.showClientEmail ||
+    showClientCountry !== myUserInvoiceSettings?.showClientCountry ||
     showClientCompanyName !== myUserInvoiceSettings?.showClientCompanyName ||
     showMyTaxNumbers !== myUserInvoiceSettings?.showMyTaxNumbers ||
     showNotes !== myUserInvoiceSettings?.showNotes ||
     invoiceNotes !== myUserInvoiceSettings?.invoiceNotes ||
     showThankYouMessage !== myUserInvoiceSettings?.showThankYouMessage ||
-    showInvoiceMeTag !== myUserInvoiceSettings?.showInvoiceMeTag
+    showInvoiceMeTag !== myUserInvoiceSettings?.showInvoiceMeTag ||
+    taxNumbers !== myUser?.taxNumbers
 
   const deleteTaxNumber = (taxNumber) => {
     const confirm = window.confirm(`Are you sure you want to delete tax item: ${taxNumber.name}?`)
     if (confirm) {
-      const newTaxNumbers = taxNumbers.filter(tax => tax.number !== taxNumber.number)
-      setTaxNumbers(newTaxNumbers)
+      setTaxNumbers(prev => prev.filter(tax => tax.number !== taxNumber.number))
     }
   }
 
@@ -84,43 +87,45 @@ export default function InvoicesSettings() {
 
   const saveSettings = () => {
     setPageLoading(true)
-    updateDB(`users/${myUserID}/settings`, 'invoices', {
-      showMyName,
-      showMyAddress,
-      showMyPhone,
-      showMyEmail,
-      showMyLogo,
-      showMyCompanyName,
-      showDueDate,
-      showClientName,
-      showClientAddress,
-      showClientPhone,
-      showClientEmail,
-      showClientCompanyName,
-      showMyTaxNumbers,
-      showNotes,
-      invoiceNotes,
-      showThankYouMessage,
-      showInvoiceMeTag
+    updateDB('users', myUserID, {
+      taxNumbers
     })
+    .then(() => {
+      updateDB(`users/${myUserID}/settings`, 'invoices', {
+        showMyName,
+        showMyAddress,
+        showMyPhone,
+        showMyEmail,
+        showMyCountry,
+        showMyLogo,
+        showMyCompanyName,
+        showDueDate,
+        showClientName,
+        showClientAddress,
+        showClientPhone,
+        showClientEmail,
+        showClientCountry,
+        showClientCompanyName,
+        showMyTaxNumbers,
+        showNotes,
+        invoiceNotes,
+        showThankYouMessage,
+        showInvoiceMeTag,
+      })
       .then(() => {
-        updateDB('users', myUserID, {
-          taxNumbers
-        })
-          .then(() => {
-            setPageLoading(false)
-            setToasts(successToast('Settings saved successfully.'))
-          })
-          .catch(err => {
-            console.log(err)
-            setPageLoading(false)
-            setToasts(errorToast('There was an error while saving our settings. Please try again.'))
-          })
+        setPageLoading(false)
+        setToasts(successToast('Settings saved successfully.'))
       })
       .catch(err => {
         console.log(err)
         setPageLoading(false)
-        setToasts(errorToast('There was an error while saving our settings. Please try again.'))
+        setToasts(errorToast('There was an error while saving your settings. Please try again.'))
+      })
+    })
+      .catch(err => {
+        console.log(err)
+        setPageLoading(false)
+        setToasts(errorToast('There was an error while saving your settings. Please try again.'))
       })
   }
 
@@ -137,24 +142,26 @@ export default function InvoicesSettings() {
   }, [myUser])
 
   useEffect(() => {
-    if (myUserInvoiceSettings?.showMyName !== undefined) {
-      setShowMyName(myUserInvoiceSettings?.showMyName)
-      setShowMyAddress(myUserInvoiceSettings?.showMyAddress)
-      setShowMyPhone(myUserInvoiceSettings?.showMyPhone)
-      setShowMyEmail(myUserInvoiceSettings?.showMyEmail)
-      setShowMyLogo(myUserInvoiceSettings?.showMyLogo)
-      setShowMyCompanyName(myUserInvoiceSettings?.showMyCompanyName)
-      setShowDueDate(myUserInvoiceSettings?.showDueDate)
-      setShowClientName(myUserInvoiceSettings?.showClientName)
-      setShowClientAddress(myUserInvoiceSettings?.showClientAddress)
-      setShowClientPhone(myUserInvoiceSettings?.showClientPhone)
-      setShowClientEmail(myUserInvoiceSettings?.showClientEmail)
-      setShowClientCompanyName(myUserInvoiceSettings?.showClientCompanyName)
-      setShowMyTaxNumbers(myUserInvoiceSettings?.showMyTaxNumbers)
-      setShowNotes(myUserInvoiceSettings?.showNotes)
-      setInvoiceNotes(myUserInvoiceSettings?.invoiceNotes)
-      setShowThankYouMessage(myUserInvoiceSettings?.showThankYouMessage)
-      setShowInvoiceMeTag(myUserInvoiceSettings?.showInvoiceMeTag)
+    if (!isEmptyObject(myUserInvoiceSettings)) {
+      setShowMyName(myUserInvoiceSettings?.showMyName || true)
+      setShowMyAddress(myUserInvoiceSettings?.showMyAddress || true)
+      setShowMyPhone(myUserInvoiceSettings?.showMyPhone || true)
+      setShowMyEmail(myUserInvoiceSettings?.showMyEmail || false)
+      setShowMyCountry(myUserInvoiceSettings?.showMyCountry || false)
+      setShowMyLogo(myUserInvoiceSettings?.showMyLogo || true)
+      setShowMyCompanyName(myUserInvoiceSettings?.showMyCompanyName || false)
+      setShowDueDate(myUserInvoiceSettings?.showDueDate || true)
+      setShowClientName(myUserInvoiceSettings?.showClientName || true)
+      setShowClientAddress(myUserInvoiceSettings?.showClientAddress || true)
+      setShowClientPhone(myUserInvoiceSettings?.showClientPhone || true)
+      setShowClientEmail(myUserInvoiceSettings?.showClientEmail || false)
+      setShowClientCountry(myUserInvoiceSettings?.showClientCountry || false)
+      setShowClientCompanyName(myUserInvoiceSettings?.showClientCompanyName || false)
+      setShowMyTaxNumbers(myUserInvoiceSettings?.showMyTaxNumbers || true)
+      setShowNotes(myUserInvoiceSettings?.showNotes || true)
+      setInvoiceNotes(myUserInvoiceSettings?.invoiceNotes || '')
+      setShowThankYouMessage(myUserInvoiceSettings?.showThankYouMessage || true)
+      setShowInvoiceMeTag(myUserInvoiceSettings?.showInvoiceMeTag || true)
     }
   },[myUserInvoiceSettings])
 
@@ -200,6 +207,13 @@ export default function InvoicesSettings() {
         value={showMyEmail}
         setValue={setShowMyEmail}
         className="inv-showMyEmail"
+      />
+      <SettingsSectionSwitch
+        label="Show my country"
+        sublabel="Show my country on invoice headers"
+        value={showMyCountry}
+        setValue={setShowMyCountry}
+        className="inv-showMyCountry"
       />
       <SettingsSectionSwitch
         label="Show my logo"
@@ -255,6 +269,13 @@ export default function InvoicesSettings() {
         sublabel="Show client email on invoices"
         value={showClientEmail}
         setValue={setShowClientEmail}
+        className="inv-showClientInfo"
+      />
+      <SettingsSectionSwitch
+        label="Show client country"
+        sublabel="Show client country on invoices"
+        value={showClientCountry}
+        setValue={setShowClientCountry}
         className="inv-showClientInfo"
       />
       <SettingsSectionSwitch

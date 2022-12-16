@@ -3,6 +3,7 @@ import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserEmailSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
+import { isEmptyObject } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import { AppSelect } from "../ui/AppInputs"
@@ -20,8 +21,7 @@ export default function EmailsSettings() {
   const isBusiness = myMemberType === 'business'
   const myUserEmailsSettings = useUserEmailSettings(myUserID)
 
-  const allowSave = myUserEmailsSettings?.monthlyReports === undefined ||
-    myUserEmailsSettings?.monthlyReports !== monthlyReports ||
+  const allowSave = myUserEmailsSettings?.monthlyReports !== monthlyReports ||
     myUserEmailsSettings?.unpaidInvoicesEmail !== unpaidInvoicesEmail ||
     myUserEmailsSettings?.emailInvoiceNotifs !== emailInvoiceNotifs ||
     myUserEmailsSettings?.smsInvoiceNotifs !== smsInvoiceNotifs
@@ -41,16 +41,16 @@ export default function EmailsSettings() {
     .catch(err => {
       console.log(err)
       setPageLoading(false)
-      setToasts(errorToast('There was an error while saving our settings. Please try again.'))
+      setToasts(errorToast('There was an error while saving your settings. Please try again.'))
     })
   }
 
   useEffect(() => {
-    if (myUserEmailsSettings?.monthlyReports !== undefined) {
-      setMonthlyReports(myUserEmailsSettings?.monthlyReports)
-      setUnpaidInvoicesEmail(myUserEmailsSettings?.unpaidInvoicesEmail)
-      setEmailInvoiceNotifs(myUserEmailsSettings?.emailInvoiceNotifs)
-      setSmsInvoiceNotifs(myUserEmailsSettings?.smsInvoiceNotifs)
+    if (!isEmptyObject(myUserEmailsSettings)) {
+      setMonthlyReports(myUserEmailsSettings?.monthlyReports || 'none')
+      setUnpaidInvoicesEmail(myUserEmailsSettings?.unpaidInvoicesEmail || false)
+      setEmailInvoiceNotifs(myUserEmailsSettings?.emailInvoiceNotifs || false)
+      setSmsInvoiceNotifs(myUserEmailsSettings?.smsInvoiceNotifs || false)
     }
   },[myUserEmailsSettings])
 

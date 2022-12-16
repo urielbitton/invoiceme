@@ -68,6 +68,7 @@ export default function InvoicePaper(props) {
             <h5 style={invoicePaperStyles?.headerH5}>
               {invoice?.myBusiness?.city || myBusiness?.city},&nbsp;
               {invoice?.myBusiness?.region || myBusiness?.region},&nbsp;
+              {invSetttings.showMyCountry ? `${invoice?.myBusiness?.country || myBusiness?.country} ` : null}
               {invoice?.myBusiness?.postcode || myBusiness?.postcode}
             </h5>
             {taxNumbersList}
@@ -79,9 +80,12 @@ export default function InvoicePaper(props) {
             <h3 style={invoicePaperStyles?.headerRightH3}>Invoice</h3>
             <h5 style={invoicePaperStyles?.headerH5}>#{invoice?.invoiceNumber}</h5>
             <h5 style={invoicePaperStyles?.headerH5}>Invoice Date: {convertClassicDate(invoice?.dateCreated.toDate())}</h5>
-            <h5 style={invoicePaperStyles?.headerH5}>
-              Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(invoice?.dateDue.toDate())}</span>
-            </h5>
+            {
+              invSetttings?.showDueDate &&
+              <h5 style={invoicePaperStyles?.headerH5}>
+                Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(invoice?.dateDue.toDate())}</span>
+              </h5>
+            }
           </div>
         </div>
       </header>

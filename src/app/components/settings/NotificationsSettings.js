@@ -3,6 +3,7 @@ import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserNotifSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
+import { isEmptyObject } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import { AppSelect } from "../ui/AppInputs"
@@ -23,8 +24,7 @@ export default function NotificationsSettings() {
   const isBusiness = myMemberType === 'business'
   const myUserNotifSettings = useUserNotifSettings(myUserID)
 
-  const allowSave = myUserNotifSettings?.showNotifications === undefined ||
-    myUserNotifSettings?.showNotifications !== showNotifications ||
+  const allowSave = myUserNotifSettings?.showNotifications !== showNotifications ||
     myUserNotifSettings?.showInvoicesNotifs !== showInvoicesNotifs ||
     myUserNotifSettings?.showEstimateNotifs !== showEstimateNotifs ||
     myUserNotifSettings?.showPaymentsNotifs !== showPaymentsNotifs ||
@@ -55,14 +55,14 @@ export default function NotificationsSettings() {
   }
 
   useEffect(() => {
-    if (myUserNotifSettings?.showNotifications !== undefined) {
-      setShowNotifications(myUserNotifSettings.showNotifications)
-      setShowInvoicesNotifs(myUserNotifSettings.showInvoicesNotifs)
-      setShowEstimateNotifs(myUserNotifSettings.showEstimateNotifs)
-      setShowPaymentsNotifs(myUserNotifSettings.showPaymentsNotifs)
-      setShowScheduleNotifs(myUserNotifSettings.showScheduleNotifs)
-      setOverdueDays(myUserNotifSettings.overdueDays)
-      setMonthlyReports(myUserNotifSettings.monthlyReports)
+    if (!isEmptyObject(myUserNotifSettings)) {
+      setShowNotifications(myUserNotifSettings?.showNotifications || true)  
+      setShowInvoicesNotifs(myUserNotifSettings?.showInvoicesNotifs || true)
+      setShowEstimateNotifs(myUserNotifSettings?.showEstimateNotifs || true)
+      setShowPaymentsNotifs(myUserNotifSettings?.showPaymentsNotifs || true)
+      setShowScheduleNotifs(myUserNotifSettings?.showScheduleNotifs || true)
+      setOverdueDays(myUserNotifSettings?.overdueDays)
+      setMonthlyReports(myUserNotifSettings?.monthlyReports)
     }
   },[myUserNotifSettings])
 

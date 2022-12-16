@@ -2,6 +2,7 @@ import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useUserContactSettings } from "app/hooks/userHooks"
 import { updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
+import { isEmptyObject } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import AppButton from "../ui/AppButton"
 import SettingsSectionSwitch from "./SettingsSectionSwitch"
@@ -14,8 +15,7 @@ export default function ContactsSettings() {
   const [showContactAvatar, setShowContactAvatar] = useState(true)
   const myUserContactSettings = useUserContactSettings(myUserID)
 
-  const allowSave = myUserContactSettings?.showFavorites === undefined || 
-    myUserContactSettings?.showFavorites !== showFavorites || 
+  const allowSave = myUserContactSettings?.showFavorites !== showFavorites || 
     myUserContactSettings?.showContactAvatar !== showContactAvatar
 
   const saveSettings = () => {
@@ -36,9 +36,9 @@ export default function ContactsSettings() {
   }
 
   useEffect(() => {
-    if (myUserContactSettings?.showFavorites !== undefined) {
-      setShowFavorites(myUserContactSettings.showFavorites)
-      setShowContactAvatar(myUserContactSettings.showContactAvatar)
+    if (!isEmptyObject(myUserContactSettings)) {
+      setShowFavorites(myUserContactSettings?.showFavorites || true)
+      setShowContactAvatar(myUserContactSettings?.showContactAvatar || true)
     }
   },[myUserContactSettings])
 

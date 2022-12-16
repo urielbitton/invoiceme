@@ -10,6 +10,10 @@ const config = {
 }
 const firebaseApp = firebase.initializeApp(config)
 
+firebase.firestore().settings({
+  ignoreUndefinedProperties: true,
+})
+
 const db = firebaseApp.firestore()
 const auth = firebaseApp.auth()
 const storage = firebaseApp.storage()

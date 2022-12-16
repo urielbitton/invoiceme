@@ -65,6 +65,14 @@
   },
   {
     "label": "Invoices",
+    "sublabel": "Show my country on invoice headers",
+    "settingID": "inv-showMyCountry",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
     "sublabel": "Show my logo on invoice headers",
     "settingID": "inv-showMyLogo",
     "tags": [],
@@ -171,6 +179,14 @@
     "label": "Estimates",
     "sublabel": "Show my email on estimate headers",
     "settingID": "est-showMyEmail",
+    "tags": [],
+    "pageURL": "/settings/estimates",
+    "icon": "fas fa-file-invoice"
+  },
+  {
+    "label": "Estimates",
+    "sublabel": "Show my country on estimate headers",
+    "settingID": "est-showMyCountry",
     "tags": [],
     "pageURL": "/settings/estimates",
     "icon": "fas fa-file-invoice"
