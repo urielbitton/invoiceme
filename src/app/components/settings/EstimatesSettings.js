@@ -30,7 +30,7 @@ export default function EstimatesSettings() {
   const [showMyTaxNumbers, setShowMyTaxNumbers] = useState(true)
   const [showNotes, setShowNotes] = useState(true)
   const [estimateNotes, setInvoiceNotes] = useState('')
-  const [showThankYouMessage, setShowThankYouMessage] = useState(true)
+  const [thankYouMessage, setThankYouMessage] = useState("Thank you for your business.")
   const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
   const myUserEstimateSettings = useUserEstimateSettings(myUserID)
 
@@ -51,7 +51,7 @@ export default function EstimatesSettings() {
     myUserEstimateSettings?.showMyTaxNumbers !== showMyTaxNumbers ||
     myUserEstimateSettings?.showNotes !== showNotes ||
     myUserEstimateSettings?.estimateNotes !== estimateNotes ||
-    myUserEstimateSettings?.showThankYouMessage !== showThankYouMessage ||
+    myUserEstimateSettings?.thankYouMessage !== thankYouMessage ||
     myUserEstimateSettings?.showInvoiceMeTag !== showInvoiceMeTag
 
   const saveSettings = () => {
@@ -74,7 +74,7 @@ export default function EstimatesSettings() {
       showMyTaxNumbers,
       showNotes,
       estimateNotes,
-      showThankYouMessage,
+      thankYouMessage,
       showInvoiceMeTag
     })
       .then(() => {
@@ -107,7 +107,7 @@ export default function EstimatesSettings() {
       setShowMyTaxNumbers(myUserEstimateSettings?.showMyTaxNumbers || true)
       setShowNotes(myUserEstimateSettings?.showNotes || true)
       setInvoiceNotes(myUserEstimateSettings?.estimateNotes || '')
-      setShowThankYouMessage(myUserEstimateSettings?.showThankYouMessage || true)
+      setThankYouMessage(myUserEstimateSettings?.thankYouMessage || 'Thank you for your business.')
       setShowInvoiceMeTag(myUserEstimateSettings?.showInvoiceMeTag || true)
     }
   },[myUserEstimateSettings])
@@ -249,13 +249,16 @@ export default function EstimatesSettings() {
           onChange={e => setInvoiceNotes(e.target.value)}
         />
       </SettingsSection>
-      <SettingsSectionSwitch
-        label="Show 'Thank you' message"
-        sublabel="Show 'Thank you' message on bottom of estimate"
-        value={showThankYouMessage}
-        setValue={setShowThankYouMessage}
+      <SettingsSection
+        label="Add a Thank you message"
+        sublabel="Add a thank you message on bottom of estimate"
         className="est-showThankYou"
-      />
+      >
+        <AppTextarea
+          value={thankYouMessage}
+          onChange={e => setThankYouMessage(e.target.value)}
+        />
+      </SettingsSection>
       <SettingsSectionSwitch
         badge="Business"
         label="Show 'Invoice Me' watermark"

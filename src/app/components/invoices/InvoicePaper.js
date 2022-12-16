@@ -15,7 +15,7 @@ export default function InvoicePaper(props) {
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
     invoicePaperRef } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
-  const invSetttings = useUserInvoiceSettings(myUserID)
+  const invSettings = useUserInvoiceSettings(myUserID)
 
   const invoiceItemsList = invoiceItems?.map((item, index) => {
     return <div
@@ -42,18 +42,21 @@ export default function InvoicePaper(props) {
   })
 
   return (
-    invSetttings &&
+    invSettings &&
     <div
       className="invoice-paper-container"
       style={invoicePaperStyles?.container}
       ref={invoicePaperRef}
     >
       <header style={invoicePaperStyles?.header}>
-        <img
-          style={invoicePaperStyles?.headerImg}
-          src={invoice?.myBusiness?.logo || myBusiness?.logo}
-          alt="Logo"
-        />
+        {
+          invSettings.showMyLogo &&
+          <img
+            style={invoicePaperStyles?.headerImg}
+            src={invoice?.myBusiness?.logo || myBusiness?.logo}
+            alt="Logo"
+          />
+        }
         <div
           className="header-row"
           style={invoicePaperStyles?.headerRow}
@@ -62,16 +65,16 @@ export default function InvoicePaper(props) {
             className="left"
             style={invoicePaperStyles?.headerLeft}
           >
-            { invSetttings.showMyName && <h3 style={invoicePaperStyles?.headerLeftH3}>{invoice?.myBusiness?.name || myBusiness?.name}</h3>}
-            { invSetttings.showMyPhone && <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(invoice?.myBusiness?.phone || myBusiness?.phone)}</h5>}
-            { invSetttings.showMyAddress && <h5 style={invoicePaperStyles?.headerH5}>{invoice?.myBusiness?.address || myBusiness?.address}</h5>}
+            {invSettings.showMyName && <h3 style={invoicePaperStyles?.headerLeftH3}>{invoice?.myBusiness?.name || myBusiness?.name}</h3>}
+            {invSettings.showMyAddress && <h5 style={invoicePaperStyles?.headerH5}>{invoice?.myBusiness?.address || myBusiness?.address}</h5>}
+            {invSettings.showMyPhone && <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(invoice?.myBusiness?.phone || myBusiness?.phone)}</h5>}
             <h5 style={invoicePaperStyles?.headerH5}>
               {invoice?.myBusiness?.city || myBusiness?.city},&nbsp;
               {invoice?.myBusiness?.region || myBusiness?.region},&nbsp;
-              {invSetttings.showMyCountry ? `${invoice?.myBusiness?.country || myBusiness?.country} ` : null}
+              {invSettings.showMyCountry ? `${invoice?.myBusiness?.country || myBusiness?.country} ` : null}
               {invoice?.myBusiness?.postcode || myBusiness?.postcode}
             </h5>
-            {taxNumbersList}
+            {invSettings.showMyTaxNumbers && taxNumbersList}
           </div>
           <div
             className="right"
@@ -81,7 +84,7 @@ export default function InvoicePaper(props) {
             <h5 style={invoicePaperStyles?.headerH5}>#{invoice?.invoiceNumber}</h5>
             <h5 style={invoicePaperStyles?.headerH5}>Invoice Date: {convertClassicDate(invoice?.dateCreated.toDate())}</h5>
             {
-              invSetttings?.showDueDate &&
+              invSettings?.showDueDate &&
               <h5 style={invoicePaperStyles?.headerH5}>
                 Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(invoice?.dateDue.toDate())}</span>
               </h5>
@@ -95,12 +98,12 @@ export default function InvoicePaper(props) {
       >
         <div className="side">
           <h4 style={invoicePaperStyles?.billtoSectionH4}>Bill To</h4>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice?.invoiceTo.name}</h5>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice?.invoiceTo.address}</h5>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{formatPhoneNumber(invoice?.invoiceTo.phone)}</h5>
+          {invSettings.showClientName && <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice?.invoiceTo.name}</h5>}
+          {invSettings.showClientAddress && <h5 style={invoicePaperStyles?.billtoSectionH5}>{invoice?.invoiceTo.address}</h5>}
+          {invSettings.showClientPhone && <h5 style={invoicePaperStyles?.billtoSectionH5}>{formatPhoneNumber(invoice?.invoiceTo.phone)}</h5>}
           <h5 style={invoicePaperStyles?.billtoSectionH5}>
             {invoice?.invoiceTo.city}, {invoice?.invoiceTo.region},&nbsp;
-            ({invoice?.invoiceTo.country}) {invoice?.invoiceTo.postcode}
+            ({invSettings.showClientCountry && invoice?.invoiceTo.country}) {invoice?.invoiceTo.postcode}
           </h5>
         </div>
         <div className="side" />
@@ -146,29 +149,31 @@ export default function InvoicePaper(props) {
         </h6>
       </div>
       {
-        invoice?.notes?.length > 0 &&
+        invoice?.notes?.length > 0 && invSettings?.showNotes && 
         <div
           className="notes-section"
           style={invoicePaperStyles?.notesSection}
         >
           <h4 style={invoicePaperStyles?.notesSectionH4}>Notes</h4>
-          <p style={invoicePaperStyles?.notesSectionP}>{invoice?.notes}</p>
+          <p style={invoicePaperStyles?.notesSectionP}>{invSettings.invoiceNotes || invoice?.notes}</p>
         </div>
       }
       <div
         className="foot-notes"
         style={invoicePaperStyles?.footNotes}
       >
-        <h6 style={invoicePaperStyles?.footNotesH6}>Thank you for your business.</h6>
-        <small style={invoicePaperStyles?.footNotesSmall}>
-          Invoice generated by&nbsp;
-          <a
-            href="https://invoiceme.pro"
-            style={invoicePaperStyles?.footNotesLink}
-          >
-            InvoiceMe
-          </a>
-        </small>
+        <h6 style={invoicePaperStyles?.footNotesH6}>{invSettings.thankYouMessage || 'Thank you for your business.'}</h6>
+        {
+          invSettings.showInvoiceMeTag &&
+          <small style={invoicePaperStyles?.footNotesSmall}>
+            Invoice generated by&nbsp;
+            <a
+              href="https://invoiceme.pro"
+              style={invoicePaperStyles?.footNotesLink}
+            >
+              InvoiceMe
+            </a>
+          </small>}
       </div>
     </div>
   )

@@ -6,14 +6,16 @@ import React, { useContext } from 'react'
 import { invoicePaperStyles } from "../invoices/invoicePaperStyles"
 import AppTable from "../ui/AppTable"
 import '../invoices/styles/InvoicePaper.css'
+import { useUserEstimateSettings } from "app/hooks/userHooks"
 
 export default function EstimatePaper(props) {
 
-  const { myUser } = useContext(StoreContext)
+  const { myUser, myUserID } = useContext(StoreContext)
   const { estimate, myBusiness, taxNumbers, estimateItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
     estimatePaperRef } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
+  const estSettings = useUserEstimateSettings(myUserID)
 
   const invoiceItemsList = estimateItems?.map((item, index) => {
     return <div
@@ -31,7 +33,7 @@ export default function EstimatePaper(props) {
   })
 
   const taxNumbersList = myTaxNumbers?.map((taxNum, index) => {
-    return <h5 
+    return <h5
       style={invoicePaperStyles?.headerH5}
       key={index}
     >
@@ -40,17 +42,21 @@ export default function EstimatePaper(props) {
   })
 
   return (
+    estSettings &&
     <div
       className="invoice-paper-container"
       style={invoicePaperStyles?.container}
       ref={estimatePaperRef}
     >
       <header style={invoicePaperStyles?.header}>
-        <img
-          style={invoicePaperStyles?.headerImg}
-          src={estimate?.myBusiness?.logo || myBusiness?.logo}
-          alt="Logo"
-        />
+        {
+          estSettings?.showMyLogo &&
+          <img
+            style={invoicePaperStyles?.headerImg}
+            src={estimate?.myBusiness?.logo || myBusiness?.logo}
+            alt="Logo"
+          />
+        }
         <div
           className="header-row"
           style={invoicePaperStyles?.headerRow}
@@ -59,15 +65,16 @@ export default function EstimatePaper(props) {
             className="left"
             style={invoicePaperStyles?.headerLeft}
           >
-            <h3 style={invoicePaperStyles?.headerLeftH3}>{estimate?.myBusiness?.name || myBusiness.name}</h3>
-            <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(estimate?.myBusiness?.phone || myBusiness.phone)}</h5>
-            <h5 style={invoicePaperStyles?.headerH5}>{estimate?.myBusiness?.address || myBusiness.address}</h5>
+            {estSettings?.showMyName && <h3 style={invoicePaperStyles?.headerLeftH3}>{estimate?.myBusiness?.name || myBusiness.name}</h3>}
+            {estSettings?.showMyAddress && <h5 style={invoicePaperStyles?.headerH5}>{estimate?.myBusiness?.address || myBusiness.address}</h5>}
+            {estSettings?.showMyPhone && <h5 style={invoicePaperStyles?.headerH5}>{formatPhoneNumber(estimate?.myBusiness?.phone || myBusiness.phone)}</h5>}
             <h5 style={invoicePaperStyles?.headerH5}>
               {estimate?.myBusiness?.city || myBusiness.city},&nbsp;
-              {estimate?.myBusiness?.region || myBusiness.region},&nbsp; 
+              {estimate?.myBusiness?.region || myBusiness.region},&nbsp;
+              {estSettings?.showMyCountry ? `${estimate?.myBusiness?.country || myBusiness.country} ` : null}
               {estimate?.myBusiness?.postcode || myBusiness.postcode}
             </h5>
-            {taxNumbersList}
+            {estSettings?.showMyTaxNumbers && taxNumbersList}
           </div>
           <div
             className="right"
@@ -76,9 +83,12 @@ export default function EstimatePaper(props) {
             <h3 style={invoicePaperStyles?.headerRightH3}>Estimate</h3>
             <h5 style={invoicePaperStyles?.headerH5}>#{estimate?.estimateNumber}</h5>
             <h5 style={invoicePaperStyles?.headerH5}>Estimate Date: {convertClassicDate(estimate?.dateCreated.toDate())}</h5>
-            <h5 style={invoicePaperStyles?.headerH5}>
-              Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(estimate?.dateDue.toDate())}</span>
-            </h5>
+            {
+              estSettings?.showMyDueDate &&
+              <h5 style={invoicePaperStyles?.headerH5}>
+                Date Due: <span style={invoicePaperStyles?.headerH5Span}>{convertClassicDate(estimate?.dateDue.toDate())}</span>
+              </h5>
+            }
           </div>
         </div>
       </header>
@@ -88,12 +98,12 @@ export default function EstimatePaper(props) {
       >
         <div className="side">
           <h4 style={invoicePaperStyles?.billtoSectionH4}>Bill To</h4>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{estimate?.estimateTo.name}</h5>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{estimate?.estimateTo.address}</h5>
-          <h5 style={invoicePaperStyles?.billtoSectionH5}>{formatPhoneNumber(estimate?.estimateTo.phone)}</h5>
+          { estSettings?.showMyClientName && <h5 style={invoicePaperStyles?.billtoSectionH5}>{estimate?.estimateTo.name}</h5>}
+          { estSettings?.showMyClientAddress && <h5 style={invoicePaperStyles?.billtoSectionH5}>{estimate?.estimateTo.address}</h5>}
+          { estSettings?.showMyClientPhone && <h5 style={invoicePaperStyles?.billtoSectionH5}>{formatPhoneNumber(estimate?.estimateTo.phone)}</h5>}
           <h5 style={invoicePaperStyles?.billtoSectionH5}>
             {estimate?.estimateTo.city}, {estimate?.estimateTo.region},&nbsp;
-            ({estimate?.estimateTo.country}) {estimate?.estimateTo.postcode}
+            ({estSettings?.showMyClientCountry && estimate?.estimateTo.country}) {estimate?.estimateTo.postcode}
           </h5>
         </div>
         <div className="side" />
@@ -139,21 +149,23 @@ export default function EstimatePaper(props) {
         </h6>
       </div>
       {
-        estimate?.notes?.length > 0 &&
+        estimate?.notes?.length > 0 && estSettings?.showNotes && 
         <div
           className="notes-section"
           style={invoicePaperStyles?.notesSection}
         >
           <h4 style={invoicePaperStyles?.notesSectionH4}>Notes</h4>
-          <p style={invoicePaperStyles?.notesSectionP}>{estimate?.notes}</p>
+          <p style={invoicePaperStyles?.notesSectionP}>{estSettings?.estimateNotes || estimate?.notes}</p>
         </div>
       }
       <div
         className="foot-notes"
         style={invoicePaperStyles?.footNotes}
       >
-        <h6 style={invoicePaperStyles?.footNotesH6}>Thank you for your business.</h6>
-        <small style={invoicePaperStyles?.footNotesSmall}>
+        <h6 style={invoicePaperStyles?.footNotesH6}>{estSettings?.thankYouMessage}</h6>
+        {
+          estSettings?.showInvoiceMeTag && 
+          <small style={invoicePaperStyles?.footNotesSmall}>
           Estimate generated by&nbsp;
           <a
             href="https://invoiceme.pro"
@@ -162,6 +174,7 @@ export default function EstimatePaper(props) {
             InvoiceMe
           </a>
         </small>
+        }
       </div>
     </div>
   )

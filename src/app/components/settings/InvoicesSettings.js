@@ -34,7 +34,7 @@ export default function InvoicesSettings() {
   const [taxName, setTaxName] = useState('')
   const [taxNumber, setTaxNumber] = useState('')
   const [taxRate, setTaxRate] = useState(0)
-  const [showThankYouMessage, setShowThankYouMessage] = useState(true)
+  const [thankYouMessage, setThankYouMessage] = useState("Thank you for your business.")
   const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
   const allowAddTax = taxName && taxNumber && taxRate
   const myUserInvoiceSettings = useUserInvoiceSettings(myUserID)
@@ -56,7 +56,7 @@ export default function InvoicesSettings() {
     showMyTaxNumbers !== myUserInvoiceSettings?.showMyTaxNumbers ||
     showNotes !== myUserInvoiceSettings?.showNotes ||
     invoiceNotes !== myUserInvoiceSettings?.invoiceNotes ||
-    showThankYouMessage !== myUserInvoiceSettings?.showThankYouMessage ||
+    thankYouMessage !== myUserInvoiceSettings?.thankYouMessage ||
     showInvoiceMeTag !== myUserInvoiceSettings?.showInvoiceMeTag ||
     taxNumbers !== myUser?.taxNumbers
 
@@ -109,7 +109,7 @@ export default function InvoicesSettings() {
         showMyTaxNumbers,
         showNotes,
         invoiceNotes,
-        showThankYouMessage,
+        thankYouMessage,
         showInvoiceMeTag,
       })
       .then(() => {
@@ -160,7 +160,7 @@ export default function InvoicesSettings() {
       setShowMyTaxNumbers(myUserInvoiceSettings?.showMyTaxNumbers || true)
       setShowNotes(myUserInvoiceSettings?.showNotes || true)
       setInvoiceNotes(myUserInvoiceSettings?.invoiceNotes || '')
-      setShowThankYouMessage(myUserInvoiceSettings?.showThankYouMessage || true)
+      setThankYouMessage(myUserInvoiceSettings?.thankYouMessage || 'Thank you for your business.')
       setShowInvoiceMeTag(myUserInvoiceSettings?.showInvoiceMeTag || true)
     }
   },[myUserInvoiceSettings])
@@ -337,13 +337,16 @@ export default function InvoicesSettings() {
           onChange={e => setInvoiceNotes(e.target.value)}
         />
       </SettingsSection>
-      <SettingsSectionSwitch
-        label="Show 'Thank you' message"
-        sublabel="Show 'Thank you' message on bottom of invoice"
-        value={showThankYouMessage}
-        setValue={setShowThankYouMessage}
+      <SettingsSection
+        label="Add a 'Thank you' message"
+        sublabel="Add a thank you message on bottom of invoice"
         className="inv-showThankYou"
-      />
+      >
+        <AppTextarea
+          value={thankYouMessage}
+          onChange={e => setThankYouMessage(e.target.value)}
+        />
+      </SettingsSection>
       <SettingsSectionSwitch
         badge="Business"
         label="Show 'Invoice Me' watermark"
