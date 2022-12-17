@@ -47,10 +47,10 @@ export default function EmailsSettings() {
 
   useEffect(() => {
     if (!isEmptyObject(myUserEmailsSettings)) {
-      setMonthlyReports(myUserEmailsSettings?.monthlyReports || 'none')
-      setUnpaidInvoicesEmail(myUserEmailsSettings?.unpaidInvoicesEmail || false)
-      setEmailInvoiceNotifs(myUserEmailsSettings?.emailInvoiceNotifs || false)
-      setSmsInvoiceNotifs(myUserEmailsSettings?.smsInvoiceNotifs || false)
+      setMonthlyReports(myUserEmailsSettings?.monthlyReports ?? 'none')
+      setUnpaidInvoicesEmail(myUserEmailsSettings?.unpaidInvoicesEmail ?? false)
+      setEmailInvoiceNotifs(myUserEmailsSettings?.emailInvoiceNotifs ?? false)
+      setSmsInvoiceNotifs(myUserEmailsSettings?.smsInvoiceNotifs ?? false)
     }
   },[myUserEmailsSettings])
 

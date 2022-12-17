@@ -1,9 +1,13 @@
-import React from 'react'
+import { StoreContext } from "app/store/store"
+import React, { useContext } from 'react'
 import AppButton from "../ui/AppButton"
 import SettingsSection from "./SettingsSection"
 import SettingsTitles from "./SettingsTitles"
 
 export default function PaymentsSettings() {
+
+  const { myUser } = useContext(StoreContext)
+  const hasStripe = myUser?.stripe?.stripeAccountID
 
   return (
     <div className="settings-sub-page">
@@ -18,8 +22,9 @@ export default function PaymentsSettings() {
         flexStart
       >
         <AppButton
-          label="Connect Stripe"
-          url="/my-account/payments"
+          label={!hasStripe ? "Connect Stripe" : "Manage Account"}
+          url={hasStripe ? "https://connect.stripe.com/express_login" : "/my-account/payments"}
+          useATag={hasStripe}
         />
       </SettingsSection>
       <SettingsSection

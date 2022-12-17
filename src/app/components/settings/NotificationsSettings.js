@@ -14,18 +14,16 @@ import SettingsTitles from "./SettingsTitles"
 export default function NotificationsSettings() {
 
   const { myMemberType, myUserID, setToasts, setPageLoading } = useContext(StoreContext)
-  const [showNotifications, setShowNotifications] = useState(true)
   const [showInvoicesNotifs, setShowInvoicesNotifs] = useState(true)
   const [showEstimateNotifs, setShowEstimateNotifs] = useState(true)
   const [showPaymentsNotifs, setShowPaymentsNotifs] = useState(true)
-  const [showScheduleNotifs, setShowScheduleNotifs] = useState(true)
+  const [showScheduleNotifs, setShowScheduleNotifs] = useState(false)
   const [overdueDays, setOverdueDays] = useState(2)
   const [monthlyReports, setMonthlyReports] = useState('none')
   const isBusiness = myMemberType === 'business'
   const myUserNotifSettings = useUserNotifSettings(myUserID)
 
-  const allowSave = myUserNotifSettings?.showNotifications !== showNotifications ||
-    myUserNotifSettings?.showInvoicesNotifs !== showInvoicesNotifs ||
+  const allowSave = myUserNotifSettings?.showInvoicesNotifs !== showInvoicesNotifs ||
     myUserNotifSettings?.showEstimateNotifs !== showEstimateNotifs ||
     myUserNotifSettings?.showPaymentsNotifs !== showPaymentsNotifs ||
     myUserNotifSettings?.showScheduleNotifs !== showScheduleNotifs ||
@@ -35,7 +33,6 @@ export default function NotificationsSettings() {
   const saveSettings = () => {
     setPageLoading(true)
     updateDB(`users/${myUserID}/settings`, 'notifications', {
-      showNotifications,
       showInvoicesNotifs,
       showEstimateNotifs,
       showPaymentsNotifs,
@@ -56,13 +53,12 @@ export default function NotificationsSettings() {
 
   useEffect(() => {
     if (!isEmptyObject(myUserNotifSettings)) {
-      setShowNotifications(myUserNotifSettings?.showNotifications || true)  
-      setShowInvoicesNotifs(myUserNotifSettings?.showInvoicesNotifs || true)
-      setShowEstimateNotifs(myUserNotifSettings?.showEstimateNotifs || true)
-      setShowPaymentsNotifs(myUserNotifSettings?.showPaymentsNotifs || true)
-      setShowScheduleNotifs(myUserNotifSettings?.showScheduleNotifs || true)
-      setOverdueDays(myUserNotifSettings?.overdueDays)
-      setMonthlyReports(myUserNotifSettings?.monthlyReports)
+      setShowInvoicesNotifs(myUserNotifSettings?.showInvoicesNotifs ?? true)
+      setShowEstimateNotifs(myUserNotifSettings?.showEstimateNotifs ?? true)
+      setShowPaymentsNotifs(myUserNotifSettings?.showPaymentsNotifs ?? true)
+      setShowScheduleNotifs(myUserNotifSettings?.showScheduleNotifs ?? false)
+      setOverdueDays(myUserNotifSettings?.overdueDays ?? 2)
+      setMonthlyReports(myUserNotifSettings?.monthlyReports ?? 'none')
     }
   },[myUserNotifSettings])
 
@@ -81,25 +77,22 @@ export default function NotificationsSettings() {
         }
       />
       <SettingsSectionSwitch
-        label="Show popup notifications"
-        value={showNotifications}
-        setValue={setShowNotifications}
-        className="showPopUpNotifs"
-      />
-      <SettingsSectionSwitch
         label="Show invoices notifications"
+        sublabel="Show notifications when an invoice is created, sent, paid, or overdue."
         value={showInvoicesNotifs}
         setValue={setShowInvoicesNotifs}
         className="showInvoiceNotifs"
       />
       <SettingsSectionSwitch
         label="Show estimates notifications"
+        sublabel="Show notifications when an estimate is created or sent."
         value={showEstimateNotifs}
         setValue={setShowEstimateNotifs}
         className="showEstimateNotifs"
       />
       <SettingsSectionSwitch
         label="Show payments notifications"
+        sublabel="Show notifications when a payment is received or sent."
         value={showPaymentsNotifs}
         setValue={setShowPaymentsNotifs}
         className="showPaymentNotifs"

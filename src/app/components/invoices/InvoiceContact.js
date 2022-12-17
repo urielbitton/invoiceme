@@ -2,6 +2,7 @@ import { contactsIndex } from "app/algolia"
 import { infoToast } from "app/data/toastsTemplates"
 import { useFavoriteContacts } from "app/hooks/contactsHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
+import { useUserContactSettings } from "app/hooks/userHooks"
 import { addContactService, createContactService } from "app/services/contactsServices"
 import { StoreContext } from "app/store/store"
 import { validateEmail, validatePhone } from "app/utils/generalUtils"
@@ -35,6 +36,7 @@ export default function InvoiceContact(props) {
   const [contactsLoading, setContactsLoading] = useState(false)
   const favoriteContacts = useFavoriteContacts(myUserID)
   const filters = `ownerID: ${myUserID}`
+  const contactSettings = useUserContactSettings(myUserID)
 
   const allowAddContact = contactName &&
     validateEmail(contactEmail) &&
@@ -213,6 +215,7 @@ export default function InvoiceContact(props) {
               dimensions="25px"
             />
           </> :
+          contactSettings?.showFavorites &&
           <>
             <h5>Favorite Contacts</h5>
             <div className="contacts-search-results favorite-contacts">

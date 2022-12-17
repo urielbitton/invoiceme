@@ -37,8 +37,8 @@ export default function ContactsSettings() {
 
   useEffect(() => {
     if (!isEmptyObject(myUserContactSettings)) {
-      setShowFavorites(myUserContactSettings?.showFavorites || true)
-      setShowContactAvatar(myUserContactSettings?.showContactAvatar || true)
+      setShowFavorites(myUserContactSettings?.showFavorites ?? true)
+      setShowContactAvatar(myUserContactSettings?.showContactAvatar ?? true)
     }
   },[myUserContactSettings])
 

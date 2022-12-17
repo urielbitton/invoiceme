@@ -1,3 +1,4 @@
+import { useUserContactSettings } from "app/hooks/userHooks"
 import { deleteContactService } from "app/services/contactsServices"
 import { StoreContext } from "app/store/store"
 import { convertAlgoliaDate, convertClassicDate, convertClassicDateAndTime } from "app/utils/dateUtils"
@@ -11,11 +12,12 @@ import IconContainer from "../ui/IconContainer"
 export default function ContactRow(props) {
 
   const { myUserID, setPageLoading } = useContext(StoreContext)
-  const { contactID, name, email, phone, address, 
+  const { contactID, name, email, phone, address,
     city, country, dateCreated, photoURL } = props.contact
   const { actions, onDoubleClick, className } = props
   const navigate = useNavigate()
   const storagePath = `users/${myUserID}/contacts`
+  const contactSettings = useUserContactSettings(myUserID)
 
   const deleteContact = () => {
     deleteContactService(myUserID, contactID, storagePath, ['photo-url'], setPageLoading)
@@ -25,7 +27,13 @@ export default function ContactRow(props) {
     <AppItemRow
       item1={
         <div className="avatar-row-item">
-          <Avatar src={photoURL || 'https://i.imgur.com/D4fLSKa.png'} dimensions={25}/>
+          {
+            contactSettings?.showContactAvatar &&
+            <Avatar
+              src={photoURL || 'https://i.imgur.com/D4fLSKa.png'}
+              dimensions={25}
+            />
+          }
           {truncateText(name, 18)}
         </div>
       }
