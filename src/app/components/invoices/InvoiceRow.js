@@ -9,13 +9,14 @@ import IconContainer from "../ui/IconContainer"
 
 export default function InvoiceRow(props) {
 
-  const { myUserID, setPageLoading, myUser } = useContext(StoreContext)
+  const { myUserID, setPageLoading, myUser, setToasts } = useContext(StoreContext)
   const { invoiceID, title, invoiceNumber, total, items, invoiceTo,
     dateCreated, isPaid, currency } = props.invoice
+  const { notifSettings } = props
   const navigate = useNavigate()
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, invoiceID, setPageLoading)
+    deleteInvoiceService(myUserID, invoiceID, setPageLoading, setToasts, notifSettings.showInvoicesNotifs)
   }
 
   const togglePaid = () => {
@@ -31,7 +32,9 @@ export default function InvoiceRow(props) {
           partOfTotal: !isPaid,
         },
         newTotalRevenue,
-        setPageLoading
+        setPageLoading,
+        setToasts,
+        notifSettings.showInvoicesNotifs
       )
     }
   }

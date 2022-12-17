@@ -9,13 +9,14 @@ import IconContainer from "../ui/IconContainer"
 
 export default function EstimateRow(props) {
 
-  const { myUserID, setPageLoading } = useContext(StoreContext)
+  const { myUserID, setPageLoading, setToasts } = useContext(StoreContext)
   const { estimateID, title, estimateNumber, total, items, estimateTo,
     dateCreated, currency } = props.estimate
+  const { notifSettings } = props
   const navigate = useNavigate()
 
   const deleteEstimate = () => {
-    deleteEstimateService(myUserID, estimateID, setPageLoading)
+    deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, notifSettings.showEstimateNotifs)
   }
 
   return (

@@ -14,7 +14,8 @@ import './styles/InvoicePage.css'
 import AppModal from "app/components/ui/AppModal"
 import InvoicePaper from "app/components/invoices/InvoicePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
-import { infoToast } from "app/data/toastsTemplates"
+import { infoToast, successToast } from "app/data/toastsTemplates"
+import { useUserInvoiceSettings } from "app/hooks/userHooks"
 
 export default function InvoicePage() {
 
@@ -38,6 +39,7 @@ export default function InvoicePage() {
   const calculatedTaxRate = invoice?.items?.every(item => item.taxRate === invoice?.items[0].taxRate) ? invoice?.items[0].taxRate : null
   const invoicePaperRef = useRef(null)
   const navigate = useNavigate()
+  const invSettings = useUserInvoiceSettings(myUserID)
 
   const allowSendInvoice = invoiceItems.length > 0 &&
     validateEmail(contactEmail) &&
@@ -59,13 +61,14 @@ export default function InvoicePage() {
         invoiceID,
         invoice.invoiceNumber,
         setPageLoading,
-        setToasts
+        setToasts,
+        invSettings.showInvoicesNotifs
       )
     }
   }
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, invoiceID, setPageLoading)
+    deleteInvoiceService(myUserID, invoiceID, setPageLoading, setToasts, invSettings.showInvoicesNotifs)
   }
 
   const downloadAsPDF = () => {
@@ -74,6 +77,7 @@ export default function InvoicePage() {
       `${invoice.invoiceNumber}.pdf`,
       true
     )
+    setToasts(successToast('PDF Downloaded'))
   }
 
   const downloadAsImage = () => {

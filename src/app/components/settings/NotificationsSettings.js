@@ -16,6 +16,8 @@ export default function NotificationsSettings() {
   const { myMemberType, myUserID, setToasts, setPageLoading } = useContext(StoreContext)
   const [showInvoicesNotifs, setShowInvoicesNotifs] = useState(true)
   const [showEstimateNotifs, setShowEstimateNotifs] = useState(true)
+  const [showContactsNotifs, setShowContactsNotifs] = useState(true)
+  const [showSmsNotifs, setShowSmsNotifs] = useState(true)
   const [showPaymentsNotifs, setShowPaymentsNotifs] = useState(true)
   const [showScheduleNotifs, setShowScheduleNotifs] = useState(false)
   const [overdueDays, setOverdueDays] = useState(2)
@@ -25,6 +27,8 @@ export default function NotificationsSettings() {
 
   const allowSave = myUserNotifSettings?.showInvoicesNotifs !== showInvoicesNotifs ||
     myUserNotifSettings?.showEstimateNotifs !== showEstimateNotifs ||
+    myUserNotifSettings?.showContactsNotifs !== showContactsNotifs ||
+    myUserNotifSettings?.showSmsNotifs !== showSmsNotifs ||
     myUserNotifSettings?.showPaymentsNotifs !== showPaymentsNotifs ||
     myUserNotifSettings?.showScheduleNotifs !== showScheduleNotifs ||
     myUserNotifSettings?.overdueDays !== overdueDays ||
@@ -35,6 +39,8 @@ export default function NotificationsSettings() {
     updateDB(`users/${myUserID}/settings`, 'notifications', {
       showInvoicesNotifs,
       showEstimateNotifs,
+      showContactsNotifs,
+      showSmsNotifs,
       showPaymentsNotifs,
       showScheduleNotifs,
       overdueDays,
@@ -55,6 +61,8 @@ export default function NotificationsSettings() {
     if (!isEmptyObject(myUserNotifSettings)) {
       setShowInvoicesNotifs(myUserNotifSettings?.showInvoicesNotifs ?? true)
       setShowEstimateNotifs(myUserNotifSettings?.showEstimateNotifs ?? true)
+      setShowContactsNotifs(myUserNotifSettings?.showContactsNotifs ?? true)
+      setShowSmsNotifs(myUserNotifSettings?.showSmsNotifs ?? true)
       setShowPaymentsNotifs(myUserNotifSettings?.showPaymentsNotifs ?? true)
       setShowScheduleNotifs(myUserNotifSettings?.showScheduleNotifs ?? false)
       setOverdueDays(myUserNotifSettings?.overdueDays ?? 2)
@@ -91,6 +99,20 @@ export default function NotificationsSettings() {
         className="showEstimateNotifs"
       />
       <SettingsSectionSwitch
+        label="Show contacts notifications"
+        sublabel="Show notifications when a contact is created or deleted."
+        value={showContactsNotifs}
+        setValue={setShowContactsNotifs}
+        className="showContactNotifs"
+      />
+      <SettingsSectionSwitch
+        label="Show SMS notifications"
+        sublabel="Show notifications when an SMS is sent."
+        value={showSmsNotifs}
+        setValue={setShowSmsNotifs}
+        className="showSmsNotifs"
+      />
+      <SettingsSectionSwitch
         label="Show payments notifications"
         sublabel="Show notifications when a payment is received or sent."
         value={showPaymentsNotifs}
@@ -99,7 +121,7 @@ export default function NotificationsSettings() {
       />
       <SettingsSectionSwitch  
         label="Show scheduled invoices notifications"
-        sublabel="Show notifications before a scheduled invoice is about to be sent and after it was sent."
+        sublabel="Show notifications before a scheduled invoice is about to be sent, after it was sent and on creation."
         value={showScheduleNotifs}
         setValue={setShowScheduleNotifs}
         className="showScheduledInvoiceNotifs"

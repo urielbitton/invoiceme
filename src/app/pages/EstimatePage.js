@@ -15,6 +15,7 @@ import { deleteEstimateService, sendEstimateService } from "app/services/estimat
 import EstimatePaper from "app/components/estimates/EstimatePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
 import { infoToast } from "app/data/toastsTemplates"
+import { useUserEstimateSettings } from "app/hooks/userHooks"
 
 export default function EstimatePage() {
 
@@ -37,34 +38,11 @@ export default function EstimatePage() {
   const calculatedTaxRate = estimate?.items?.every(item => item.taxRate === estimate?.items[0].taxRate) ? estimate?.items[0].taxRate : null
   const estimatePaperRef = useRef(null)
   const navigate = useNavigate()
+  const estSettings = useUserEstimateSettings(myUserID)
 
   const allowSendEstimate = estimateItems.length > 0 &&
     validateEmail(contactEmail) &&
     estimate
-
-  const taxNumbersList = myUser?.taxNumbers?.map((taxNum, index) => {
-    return <h5
-      style={invoicePaperStyles?.headerH5}
-      key={index}
-    >
-      {taxNum.name}: {taxNum.number}
-    </h5>
-  })
-
-  const estimateItemsList = estimateItems?.map((item, index) => {
-    return <div
-      className="invoice-item-row"
-      style={index === estimateItems.length - 1 ? invoicePaperStyles?.invoiceItemRowLast : invoicePaperStyles?.invoiceItemRow}
-      key={index}
-    >
-      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{(index + 1)}</h6>
-      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.name}</h6>
-      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{estimate.currency.symbol}{formatCurrency(item.price.toFixed(2))}</h6>
-      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.quantity}</h6>
-      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{item.taxRate}%</h6>
-      <h6 style={invoicePaperStyles?.invoiceItemRowH6}>{estimate.currency.symbol}{item.total.toFixed(2)}</h6>
-    </div>
-  })
 
   const sendEstimate = () => {
     if (!allowSendEstimate) return setToasts(infoToast('Please fill in all fields.'))
@@ -82,13 +60,14 @@ export default function EstimatePage() {
         estimateID,
         estimate.estimateNumber,
         setPageLoading,
-        setToasts
+        setToasts,
+        estSettings.showEstimateNotifs
       )
     }
   }
 
   const deleteEstimate = () => {
-    deleteEstimateService(myUserID, estimateID, setPageLoading)
+    deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, estSettings.showEstimateNotifs)
   }
 
   const downloadAsPDF = () => {

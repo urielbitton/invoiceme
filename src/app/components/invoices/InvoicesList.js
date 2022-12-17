@@ -1,5 +1,6 @@
 import { invoicesIndex } from "app/algolia"
 import { useInstantSearch } from "app/hooks/searchHooks"
+import { useUserInvoiceSettings, useUserNotifSettings } from "app/hooks/userHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
 import AppPagination from "../ui/AppPagination"
@@ -8,10 +9,11 @@ import InvoiceRow from "./InvoiceRow"
 
 export default function InvoicesList(props) {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, myUserID } = useContext(StoreContext)
   const { query, searchResults, setSearchResults, filters, setNumOfHits,
     setNumOfPages, pageNum, setPageNum, numOfPages, hitsPerPage, showAll,
     dbInvoices } = props
+  const notifSettings = useUserNotifSettings(myUserID)
 
   const invoices = useInstantSearch(
     query,
@@ -32,6 +34,7 @@ export default function InvoicesList(props) {
       <InvoiceRow
         key={index}
         invoice={invoice}
+        notifSettings={notifSettings}
       />
     )
   })

@@ -101,7 +101,8 @@ export const getContactYearOptions = (userID, setOptions) => {
 }
 
 export const createContactService = (userID, name, email, phone, address, city,
-  region, country, postcode, companyName, isFavorite, notes, photoURL, setLoading) => {
+  region, country, postcode, companyName, isFavorite, notes, photoURL, setLoading,
+  setToasts, notify) => {
   setLoading(true)
   const contactsPath = `users/${userID}/contacts`
   const docID = getRandomDocID(contactsPath)
@@ -127,13 +128,14 @@ export const createContactService = (userID, name, email, phone, address, city,
   return setDB(contactsPath, docID, contactData)
     .then(() => {
       setLoading(false)
-      createNotification(
+      notify && createNotification(
         userID,
         'Contact Created',
         `${name} was added to your contacts.`,
         'fas fa-user-plus',
         `/contacts/${docID}`
       )
+      setToasts(successToast('Contact created successfully'))
     })
     .catch(err => catchError(err, setLoading))
 }
@@ -163,23 +165,25 @@ export const addContactService = (userID, name, email, phone, address,
   setInvoiceContact(contactData)
 }
 
-export const updateContactService = (userID, contactID, updatedProps, setLoading) => {
+export const updateContactService = (userID, contactID, updatedProps, setLoading, setToasts, notify) => {
   setLoading(true)
   return updateDB(`users/${userID}/contacts`, contactID, updatedProps)
     .then(() => {
       setLoading(false)
-      createNotification(
+      notify && createNotification(
         userID,
         'Contact Updated',
         `${updatedProps.name} was updated.`,
         'fas fa-user-edit',
         `/contacts/${contactID}`
       )
+      setToasts(successToast('Contact updated successfully'))
     })
     .catch(err => catchError(err, setLoading))
 }
 
-export const deleteContactService = (userID, contactID, storagePath, filenames, setLoading) => {
+export const deleteContactService = (userID, contactID, storagePath, filenames, setLoading,
+  setToasts, notify) => {
   const confirm = window.confirm("Are you sure you want to delete this contact?")
   if (confirm) {
     setLoading(true)
@@ -188,13 +192,14 @@ export const deleteContactService = (userID, contactID, storagePath, filenames, 
         return deleteMultipleStorageFiles(storagePath, filenames)
           .then(() => {
             setLoading(false)
-            createNotification(
+            notify && createNotification(
               userID,
               'Contact Deleted',
               `Contact was deleted.`,
               'fas fa-user-minus',
               `/contacts`
             )
+            setToasts(successToast('Contact deleted successfully.'))
           })
           .catch(err => catchError(err, setLoading))
       })
@@ -210,7 +215,7 @@ export const callPhoneService = (phone) => {
     .catch(err => console.log(err))
 }
 
-export const sendSMSService = (userID, phone, message, mediaUrl, setLoading, setToasts) => {
+export const sendSMSService = (userID, phone, message, mediaUrl, setLoading, setToasts, notify) => {
   setLoading(true)
   return functions.httpsCallable('sendSMS')({
     phone,
@@ -218,14 +223,14 @@ export const sendSMSService = (userID, phone, message, mediaUrl, setLoading, set
     ...(mediaUrl ? { mediaUrl } : null)
   })
     .then(result => {
-      setToasts(successToast('Message sent successfully.'))
-      createNotification(
+      notify && createNotification(
         userID,
         'SMS Sent',
         `SMS sent to ${phone}.`,
         'fas fa-comment-dots',
         '/contacts'
-      )
+        )
+      setToasts(successToast('Message sent successfully.'))
       setLoading(false)
       console.log(result)
     })

@@ -1,5 +1,7 @@
 import { errorToast, successToast } from "app/data/toastsTemplates"
+import { useUserNotifSettings } from "app/hooks/userHooks"
 import { deleteDB } from "app/services/CrudDB"
+import { deleteScheduledInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDateAndTime, displayThStNdRd } from "app/utils/dateUtils"
 import React, { useContext } from 'react'
@@ -9,12 +11,13 @@ import './styles/ScheduledInvoiceCard.css'
 
 export function ScheduledInvoiceCard(props) {
 
-  const { setPageLoading, setToasts } = useContext(StoreContext)
+  const { setPageLoading, setToasts, myUserID } = useContext(StoreContext)
   const { title, dateCreated, dayOfMonth, timeOfDay, active,
     lastRan, invoiceTemplate, scheduleID } = props.scheduled
   const { setInvoiceData, setShowInvoicePreview } = props
   const monthName = new Date(dateCreated?.toDate()).toLocaleString('default', { month: 'short' })
   const navigate = useNavigate()
+  const notifSettings = useUserNotifSettings(myUserID)
 
   const showPreview = () => {
     setShowInvoicePreview(true)
@@ -33,17 +36,16 @@ export function ScheduledInvoiceCard(props) {
     const confirm = window.confirm("Are you sure you want to delete this schedule?")
     if (confirm) {
       setPageLoading(true)
-      deleteDB('scheduledInvoices', scheduleID)
-        .then(() => {
-          navigate('/settings/scheduled-invoices')
-          setToasts(successToast("Scheduled invoice deleted."))
-          setPageLoading(false)
-        })
-        .catch(err => {
-          console.log(err)
-          setPageLoading(false)
-          setToasts(errorToast('There was an error while trying to delete your scheduled invoice. Please try again.'))
-        })
+      deleteScheduledInvoiceService(
+        myUserID,
+        scheduleID,
+        setPageLoading,
+        setToasts,
+        notifSettings.showScheduleNotifs
+      )
+      .then(() => {
+        navigate('/settings/scheduled-invoices')
+      })
     }
   }
 

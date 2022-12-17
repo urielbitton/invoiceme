@@ -1,19 +1,27 @@
 import { db, functions } from "app/firebase/fire"
 import { convertUnixDate } from "app/utils/dateUtils"
 import { firebaseArrayAdd, updateDB } from "./CrudDB"
+import { createNotification } from "./notifServices"
 
-export const createPaymentMethodService = (data, setLoading) => {
+export const createPaymentMethodService = (data, myUserID, setLoading, notify) => {
   return functions.httpsCallable('createPaymentMethod')(data)
   .then((res) => {
     return res.data.id
-  })
+  }) 
   .catch((error) => {
+    notify && createNotification(
+      myUserID,
+      'Payment method created',
+      'A new payment method has been created and attached to your account.',
+      'fas fa-credit-card',
+      '/payments/payment-methods'
+    )
     setLoading(false)
     console.log('Error creating payment method', error)
   })
 }
 
-export const createCustomerService = (myUser, userID, data, setLoading) => {
+export const createCustomerService = (myUser, data, setLoading) => {
   if(myUser?.stripe?.stripeCustomerID) {
     console.log('Customer already exists')
     setLoading(false)
@@ -21,7 +29,7 @@ export const createCustomerService = (myUser, userID, data, setLoading) => {
   }
   return functions.httpsCallable('createStripeCustomer')(data)
   .then((res) => {
-    return updateDB('users', userID, {
+    return updateDB('users', myUser?.userID, {
       "stripe.stripeCustomerID": res.data.id,
     })
     .then(() => { 

@@ -11,7 +11,7 @@ import IconContainer from "../ui/IconContainer"
 
 export default function ContactRow(props) {
 
-  const { myUserID, setPageLoading } = useContext(StoreContext)
+  const { myUserID, setPageLoading, setToasts } = useContext(StoreContext)
   const { contactID, name, email, phone, address,
     city, country, dateCreated, photoURL } = props.contact
   const { actions, onDoubleClick, className } = props
@@ -20,7 +20,15 @@ export default function ContactRow(props) {
   const contactSettings = useUserContactSettings(myUserID)
 
   const deleteContact = () => {
-    deleteContactService(myUserID, contactID, storagePath, ['photo-url'], setPageLoading)
+    deleteContactService(
+      myUserID, 
+      contactID, 
+      storagePath, 
+      ['photo-url'], 
+      setPageLoading, 
+      setToasts, 
+      contactSettings.showContactsNotifs
+    )
   }
 
   return (

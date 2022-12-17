@@ -22,6 +22,7 @@ import { NavLink, Route, Routes, useLocation, useParams } from "react-router-dom
 import './styles/ContactPage.css'
 import EmptyPage from "app/components/ui/EmptyPage"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
+import { useUserNotifSettings } from "app/hooks/userHooks"
 
 export default function ContactPage() {
 
@@ -41,6 +42,7 @@ export default function ContactPage() {
   const contactEstimates = useContactEstimates(myUserID, contact?.email)
   const location = useLocation()
   const isBusiness = myMemberType === "business"
+  const notifSettings = useUserNotifSettings(myUserID)
 
   const notIndexTab = location.pathname.includes('invoices') ||
     location.pathname.includes('estimates') ||
@@ -51,6 +53,17 @@ export default function ContactPage() {
     setEmailSubject('')
     setEmailMessage('')
     setEmailFiles([])
+  }
+
+  const updateContact = () => {
+    updateContactService(
+      myUserID, 
+      contactID, 
+      { isFavorite: !contact.isFavorite }, 
+      setPageLoading,
+      setToasts,
+      notifSettings.showContactsNotifs
+    )
   }
 
   const sendEmail = () => {
@@ -79,7 +92,7 @@ export default function ContactPage() {
   const sendSMS = () => {
     if (!validatePhone(contact?.phone) || !textMessage)
       return setToasts(infoToast('Please enter a valid phone number and message.'))
-    sendSMSService(myUserID, contact?.phone, textMessage, textMediaUrl, setLoading, setToasts)
+    sendSMSService(myUserID, contact?.phone, textMessage, textMediaUrl, setLoading, setToasts, notifSettings.showSmsNotifs)
       .then(() => {
         setShowSMSModal(false)
         resetInputFields()
@@ -142,7 +155,7 @@ export default function ContactPage() {
           <div className="side favorite">
             <AppButton
               label={contact.isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
-              onClick={() => updateContactService(myUserID, contactID, { isFavorite: !contact.isFavorite }, setPageLoading)}
+              onClick={() => updateContact()}
               buttonType={contact.isFavorite ? 'primary' : 'outlineBlueBtn'}
               rightIcon={contact.isFavorite ? 'fas fa-heart' : 'far fa-heart'}
             />

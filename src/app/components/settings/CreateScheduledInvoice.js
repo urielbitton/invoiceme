@@ -22,6 +22,7 @@ import ProContent from "../ui/ProContent"
 import { createScheduledInvoiceService, deleteScheduledInvoiceService, 
   updateScheduledInvoiceService } from "app/services/invoiceServices"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
+import { useUserNotifSettings } from "app/hooks/userHooks"
 
 export default function CreateScheduledInvoice() {
 
@@ -71,6 +72,7 @@ export default function CreateScheduledInvoice() {
   const invoicePaperRef = useRef(null)
   const dayOfMonthOptions = dayOfMonthNumbers()
   const maxScheduledInvoicesNum = 5
+  const notifSettings = useUserNotifSettings(myUserID)
 
   const invoice = {
     invoiceNumber,
@@ -159,7 +161,7 @@ export default function CreateScheduledInvoice() {
     setPageLoading(true)
     createScheduledInvoiceService(myUser, invoiceDate, invoiceDueDate, invoiceNumber, invoiceCurrency,
       invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, invoiceTitle,
-      calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef)
+      calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef, notifSettings.showScheduleNotifs)
     .then(() => {
       setPageLoading(false)
       setToasts(successToast('Scheduled Invoice Created.'))
@@ -200,7 +202,8 @@ export default function CreateScheduledInvoice() {
           total: +calculatedTotal
         }
       },
-      setPageLoading
+      setPageLoading,
+      notifSettings.showScheduleNotifs
     )
     .then(() => {
       setToasts(successToast('Scheduled Invoice Updated.'))
@@ -210,9 +213,11 @@ export default function CreateScheduledInvoice() {
 
   const deleteScheduledInvoice = () => {
     deleteScheduledInvoiceService(
+      myUserID,
       editInvoiceID,
       setPageLoading,
-      setToasts
+      setToasts,
+      notifSettings.showScheduleNotifs
     )
     .then(() => {
       navigate('/settings/scheduled-invoices')

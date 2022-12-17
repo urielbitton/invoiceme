@@ -1,5 +1,6 @@
 import { estimatesIndex } from "app/algolia"
 import { useInstantSearch } from "app/hooks/searchHooks"
+import { useUserEstimateSettings, useUserNotifSettings } from "app/hooks/userHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
 import AppPagination from "../ui/AppPagination"
@@ -8,10 +9,11 @@ import EstimateRow from "./EstimateRow"
 
 export default function EstimatesList(props) {
 
-  const { setPageLoading } = useContext(StoreContext)
+  const { setPageLoading, myUserID } = useContext(StoreContext)
   const { query, searchResults, setSearchResults, filters, setNumOfHits,
     setNumOfPages, pageNum, setPageNum, numOfPages, hitsPerPage, showAll,
     dbEstimates } = props
+  const notifsSettings = useUserNotifSettings(myUserID)
 
   const estimates = useInstantSearch(
     query,
@@ -32,6 +34,7 @@ export default function EstimatesList(props) {
       <EstimateRow
         key={index}
         estimate={estimate}
+        notifSettings={notifsSettings}
       />
     )
   })

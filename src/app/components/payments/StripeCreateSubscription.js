@@ -42,7 +42,6 @@ export default function StripeCreateSubscription(props) {
       setPageLoading(true)
       return createCustomerService(
         myUser, 
-        myUserID, 
         {
           name: myUserName,
           email: myUser?.email,

@@ -7,6 +7,7 @@ import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useEstimate } from "app/hooks/estimateHooks"
+import { useUserEstimateSettings } from "app/hooks/userHooks"
 import { createEstimateService, deleteEstimateService,
   updateEstimateService
 } from "app/services/estimatesServices"
@@ -52,6 +53,7 @@ export default function NewEstimatePage() {
   const navigate = useNavigate()
   const calculatedSubtotal = estimateItems?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = estimateItems?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
+  const estSettings = useUserEstimateSettings(myUserID)
 
   const allowCreateEstimate = estimateName?.length > 0 &&
     estimateNumber?.length > 0 &&
@@ -99,7 +101,7 @@ export default function NewEstimatePage() {
     createEstimateService(
       myUserID, myUser?.myBusiness, myUser?.taxNumbers, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
       estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal,
-      calculatedTotal, estimateName
+      calculatedTotal, estimateName, estSettings.showEstimateNotifs
     )
       .then(() => {
         setPageLoading(false)
@@ -134,7 +136,9 @@ export default function NewEstimatePage() {
       myUserID,
       editEstimateID,
       updatedProps,
-      setPageLoading
+      setPageLoading,
+      setToasts,
+      estSettings.showEstimateNotifs
     )
       .then(() => {
         navigate(`/estimates/${editEstimateID}`)
@@ -142,7 +146,7 @@ export default function NewEstimatePage() {
   }
 
   const deleteEstimate = () => {
-    deleteEstimateService(myUserID, editEstimateID, setPageLoading)
+    deleteEstimateService(myUserID, editEstimateID, setPageLoading, setToasts, estSettings.showEstimateNotifs)
       .then(() => {
         navigate('/estimates')
       })

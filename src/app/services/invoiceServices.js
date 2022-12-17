@@ -109,7 +109,7 @@ export const getInvoiceYearOptions = (userID, setOptions) => {
 
 export const createInvoiceService = (userID, myBusiness, taxNumbers, invoiceCurrency, invoiceDate, 
   invoiceDueDate, invoiceNumber, invoiceContact, invoiceItems, invoiceNotes, taxRate1, taxRate2, 
-  calculatedSubtotal, calculatedTotal, invoiceName, status) => {
+  calculatedSubtotal, calculatedTotal, invoiceName, status, setToasts, notify) => {
   const path = `users/${userID}/invoices`
   const docID = getRandomDocID(path)
   const invoiceData = {
@@ -136,18 +136,20 @@ export const createInvoiceService = (userID, myBusiness, taxNumbers, invoiceCurr
   }
   return setDB(path, docID, invoiceData)
     .then(() => {
-      createNotification(
+      notify && createNotification(
         userID,
         'Invoice Created',
         `Invoice ${invoiceName} (${invoiceData.invoiceNumber}) has been created for ${invoiceContact.name}.`,
         'fas fa-file-invoice-dollar',
         `/invoices/${docID}`
       )
+      setToasts(successToast("Invoice created successfully"))
     })
     .catch(err => console.log(err))
 }
 
-export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotalRevenue, setLoading) => {
+export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotalRevenue, 
+  setLoading, setToasts, notify) => {
   setLoading(true)
   return updateDB(`users/${myUserID}/invoices`, invoiceID, updatedProps)
   .then(() => {
@@ -157,40 +159,42 @@ export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotal
     })
     .then(() => {
       setLoading(false)
-      createNotification(
+      notify && createNotification(
         myUserID,
         'Invoice Updated',
         `Invoice ${updatedProps.title} (${updatedProps.invoiceNumber}) has been updated.`,
         'fas fa-file-invoice-dollar',
         `/invoices/${invoiceID}`
       )
+      setToasts(successToast("Invoice updated."))
     })
     .catch(err => catchError(err, setLoading))
   })
   .catch(err => catchError(err, setLoading))
 }
 
-export const deleteInvoiceService = (myUserID, invoiceID, setLoading) => {
+export const deleteInvoiceService = (myUserID, invoiceID, setLoading, setToasts, notify) => {
   const confirm = window.confirm("Are you sure you want to delete this invoice?")
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/invoices`, invoiceID)
       .then(() => {
         setLoading(false)
-        createNotification(
+        notify && createNotification(
           myUserID,
           'Invoice Deleted',
           `Invoice has been deleted.`,
           'fas fa-file-invoice-dollar',
           `/invoices`
         )
+        setToasts(successToast("Invoice deleted"))
       })
       .catch(err => catchError(err, setLoading))
     }
 }
 
 export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement, invoiceFilename, uploadedFiles,
-  myUserID, invoiceID, invoiceNumber, setLoading, setToasts) => {
+  myUserID, invoiceID, invoiceNumber, setLoading, setToasts, notify) => {
     const confirm = window.confirm("Send invoice to client?")
     if(confirm) {
       setLoading(true)
@@ -210,7 +214,7 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
         .catch(err => console.log(err))
         setLoading(false)
         setToasts(successToast("Invoice sent to client."))
-        createNotification(
+        notify && createNotification(
           myUserID,
           'Invoice sent to client',
           `Invoice ${invoiceNumber} has been sent to ${to}.`,
@@ -225,8 +229,8 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
 
 export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDate, invoiceNumber,
   invoiceCurrency, invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, 
-  invoiceTitle, calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef
-  ) => {
+  invoiceTitle, calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef,
+  notify) => {
   const pathName = 'scheduledInvoices'
   const docID = getRandomDocID(pathName)
   const invoiceTemplate = {
@@ -265,7 +269,7 @@ export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDat
   }
   return setDB(pathName, docID, data)
   .then(() => {
-    createNotification(
+    notify && createNotification(
       myUser.userID,
       'Scheduled Invoice Created',
       `Scheduled invoice ${scheduleTitle} has been created.`,
@@ -276,22 +280,36 @@ export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDat
   .catch(err => console.log(err))
 }
 
-export const updateScheduledInvoiceService = (scheduleID, updatedProps, setLoading) => {
+export const updateScheduledInvoiceService = (scheduleID, updatedProps, setLoading, notify) => {
   setLoading(true)
   return updateDB(`scheduledInvoices`, scheduleID, updatedProps)
   .then(() => {
     setLoading(false)
+    notify && createNotification(
+      updatedProps.ownerID,
+      'Scheduled Invoice Updated',
+      `Scheduled invoice ${updatedProps.title} has been updated.`,
+      'fas fa-clock',
+      `/settings/scheduled-invoices/new?scheduleID=${scheduleID}&edit=true&mode=view`
+    )
   })
   .catch(err => catchError(err, setLoading))
 }
 
-export const deleteScheduledInvoiceService = (scheduleID, setLoading, setToasts) => {
+export const deleteScheduledInvoiceService = (myUserID, scheduleID, setLoading, setToasts, notify) => {
   const confirm = window.confirm("Are you sure you want to delete this scheduled invoice?")
   if(!confirm) return 
   setLoading(true)
   return deleteDB(`scheduledInvoices`, scheduleID)
   .then(() => {
     setLoading(false)
+    notify && createNotification(
+      myUserID,
+      'Scheduled Invoice Deleted',
+      `Scheduled invoice has been deleted.`,
+      'fas fa-clock',
+      `/settings/scheduled-invoices`
+    )
     setToasts(successToast("Scheduled invoice deleted."))
   })
   .catch(err => catchError(err, setLoading))

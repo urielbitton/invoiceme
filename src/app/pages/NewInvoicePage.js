@@ -7,6 +7,7 @@ import PageTitleBar from "app/components/ui/PageTitleBar"
 import { currencies } from "app/data/general"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useInvoice } from "app/hooks/invoiceHooks"
+import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { createInvoiceService, deleteInvoiceService,
   updateInvoiceService
 } from "app/services/invoiceServices"
@@ -53,6 +54,7 @@ export default function NewInvoicePage() {
   const navigate = useNavigate()
   const calculatedSubtotal = invoiceItems?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = invoiceItems?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
+  const invSettings = useUserInvoiceSettings(myUserID)
 
   const allowCreateInvoice = invoiceName &&
     invoiceNumber &&
@@ -107,7 +109,7 @@ export default function NewInvoicePage() {
     createInvoiceService(
       myUserID, myUser?.myBusiness, myUser?.taxNumbers, invoiceCurrency, invoiceDate, invoiceDueDate, invoiceNumber, invoiceContact,
       invoiceItems, invoiceNotes, taxRate1, taxRate2, calculatedSubtotal,
-      calculatedTotal, invoiceName, status
+      calculatedTotal, invoiceName, status, setToasts, invSettings.showInvoicesNotifs
     )
       .then(() => {
         setPageLoading(false)
@@ -153,7 +155,9 @@ export default function NewInvoicePage() {
       editInvoiceID,
       updatedProps,
       newTotalRevenue,
-      setPageLoading
+      setPageLoading,
+      setToasts,
+      invSettings.showInvoicesNotifs
     )
     .then(() => {
       navigate(`/invoices/${editInvoiceID}`)
@@ -161,7 +165,7 @@ export default function NewInvoicePage() {
   }
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, editInvoiceID, setPageLoading)
+    deleteInvoiceService(myUserID, editInvoiceID, setPageLoading, setToasts, invSettings.showInvoicesNotifs)
     .then(() => {
       navigate('/invoices')
     })

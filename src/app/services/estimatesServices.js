@@ -91,7 +91,7 @@ export const getEstimateYearOptions = (userID, setOptions) => {
 
 export const createEstimateService = (userID, myBusiness, taxNumbers, estimateCurrency, estimateDate, estimateDueDate, 
   estimateNumber, estimateContact, estimateItems, estimateNotes, taxRate1, taxRate2, 
-  calculatedSubtotal, calculatedTotal, estimateName
+  calculatedSubtotal, calculatedTotal, estimateName, notify
 ) => {
   const path = `users/${userID}/estimates`
   const docID = getRandomDocID(path)
@@ -117,7 +117,7 @@ export const createEstimateService = (userID, myBusiness, taxNumbers, estimateCu
   }
   return setDB(path, docID, estimateData)
     .then(() => {
-      createNotification(
+      notify && createNotification(
         userID,
         'Estimate Created',
         `Estimate ${estimateName} (${estimateData.estimateNumber}) has been created for ${estimateContact.name}.`,
@@ -128,43 +128,45 @@ export const createEstimateService = (userID, myBusiness, taxNumbers, estimateCu
     .catch(err => console.log(err))
 }
 
-export const updateEstimateService = (userID, estimateID, updatedProps, setLoading) => {
+export const updateEstimateService = (userID, estimateID, updatedProps, setLoading, setToasts, notify) => {
   setLoading(true)
   return updateDB(`users/${userID}/estimates`, estimateID, updatedProps)
   .then(() => {
     setLoading(false)
-    createNotification(
+    notify && createNotification(
       userID,
       'Estimate Updated',
       `Estimate ${updatedProps.title} (${updatedProps.estimateNumber}) has been updated.`,
       'fas fa-file-invoice',
       `/estimates/${estimateID}`
     )
+    setToasts(successToast('Estimate updated successfully.'))
   })
   .catch(err => catchError(err, setLoading))
 }
 
-export const deleteEstimateService = (myUserID, estimateID, setLoading) => {
+export const deleteEstimateService = (myUserID, estimateID, setLoading, setToasts, notify) => {
   const confirm = window.confirm("Are you sure you want to delete this estimate?")
     if (confirm) {
       setLoading(true)
       return deleteDB(`users/${myUserID}/estimates`, estimateID)
       .then(() => {
         setLoading(false)
-        createNotification(
+        notify && createNotification(
           myUserID,
           'Estimate Deleted',
           `Estimate has been deleted.`,
           'fas fa-file-invoice',
           `/estimates`
         )
+        setToasts(successToast('Estimate deleted successfully.'))
       })
       .catch(err => catchError(err, setLoading))
     }
 }
 
 export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement, estimateFilename, uploadedFiles,
-  myUserID, estimateID, estimateNumber, setLoading, setToasts) => {
+  myUserID, estimateID, estimateNumber, setLoading, setToasts, notify) => {
     const confirm = window.confirm("Send estimate to client?")
     if(confirm) {
       setLoading(true)
@@ -182,7 +184,7 @@ export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement
           isSent: true, 
         })
         .catch(err => console.log(err))
-        createNotification(
+        notify && createNotification(
           myUserID,
           'Estimate sent to client',
           `Estimate ${estimateNumber} has been sent to ${to}.`,

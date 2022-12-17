@@ -1,3 +1,4 @@
+import { useUserNotifSettings } from "app/hooks/userHooks"
 import { deleteContactService } from "app/services/contactsServices"
 import { StoreContext } from "app/store/store"
 import { formatCurrency } from "app/utils/generalUtils"
@@ -7,7 +8,7 @@ import AppButton from "../ui/AppButton"
 
 export default function ContactGeneral({ contact, invoices, estimates, payments }) {
 
-  const { myUser, myUserID, setPageLoading } = useContext(StoreContext)
+  const { myUser, myUserID, setPageLoading, setToasts } = useContext(StoreContext)
   const totalBilled = invoices?.reduce((acc, invoice) => acc + invoice.total, 0)
   const highestBilled = invoices?.reduce((acc, invoice) => acc > invoice.total ? acc : invoice.total, 0)
   const lowestBilled = invoices?.reduce((acc, invoice) => acc.total < invoice.total ? acc : invoice.total, 0)
@@ -17,6 +18,7 @@ export default function ContactGeneral({ contact, invoices, estimates, payments 
   const code = myUser?.currency?.value || 'CAD'
   const navigate = useNavigate()
   const contactStoragePath = `users/${myUserID}/contacts`
+  const notifSettings = useUserNotifSettings(myUserID)
 
   const deleteContact = () => {
     deleteContactService(
@@ -24,7 +26,9 @@ export default function ContactGeneral({ contact, invoices, estimates, payments 
       contact?.contactID, 
       contactStoragePath, 
       ['photo-url'], 
-      setPageLoading
+      setPageLoading,
+      setToasts,
+      notifSettings.showContactsNotifs
     )
     .then(() => {
       navigate('/contacts')

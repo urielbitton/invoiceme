@@ -6,6 +6,7 @@ import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useContact } from "app/hooks/contactsHooks"
+import { useUserNotifSettings } from "app/hooks/userHooks"
 import { createContactService, deleteContactService, 
   updateContactService } from "app/services/contactsServices"
 import { getRandomDocID } from "app/services/CrudDB"
@@ -38,6 +39,7 @@ export default function NewContactPage() {
   const [uploadedImg, setUploadedImg] = useState(null)
   const navigate = useNavigate()
   const contactStoragePath = `users/${myUserID}/contacts/${editContactID}`
+  const notifSettings = useUserNotifSettings(myUserID)
 
   const allowSave = name && validateEmail(email) && address && 
     validatePhone(phone) && city && region && country && 
@@ -55,11 +57,10 @@ export default function NewContactPage() {
         myUserID, 
         name, email, phone, address, city, region, country, postcode, 
         companyName, isFavorite, notes, uploadedImg ? fileURLS[0]?.downloadURL : null, 
-        setPageLoading
+        setPageLoading, setToasts, notifSettings.showContactsNotifs
       )
       .then(() => {
         navigate('/contacts')
-        setToasts(successToast('Contact created successfully'))
       })
     })
     .catch(err => {
@@ -86,11 +87,12 @@ export default function NewContactPage() {
           postcode, companyName, isFavorite, notes,
           photoURL: uploadedImg ? fileURLS[0]?.downloadURL : null
         },
-        setPageLoading
+        setPageLoading,
+        setToasts,
+        notifSettings.showContactsNotifs
       )
       .then(() => {
         navigate(`/contacts/${editContactID}`)
-        setToasts(successToast('Contact updated successfully.'))
       })
     })
     .catch(err => {
@@ -101,10 +103,17 @@ export default function NewContactPage() {
   }
 
   const deleteContact = () => {
-    deleteContactService(myUserID, editContactID, contactStoragePath, ['photo-url'], setPageLoading)
+    deleteContactService(
+      myUserID, 
+      editContactID, 
+      contactStoragePath, 
+      ['photo-url'], 
+      setPageLoading,
+      setToasts,
+      notifSettings.showContactsNotifs
+    )
     .then(() => {
       navigate('/contacts')
-      setToasts(successToast('Contact deleted successfully.'))
     })
   }
 

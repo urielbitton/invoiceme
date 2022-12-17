@@ -2,7 +2,7 @@ import { contactsIndex } from "app/algolia"
 import { infoToast } from "app/data/toastsTemplates"
 import { useFavoriteContacts } from "app/hooks/contactsHooks"
 import { useInstantSearch } from "app/hooks/searchHooks"
-import { useUserContactSettings } from "app/hooks/userHooks"
+import { useUserContactSettings, useUserNotifSettings } from "app/hooks/userHooks"
 import { addContactService, createContactService } from "app/services/contactsServices"
 import { StoreContext } from "app/store/store"
 import { validateEmail, validatePhone } from "app/utils/generalUtils"
@@ -37,6 +37,7 @@ export default function InvoiceContact(props) {
   const favoriteContacts = useFavoriteContacts(myUserID)
   const filters = `ownerID: ${myUserID}`
   const contactSettings = useUserContactSettings(myUserID)
+  const notifSettings = useUserNotifSettings(myUserID)
 
   const allowAddContact = contactName &&
     validateEmail(contactEmail) &&
@@ -139,7 +140,7 @@ export default function InvoiceContact(props) {
     if (addToContacts) {
       createContactService(myUserID, contactName, contactEmail, contactPhone, contactAddress,
         contactCity, contactRegion, contactCountry, contactPostcode, contactCompanyName,
-        contactAddFavorite, '', null, setPageLoading
+        contactAddFavorite, '', null, setPageLoading, setToasts, notifSettings.showContactsNotifs
       )
         .then(() => {
           clearContactInfo()
