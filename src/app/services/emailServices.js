@@ -2,7 +2,7 @@ import { db, functions } from "app/firebase/fire"
 import { convertFilesToBase64, saveHTMLToPDFAsBlob } from "app/utils/fileUtils"
 import { getRandomDocID, setDB } from "./CrudDB"
 
-export const sendSgEmail = (from, to, subject, html, files, isInvoice) => {
+export const sendSgEmail = (from, to, subject, html, files, isType) => {
   return convertFilesToBase64(files)
     .then((base64s) => {
       return functions.httpsCallable('sendEmailWithAttachment')({
@@ -25,14 +25,14 @@ export const sendSgEmail = (from, to, subject, html, files, isInvoice) => {
       })
         .then((result) => {
           console.log({ result, files })
-          return sendFireEmail(from, to, subject, html, files, isInvoice)
+          return sendFireEmail(from, to, subject, html, files, isType)
         })
         .catch((error) => console.log(error))
     })
     .catch((error) => console.log(error))
 }
 
-export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElement, filename, attachments, isInvoice) => {
+export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElement, filename, attachments, isType) => {
   return saveHTMLToPDFAsBlob(pdfHTMLElement, filename)
     .then((file) => {
       return sendSgEmail(
@@ -41,7 +41,7 @@ export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElemen
         subject,
         emailHtml,
         [file, ...attachments],
-        isInvoice
+        isType
       )
         .catch((error) => console.log(error))
     })
@@ -58,7 +58,7 @@ export const sendAppEmail = (from, to, subject, message, files) => {
   )
 }
 
-export const sendFireEmail = (from, to, subject, html, files, isInvoice) => {
+export const sendFireEmail = (from, to, subject, html, files, isType) => {
   const docID = getRandomDocID('mail')
   return setDB('mail', docID, {
     from,
@@ -69,7 +69,7 @@ export const sendFireEmail = (from, to, subject, html, files, isInvoice) => {
     dateSent: new Date(),
     emailID: docID,
     isRead: false,
-    isInvoice
+    isType
   })
   .catch(err => console.log(err))
 }

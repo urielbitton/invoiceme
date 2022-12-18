@@ -177,7 +177,7 @@ exports.newInvoiceSentNotify = functions
     const data = snapshot.data()
     const user = await firestore.collection('users').doc(data.to).get()
     const userData = user.data()
-    if (data.isInvoice) {
+    if (data.isType === 'invoice') {
       return createNotification(
         userData.userID,
         'New Invoice',
@@ -185,16 +185,25 @@ exports.newInvoiceSentNotify = functions
         'fas fa-file-invoice-dollar',
         '/invoices'
       )
-      .then(() => {
-        const msg = {
-          to: data.to,
-          from: 'info@atomicsdigital.com',
-          subject: 'New Invoice',
-          html: `<p>You received a new invoice from ${data.from}</p>
-          <p>Click <a href="https://atomicsdigital.com/invoices">here</a> to view it.</p>`
-        }
-        return sgMail.send(msg)
-      })
+      .catch(err => console.log(err))
+    }
+  })
+
+  exports.newEstimateSentNotify = functions
+  .region('northamerica-northeast1')
+  .firestore.document('mail/{mailID}').onCreate(async (snapshot, context) => {
+    const data = snapshot.data()
+    const user = await firestore.collection('users').doc(data.to).get()
+    const userData = user.data()
+    if (data.isTpe === 'estimate') {
+      return createNotification(
+        userData.userID,
+        'New Estimate',
+        `You received a new estimate from ${data.from}`,
+        'fas fa-file-invoice',
+        '/estimates'
+      )
+      .catch(err => console.log(err))
     }
   })
   

@@ -198,7 +198,7 @@ export const deleteInvoiceService = (myUserID, invoiceID, setLoading, setToasts,
 export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement, invoiceFilename, uploadedFiles,
   myUserID, invoiceID, invoiceNumber, setLoading, setToasts, notify) => {
   const confirm = window.confirm("Send invoice to client?")
-  const isInvoice = true
+  const isType = 'invoice'
   if (confirm) {
     setLoading(true)
     return sendHtmlToEmailAsPDF(
@@ -209,7 +209,7 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
       pdfHTMLElement,
       invoiceFilename,
       uploadedFiles.map(file => file.file),
-      isInvoice
+      isType
     )
       .then(() => {
         updateDB(`users/${myUserID}/invoices`, invoiceID, {

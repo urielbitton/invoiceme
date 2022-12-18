@@ -2,8 +2,7 @@ InvoiceMe App
 
 
 ToDos:
-- send email & notif when user receives new invoice/estimate (query user by email to check if they were sent an invoice/estimate)
-- help and support page & terms and conditions page
+- help and support page & terms page
 - add AppModal for users to see more invoice details, tax numbers (editable), etc.
 - responsive app
 - implement mobile sidebar search 

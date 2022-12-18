@@ -168,7 +168,7 @@ export const deleteEstimateService = (myUserID, estimateID, setLoading, setToast
 export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement, estimateFilename, uploadedFiles,
   myUserID, estimateID, estimateNumber, setLoading, setToasts, notify) => {
     const confirm = window.confirm("Send estimate to client?")
-    const isInvoice = true
+    const isType = 'estimate'
     if(confirm) {
       setLoading(true)
       return sendHtmlToEmailAsPDF(
@@ -179,7 +179,7 @@ export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement
         pdfHTMLElement,
         estimateFilename,
         uploadedFiles.map(file => file.file),
-        isInvoice
+        isType
       )
       .then(() => {
         updateDB(`users/${myUserID}/estimates`, estimateID, {
