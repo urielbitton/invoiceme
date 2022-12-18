@@ -53,7 +53,7 @@ export default function EstimatePage() {
         contactEmail,
         emailSubject,
         emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
-        document.querySelector('.invoice-page .paper-container'),
+        document.querySelector('.invoice-page .invoice-paper-container'),
         `${estimate.estimateNumber}.pdf`,
         uploadedFiles,
         myUserID,
@@ -72,7 +72,7 @@ export default function EstimatePage() {
 
   const downloadAsPDF = () => {
     domToPDFDownload(
-      document.querySelector('.invoice-page .paper-container'),
+      document.querySelector('.invoice-page .invoice-paper-container'),
       `${estimate.estimateNumber}.pdf`,
       true
     )
@@ -80,7 +80,7 @@ export default function EstimatePage() {
 
   const downloadAsImage = () => {
     downloadHtmlElementAsImage(
-      document.getElementsByClassName('paper-container')[0],
+      document.getElementsByClassName('invoice-paper-container')[0],
       `${estimate.estimateNumber}.png`,
     )
   }

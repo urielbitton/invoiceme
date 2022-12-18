@@ -38,9 +38,9 @@ export default function ProfileDropdown(props) {
             <span>Upgrade</span>
           </Link>
         }
-        <Link to="help-and-contact">
+        <Link to="help-and-support">
           <i className="fas fa-question-circle" />
-          <span>Help & Contact</span>
+          <span>Help & Support</span>
         </Link>
         <Link to="/settings">
           <i className="fas fa-cog" />

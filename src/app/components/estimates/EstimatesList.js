@@ -44,6 +44,7 @@ export default function EstimatesList(props) {
       <EstimateRow
         key={index}
         estimate={estimate}
+        notifSettings={notifsSettings}
       />
     )
   })

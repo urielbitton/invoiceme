@@ -2,7 +2,7 @@ import { db, functions } from "app/firebase/fire"
 import { convertFilesToBase64, saveHTMLToPDFAsBlob } from "app/utils/fileUtils"
 import { getRandomDocID, setDB } from "./CrudDB"
 
-export const sendSgEmail = (from, to, subject, html, files) => {
+export const sendSgEmail = (from, to, subject, html, files, isInvoice) => {
   return convertFilesToBase64(files)
     .then((base64s) => {
       return functions.httpsCallable('sendEmailWithAttachment')({
@@ -25,14 +25,14 @@ export const sendSgEmail = (from, to, subject, html, files) => {
       })
         .then((result) => {
           console.log({ result, files })
-          return sendFireEmail(from, to, subject, html, files)
+          return sendFireEmail(from, to, subject, html, files, isInvoice)
         })
         .catch((error) => console.log(error))
     })
     .catch((error) => console.log(error))
 }
 
-export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElement, filename, attachments) => {
+export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElement, filename, attachments, isInvoice) => {
   return saveHTMLToPDFAsBlob(pdfHTMLElement, filename)
     .then((file) => {
       return sendSgEmail(
@@ -40,7 +40,8 @@ export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElemen
         to,
         subject,
         emailHtml,
-        [file, ...attachments]
+        [file, ...attachments],
+        isInvoice
       )
         .catch((error) => console.log(error))
     })
@@ -57,7 +58,7 @@ export const sendAppEmail = (from, to, subject, message, files) => {
   )
 }
 
-export const sendFireEmail = (from, to, subject, html, files) => {
+export const sendFireEmail = (from, to, subject, html, files, isInvoice) => {
   const docID = getRandomDocID('mail')
   return setDB('mail', docID, {
     from,
@@ -68,6 +69,7 @@ export const sendFireEmail = (from, to, subject, html, files) => {
     dateSent: new Date(),
     emailID: docID,
     isRead: false,
+    isInvoice
   })
   .catch(err => console.log(err))
 }

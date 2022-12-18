@@ -15,9 +15,11 @@ export default function EmailsSettings() {
 
   const { myMemberType, myUserID, setToasts, setPageLoading } = useContext(StoreContext)
   const [monthlyReports, setMonthlyReports] = useState('none')
-  const [unpaidInvoicesEmail, setUnpaidInvoicesEmail] = useState(false)
-  const [emailInvoiceNotifs, setEmailInvoiceNotifs] = useState(false)
+  const [unpaidInvoicesEmail, setUnpaidInvoicesEmail] = useState(true)
+  const [emailInvoiceNotifs, setEmailInvoiceNotifs] = useState(true)
+  const [emailEstimateNotifs, setEmailEstimateNotifs] = useState(false)
   const [smsInvoiceNotifs, setSmsInvoiceNotifs] = useState(false)
+  const [emailPaymentsNotifs, setEmailPaymentsNotifs] = useState(true)
   const isBusiness = myMemberType === 'business'
   const myUserEmailsSettings = useUserEmailSettings(myUserID)
 
@@ -32,7 +34,9 @@ export default function EmailsSettings() {
       monthlyReports,
       unpaidInvoicesEmail,
       emailInvoiceNotifs,
-      smsInvoiceNotifs
+      emailEstimateNotifs,
+      smsInvoiceNotifs,
+      emailPaymentsNotifs
     })
     .then(() => {
       setPageLoading(false)
@@ -48,9 +52,11 @@ export default function EmailsSettings() {
   useEffect(() => {
     if (!isEmptyObject(myUserEmailsSettings)) {
       setMonthlyReports(myUserEmailsSettings?.monthlyReports ?? 'none')
-      setUnpaidInvoicesEmail(myUserEmailsSettings?.unpaidInvoicesEmail ?? false)
-      setEmailInvoiceNotifs(myUserEmailsSettings?.emailInvoiceNotifs ?? false)
+      setUnpaidInvoicesEmail(myUserEmailsSettings?.unpaidInvoicesEmail ?? true)
+      setEmailInvoiceNotifs(myUserEmailsSettings?.emailInvoiceNotifs ?? true)
+      setEmailEstimateNotifs(myUserEmailsSettings?.emailEstimateNotifs ?? false)
       setSmsInvoiceNotifs(myUserEmailsSettings?.smsInvoiceNotifs ?? false)
+      setEmailPaymentsNotifs(myUserEmailsSettings?.emailPaymentsNotifs ?? true)
     }
   },[myUserEmailsSettings])
 
@@ -69,8 +75,8 @@ export default function EmailsSettings() {
         }
       />
       <SettingsSectionSwitch
-        label="Send me unpaid status emails"
-        sublabel="Send me monthly emails of all unpaid invoices."
+        label="Unpaid invoices emails"
+        sublabel="Send me emails of all any unpaid invoices."
         value={unpaidInvoicesEmail}
         setValue={setUnpaidInvoicesEmail}
         className="sendUnpaidStatusEmails"
@@ -78,7 +84,7 @@ export default function EmailsSettings() {
         businessAccess
       />
       <SettingsSectionSwitch
-        label="Send email invoice notifications"
+        label="New invoice email"
         sublabel="Send me an email when I receive a new invoice."
         value={emailInvoiceNotifs}
         setValue={setEmailInvoiceNotifs}
@@ -87,7 +93,25 @@ export default function EmailsSettings() {
         businessAccess
       />
       <SettingsSectionSwitch
-        label="Send SMS invoice notifications"
+        label="New estimate email"
+        sublabel="Send me an email when I receive a new estimate."
+        value={emailEstimateNotifs}
+        setValue={setEmailEstimateNotifs}
+        className="sendEmailInvoiceNotifs"
+        badge="Business"
+        businessAccess
+      />
+      <SettingsSectionSwitch
+        label="Payment received email"
+        sublabel="Send me an email when I receive a payment"
+        value={emailPaymentsNotifs}
+        setValue={setEmailPaymentsNotifs}
+        className="sendEmailPaymentsNotifs"
+        badge="Business"
+        businessAccess
+      />
+      <SettingsSectionSwitch
+        label="SMS invoice notifications"
         sublabel="Send me SMS notifications when I receive a new invoice."
         value={smsInvoiceNotifs}
         setValue={setSmsInvoiceNotifs}
@@ -96,7 +120,7 @@ export default function EmailsSettings() {
         businessAccess
       />
       <SettingsSection
-        label="Send monthly reports"
+        label="Monthly reports email"
         sublabel="Send me monthly reports about my invoices to my email address."
         flexStart
         badge="Business"

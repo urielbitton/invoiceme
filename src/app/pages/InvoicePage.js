@@ -54,7 +54,7 @@ export default function InvoicePage() {
         contactEmail,
         emailSubject,
         emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
-        document.querySelector('.invoice-page .paper-container'),
+        document.querySelector('.invoice-page .invoice-paper-container'),
         `${invoice.invoiceNumber}.pdf`,
         uploadedFiles,
         myUserID,
@@ -73,7 +73,7 @@ export default function InvoicePage() {
 
   const downloadAsPDF = () => {
     domToPDFDownload(
-      document.querySelector('.invoice-page .paper-container'),
+      document.querySelector('.invoice-page .invoice-paper-container'),
       `${invoice.invoiceNumber}.pdf`,
       true
     )

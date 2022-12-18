@@ -85,49 +85,49 @@ export default function NotificationsSettings() {
         }
       />
       <SettingsSectionSwitch
-        label="Show invoices notifications"
+        label="Invoices notifications"
         sublabel="Show notifications when an invoice is created, sent, paid, or overdue."
         value={showInvoicesNotifs}
         setValue={setShowInvoicesNotifs}
         className="showInvoiceNotifs"
       />
       <SettingsSectionSwitch
-        label="Show estimates notifications"
+        label="Estimates notifications"
         sublabel="Show notifications when an estimate is created or sent."
         value={showEstimateNotifs}
         setValue={setShowEstimateNotifs}
         className="showEstimateNotifs"
       />
       <SettingsSectionSwitch
-        label="Show contacts notifications"
+        label="Contacts notifications"
         sublabel="Show notifications when a contact is created or deleted."
         value={showContactsNotifs}
         setValue={setShowContactsNotifs}
         className="showContactNotifs"
       />
       <SettingsSectionSwitch
-        label="Show SMS notifications"
+        label="SMS notifications"
         sublabel="Show notifications when an SMS is sent."
         value={showSmsNotifs}
         setValue={setShowSmsNotifs}
         className="showSmsNotifs"
       />
       <SettingsSectionSwitch
-        label="Show payments notifications"
+        label="Payments notifications"
         sublabel="Show notifications when a payment is received or sent."
         value={showPaymentsNotifs}
         setValue={setShowPaymentsNotifs}
         className="showPaymentNotifs"
       />
       <SettingsSectionSwitch  
-        label="Show scheduled invoices notifications"
+        label="Scheduled invoices notifications"
         sublabel="Show notifications before a scheduled invoice is about to be sent, after it was sent and on creation."
         value={showScheduleNotifs}
         setValue={setShowScheduleNotifs}
         className="showScheduledInvoiceNotifs"
       />
       <SettingsSection
-        label="Show overdue invoices notifications"
+        label="Overdue invoices notifications"
         sublabel="Show notifications when an invoice is overdue by how many days?"
         flexStart
         className="showOverdueInvoiceNotifs"
@@ -139,7 +139,7 @@ export default function NotificationsSettings() {
         />
       </SettingsSection>
       <SettingsSection
-        label="Create monthly reports"
+        label="Monthly reports notifications"
         sublabel="Save a brief or full monthly reports to your profile and get notified"
         flexStart
         badge="Business"

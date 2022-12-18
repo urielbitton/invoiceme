@@ -20,7 +20,7 @@ import NotificationsPage from "app/pages/NotificationsPage"
 import EmailsPage from "app/pages/EmailsPage"
 import EstimatePage from "app/pages/EstimatePage"
 import ContactPage from "app/pages/ContactPage"
-import HelpAndContact from "app/pages/HelpAndContact"
+import HelpAndSupport from "app/pages/HelpAndSupport"
 import UpgradeCheckoutPage from "app/pages/UpgradeCheckoutPage"
 
 export default function RoutesContainer() {
@@ -56,7 +56,7 @@ export default function RoutesContainer() {
         <Route path="emails/*" element={<EmailsPage />} />
         <Route path="upgrade" element={<UpgradePage />} />
         <Route path="upgrade-checkout" element={<UpgradeCheckoutPage />} />
-        <Route path="help-and-contact" element={<HelpAndContact />} />
+        <Route path="help-and-support" element={<HelpAndSupport />} />
         <Route path="login" element={<HomePage />} />
         <Route path="register" element={<HomePage />} />
         <Route path="*" element={<ErrorPage />} />

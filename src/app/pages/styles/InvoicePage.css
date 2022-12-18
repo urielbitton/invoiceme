@@ -111,17 +111,17 @@
   ::-webkit-scrollbar {
     display: none;
   }
-  .invoice-page .paper-container {
+  .invoice-page .invoice-paper-container {
     width: 100%!important;
     box-shadow: none!important;
     padding: 0!important;
   }
-  .invoice-page .paper-container .billto-section {
+  .invoice-page .invoice-paper-container .billto-section {
     background-color: var(--bg);
     print-color-adjust: exact;
   }
-  .invoice-page .paper-container .items-section .invoice-item-row .actions,
-  .invoice-page .paper-container .items-section .headers h5:last-child {
+  .invoice-page .invoice-paper-container .items-section .invoice-item-row .actions,
+  .invoice-page .invoice-paper-container .items-section .headers h5:last-child {
     display: none;
   }
 }

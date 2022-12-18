@@ -44,6 +44,7 @@ export default function InvoicesList(props) {
       <InvoiceRow
         key={index}
         invoice={invoice}
+        notifSettings={notifSettings}
       />
     )
   })

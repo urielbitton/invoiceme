@@ -57,14 +57,14 @@ export default function ContactsSettings() {
         }
       />
       <SettingsSectionSwitch
-        label="Show Favorite Contacts"
+        label="Favorite Contacts"
         sublabel="Show favorite contacts on invoices and estimates creation pages."
         value={showFavorites}
         setValue={setShowFavorites}
         className="showFavoriteContacts"
       />
       <SettingsSectionSwitch
-        label="Show Contact Avatar"
+        label="Contact Avatar"
         sublabel="Show contact avatar on my contacts page."
         value={showContactAvatar}
         setValue={setShowContactAvatar}
