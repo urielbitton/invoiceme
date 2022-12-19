@@ -16,7 +16,7 @@ export default function EstimateRow(props) {
   const navigate = useNavigate()
 
   const deleteEstimate = () => {
-    deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, notifSettings.showEstimateNotifs)
+    deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, notifSettings.showOutgoingEstimateNotifs)
   }
 
   return (

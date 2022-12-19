@@ -15,7 +15,7 @@ import AppModal from "app/components/ui/AppModal"
 import InvoicePaper from "app/components/invoices/InvoicePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
 import { infoToast, successToast } from "app/data/toastsTemplates"
-import { useUserInvoiceSettings } from "app/hooks/userHooks"
+import { useUserInvoiceSettings, useUserNotifSettings } from "app/hooks/userHooks"
 
 export default function InvoicePage() {
 
@@ -39,7 +39,7 @@ export default function InvoicePage() {
   const calculatedTaxRate = invoice?.items?.every(item => item.taxRate === invoice?.items[0].taxRate) ? invoice?.items[0].taxRate : null
   const invoicePaperRef = useRef(null)
   const navigate = useNavigate()
-  const invSettings = useUserInvoiceSettings(myUserID)
+  const notifSettings = useUserNotifSettings(myUserID)
 
   const allowSendInvoice = invoiceItems.length > 0 &&
     validateEmail(contactEmail) &&
@@ -62,13 +62,13 @@ export default function InvoicePage() {
         invoice.invoiceNumber,
         setPageLoading,
         setToasts,
-        invSettings.showInvoicesNotifs
+        notifSettings.showOutgoingInvoicesNotifs
       )
     }
   }
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, invoiceID, setPageLoading, setToasts, invSettings.showInvoicesNotifs)
+    deleteInvoiceService(myUserID, invoiceID, setPageLoading, setToasts, notifSettings.showOutgoingInvoicesNotifs)
   }
 
   const downloadAsPDF = () => {

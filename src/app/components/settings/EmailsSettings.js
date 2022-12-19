@@ -26,6 +26,8 @@ export default function EmailsSettings() {
   const allowSave = myUserEmailsSettings?.monthlyReports !== monthlyReports ||
     myUserEmailsSettings?.unpaidInvoicesEmail !== unpaidInvoicesEmail ||
     myUserEmailsSettings?.emailInvoiceNotifs !== emailInvoiceNotifs ||
+    myUserEmailsSettings?.emailEstimateNotifs !== emailEstimateNotifs ||
+    myUserEmailsSettings?.emailPaymentsNotifs !== emailPaymentsNotifs ||
     myUserEmailsSettings?.smsInvoiceNotifs !== smsInvoiceNotifs
 
   const saveSettings = () => {
@@ -75,20 +77,11 @@ export default function EmailsSettings() {
         }
       />
       <SettingsSectionSwitch
-        label="Unpaid invoices emails"
-        sublabel="Send me emails of all any unpaid invoices."
-        value={unpaidInvoicesEmail}
-        setValue={setUnpaidInvoicesEmail}
-        className="sendUnpaidStatusEmails"
-        badge="Business"
-        businessAccess
-      />
-      <SettingsSectionSwitch
         label="New invoice email"
         sublabel="Send me an email when I receive a new invoice."
         value={emailInvoiceNotifs}
         setValue={setEmailInvoiceNotifs}
-        className="sendEmailInvoiceNotifs"
+        className="newInvoiceEmail"
         badge="Business"
         businessAccess
       />
@@ -97,7 +90,7 @@ export default function EmailsSettings() {
         sublabel="Send me an email when I receive a new estimate."
         value={emailEstimateNotifs}
         setValue={setEmailEstimateNotifs}
-        className="sendEmailInvoiceNotifs"
+        className="newEstimateEmail"
         badge="Business"
         businessAccess
       />
@@ -106,7 +99,16 @@ export default function EmailsSettings() {
         sublabel="Send me an email when I receive a payment"
         value={emailPaymentsNotifs}
         setValue={setEmailPaymentsNotifs}
-        className="sendEmailPaymentsNotifs"
+        className="newPaymentEmail"
+        badge="Business"
+        businessAccess
+      />
+      <SettingsSectionSwitch
+        label="Overdue invoices emails"
+        sublabel="Send me emails of any unpaid invoices."
+        value={unpaidInvoicesEmail}
+        setValue={setUnpaidInvoicesEmail}
+        className="unpaidInvoicesEmails"
         badge="Business"
         businessAccess
       />
@@ -115,7 +117,7 @@ export default function EmailsSettings() {
         sublabel="Send me SMS notifications when I receive a new invoice."
         value={smsInvoiceNotifs}
         setValue={setSmsInvoiceNotifs}
-        className="sendSmsInvoiceNotifs"
+        className="newInvoiceSMS"
         badge="Business"
         businessAccess
       />
@@ -127,7 +129,7 @@ export default function EmailsSettings() {
         businessAccess
         className="sendMonthlyReportEmails"
       >
-        <AppSelect
+        {/* <AppSelect
           options={monthlyReportOptions}
           value={monthlyReports}
           onChange={(e) => {
@@ -135,7 +137,8 @@ export default function EmailsSettings() {
             setMonthlyReports(e.target.value) : 
             setToasts(infoToast('You need to be a business member to turn on this feature.'))
           }}
-        />
+        /> */}
+        <h5>Coming soon.</h5>
       </SettingsSection>
     </div>
   )

@@ -101,7 +101,7 @@ export default function NewEstimatePage() {
     createEstimateService(
       myUserID, myUser?.myBusiness, myUser?.taxNumbers, estimateCurrency, estimateDate, estimateDueDate, estimateNumber, estimateContact,
       estimateItems, estimateNotes, taxRate1, taxRate2, calculatedSubtotal,
-      calculatedTotal, estimateName, estSettings.showEstimateNotifs
+      calculatedTotal, estimateName, estSettings.showOutgoingEstimateNotifs
     )
       .then(() => {
         setPageLoading(false)
@@ -138,7 +138,7 @@ export default function NewEstimatePage() {
       updatedProps,
       setPageLoading,
       setToasts,
-      estSettings.showEstimateNotifs
+      estSettings.showOutgoingEstimateNotifs
     )
       .then(() => {
         navigate(`/estimates/${editEstimateID}`)
@@ -146,7 +146,7 @@ export default function NewEstimatePage() {
   }
 
   const deleteEstimate = () => {
-    deleteEstimateService(myUserID, editEstimateID, setPageLoading, setToasts, estSettings.showEstimateNotifs)
+    deleteEstimateService(myUserID, editEstimateID, setPageLoading, setToasts, estSettings.showOutgoingEstimateNotifs)
       .then(() => {
         navigate('/estimates')
       })

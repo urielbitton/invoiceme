@@ -16,7 +16,7 @@ export default function InvoiceRow(props) {
   const navigate = useNavigate()
 
   const deleteInvoice = () => {
-    deleteInvoiceService(myUserID, invoiceID, setPageLoading, setToasts, notifSettings.showInvoicesNotifs)
+    deleteInvoiceService(myUserID, invoiceID, setPageLoading, setToasts, notifSettings.showOutgoingInvoicesNotifs)
   }
 
   const togglePaid = () => {
@@ -34,7 +34,7 @@ export default function InvoiceRow(props) {
         newTotalRevenue,
         setPageLoading,
         setToasts,
-        notifSettings.showInvoicesNotifs
+        notifSettings.showOutgoingInvoicesNotifs
       )
     }
   }

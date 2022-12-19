@@ -61,13 +61,13 @@ export default function EstimatePage() {
         estimate.estimateNumber,
         setPageLoading,
         setToasts,
-        estSettings.showEstimateNotifs
+        estSettings.showOutgoingEstimateNotifs
       )
     }
   }
 
   const deleteEstimate = () => {
-    deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, estSettings.showEstimateNotifs)
+    deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, estSettings.showOutgoingEstimateNotifs)
   }
 
   const downloadAsPDF = () => {

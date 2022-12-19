@@ -272,25 +272,41 @@
     "icon": "fas fa-users"
   },
   {
+    "label": "Contacts",
+    "sublabel": "Show contacts avatars",
+    "settingID": "showContactAvatar",
+    "tags": [],
+    "pageURL": "/settings/contacts",
+    "icon": "fas fa-users"
+  },
+  {
     "label": "Notifications",
-    "sublabel": "Show pop-up notifications",
-    "settingID": "showPopUpNotifs",
+    "sublabel": "Show outgoing invoice notifications",
+    "settingID": "showOutgoingInvoiceNotifs",
     "tags": [],
     "pageURL": "/settings/notifications",
     "icon": "fas fa-bell"
   },
   {
     "label": "Notifications",
-    "sublabel": "Show invoice notifications",
-    "settingID": "showInvoiceNotifs",
+    "sublabel": "Show outgoing estimate notifications",
+    "settingID": "showOutgoingEstimateNotifs",
     "tags": [],
     "pageURL": "/settings/notifications",
     "icon": "fas fa-bell"
   },
   {
     "label": "Notifications",
-    "sublabel": "Show estimate notifications",
-    "settingID": "showEstimateNotifs",
+    "sublabel": "Show incoming invoice notifications",
+    "settingID": "showIncomingInvoiceNotifs",
+    "tags": [],
+    "pageURL": "/settings/notifications",
+    "icon": "fas fa-bell"
+  },
+  {
+    "label": "Notifications",
+    "sublabel": "Show incoming estimate notifications",
+    "settingID": "showIncomingEstimateNotifs",
     "tags": [],
     "pageURL": "/settings/notifications",
     "icon": "fas fa-bell"
@@ -326,6 +342,46 @@
     "tags": [],
     "pageURL": "/settings/notifications",
     "icon": "fas fa-bell"
+  },
+  {
+    "label": "Emails",
+    "sublabel": "Send me unpaid invoices emails",
+    "settingID": "unpaidInvoicesEmails",
+    "tags": [],
+    "pageURL": "/settings/emails",
+    "icon": "fas fa-envelope"
+  },
+  {
+    "label": "Emails",
+    "sublabel": "Send me an email when i receive a new invoice",
+    "settingID": "newInvoiceEmail",
+    "tags": [],
+    "pageURL": "/settings/emails",
+    "icon": "fas fa-envelope"
+  },
+  {
+    "label": "Emails",
+    "sublabel": "Send me an email when i receive a new estimate",
+    "settingID": "newEstimateEmail",
+    "tags": [],
+    "pageURL": "/settings/emails",
+    "icon": "fas fa-envelope"
+  },
+  {
+    "label": "Emails",
+    "sublabel": "Send me an email when i receive a new payment",
+    "settingID": "newPaymentEmail",
+    "tags": [],
+    "pageURL": "/settings/emails",
+    "icon": "fas fa-envelope"
+  },
+  {
+    "label": "Emails",
+    "sublabel": "Send me an SMS when i receive a new invoice",
+    "settingID": "newInvoiceSMS",
+    "tags": [],
+    "pageURL": "/settings/emails",
+    "icon": "fas fa-envelope"
   },
   {
     "label": "Emails",
