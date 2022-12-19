@@ -65,7 +65,7 @@ export const plainAuthService = (firstName, lastName, email, password, setLoadin
     })
 }
 
-export const googleAuthService = (setMyUser, setToasts, setLoading) => {
+export const googleAuthService = (setMyUser, setLoading, setToasts) => {
   setLoading(true)
   const provider = new firebase.auth.GoogleAuthProvider()
   provider.addScope('email')
@@ -83,9 +83,9 @@ export const googleAuthService = (setMyUser, setToasts, setLoading) => {
       setLoading(false)
       console.log(error)
       if (error.code === 'auth/account-exists-with-different-credential')
-      setToasts(infoToast('You have already signed up with a different provider for that email. Please sign in with that provider.'))
+        setToasts(infoToast('You have already signed up with a different provider for that email. Please sign in with that provider.'))
       else
-      setToasts(errorToast('An errror occurred with the google login. Please try again.'))
+        setToasts(errorToast('An errror occurred with the google login. Please try again.'))
     })
 }
 
@@ -112,11 +112,11 @@ export const facebookAuthService = (setLoading, setToasts) => {
     .catch((err) => {
       console.log(err)
       if (err.code === 'auth/account-exists-with-different-credential')
-      setToasts(infoToast('You have already signed up with a different provider. Please sign in with that provider.'))
+        setToasts(infoToast('You have already signed up with a different provider. Please sign in with that provider.'))
       else if (err.code === 'auth/popup-blocked')
-      setToasts(infoToast('Popup blocked. Please allow popups for this site.'))
+        setToasts(infoToast('Popup blocked. Please allow popups for this site.'))
       else
-      setToasts(errorToast('An error with facebook has occured. Please try again later.'))
+        setToasts(errorToast('An error with facebook has occured. Please try again later.'))
     })
 }
 

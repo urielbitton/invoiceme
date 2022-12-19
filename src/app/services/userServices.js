@@ -1,3 +1,4 @@
+import { settingsDocsArr, settingsDocsNamesArr } from "app/data/settingsData"
 import { db, functions } from "app/firebase/fire"
 import { setDB, updateDB } from "./CrudDB"
 import { createNotification } from "./notifServices"
@@ -235,10 +236,9 @@ export const createUserDocService = (user, res, authMode, setLoading) => {
       )
         .then(() => {
           const batch = db.batch()
-          const settingsArr = ['general', 'invoices', 'estimates', 'contacts', 'payments', 'notifications', 'emails']
-          settingsArr.forEach(setting => {
+          settingsDocsNamesArr.forEach((setting, index) => {
             const docRef = db.collection(`users/${user.uid}/settings`).doc(setting)
-            batch.set(docRef, {})
+            batch.set(docRef, settingsDocsArr[index])
           })
           return batch.commit()
           .then(() => setLoading(false))
@@ -257,3 +257,4 @@ export const createUserDocService = (user, res, authMode, setLoading) => {
       setLoading(false)
     })
 }
+
