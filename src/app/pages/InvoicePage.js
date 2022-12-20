@@ -15,7 +15,8 @@ import AppModal from "app/components/ui/AppModal"
 import InvoicePaper from "app/components/invoices/InvoicePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
 import { infoToast, successToast } from "app/data/toastsTemplates"
-import { useUserInvoiceSettings, useUserNotifSettings } from "app/hooks/userHooks"
+import { useUserNotifSettings } from "app/hooks/userHooks"
+import { convertClassicDate } from "app/utils/dateUtils"
 
 export default function InvoicePage() {
 
@@ -28,7 +29,7 @@ export default function InvoicePage() {
   const [emailMessage, setEmailMessage] = useState('')
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [invoiceItems, setInvoiceItems] = useState([])
-  const [showSettingsModal, setShowSettingsModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
   const maxFileSize = 1024 * 1024 * 5
   const myBusiness = myUser?.myBusiness
   const taxNumbers = myBusiness?.taxNumbers
@@ -82,7 +83,7 @@ export default function InvoicePage() {
 
   const downloadAsImage = () => {
     downloadHtmlElementAsImage(
-      document.getElementsByClassName('paper-container')[0],
+      document.querySelector('.invoice-paper-container'),
       `${invoice.invoiceNumber}.png`,
     )
   }
@@ -111,10 +112,10 @@ export default function InvoicePage() {
         <h6>Paid <span>{invoice?.isPaid ? 'Yes' : 'No'}</span></h6>
         <h6>Total <span>{invoice?.currency?.symbol}{formatCurrency(invoice?.total?.toFixed(2))}</span></h6>
         <AppButton
-          label="Settings"
-          leftIcon="fas fa-cog"
+          label="Details"
+          leftIcon="fas fa-info-circle"
           buttonType="invertedBtn"
-          onClick={() => setShowSettingsModal(true)}
+          onClick={() => setShowDetailsModal(true)}
           className="nav-btn"
         />
       </div>
@@ -228,22 +229,56 @@ export default function InvoicePage() {
           />
         </div>
         <AppModal
-          showModal={showSettingsModal}
-          setShowModal={setShowSettingsModal}
-          label="Invoice Settings"
-          actions={<>
+          showModal={showDetailsModal}
+          setShowModal={setShowDetailsModal}
+          label="Invoice Details"
+          portalClassName="invoice-details-modal"
+          actions={
             <AppButton
-              label="Save"
+              label="Done"
+              onClick={() => setShowDetailsModal(false)}
             />
-            <AppButton
-              label="Cancel"
-              onClick={() => setShowSettingsModal(false)}
-              buttonType="invertedBtn"
-            />
-          </>
           }
         >
-
+          <div className="details-section">
+            <h4>Additional Information</h4>
+            <h6>
+              Date Created
+              <span>{convertClassicDate(invoice?.dateCreated?.toDate())}</span>
+            </h6>
+            <h6>
+              Invoice Status
+              <span className="capitalize">{invoice?.status}</span>
+            </h6>
+            <h6>
+              Scheduled Invoice
+              <span>Yes</span>
+            </h6>
+            <h6>
+              Invoice is Paid
+              <span>{invoice?.isPaid ? 'Yes' : 'No'}</span>
+            </h6>
+            <h6>
+              Invoice sent to client
+              <span>{invoice?.isSent ? 'Yes' : 'No'}</span>
+            </h6>
+            <h6>
+              Part of my revenue
+              <span>{invoice?.partOfTotal ? 'Yes' : 'No'}</span>
+            </h6>
+            <h6>
+              Client Email
+              <span>{invoice?.invoiceTo?.email}</span>
+            </h6>
+          </div>
+          <div className="details-section">
+            <h4>Tax Numbers</h4>
+            <p>
+              <i className="far fa-info-circle" />&nbsp;
+              To edit tax numbers for this estimate only, hover over the tax numbers
+              on the estimate sheet on this page and type a new value.
+            </p>
+          </div>
         </AppModal>
       </div> :
 

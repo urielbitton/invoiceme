@@ -79,3 +79,16 @@
   min-height: 100px;
   max-height: 200px;
 }
+
+.help-page .chat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px;
+}
+.help-page .chat-content form {
+  width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}

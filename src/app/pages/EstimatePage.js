@@ -9,13 +9,14 @@ import { formatCurrency, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
 import './styles/InvoicePage.css'
-import { invoicePaperStyles } from "app/components/invoices/invoicePaperStyles"
 import { useEstimate } from "app/hooks/estimateHooks"
 import { deleteEstimateService, sendEstimateService } from "app/services/estimatesServices"
 import EstimatePaper from "app/components/estimates/EstimatePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
 import { infoToast } from "app/data/toastsTemplates"
 import { useUserEstimateSettings } from "app/hooks/userHooks"
+import AppModal from "app/components/ui/AppModal"
+import { convertClassicDate } from "app/utils/dateUtils"
 
 export default function EstimatePage() {
 
@@ -28,6 +29,7 @@ export default function EstimatePage() {
   const [emailMessage, setEmailMessage] = useState('')
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [estimateItems, setestimateItems] = useState([])
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
   const maxFileSize = 1024 * 1024 * 5
   const myBusiness = myUser?.myBusiness
   const taxNumbers = myBusiness?.taxNumbers
@@ -80,7 +82,7 @@ export default function EstimatePage() {
 
   const downloadAsImage = () => {
     downloadHtmlElementAsImage(
-      document.getElementsByClassName('invoice-paper-container')[0],
+      document.querySelector('invoice-paper-container'),
       `${estimate.estimateNumber}.png`,
     )
   }
@@ -105,6 +107,14 @@ export default function EstimatePage() {
       sublabel: <div className="meta-data column">
         <h6>Estimate Name <span>{estimate?.title}</span></h6>
         <h6>Sent <span>{estimate?.isSent ? 'Yes' : 'No'}</span></h6>
+        <h6>Total <span>{estimate?.currency?.symbol}{formatCurrency(estimate?.total?.toFixed(2))}</span></h6>
+        <AppButton
+          label="Details"
+          leftIcon="fas fa-info-circle"
+          buttonType="invertedBtn"
+          onClick={() => setShowDetailsModal(true)}
+          className="nav-btn"
+        />
       </div>
     })
     return () => setNavItemInfo(null)
@@ -215,6 +225,46 @@ export default function EstimatePage() {
             estimatePaperRef={estimatePaperRef}
           />
         </div>
+        <AppModal
+          showModal={showDetailsModal}
+          setShowModal={setShowDetailsModal}
+          label="Estimate Details"
+          portalClassName="invoice-details-modal"
+          actions={
+            <AppButton
+              label="Done"
+              onClick={() => setShowDetailsModal(false)}
+            />
+          }
+        >
+          <div className="details-section">
+            <h4>Additional Information</h4>
+            <h6>
+              Date Created
+              <span>{convertClassicDate(estimate?.dateCreated?.toDate())}</span>
+            </h6>
+            <h6>
+              Estimate Status
+              <span className="capitalize">{estimate?.status}</span>
+            </h6>
+            <h6>
+              Estimate sent to client
+              <span>{estimate?.isSent ? 'Yes' : 'No'}</span>
+            </h6>
+            <h6>
+              Client Email
+              <span>{estimate?.estimateTo?.email}</span>
+            </h6>
+          </div>
+          <div className="details-section">
+            <h4>Tax Numbers</h4>
+            <p>
+              <i className="far fa-info-circle" />&nbsp;
+              To edit tax numbers for this estimate only, hover over the tax numbers 
+              on the estimate sheet on this page and type a new value.
+            </p>
+          </div>
+        </AppModal>
       </div> :
 
       <EmptyPage

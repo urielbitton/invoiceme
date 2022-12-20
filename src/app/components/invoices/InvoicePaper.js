@@ -35,6 +35,8 @@ export default function InvoicePaper(props) {
   const taxNumbersList = myTaxNumbers?.map((taxNum, index) => {
     return <h5
       style={invoicePaperStyles?.headerH5}
+      className="tax-numbers"
+      contentEditable
       key={index}
     >
       {taxNum.name}: {taxNum.number}

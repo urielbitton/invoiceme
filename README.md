@@ -2,7 +2,6 @@ InvoiceMe App
 
 
 ToDos:
-- add AppModal for users to see more invoice details, tax numbers (editable), etc.
 - implement mobile sidebar search 
 - responsive app
 - finish and verify scheduled invoices flow

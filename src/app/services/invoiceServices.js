@@ -248,6 +248,7 @@ export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDat
     invoiceTo: invoiceContact,
     isPaid: false,
     isSent: false,
+    isScheduled: true,
     items: invoiceItems,
     monthLabel: dateToMonthName(new Date()),
     notes: invoiceNotes,

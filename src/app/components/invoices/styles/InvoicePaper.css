@@ -183,3 +183,9 @@
   color: var(--primary);
   text-decoration: underline;
 }
+
+.invoice-paper-container .tax-numbers:hover {
+  background: var(--extraLightPrimary);
+  border-radius: 5px;
+  cursor: text;
+}

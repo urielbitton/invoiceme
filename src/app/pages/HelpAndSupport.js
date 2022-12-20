@@ -106,7 +106,11 @@ export default function HelpAndSupport() {
       }
       {
         supportType === "chat" &&
-        <>Coming soon...</>
+        <div className="chat-content">
+          <form>
+            Coming soon...
+          </form>
+        </div>
       }
     </div>
   )
