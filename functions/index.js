@@ -183,9 +183,9 @@ exports.newInvoiceSentNotify = functions
         const user = userSnap.docs[0]
         const userData = user.data()
         return firestore.collection('users')
-        .doc('settings')
-        .collection('notifications')
-        .doc('emails')
+        .doc(userData.userID)
+        .collection('settings')
+        .doc('notifications')
         .get()
         .then((settingsSnap) => {
           const settings = settingsSnap.data()
@@ -195,7 +195,7 @@ exports.newInvoiceSentNotify = functions
               'New Invoice',
               `You received a new invoice from ${data.from}`,
               'fas fa-file-invoice-dollar',
-              '/invoices'
+              '/emails'
             )
               .catch(err => console.log(err))
           }   
@@ -214,9 +214,9 @@ exports.newInvoiceSentNotify = functions
         const user = userSnap.docs[0]
         const userData = user.data()
         return firestore.collection('users')
-        .doc('settings')
-        .collection('notifications')
-        .doc('emails')
+        .doc(userData.userID)
+        .collection('settings')
+        .doc('notifications')
         .get()
         .then((settingsSnap) => {
           const settings = settingsSnap.data()
@@ -226,7 +226,7 @@ exports.newInvoiceSentNotify = functions
               'New Estimate',
               `You received a new estimate from ${data.from}`,
               'fas fa-file-invoice',
-              '/invoices'
+              '/emails'
             )
               .catch(err => console.log(err))
           }   
@@ -245,9 +245,9 @@ exports.newInvoiceSentNotify = functions
         const user = userSnap.docs[0]
         const userData = user.data()
         return firestore.collection('users')
-        .doc('settings')
-        .collection('notifications')
-        .doc('emails')
+        .doc(userData.userID)
+        .collection('settings')
+        .doc('notifications')
         .get()
         .then((settingsSnap) => {
           const settings = settingsSnap.data()
@@ -263,6 +263,25 @@ exports.newInvoiceSentNotify = functions
         })
       })
   })
+
+exports.sendEmailOnNewSupportTicket = functions
+  .region('northamerica-northeast1')
+  .firestore.document('support/{supportID}').onCreate((snapshot, context) => {
+    const data = snapshot.data()
+    const msg = {
+      to: 'info@atomicsdigital.com',
+      from: 'info@atomicsdigital.com',
+      subject: 'New Support Ticket',
+      html: `Hi Admin, <br><br> You have a new support ticket from on Invoice Me. <br>`+
+        `<p>From: ${data.email}</p>
+        <p>Subject: ${data.subject}</p>
+        <p>Message: ${data.message}</p>
+        <br><br>Thanks, <br> The Invoice Me Tea`
+    }
+    return sgMail.send(msg)
+      .catch(err => console.log(err))
+  })
+
 
 
 // Sendgrid functions

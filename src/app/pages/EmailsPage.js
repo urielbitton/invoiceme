@@ -160,7 +160,7 @@ export default function EmailsPage() {
           <EmptyPage
             label="No emails found."
             sublabel="Refine your search or send a new email."
-            btnLabel="Send"
+            btnLabel="New"
             btnClick={() => setShowNewEmailModal(true)}
             btnIcon="fal fa-paper-plane"
           />

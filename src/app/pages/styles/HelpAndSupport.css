@@ -1,0 +1,81 @@
+.help-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.help-page .select-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 70px;
+}
+.help-page .support-box {
+  width: 250px;
+  height: 250px;
+  border-radius: 5px;
+  border: 1px solid var(--inputBorderColor);
+  box-shadow: var(--newCardShadow);
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+.help-page .support-box:hover,
+.help-page .support-box.active {
+  background: var(--primary);
+}
+.help-page .support-box:hover h4,
+.help-page .support-box.active h4,
+.help-page .support-box:hover i,
+.help-page .support-box.active i {
+  color: #fff;
+}
+.help-page .support-box:active {
+  transform: scale(0.96);
+}
+.help-page .support-box i {
+  font-size: 30px;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+.help-page .support-box h4 {
+  color: var(--darkGrayText);
+  font-size: 17px;
+}
+
+.help-page .message-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 80px;
+}
+.help-page .message-content form {
+  width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.help-page .message-content .commonInput {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.help-page .message-content .commonInput h6 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
+.help-page .message-content textarea {
+  resize: vertical;
+  min-height: 100px;
+  max-height: 200px;
+}

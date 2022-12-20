@@ -91,3 +91,33 @@ export const monthlyReportOptions = [
   { label: 'Brief', value: 'brief' },
   { label: 'Full', value: 'full' }
 ]
+
+export const supportIssuesOptions = [
+  {
+    label: 'Technical issue',
+    value: 'technical',
+  },
+  {
+    label: 'Billing issue',
+    value: 'billing',
+  },
+  {
+    label: 'Feature request',
+    value: 'feature',
+  },
+  {
+    label: 'Account Issue',
+    value: 'account',
+  },
+  {
+    label: 'Other',
+    value: 'other',
+  }
+]
+
+export const testOptions = [
+  {
+    label: 'Option 1',
+    value: 'option1',
+  }
+]

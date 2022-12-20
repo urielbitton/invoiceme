@@ -102,3 +102,15 @@ export const getUnreadEmails = (myEmail, setUnreadEmails) => {
       setUnreadEmails(snapshot.docs.map((doc) => doc.data()))
     })
 }
+
+export const createSupportTicketService = (userID, subject, message) => {
+  const docID = getRandomDocID('support')
+  return setDB('support', docID, {
+    userID,
+    subject,
+    message,
+    dateCreated: new Date(),
+    supportID: docID,
+    isResolved: false,
+  })
+}
