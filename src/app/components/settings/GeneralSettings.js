@@ -73,6 +73,7 @@ export default function GeneralSettings() {
             disabled={!allowSave}
           />
         }
+        isSticky
       />
       <SettingsSection
         label="Language"

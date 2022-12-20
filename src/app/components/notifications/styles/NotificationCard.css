@@ -67,3 +67,16 @@
 .notification-card .right a i {
   color: var(--primary);
 }
+
+
+@media (max-width: 375px) {
+  .notification-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    gap: 10px;
+  }
+  .notification-card > div {
+    width: 100%;
+  }
+}

@@ -55,6 +55,7 @@ export default function ContactsSettings() {
             disabled={!allowSave}
           />
         }
+        isSticky
       />
       <SettingsSectionSwitch
         label="Favorite Contacts"

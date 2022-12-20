@@ -200,3 +200,20 @@ form .rsw-editor .rsw-toolbar {
 form .rsw-editor button {
   width: 100px;
 }
+
+
+@media (max-width: 800px) {
+  .contact-page > header .side.info {
+    border: none;
+    padding: 0;
+  }
+  .contact-page > header .side.info h5 {
+    width: 100%;
+  }
+}
+
+@media (max-width: 450px) {
+  .contact-content .section {
+    width: 100%;
+  }
+}

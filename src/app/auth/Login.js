@@ -122,7 +122,7 @@ export default function Login() {
               placeholder="james@gmail.com"
               onChange={(e) => setEmail(e.target.value)}
             />
-            <h6 className="email-error">{emailError}</h6>
+            { emailError && <h6 className="email-error">{emailError}</h6> }
             <AppInput
               label="Password"
               placeholder="5 characters or more"
@@ -136,7 +136,7 @@ export default function Login() {
                 />
               }
             />
-            <h6 className="email-error">{passError}</h6>
+            { passError && <h6 className="email-error">{passError}</h6>}
             <div className="login-options">
               <label>
                 <input

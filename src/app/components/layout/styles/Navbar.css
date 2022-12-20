@@ -443,3 +443,13 @@
     width: 100%;
   }
 }
+
+
+@media (max-width: 400px) {
+  .navbar .profile-dropdown {
+    width: 100%;
+    min-width: 90vw;
+    right: 0;
+    left: auto;
+  }
+}

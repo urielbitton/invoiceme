@@ -39,6 +39,10 @@
   color: var(--darkGrayText);
   margin-bottom: 10px;
 }
+.account-payments .payments-content.account-content > .section,
+.account-payments .payments-content.account-content .customer-info {
+  max-width: 100%;
+}
 .account-payments .payments-content .info-card {
   padding: 20px;
   background: #fff;
@@ -48,6 +52,7 @@
   flex-direction: column;
   gap: 5px;
   width: 500px;
+  max-width: 100%;
   margin-top: 20px;
 }
 .account-payments .payments-content .info-card h6 {

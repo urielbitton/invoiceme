@@ -29,6 +29,7 @@
   color: var(--darkGrayText);
   text-align: center;
   width: 600px;
+  max-width: 100%;
   margin-top: 30px;
 }
 
@@ -124,4 +125,11 @@
   height: 45px;
   border-radius: 0 5px 5px 0;
   text-transform: uppercase;
+}
+
+
+@media (max-width: 580px) {
+  .new-payment-container .transaction-flex {
+    flex-direction: column;
+  }
 }

@@ -112,6 +112,9 @@ input::placeholder, textarea::placeholder {
 input:disabled {
   background: #f1f1f1
 }
+select {
+  background: #fff;
+}
 iframe {
   border-radius: 10px;
 }

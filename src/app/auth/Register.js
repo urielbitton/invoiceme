@@ -113,7 +113,7 @@ export default function Register() {
               placeholder="james@gmail.com"
               onChange={(e) => setEmail(e.target.value)}
             />
-            <h6 className="email-error">{emailError}</h6>
+            { emailError && <h6 className="email-error">{emailError}</h6>}
             <div className="double-row">
               <AppInput
                 label="Password"
@@ -142,7 +142,7 @@ export default function Register() {
                 }
               />
             </div>
-            <h6 className="email-error">{passError}</h6>
+            { passError && <h6 className="email-error">{passError}</h6>}
             <div className="login-options">
               <label>
                 <input
@@ -165,7 +165,7 @@ export default function Register() {
             />
           </form>
           <h6 className="no-account-text">
-            Alread have an account?&nbsp;
+            Already have an account?&nbsp;
             <Link to="/login">Login here</Link>
           </h6>
         </div>

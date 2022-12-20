@@ -64,10 +64,10 @@
 
 @media (max-width: 450px) {
   .nav-dropdown {
-    width: 95%;
+    width: 90vw;
     max-height: 70vh;
-    left: 0;
     right: 0;
+    left: auto;
     margin: auto;
   }
 }

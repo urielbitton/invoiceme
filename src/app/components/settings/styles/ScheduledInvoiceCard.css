@@ -105,3 +105,13 @@
 .scheduled-invoice-card .actions button:hover {
   color: var(--primary);
 }
+
+
+@media (max-width: 365px) {
+  .scheduled-invoice-card {
+    height: 450px;
+  }
+  .scheduled-invoice-card .content:last-child {
+    margin-bottom: 10px;
+  }
+}

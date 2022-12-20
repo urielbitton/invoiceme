@@ -97,7 +97,7 @@
 .login-page form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 .login-page .auth-title {
   color: #333;
@@ -270,14 +270,37 @@
 }
 
 @media (max-width: 550px) {
-  .login-page .login-info .container {
-    width: 100%;
+  .login-page {
+    height: auto;
   }
   .login-page .login-info {
-    padding: 20px;
+    padding: 10px;
+  }
+  .login-page .login-info .container {
+    width: 100%;
+    padding: 15px;
   }
   .login-page .double-row {
     grid-template-columns: auto;
-    grid-gap: 0px;
+    grid-gap: 20px 0px;
+  }
+  .login-page .login-info h6.no-account-text {
+    margin-bottom: 60px;
+    top: 60px;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-page .login-info .container {
+    padding: 10px;
+  }
+  .login-page .social-logins {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+  .login-page .social-logins .btn {
+    flex-basis: 100%;
+    width: 100%;
   }
 }

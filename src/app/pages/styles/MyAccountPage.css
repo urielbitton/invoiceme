@@ -16,6 +16,7 @@
   gap: 40px;
   margin-top: 20px;
   width: 1000px;
+  max-width: 100%;
 }
 .account-page .account-content .account-section {
   display: grid;
@@ -50,6 +51,9 @@
   grid-column: 1/-1;
 }
 
+.account-page .account-content .account-section .app-badge {
+  margin-top: -20px;
+}
 .account-page .account-section .app-badge h6 {
   font-size: 14px;
   font-weight: 600;

@@ -90,6 +90,7 @@ export default function NotificationsSettings() {
             disabled={!allowSave}
           />
         }
+        isSticky
       />
       <SettingsSectionSwitch
         label="Outgoing invoices notifications"

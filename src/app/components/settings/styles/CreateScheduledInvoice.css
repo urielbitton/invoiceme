@@ -142,4 +142,9 @@
   color: var(--grayText);
   white-space: pre-wrap;
 }
-
+.create-scheduled-page .slide-container .review-form .btn-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}

@@ -212,6 +212,7 @@
   padding: 8px 10px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   border-radius: 5px;
 }
@@ -239,4 +240,18 @@
   align-items: center;
   gap: 20px;
   margin-top: 20px;
+}
+
+
+@media (max-width: 400px) {
+  .settings-page .page-title-bar .right {
+    width: 100%;
+  }
+  .settings-page .page-title-bar .appInput input {
+    width: 100%;
+  }
+  .settings-page .page-title-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

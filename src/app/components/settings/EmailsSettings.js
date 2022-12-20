@@ -75,6 +75,7 @@ export default function EmailsSettings() {
             disabled={!allowSave}
           />
         }
+        isSticky
       />
       <SettingsSectionSwitch
         label="New invoice email"

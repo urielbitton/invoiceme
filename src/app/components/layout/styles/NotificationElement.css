@@ -53,3 +53,8 @@
   font-size: 13px;
   color: var(--grayText);
 }
+
+
+@media (max-width: 400px) { 
+  
+}

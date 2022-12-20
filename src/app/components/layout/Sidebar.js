@@ -42,11 +42,6 @@ export default function Sidebar() {
           <div className="menu">
             {navLinksList}
           </div>
-          <AppInput
-            placeholder="Search"
-            iconright={<i className="fal fa-search" />}
-            enterKeyHint="go"
-          />
         </div>
         <div className="bottom">
           {
