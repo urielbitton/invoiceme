@@ -10,7 +10,8 @@ import { createSupportTicketService } from "app/services/emailServices"
 
 export default function HelpAndSupport() {
 
-  const { setCompactNav, setToasts, myUserID, setPageLoading } = useContext(StoreContext)
+  const { myUser, setCompactNav, setToasts, myUserID, 
+    setPageLoading } = useContext(StoreContext)
   const [supportType, setSupportType] = useState(null)
   const [subject, setSubject] = useState("")
   const [message, setMessage] = useState("")
@@ -32,6 +33,7 @@ export default function HelpAndSupport() {
       myUserID,
       issueType === "other" ? subject : issueType,
       message,
+      myUser.email,
     )
       .then(() => {
         setPageLoading(false)

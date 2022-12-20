@@ -276,9 +276,20 @@ exports.sendEmailOnNewSupportTicket = functions
         `<p>From: ${data.email}</p>
         <p>Subject: ${data.subject}</p>
         <p>Message: ${data.message}</p>
-        <br><br>Thanks, <br> The Invoice Me Tea`
+        <br><br>Thanks, <br> The Invoice Me Team`
     }
     return sgMail.send(msg)
+    .then(() => {
+      return createNotification(
+        data.userID,
+        'New Support Ticket',
+        `Your support ticket has been sent to our team. We will get back to you as soon as possible.`,
+        'fas fa-help-circle',
+        '/support'
+      )
+      .then(() => console.log('Support ticket sent.'))
+      .catch(err => console.log(err))
+    })
       .catch(err => console.log(err))
   })
 

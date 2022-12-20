@@ -103,12 +103,13 @@ export const getUnreadEmails = (myEmail, setUnreadEmails) => {
     })
 }
 
-export const createSupportTicketService = (userID, subject, message) => {
+export const createSupportTicketService = (userID, subject, message, email) => {
   const docID = getRandomDocID('support')
   return setDB('support', docID, {
     userID,
     subject,
     message,
+    email,
     dateCreated: new Date(),
     supportID: docID,
     isResolved: false,
