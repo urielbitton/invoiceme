@@ -12,6 +12,7 @@ import { AppInput } from "app/components/ui/AppInputs"
 import AppTabsBar from "app/components/ui/AppTabsBar"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
+import { functions } from "app/firebase/fire"
 import { useInstantSearch } from "app/hooks/searchHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext, useEffect, useState } from 'react'
@@ -21,7 +22,7 @@ import './styles/SettingsPage.css'
 
 export default function SettingsPage() {
 
-  const { setCompactNav } = useContext(StoreContext)
+  const { setCompactNav, setPageLoading } = useContext(StoreContext)
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [numOfPages, setNumOfPages] = useState(1)
@@ -66,6 +67,22 @@ export default function SettingsPage() {
       </div>
     </div>
   })
+
+  const runSchedule = () => {
+    setPageLoading(true)
+    return functions.httpsCallable('testScheduledInvoices')({
+      dayOfMonth: 20,
+      timeOfDay: 14
+    })
+    .then(result => {
+      setPageLoading(false)
+      console.log(result) 
+    })
+    .catch(err => {
+      setPageLoading(false)
+      console.log(err)
+    })
+  }
 
   useEffect(() => {
     setCompactNav(true)
@@ -152,6 +169,7 @@ export default function SettingsPage() {
           <Route path="scheduled-invoices/new/*" element={<CreateScheduledInvoice />} />
         </Routes>
       </div>
+      <button style={{width: 140}} onClick={() => runSchedule()}>Send Schedule</button>
     </div>
   )
 }

@@ -17,6 +17,7 @@ import EmptyPage from "app/components/ui/EmptyPage"
 import { infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserNotifSettings } from "app/hooks/userHooks"
 import { convertClassicDate } from "app/utils/dateUtils"
+import { PDFDownloadLink, Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer'
 
 export default function InvoicePage() {
 
@@ -87,6 +88,31 @@ export default function InvoicePage() {
       `${invoice.invoiceNumber}.png`,
     )
   }
+
+  const styles = StyleSheet.create({
+    page: {
+      flexDirection: 'row',
+      backgroundColor: '#E4E4E4'
+    },
+    section: {
+      margin: 10,
+      padding: 10,
+      flexGrow: 1
+    }
+  })
+
+  const MyDoc = () => (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text>Section #1</Text>
+        </View>
+        <View style={styles.section}>
+          <Text>Section #2</Text>
+        </View>
+      </Page>
+    </Document>
+  )
 
   useEffect(() => {
     if (invoice) {
@@ -216,6 +242,9 @@ export default function InvoicePage() {
                 onClick={() => deleteInvoice()}
               />
             </div>
+            <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf">
+              {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
+            </PDFDownloadLink>
           </div>
           <InvoicePaper
             invoice={invoice}

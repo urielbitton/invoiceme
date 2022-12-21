@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-pdf/renderer": "^3.0.1",
     "@sendgrid/mail": "^7.7.0",
     "@types/react": "^18.0.9",
     "algoliasearch": "^4.11.0",

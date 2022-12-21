@@ -13,6 +13,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@react-pdf/renderer": "^3.0.1",
     "@sendgrid/mail": "^7.7.0",
     "algoliasearch": "^4.11.0",
     "firebase-admin": "^10.0.2",

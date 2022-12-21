@@ -6,6 +6,7 @@ const firestore = firebase.firestore()
 firestore.settings({ ignoreUndefinedProperties: true })
 const sgMail = require('@sendgrid/mail')
 const puppeteer = require('puppeteer')
+import ReactPDF from '@react-pdf/renderer'
 
 const APP_ID = functions.config().algolia.app
 const API_KEY = functions.config().algolia.key
@@ -183,27 +184,27 @@ exports.newInvoiceSentNotify = functions
         const user = userSnap.docs[0]
         const userData = user.data()
         return firestore.collection('users')
-        .doc(userData.userID)
-        .collection('settings')
-        .doc('notifications')
-        .get()
-        .then((settingsSnap) => {
-          const settings = settingsSnap.data()
-          if (data.isType === 'invoice' && settings.showIncomingInvoicesNotifs) {
-            return createNotification(
-              userData.userID,
-              'New Invoice',
-              `You received a new invoice from ${data.from}`,
-              'fas fa-file-invoice-dollar',
-              '/emails'
-            )
-              .catch(err => console.log(err))
-          }   
-        })
+          .doc(userData.userID)
+          .collection('settings')
+          .doc('notifications')
+          .get()
+          .then((settingsSnap) => {
+            const settings = settingsSnap.data()
+            if (data.isType === 'invoice' && settings.showIncomingInvoicesNotifs) {
+              return createNotification(
+                userData.userID,
+                'New Invoice',
+                `You received a new invoice from ${data.from}`,
+                'fas fa-file-invoice-dollar',
+                '/emails'
+              )
+                .catch(err => console.log(err))
+            }
+          })
       })
   })
 
-  exports.newEstimateSentNotify = functions
+exports.newEstimateSentNotify = functions
   .region('northamerica-northeast1')
   .firestore.document('mail/{mailID}').onCreate((snapshot, context) => {
     const data = snapshot.data()
@@ -214,27 +215,27 @@ exports.newInvoiceSentNotify = functions
         const user = userSnap.docs[0]
         const userData = user.data()
         return firestore.collection('users')
-        .doc(userData.userID)
-        .collection('settings')
-        .doc('notifications')
-        .get()
-        .then((settingsSnap) => {
-          const settings = settingsSnap.data()
-          if (data.isType === 'estimate' && settings.showIncomingEstimateNotifs) {
-            return createNotification(
-              userData.userID, 
-              'New Estimate',
-              `You received a new estimate from ${data.from}`,
-              'fas fa-file-invoice',
-              '/emails'
-            )
-              .catch(err => console.log(err))
-          }   
-        })
+          .doc(userData.userID)
+          .collection('settings')
+          .doc('notifications')
+          .get()
+          .then((settingsSnap) => {
+            const settings = settingsSnap.data()
+            if (data.isType === 'estimate' && settings.showIncomingEstimateNotifs) {
+              return createNotification(
+                userData.userID,
+                'New Estimate',
+                `You received a new estimate from ${data.from}`,
+                'fas fa-file-invoice',
+                '/emails'
+              )
+                .catch(err => console.log(err))
+            }
+          })
       })
   })
 
-  exports.newInvoiceSentSMSNotify = functions
+exports.newInvoiceSentSMSNotify = functions
   .region('northamerica-northeast1')
   .firestore.document('mail/{mailID}').onCreate((snapshot, context) => {
     const data = snapshot.data()
@@ -245,22 +246,22 @@ exports.newInvoiceSentNotify = functions
         const user = userSnap.docs[0]
         const userData = user.data()
         return firestore.collection('users')
-        .doc(userData.userID)
-        .collection('settings')
-        .doc('notifications')
-        .get()
-        .then((settingsSnap) => {
-          const settings = settingsSnap.data()
-          if (data.isType === 'invoice' && settings.smsInvoiceNotifs) {
-            return twilio.messages.create({
-              body: `You received a new invoice from ${data.from}`,
-              to: userData.phone,
-              from: '+15087156100',
-            })
-              .then(message => console.log(message.sid))
-              .catch(err => console.log(err))
-          }   
-        })
+          .doc(userData.userID)
+          .collection('settings')
+          .doc('notifications')
+          .get()
+          .then((settingsSnap) => {
+            const settings = settingsSnap.data()
+            if (data.isType === 'invoice' && settings.smsInvoiceNotifs) {
+              return twilio.messages.create({
+                body: `You received a new invoice from ${data.from}`,
+                to: userData.phone,
+                from: '+15087156100',
+              })
+                .then(message => console.log(message.sid))
+                .catch(err => console.log(err))
+            }
+          })
       })
   })
 
@@ -272,24 +273,24 @@ exports.sendEmailOnNewSupportTicket = functions
       to: 'info@atomicsdigital.com',
       from: 'info@atomicsdigital.com',
       subject: 'New Support Ticket',
-      html: `Hi Admin, <br><br> You have a new support ticket from on Invoice Me. <br>`+
+      html: `Hi Admin, <br><br> You have a new support ticket from on Invoice Me. <br>` +
         `<p>From: ${data.email}</p>
         <p>Subject: ${data.subject}</p>
         <p>Message: ${data.message}</p>
         <br><br>Thanks, <br> The Invoice Me Team`
     }
     return sgMail.send(msg)
-    .then(() => {
-      return createNotification(
-        data.userID,
-        'New Support Ticket',
-        `Your support ticket has been sent to our team. We will get back to you as soon as possible.`,
-        'fas fa-help-circle',
-        '/support'
-      )
-      .then(() => console.log('Support ticket sent.'))
-      .catch(err => console.log(err))
-    })
+      .then(() => {
+        return createNotification(
+          data.userID,
+          'New Support Ticket',
+          `Your support ticket has been sent to our team. We will get back to you as soon as possible.`,
+          'fas fa-help-circle',
+          '/support'
+        )
+          .then(() => console.log('Support ticket sent.'))
+          .catch(err => console.log(err))
+      })
       .catch(err => console.log(err))
   })
 
@@ -775,7 +776,7 @@ function checkOverdueInvoices() {
                       'fas fa-invoice-dollar',
                       `/invoices/${data.invoiceID}`
                     )
-                    .catch((err) => console.log(err))
+                      .catch((err) => console.log(err))
                   }
                 })
                 .catch((err) => console.log(err))
@@ -788,7 +789,7 @@ function checkOverdueInvoices() {
                 'fas fa-invoice-dollar',
                 `/invoices/${data.invoiceID}`
               )
-              .catch((err) => console.log(err))
+                .catch((err) => console.log(err))
             }
           }))
         })
@@ -846,6 +847,13 @@ exports.checkExpiredSubscriptions = functions.pubsub
       })
   })
 
+exports.testScheduledInvoices = functions
+  .https.onCall((data, context) => {
+    return runScheduledInvoices(data.dayOfMonth, data.timeOfDay)
+      .then(() => console.log('Scheduled invoices checked successfully.'))
+      .catch((err) => console.log('Scheduled invoice check error', err))
+  })
+
 
 //utility functions
 function createNotification(userID, title, text, icon, url) {
@@ -870,4 +878,8 @@ function formatCurrency(number) {
 
 function getRandomDocID(path) {
   return firestore.collection(path).doc().id
+}
+
+async function convertHtmlToPDF() {
+  
 }
