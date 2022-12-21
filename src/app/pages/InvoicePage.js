@@ -17,7 +17,8 @@ import EmptyPage from "app/components/ui/EmptyPage"
 import { infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserNotifSettings } from "app/hooks/userHooks"
 import { convertClassicDate } from "app/utils/dateUtils"
-import { PDFDownloadLink, Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer'
+import InvoicePaperDoc from "app/components/invoices/InvoicePaperDoc"
+import { PDFDownloadLink } from "@react-pdf/renderer"
 
 export default function InvoicePage() {
 
@@ -40,6 +41,7 @@ export default function InvoicePage() {
   const calculatedTotal = invoice?.items?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const calculatedTaxRate = invoice?.items?.every(item => item.taxRate === invoice?.items[0].taxRate) ? invoice?.items[0].taxRate : null
   const invoicePaperRef = useRef(null)
+  const pdfDownloadLinkRef = useRef(null)
   const navigate = useNavigate()
   const notifSettings = useUserNotifSettings(myUserID)
 
@@ -73,15 +75,6 @@ export default function InvoicePage() {
     deleteInvoiceService(myUserID, invoiceID, setPageLoading, setToasts, notifSettings.showOutgoingInvoicesNotifs)
   }
 
-  const downloadAsPDF = () => {
-    domToPDFDownload(
-      document.querySelector('.invoice-page .invoice-paper-container'),
-      `${invoice.invoiceNumber}.pdf`,
-      true
-    )
-    setToasts(successToast('PDF Downloaded'))
-  }
-
   const downloadAsImage = () => {
     downloadHtmlElementAsImage(
       document.querySelector('.invoice-paper-container'),
@@ -89,30 +82,24 @@ export default function InvoicePage() {
     )
   }
 
-  const styles = StyleSheet.create({
-    page: {
-      flexDirection: 'row',
-      backgroundColor: '#E4E4E4'
-    },
-    section: {
-      margin: 10,
-      padding: 10,
-      flexGrow: 1
-    }
-  })
+  const downloadAsPdf = () => {
+    // @ts-ignore
+    document.querySelector('.pdf-download-link').click()
+    setToasts(successToast('PDF Downloaded'))
+  }
 
-  const MyDoc = () => (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text>Section #1</Text>
-        </View>
-        <View style={styles.section}>
-          <Text>Section #2</Text>
-        </View>
-      </Page>
-    </Document>
-  )
+  const PaperDoc = () => {
+    return <InvoicePaperDoc
+      invoice={invoice}
+      myBusiness={myBusiness}
+      taxNumbers={taxNumbers}
+      invoiceItems={invoiceItems}
+      calculatedSubtotal={calculatedSubtotal}
+      calculatedTaxRate={calculatedTaxRate}
+      calculatedTotal={calculatedTotal}
+      myUser={myUser}
+    />
+  }
 
   useEffect(() => {
     if (invoice) {
@@ -208,7 +195,7 @@ export default function InvoicePage() {
                     {
                       label: 'PDF Download',
                       icon: 'fas fa-file-pdf',
-                      onClick: () => downloadAsPDF()
+                      onClick: () => downloadAsPdf()
                     },
                     {
                       label: 'Image Download',
@@ -242,9 +229,6 @@ export default function InvoicePage() {
                 onClick={() => deleteInvoice()}
               />
             </div>
-            <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf">
-              {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
-            </PDFDownloadLink>
           </div>
           <InvoicePaper
             invoice={invoice}
@@ -304,11 +288,19 @@ export default function InvoicePage() {
             <h4>Tax Numbers</h4>
             <p>
               <i className="far fa-info-circle" />&nbsp;
-              To edit tax numbers for this estimate only, hover over the tax numbers
-              on the estimate sheet on this page and type a new value.
+              To edit tax numbers for this invoice only, hover over the tax numbers
+              on the invoice sheet on this page and type a new value.
             </p>
           </div>
         </AppModal>
+        <PDFDownloadLink
+          style={{ display: 'none' }}
+          className="pdf-download-link"
+          document={<PaperDoc />}
+          fileName={`${invoice.invoiceNumber}.pdf`}
+        >
+          {({ loading }) => loading ? 'Loading' : 'PDF Download'}
+        </PDFDownloadLink>
       </div> :
 
       <EmptyPage

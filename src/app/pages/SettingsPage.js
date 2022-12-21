@@ -68,22 +68,6 @@ export default function SettingsPage() {
     </div>
   })
 
-  const runSchedule = () => {
-    setPageLoading(true)
-    return functions.httpsCallable('testScheduledInvoices')({
-      dayOfMonth: 20,
-      timeOfDay: 14
-    })
-    .then(result => {
-      setPageLoading(false)
-      console.log(result) 
-    })
-    .catch(err => {
-      setPageLoading(false)
-      console.log(err)
-    })
-  }
-
   useEffect(() => {
     setCompactNav(true)
     return () => setCompactNav(false)
@@ -169,7 +153,6 @@ export default function SettingsPage() {
           <Route path="scheduled-invoices/new/*" element={<CreateScheduledInvoice />} />
         </Routes>
       </div>
-      <button style={{width: 140}} onClick={() => runSchedule()}>Send Schedule</button>
     </div>
   )
 }

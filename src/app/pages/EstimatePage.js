@@ -4,7 +4,7 @@ import DropdownButton from "app/components/ui/DropdownButton"
 import FileUploader from "app/components/ui/FileUploader"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import { StoreContext } from "app/store/store"
-import { domToPDFDownload, downloadHtmlElementAsImage } from "app/utils/fileUtils"
+import { downloadHtmlElementAsImage } from "app/utils/fileUtils"
 import { formatCurrency, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom"
@@ -13,10 +13,12 @@ import { useEstimate } from "app/hooks/estimateHooks"
 import { deleteEstimateService, sendEstimateService } from "app/services/estimatesServices"
 import EstimatePaper from "app/components/estimates/EstimatePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
-import { infoToast } from "app/data/toastsTemplates"
+import { infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserEstimateSettings } from "app/hooks/userHooks"
 import AppModal from "app/components/ui/AppModal"
 import { convertClassicDate } from "app/utils/dateUtils"
+import { PDFDownloadLink } from "@react-pdf/renderer"
+import EstimatePaperDoc from "app/components/estimates/EstimatePaperDoc"
 
 export default function EstimatePage() {
 
@@ -72,19 +74,30 @@ export default function EstimatePage() {
     deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, estSettings.showOutgoingEstimateNotifs)
   }
 
-  const downloadAsPDF = () => {
-    domToPDFDownload(
-      document.querySelector('.invoice-page .invoice-paper-container'),
-      `${estimate.estimateNumber}.pdf`,
-      true
-    )
-  }
-
   const downloadAsImage = () => {
     downloadHtmlElementAsImage(
       document.querySelector('invoice-paper-container'),
       `${estimate.estimateNumber}.png`,
     )
+  }
+
+  const downloadAsPdf = () => {
+    // @ts-ignore
+    document.querySelector('.pdf-download-link').click()
+    setToasts(successToast('PDF Downloaded'))
+  }
+
+  const PaperDoc = () => {
+    return <EstimatePaperDoc
+      estimate={estimate}
+      myBusiness={myBusiness}
+      taxNumbers={taxNumbers}
+      estimateItems={estimateItems}
+      calculatedSubtotal={calculatedSubtotal}
+      calculatedTaxRate={calculatedTaxRate}
+      calculatedTotal={calculatedTotal}
+      myUser={myUser}
+    />
   }
 
   useEffect(() => {
@@ -179,7 +192,7 @@ export default function EstimatePage() {
                     {
                       label: 'PDF Download',
                       icon: 'fas fa-file-pdf',
-                      onClick: () => downloadAsPDF()
+                      onClick: () => downloadAsPdf()
                     },
                     {
                       label: 'Image Download',
@@ -260,11 +273,19 @@ export default function EstimatePage() {
             <h4>Tax Numbers</h4>
             <p>
               <i className="far fa-info-circle" />&nbsp;
-              To edit tax numbers for this estimate only, hover over the tax numbers 
+              To edit tax numbers for this estimate only, hover over the tax numbers
               on the estimate sheet on this page and type a new value.
             </p>
           </div>
         </AppModal>
+        <PDFDownloadLink
+          style={{ display: 'none' }}
+          className="pdf-download-link"
+          document={<PaperDoc />}
+          fileName={`${estimate.estimateNumber}.pdf`}
+        >
+          {({ loading }) => loading ? 'Loading' : 'PDF Download'}
+        </PDFDownloadLink>
       </div> :
 
       <EmptyPage

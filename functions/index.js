@@ -847,13 +847,6 @@ exports.checkExpiredSubscriptions = functions.pubsub
       })
   })
 
-exports.testScheduledInvoices = functions
-  .https.onCall((data, context) => {
-    return runScheduledInvoices(data.dayOfMonth, data.timeOfDay)
-      .then(() => console.log('Scheduled invoices checked successfully.'))
-      .catch((err) => console.log('Scheduled invoice check error', err))
-  })
-
 
 //utility functions
 function createNotification(userID, title, text, icon, url) {
