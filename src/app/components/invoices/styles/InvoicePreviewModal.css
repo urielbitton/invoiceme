@@ -13,12 +13,14 @@
 .invoice-preview-modal.show {
   display: flex;
 }
-.invoice-preview-modal .paper-container {
+.invoice-preview-modal .invoice-paper-container {
   max-width: 1200px!important;
   min-width: 1000px;
   height: 1200px!important;
-  transform: scale(0.8);
+  overflow-y: auto;
+  transform: scale(0.9);
   background: #fff;
+  padding: 30px;
   margin-top: -50px;
 }
 .invoice-preview-modal > i {

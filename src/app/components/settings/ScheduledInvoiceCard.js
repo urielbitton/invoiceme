@@ -1,6 +1,4 @@
-import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useUserNotifSettings } from "app/hooks/userHooks"
-import { deleteDB } from "app/services/CrudDB"
 import { deleteScheduledInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDateAndTime, displayThStNdRd } from "app/utils/dateUtils"
@@ -12,7 +10,7 @@ import './styles/ScheduledInvoiceCard.css'
 export function ScheduledInvoiceCard(props) {
 
   const { setPageLoading, setToasts, myUserID } = useContext(StoreContext)
-  const { title, dateCreated, dayOfMonth, timeOfDay, active,
+  const { title, dateCreated, dayOfMonth, timeOfDay, isActive,
     lastRan, invoiceTemplate, scheduleID } = props.scheduled
   const { setInvoiceData, setShowInvoicePreview } = props
   const monthName = new Date(dateCreated?.toDate()).toLocaleString('default', { month: 'short' })
@@ -58,7 +56,7 @@ export function ScheduledInvoiceCard(props) {
         </div>
         <h4>
           {title}
-          <small>{active ? 'Active' : 'Inactive'}</small>
+          <small className={!isActive ? 'inactive' : ''}>{isActive ? 'Active' : 'Inactive'}</small>
         </h4>
       </div>
       <div className="content">

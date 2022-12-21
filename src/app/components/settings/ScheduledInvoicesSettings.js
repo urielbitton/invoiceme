@@ -16,7 +16,7 @@ export default function ScheduledInvoicesSettings() {
   const [invoiceData, setInvoiceData] = useState(null)
   const scheduledInvoices = useUserScheduledInvoices(myUserID)
   const invoicePaperRef = useRef(null)
-  const location= useLocation()
+  const location = useLocation()
 
   const scheduledInvoicesList = scheduledInvoices?.map((scheduled, index) => {
     return <ScheduledInvoiceCard

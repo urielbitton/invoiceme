@@ -66,6 +66,9 @@
   font-size: 12px;
   font-weight: 600;
 }
+.scheduled-invoice-card .header h4 small.inactive {
+  color: var(--red);
+}
 .scheduled-invoice-card .content {
   display: flex;
   flex-direction: column;

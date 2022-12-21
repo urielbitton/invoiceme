@@ -23,10 +23,10 @@ export default function InvoicePaper(props) {
     >
       <h6>{(index + 1)}</h6>
       <h6>{item?.name}</h6>
-      <h6>{invoice?.currency.symbol}{formatCurrency(item?.price?.toFixed(2))}</h6>
+      <h6>{invoice?.currency?.symbol}{formatCurrency(item?.price?.toFixed(2))}</h6>
       <h6>{item?.quantity}</h6>
       <h6>{item?.taxRate}%</h6>
-      <h6>{invoice?.currency.symbol}{item?.total?.toFixed(2)}</h6>
+      <h6>{invoice?.currency?.symbol}{item?.total?.toFixed(2)}</h6>
     </div>
   })
 

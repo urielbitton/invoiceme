@@ -112,6 +112,12 @@
   font-weight: 600;
   color: var(--darkGrayText);
 }
+.create-scheduled-page .slide-container .review-form .section h5 span {
+  color: var(--primary);
+}
+.create-scheduled-page .slide-container .review-form .section h5 span.inactive {
+  color: var(--red);
+}
 .create-scheduled-page .slide-container .review-form .section h5 i {
   margin-left: 10px;
   font-size: 14px;

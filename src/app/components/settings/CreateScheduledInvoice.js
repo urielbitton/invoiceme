@@ -9,7 +9,7 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 import InvoiceContact from "../invoices/InvoiceContact"
 import InvoiceItems from "../invoices/InvoiceItems"
 import AppButton from "../ui/AppButton"
-import { AppInput, AppSelect, AppTextarea } from "../ui/AppInputs"
+import { AppInput, AppSelect, AppSwitch, AppTextarea } from "../ui/AppInputs"
 import SlideContainer from "../ui/SlideContainer"
 import SlideElement from "../ui/SlideElement"
 import SettingsTitles from "./SettingsTitles"
@@ -59,6 +59,8 @@ export default function CreateScheduledInvoice() {
   const [contactCountry, setContactCountry] = useState("")
   const [contactImg, setContactImg] = useState("")
   const [showInvoicePreview, setShowInvoicePreview] = useState(false)
+  const [invoiceData, setInvoiceData] = useState(null)
+  const [activeSchedule, setActiveSchedule] = useState(true)
   const userScheduledInvoices = useUserScheduledInvoices(myUserID)
   const [searchParams, setSearchParams] = useSearchParams()
   const editMode = searchParams.get('edit') === 'true'
@@ -78,19 +80,15 @@ export default function CreateScheduledInvoice() {
     invoiceNumber,
     dateCreated: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDate))),
     dateDue: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDueDate))),
-    invoiceTo: {
-      name: contactName,
-      email: contactEmail,
-      phone: contactPhone,
-      address: contactAddress,
-      city: contactCity,
-      region: contactRegion,
-      postcode: contactPostcode,
-      country: contactCountry,
-    },
+    invoiceTo: invoiceContact,
     currency: invoiceCurrency,
     notes: invoiceNotes,
-    myBusiness: myUser?.myBusiness
+    myBusiness: myUser?.myBusiness,
+    items: invoiceItems,
+    taxRate1,
+    taxRate2,
+    subtotal: calculatedSubtotal,
+    total: calculatedTotal,
   }
 
   const allowSlide2 = invoiceTitle?.length > 0 && 
@@ -151,6 +149,19 @@ export default function CreateScheduledInvoice() {
     />
   </div>
 
+const showPreview = () => {
+  setShowInvoicePreview(true)
+  setInvoiceData({
+    invoice: editSchedule?.invoiceTemplate || invoice,
+    taxNumbers: editSchedule?.invoiceTemplate?.taxNumbers,
+    items: editSchedule?.invoiceTemplate?.items || invoiceItems,
+    taxRate1: editSchedule?.invoiceTemplate?.taxRate1 || taxRate1,
+    taxRate2: editSchedule?.invoiceTemplate?.taxRate2 || taxRate2,
+    subtotal: editSchedule?.invoiceTemplate?.subTotal || calculatedSubtotal,
+    total: editSchedule?.invoiceTemplate?.total || calculatedTotal
+  })
+}
+
   const createScheduledInvoice = () => {
     const confirm = window.confirm('Are you sure you want to create this scheduled invoice?')
     if(!confirm) return setToasts(infoToast('Scheduled invoice not created.'))
@@ -179,6 +190,7 @@ export default function CreateScheduledInvoice() {
       editInvoiceID,
       {
         ...editSchedule,
+        isActive: activeSchedule,
         dayOfMonth: +dayOfMonth,
         timeOfDay: +timeOfDay,
         title: scheduleTitle,
@@ -242,6 +254,7 @@ export default function CreateScheduledInvoice() {
     setEmailMessage(editSchedule.emailMessage)
     setDayOfMonth(editSchedule.dayOfMonth)
     setTimeOfDay(editSchedule.timeOfDay)
+    setActiveSchedule(editSchedule.isActive)
   }, [editSchedule, editMode])
 
   useEffect(() => {
@@ -251,7 +264,7 @@ export default function CreateScheduledInvoice() {
 
   return (
     myMemberType === 'business' ?
-    editMode && editSchedule?.ownerID === myUserID ?
+    (editMode ? editSchedule?.ownerID === myUserID : true) ?
     <div className="settings-sub-page create-scheduled-page">
       <SettingsTitles
         label="Create a scheduled invoice"
@@ -435,6 +448,17 @@ export default function CreateScheduledInvoice() {
                 <h6>Make sure the information is correct before creating your automated invoice.</h6>
               </div>
               <div className="section">
+                <h5>Scheduled invoice is&nbsp;
+                  <span className={!activeSchedule ? 'inactive' : ''}>
+                    {activeSchedule ? 'active' : 'inactive'}
+                  </span>
+                </h5>
+                <AppSwitch
+                  checked={activeSchedule}
+                  onChange={(e) => setActiveSchedule(e.target.checked)}
+                />
+              </div>
+              <div className="section">
                 <h5>
                   Invoice Template
                   <i 
@@ -452,7 +476,7 @@ export default function CreateScheduledInvoice() {
                 </h6>
                 <small
                   className="underline bold"
-                  onClick={() => setShowInvoicePreview(true)}
+                  onClick={() => showPreview()}
                 >Preview Invoice</small>
               </div>
               <div className="section">
@@ -528,7 +552,7 @@ export default function CreateScheduledInvoice() {
         </SlideContainer>
       </div>
       <InvoicePreviewModal
-        invoiceData={invoice}
+        invoiceData={invoiceData}
         showInvoicePreview={showInvoicePreview}
         setShowInvoicePreview={setShowInvoicePreview}
         invoicePaperRef={invoicePaperRef}

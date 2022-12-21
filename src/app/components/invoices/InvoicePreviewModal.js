@@ -17,9 +17,9 @@ export default function InvoicePreviewModal(props) {
       />
       <InvoicePaper
         invoice={invoiceData?.invoice}
+        invoiceItems={invoiceData?.items}
         myBusiness={myUser?.myBusiness}
         taxNumbers={invoiceData?.taxNumbers}
-        invoiceItems={invoiceData?.items}
         calculatedSubtotal={invoiceData?.subtotal}
         calculatedTaxRate={invoiceData?.taxRate1 + invoiceData?.taxRate2}
         calculatedTotal={invoiceData?.total}

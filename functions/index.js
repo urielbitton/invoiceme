@@ -596,7 +596,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
   return firestore.collection('scheduledInvoices')
     .where('dayOfMonth', '==', dayOfMonth)
     .where('timeOfDay', '==', timeOfDay)
-    .where('active', '==', true)
+    .where('isActive', '==', true)
     .get()
     .then((scheduledInvoices) => {
       if (scheduledInvoices.empty) return null

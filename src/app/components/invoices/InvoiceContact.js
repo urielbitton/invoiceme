@@ -32,7 +32,7 @@ export default function InvoiceContact(props) {
   const [showContactModal, setShowContactModal] = useState(false)
   const [contactCompanyName, setContactCompanyName] = useState("")
   const [contactAddFavorite, setContactAddFavorite] = useState(false)
-  const [addToContacts, setAddToContacts] = useState(true)
+  const [addToContacts, setAddToContacts] = useState(false)
   const [contactsLoading, setContactsLoading] = useState(false)
   const favoriteContacts = useFavoriteContacts(myUserID)
   const filters = `ownerID: ${myUserID}`
