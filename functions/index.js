@@ -5,8 +5,6 @@ firebase.initializeApp()
 const firestore = firebase.firestore()
 firestore.settings({ ignoreUndefinedProperties: true })
 const sgMail = require('@sendgrid/mail')
-const puppeteer = require('puppeteer')
-import ReactPDF from '@react-pdf/renderer'
 
 const APP_ID = functions.config().algolia.app
 const API_KEY = functions.config().algolia.key
@@ -17,7 +15,7 @@ const stripeLiveKey = functions.config().stripe.key
 const stripeTestKey = functions.config().stripe.testkey
 const twilio = require('twilio')(twilioSid, twilioToken)
 // @ts-ignore
-const stripe = require('stripe')(stripeTestKey)
+const stripe = require('stripe')(stripeLiveKey)
 
 // @ts-ignore
 const client = algoliasearch(APP_ID, API_KEY)
@@ -845,7 +843,7 @@ exports.checkExpiredSubscriptions = functions.pubsub
               .catch((err) => console.log(err))
           })
       })
-  })
+  }) 
 
 
 //utility functions

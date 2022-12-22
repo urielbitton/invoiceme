@@ -2,5 +2,5 @@ InvoiceMe App
 
 
 ToDos:
-- try to get puppeteer to download invoices properly & send invoice emails
--remove send scheudle on settings page when done testing scheduled invoices
+get react-pdf to work - scheduled invoices pdf sending thru sendgrid
+- test app

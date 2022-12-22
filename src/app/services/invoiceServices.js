@@ -1,5 +1,5 @@
 import { successToast } from "app/data/toastsTemplates"
-import { db } from "app/firebase/fire"
+import { db, functions } from "app/firebase/fire"
 import {
   convertInputDateToDateAndTimeFormat,
   dateToMonthName,
@@ -235,8 +235,9 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
 
 export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDate, invoiceNumber,
   invoiceCurrency, invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2,
-  invoiceTitle, calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef,
-  notify) => {
+  invoiceTitle, calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, isActive, 
+  invoicePaperHTML, notify
+  ) => {
   const pathName = 'scheduledInvoices'
   const docID = getRandomDocID(pathName)
   const invoiceTemplate = {
@@ -261,7 +262,7 @@ export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDat
     total: calculatedTotal
   }
   const data = {
-    active: true,
+    isActive,
     dateCreated: new Date(),
     dayOfMonth: +dayOfMonth,
     timeOfDay: +timeOfDay,
@@ -270,7 +271,7 @@ export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDat
     title: scheduleTitle,
     emailMessage,
     invoiceTemplate,
-    invoicePaperHTML: invoicePaperRef?.current?.innerHTML,
+    invoicePaperHTML,
     scheduleID: docID,
     ownerID: myUser.userID,
   }
@@ -320,4 +321,10 @@ export const deleteScheduledInvoiceService = (myUserID, scheduleID, setLoading, 
       setToasts(successToast("Scheduled invoice deleted."))
     })
     .catch(err => catchError(err, setLoading))
+}
+
+export const renderPdfToStringService = (htmlElement) => {
+  return functions.httpsCallable('pdfRenderToString')({ htmlElement })
+    .then(res => res.data)  
+    .catch(err => console.log(err))
 }

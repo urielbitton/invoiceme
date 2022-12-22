@@ -1,9 +1,13 @@
 import { currencies, timeOfDaysOptions } from "app/data/general"
 import { useScheduledInvoice, useUserScheduledInvoices } from "app/hooks/invoiceHooks"
 import { StoreContext } from "app/store/store"
-import { convertDateToInputFormat, convertInputDateToDateAndTimeFormat, 
+import {
+  convertDateToInputFormat, convertInputDateToDateAndTimeFormat,
   dayOfMonthNumbers
 } from "app/utils/dateUtils"
+import {
+  Document, Page, Text
+} from "@react-pdf/renderer"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom"
 import InvoiceContact from "../invoices/InvoiceContact"
@@ -14,15 +18,21 @@ import SlideContainer from "../ui/SlideContainer"
 import SlideElement from "../ui/SlideElement"
 import SettingsTitles from "./SettingsTitles"
 import firebase from 'firebase'
-import { formatCurrency, formatPhoneNumber, 
-  truncateText } from "app/utils/generalUtils"
+import {
+  formatCurrency, formatPhoneNumber,
+  truncateText
+} from "app/utils/generalUtils"
 import './styles/CreateScheduledInvoice.css'
 import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
 import ProContent from "../ui/ProContent"
-import { createScheduledInvoiceService, deleteScheduledInvoiceService, 
-  updateScheduledInvoiceService } from "app/services/invoiceServices"
+import {
+  createScheduledInvoiceService, deleteScheduledInvoiceService,
+  renderPdfToStringService,
+  updateScheduledInvoiceService
+} from "app/services/invoiceServices"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserNotifSettings } from "app/hooks/userHooks"
+import InvoicePaperDoc from "../invoices/InvoicePaperDoc"
 
 export default function CreateScheduledInvoice() {
 
@@ -64,13 +74,14 @@ export default function CreateScheduledInvoice() {
   const userScheduledInvoices = useUserScheduledInvoices(myUserID)
   const [searchParams, setSearchParams] = useSearchParams()
   const editMode = searchParams.get('edit') === 'true'
-  const editInvoiceID = searchParams.get('scheduleID') 
+  const editInvoiceID = searchParams.get('scheduleID')
   const paramViewMode = searchParams.get('mode') === 'view'
   const editSchedule = useScheduledInvoice(myUserID, editInvoiceID)
   const navigate = useNavigate()
   const numOfSlides = 4
   const calculatedSubtotal = invoiceItems?.reduce((acc, item) => (acc + (item?.price * item?.quantity)), 0)
   const calculatedTotal = invoiceItems?.reduce((acc, item) => (acc + ((item?.price + (item?.price * item?.taxRate / 100)) * item?.quantity)), 0)
+  const calculatedTaxRate = invoiceItems?.every(item => item?.taxRate === invoiceItems[0]?.taxRate) ? invoiceItems[0]?.taxRate : null
   const invoicePaperRef = useRef(null)
   const dayOfMonthOptions = dayOfMonthNumbers()
   const maxScheduledInvoicesNum = 5
@@ -91,15 +102,15 @@ export default function CreateScheduledInvoice() {
     total: calculatedTotal,
   }
 
-  const allowSlide2 = invoiceTitle?.length > 0 && 
-  invoiceNumber?.length > 0 && 
-  invoiceItems?.length > 0
+  const allowSlide2 = invoiceTitle?.length > 0 &&
+    invoiceNumber?.length > 0 &&
+    invoiceItems?.length > 0
 
   const allowSlide3 = !!invoiceContact
-  
+
   const allowSlide4 = scheduleTitle?.length > 0 &&
-  emailSubject?.length > 0 &&
-  emailMessage?.length > 0
+    emailSubject?.length > 0 &&
+    emailMessage?.length > 0
 
   const allowCreateSchedule = scheduleTitle &&
     invoiceTitle &&
@@ -115,17 +126,17 @@ export default function CreateScheduledInvoice() {
     emailSubject
 
   const handleNextSlide = () => {
-    if(slidePosition === 0) {
+    if (slidePosition === 0) {
       allowSlide2 ? setSlidePosition(slidePosition + 1) :
-      setToasts(infoToast('Please add an invoice name, number and at least one item.'))
+        setToasts(infoToast('Please add an invoice name, number and at least one item.'))
     }
-    else if(slidePosition === 1) {
+    else if (slidePosition === 1) {
       allowSlide3 ? setSlidePosition(slidePosition + 1) :
-      setToasts(infoToast('Please select a contact'))
+        setToasts(infoToast('Please select a contact'))
     }
-    else if(slidePosition === 2) {
+    else if (slidePosition === 2) {
       allowSlide4 ? setSlidePosition(slidePosition + 1) :
-      setToasts(infoToast('Please add a schedule title, email subject and message'))
+        setToasts(infoToast('Please add a schedule title, email subject and message'))
     }
     else {
       slidePosition < numOfSlides - 1 && setSlidePosition(slidePosition + 1)
@@ -149,40 +160,59 @@ export default function CreateScheduledInvoice() {
     />
   </div>
 
-const showPreview = () => {
-  setShowInvoicePreview(true)
-  setInvoiceData({
-    invoice: editSchedule?.invoiceTemplate || invoice,
-    taxNumbers: editSchedule?.invoiceTemplate?.taxNumbers,
-    items: editSchedule?.invoiceTemplate?.items || invoiceItems,
-    taxRate1: editSchedule?.invoiceTemplate?.taxRate1 || taxRate1,
-    taxRate2: editSchedule?.invoiceTemplate?.taxRate2 || taxRate2,
-    subtotal: editSchedule?.invoiceTemplate?.subTotal || calculatedSubtotal,
-    total: editSchedule?.invoiceTemplate?.total || calculatedTotal
-  })
-}
+  const showPreview = () => {
+    setShowInvoicePreview(true)
+    setInvoiceData({
+      invoice: editSchedule?.invoiceTemplate || invoice,
+      taxNumbers: editSchedule?.invoiceTemplate?.taxNumbers,
+      items: editSchedule?.invoiceTemplate?.items || invoiceItems,
+      taxRate1: editSchedule?.invoiceTemplate?.taxRate1 || taxRate1,
+      taxRate2: editSchedule?.invoiceTemplate?.taxRate2 || taxRate2,
+      subtotal: editSchedule?.invoiceTemplate?.subTotal || calculatedSubtotal,
+      total: editSchedule?.invoiceTemplate?.total || calculatedTotal
+    })
+  }
 
   const createScheduledInvoice = () => {
     const confirm = window.confirm('Are you sure you want to create this scheduled invoice?')
-    if(!confirm) return setToasts(infoToast('Scheduled invoice not created.'))
+    if (!confirm) return setToasts(infoToast('Scheduled invoice not created.'))
     if (!!!allowCreateSchedule)
       return setToasts(infoToast("Please fill in all required fields."))
     if (userScheduledInvoices?.length > (maxScheduledInvoicesNum - 1))
       return setToasts(errorToast(`You can only have ${maxScheduledInvoicesNum} scheduled invoices at a time.`))
     setPageLoading(true)
-    createScheduledInvoiceService(myUser, invoiceDate, invoiceDueDate, invoiceNumber, invoiceCurrency,
-      invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2, invoiceTitle,
-      calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, invoicePaperRef, notifSettings.showScheduleNotifs)
-    .then(() => {
-      setPageLoading(false)
-      setToasts(successToast('Scheduled Invoice Created.'))
-      navigate('/settings/scheduled-invoices')
-    })
-    .catch(err => {
-      setPageLoading(false)
-      console.log(err)
-      setToasts(errorToast('Error creating scheduled invoice.'))
-    })
+    createScheduledInvoiceService(
+      myUser,
+      invoiceDate,
+      invoiceDueDate,
+      invoiceNumber,
+      invoiceCurrency,
+      invoiceContact,
+      invoiceItems,
+      invoiceNotes,
+      calculatedSubtotal,
+      taxRate1,
+      taxRate2,
+      invoiceTitle,
+      calculatedTotal,
+      dayOfMonth,
+      timeOfDay,
+      scheduleTitle,
+      emailMessage,
+      activeSchedule,
+      '', //pdfString
+      notifSettings.showScheduleNotifs
+    )
+      .then(() => {
+        setPageLoading(false)
+        setToasts(successToast('Scheduled Invoice Created.'))
+        navigate('/settings/scheduled-invoices')
+      })
+      .catch(err => {
+        setPageLoading(false)
+        console.log(err)
+        setToasts(errorToast('Error creating scheduled invoice.'))
+      })
   }
 
   const updateScheduledInvoice = () => {
@@ -217,10 +247,10 @@ const showPreview = () => {
       setPageLoading,
       notifSettings.showScheduleNotifs
     )
-    .then(() => {
-      setToasts(successToast('Scheduled Invoice Updated.'))
-      navigate('/settings/scheduled-invoices')
-    })
+      .then(() => {
+        setToasts(successToast('Scheduled Invoice Updated.'))
+        navigate('/settings/scheduled-invoices')
+      })
   }
 
   const deleteScheduledInvoice = () => {
@@ -231,14 +261,14 @@ const showPreview = () => {
       setToasts,
       notifSettings.showScheduleNotifs
     )
-    .then(() => {
-      navigate('/settings/scheduled-invoices')
-    })
+      .then(() => {
+        navigate('/settings/scheduled-invoices')
+      })
   }
 
   useEffect(() => {
-    if(!editMode) return
-    if(!editSchedule) return
+    if (!editMode) return
+    if (!editSchedule) return
     setInvoiceTitle(editSchedule.invoiceTemplate.title)
     setInvoiceNumber(editSchedule.invoiceTemplate.invoiceNumber)
     setInvoiceDate(convertDateToInputFormat(editSchedule.invoiceTemplate.dateCreated?.toDate()))
@@ -258,307 +288,307 @@ const showPreview = () => {
   }, [editSchedule, editMode])
 
   useEffect(() => {
-    if(paramViewMode)
+    if (paramViewMode)
       setSlidePosition(3)
-  },[])
+  }, [])
 
   return (
     myMemberType === 'business' ?
-    (editMode ? editSchedule?.ownerID === myUserID : true) ?
-    <div className="settings-sub-page create-scheduled-page">
-      <SettingsTitles
-        label="Create a scheduled invoice"
-        sublabel="Create an automated invoice that will be sent to your chosen contact on a recurring schedule."
-        icon="fas fa-calendar-alt"
-      />
-      <div className="page-content">
-        <SlideContainer>
-          <SlideElement
-            index={0}
-            slidePosition={slidePosition}
-          >
-            <form onSubmit={(e) => e.preventDefault()}>
-              <div className="form-title">
-                <h4>Invoice Template</h4>
-                <h6>Create an invoice template for your scheduled invoice.</h6>
-              </div>
-              <AppInput
-                label="Invoice Name"
-                value={invoiceTitle}
-                onChange={(e) => setInvoiceTitle(e.target.value)}
-              />
-              <AppInput
-                label="Invoice Number"
-                value={invoiceNumber}
-                onChange={(e) => setInvoiceNumber(e.target.value)}
-                iconright={
-                  <div className="icon-container">
-                    <span>INV</span>
+      (editMode ? editSchedule?.ownerID === myUserID : true) ?
+        <div className="settings-sub-page create-scheduled-page">
+          <SettingsTitles
+            label="Create a scheduled invoice"
+            sublabel="Create an automated invoice that will be sent to your chosen contact on a recurring schedule."
+            icon="fas fa-calendar-alt"
+          />
+          <div className="page-content">
+            <SlideContainer>
+              <SlideElement
+                index={0}
+                slidePosition={slidePosition}
+              >
+                <form onSubmit={(e) => e.preventDefault()}>
+                  <div className="form-title">
+                    <h4>Invoice Template</h4>
+                    <h6>Create an invoice template for your scheduled invoice.</h6>
                   </div>
-                }
-                className="icon-input"
-              />
-              <AppSelect
-                label="Currency"
-                options={currencies}
-                value={invoiceCurrency}
-                onChange={(e) => setInvoiceCurrency(currencies.find(currency => currency.value === e.target.value))}
-              />
-              <div className="split-row">
-                <AppInput
-                  label="Invoice Date"
-                  type="date"
-                  value={invoiceDate}
-                  onChange={(e) => setInvoiceDate(e.target.value)}
-                />
-                <AppInput
-                  label="Invoice Due Date"
-                  type="date"
-                  value={invoiceDueDate}
-                  onChange={(e) => setInvoiceDueDate(e.target.value)}
-                />
-              </div>
-              <div className="split-row">
-                <AppInput
-                  label="Tax Rate 1"
-                  type="number"
-                  value={taxRate1}
-                  onChange={(e) => setTaxRate1(e.target.value)}
-                  iconright={
-                    <div className="icon-container">
-                      <i className="fas fa-percent" />
-                    </div>
-                  }
-                  className="icon-input"
-                />
-                <AppInput
-                  label="Tax Rate 2"
-                  type="number"
-                  value={taxRate2}
-                  onChange={(e) => setTaxRate2(e.target.value)}
-                  iconright={
-                    <div className="icon-container">
-                      <i className="fas fa-percent" />
-                    </div>
-                  }
-                  className="icon-input"
-                />
-              </div>
-              <AppTextarea
-                label="Notes"
-                value={invoiceNotes}
-                onChange={(e) => setInvoiceNotes(e.target.value)}
-              />
-            </form>
-            <InvoiceItems
-              itemName={itemName}
-              setItemName={setItemName}
-              itemPrice={itemPrice}
-              setItemPrice={setItemPrice}
-              itemTaxRate={itemTaxRate}
-              setItemTaxRate={setItemTaxRate}
-              itemQuantity={itemQuantity}
-              setItemQuantity={setItemQuantity}
-              invoiceCurrency={invoiceCurrency}
-              editItemID={editItemID}
-              setEditItemID={setEditItemID}
-              invoiceItems={invoiceItems}
-              setInvoiceItems={setInvoiceItems}
-            />
-          </SlideElement>
-          <SlideElement
-            index={1}
-            slidePosition={slidePosition}
-          >
-            <div className="form-title">
-              <h4>Invoice Contact</h4>
-              <h6>Choose a contact to send your scheduled invoice to.</h6>
-            </div>
-            <InvoiceContact
-              contactName={contactName}
-              setContactName={setContactName}
-              contactEmail={contactEmail}
-              setContactEmail={setContactEmail}
-              contactPhone={contactPhone}
-              setContactPhone={setContactPhone}
-              contactAddress={contactAddress}
-              setContactAddress={setContactAddress}
-              contactCity={contactCity}
-              setContactCity={setContactCity}
-              contactRegion={contactRegion}
-              setContactRegion={setContactRegion}
-              contactPostcode={contactPostcode}
-              setContactPostcode={setContactPostcode}
-              contactCountry={contactCountry}
-              setContactCountry={setContactCountry}
-              contactImg={contactImg}
-              setContactImg={setContactImg}
-              invoiceContact={invoiceContact}
-              setInvoiceContact={setInvoiceContact}
-            />
-          </SlideElement>
-          <SlideElement
-            index={2}
-            slidePosition={slidePosition}
-          >
-            <form onSubmit={(e) => e.preventDefault()}>
-              <div className="form-title">
-                <h4>Schedule Details</h4>
-                <h6>Create your customized schedule.</h6>
-              </div>
-              <AppInput
-                label="Schedule Name"
-                value={scheduleTitle}
-                onChange={(e) => setScheduleTitle(e.target.value)}
-              />
-              <AppSelect
-                label="Day of The Month"
-                options={dayOfMonthOptions}
-                value={dayOfMonth}
-                onChange={(e) => setDayOfMonth(e.target.value)}
-              />
-              <AppSelect
-                label="Time of Day"
-                options={timeOfDaysOptions}
-                value={timeOfDay}
-                onChange={(e) => setTimeOfDay(e.target.value)}
-              />
-              <AppInput
-                label="Email Subject"
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-              />
-              <AppTextarea
-                label="Email Message"
-                value={emailMessage}
-                onChange={(e) => setEmailMessage(e.target.value)}
-              />
-            </form>
-          </SlideElement>
-          <SlideElement
-            index={3}
-            slidePosition={slidePosition}
-          >
-            <div
-              onSubmit={(e) => e.preventDefault()}
-              className="review-form"
-            >
-              <div className="form-title">
-                <h4>Review Automated Invoice Details</h4>
-                <h6>Make sure the information is correct before creating your automated invoice.</h6>
-              </div>
-              <div className="section">
-                <h5>Scheduled invoice is&nbsp;
-                  <span className={!activeSchedule ? 'inactive' : ''}>
-                    {activeSchedule ? 'active' : 'inactive'}
-                  </span>
-                </h5>
-                <AppSwitch
-                  checked={activeSchedule}
-                  onChange={(e) => setActiveSchedule(e.target.checked)}
-                />
-              </div>
-              <div className="section">
-                <h5>
-                  Invoice Template
-                  <i 
-                    className="fas fa-pen"
-                    onClick={() => setSlidePosition(0)}
+                  <AppInput
+                    label="Invoice Name"
+                    value={invoiceTitle}
+                    onChange={(e) => setInvoiceTitle(e.target.value)}
                   />
-                </h5>
-                <h6>
-                  <span>Invoice Name: </span>
-                  {invoiceTitle}
-                </h6>
-                <h6>
-                  <span>Invoice Total: </span>
-                  {invoiceCurrency.symbol}{formatCurrency(calculatedTotal.toFixed(2))}
-                </h6>
-                <small
-                  className="underline bold"
-                  onClick={() => showPreview()}
-                >Preview Invoice</small>
-              </div>
-              <div className="section">
-                <h5>
-                  Invoice Contact
-                  <i 
-                    className="fas fa-pen"
-                    onClick={() => setSlidePosition(1)}
+                  <AppInput
+                    label="Invoice Number"
+                    value={invoiceNumber}
+                    onChange={(e) => setInvoiceNumber(e.target.value)}
+                    iconright={
+                      <div className="icon-container">
+                        <span>INV</span>
+                      </div>
+                    }
+                    className="icon-input"
                   />
-                </h5>
-                <h6>
-                  <img src={invoiceContact?.photoURL} />
-                  <span>Name: </span>{invoiceContact?.name}<br/>
-                  <span>Email: </span>{invoiceContact?.email}<br/>
-                  <span>Phone: </span>{formatPhoneNumber(invoiceContact?.phone)}<br/>
-                  <span>Address: </span>{invoiceContact?.address}<br/>
-                  <span>Location: </span>{invoiceContact?.city}, {invoiceContact?.region}, {invoiceContact?.country} {invoiceContact?.postcode}<br/>
-                </h6>
-              </div>
-              <div className="section">
-                <h5>
-                  Schedule Details
-                  <i 
-                    className="fas fa-pen"
-                    onClick={() => setSlidePosition(2)}
+                  <AppSelect
+                    label="Currency"
+                    options={currencies}
+                    value={invoiceCurrency}
+                    onChange={(e) => setInvoiceCurrency(currencies.find(currency => currency.value === e.target.value))}
                   />
-                </h5>
-                <h6>
-                  <span>Shedule Title: </span>
-                  {scheduleTitle}
-                </h6>
-                <h6>
-                  <span>Day of the Month: </span>
-                  {dayOfMonth}
-                </h6>
-                <h6>
-                  <span>Time of Day: </span>
-                  {timeOfDay}
-                </h6>
-                <h6>
-                  <span>Email Subject: </span>
-                  {emailSubject}
-                </h6>
-                <h6>
-                  <span>Email Message:</span><br/>
-                </h6>
-                <p>{truncateText(emailMessage, 100)}</p>
-              </div>
-              <div className="btn-group">
-                {
-                  !editMode ? 
-                  <AppButton
-                    label="Create Scheduled Invoice"
-                    onClick={createScheduledInvoice}
-                    rightIcon="far fa-arrow-right"
-                  /> :
-                  <>
-                    <AppButton
-                      label="Save Changes"
-                      onClick={updateScheduledInvoice}
+                  <div className="split-row">
+                    <AppInput
+                      label="Invoice Date"
+                      type="date"
+                      value={invoiceDate}
+                      onChange={(e) => setInvoiceDate(e.target.value)}
                     />
-                    <AppButton
-                      label="Delete Scheduled Invoice"
-                      onClick={deleteScheduledInvoice}
-                      buttonType="invertedRedBtn"
+                    <AppInput
+                      label="Invoice Due Date"
+                      type="date"
+                      value={invoiceDueDate}
+                      onChange={(e) => setInvoiceDueDate(e.target.value)}
                     />
-                  </>
-                }
-              </div>
-            </div>
-          </SlideElement>
-          {slideNav}
-        </SlideContainer>
-      </div>
-      <InvoicePreviewModal
-        invoiceData={invoiceData}
-        showInvoicePreview={showInvoicePreview}
-        setShowInvoicePreview={setShowInvoicePreview}
-        invoicePaperRef={invoicePaperRef}
-      />
-    </div> :
-    <>You do not have access to view this page</> :
-    <ProContent />
+                  </div>
+                  <div className="split-row">
+                    <AppInput
+                      label="Tax Rate 1"
+                      type="number"
+                      value={taxRate1}
+                      onChange={(e) => setTaxRate1(e.target.value)}
+                      iconright={
+                        <div className="icon-container">
+                          <i className="fas fa-percent" />
+                        </div>
+                      }
+                      className="icon-input"
+                    />
+                    <AppInput
+                      label="Tax Rate 2"
+                      type="number"
+                      value={taxRate2}
+                      onChange={(e) => setTaxRate2(e.target.value)}
+                      iconright={
+                        <div className="icon-container">
+                          <i className="fas fa-percent" />
+                        </div>
+                      }
+                      className="icon-input"
+                    />
+                  </div>
+                  <AppTextarea
+                    label="Notes"
+                    value={invoiceNotes}
+                    onChange={(e) => setInvoiceNotes(e.target.value)}
+                  />
+                </form>
+                <InvoiceItems
+                  itemName={itemName}
+                  setItemName={setItemName}
+                  itemPrice={itemPrice}
+                  setItemPrice={setItemPrice}
+                  itemTaxRate={itemTaxRate}
+                  setItemTaxRate={setItemTaxRate}
+                  itemQuantity={itemQuantity}
+                  setItemQuantity={setItemQuantity}
+                  invoiceCurrency={invoiceCurrency}
+                  editItemID={editItemID}
+                  setEditItemID={setEditItemID}
+                  invoiceItems={invoiceItems}
+                  setInvoiceItems={setInvoiceItems}
+                />
+              </SlideElement>
+              <SlideElement
+                index={1}
+                slidePosition={slidePosition}
+              >
+                <div className="form-title">
+                  <h4>Invoice Contact</h4>
+                  <h6>Choose a contact to send your scheduled invoice to.</h6>
+                </div>
+                <InvoiceContact
+                  contactName={contactName}
+                  setContactName={setContactName}
+                  contactEmail={contactEmail}
+                  setContactEmail={setContactEmail}
+                  contactPhone={contactPhone}
+                  setContactPhone={setContactPhone}
+                  contactAddress={contactAddress}
+                  setContactAddress={setContactAddress}
+                  contactCity={contactCity}
+                  setContactCity={setContactCity}
+                  contactRegion={contactRegion}
+                  setContactRegion={setContactRegion}
+                  contactPostcode={contactPostcode}
+                  setContactPostcode={setContactPostcode}
+                  contactCountry={contactCountry}
+                  setContactCountry={setContactCountry}
+                  contactImg={contactImg}
+                  setContactImg={setContactImg}
+                  invoiceContact={invoiceContact}
+                  setInvoiceContact={setInvoiceContact}
+                />
+              </SlideElement>
+              <SlideElement
+                index={2}
+                slidePosition={slidePosition}
+              >
+                <form onSubmit={(e) => e.preventDefault()}>
+                  <div className="form-title">
+                    <h4>Schedule Details</h4>
+                    <h6>Create your customized schedule.</h6>
+                  </div>
+                  <AppInput
+                    label="Schedule Name"
+                    value={scheduleTitle}
+                    onChange={(e) => setScheduleTitle(e.target.value)}
+                  />
+                  <AppSelect
+                    label="Day of The Month"
+                    options={dayOfMonthOptions}
+                    value={dayOfMonth}
+                    onChange={(e) => setDayOfMonth(e.target.value)}
+                  />
+                  <AppSelect
+                    label="Time of Day"
+                    options={timeOfDaysOptions}
+                    value={timeOfDay}
+                    onChange={(e) => setTimeOfDay(e.target.value)}
+                  />
+                  <AppInput
+                    label="Email Subject"
+                    value={emailSubject}
+                    onChange={(e) => setEmailSubject(e.target.value)}
+                  />
+                  <AppTextarea
+                    label="Email Message"
+                    value={emailMessage}
+                    onChange={(e) => setEmailMessage(e.target.value)}
+                  />
+                </form>
+              </SlideElement>
+              <SlideElement
+                index={3}
+                slidePosition={slidePosition}
+              >
+                <div
+                  onSubmit={(e) => e.preventDefault()}
+                  className="review-form"
+                >
+                  <div className="form-title">
+                    <h4>Review Automated Invoice Details</h4>
+                    <h6>Make sure the information is correct before creating your automated invoice.</h6>
+                  </div>
+                  <div className="section">
+                    <h5>Scheduled invoice is&nbsp;
+                      <span className={!activeSchedule ? 'inactive' : ''}>
+                        {activeSchedule ? 'active' : 'inactive'}
+                      </span>
+                    </h5>
+                    <AppSwitch
+                      checked={activeSchedule}
+                      onChange={(e) => setActiveSchedule(e.target.checked)}
+                    />
+                  </div>
+                  <div className="section">
+                    <h5>
+                      Invoice Template
+                      <i
+                        className="fas fa-pen"
+                        onClick={() => setSlidePosition(0)}
+                      />
+                    </h5>
+                    <h6>
+                      <span>Invoice Name: </span>
+                      {invoiceTitle}
+                    </h6>
+                    <h6>
+                      <span>Invoice Total: </span>
+                      {invoiceCurrency.symbol}{formatCurrency(calculatedTotal.toFixed(2))}
+                    </h6>
+                    <small
+                      className="underline bold"
+                      onClick={() => showPreview()}
+                    >Preview Invoice</small>
+                  </div>
+                  <div className="section">
+                    <h5>
+                      Invoice Contact
+                      <i
+                        className="fas fa-pen"
+                        onClick={() => setSlidePosition(1)}
+                      />
+                    </h5>
+                    <h6>
+                      <img src={invoiceContact?.photoURL} />
+                      <span>Name: </span>{invoiceContact?.name}<br />
+                      <span>Email: </span>{invoiceContact?.email}<br />
+                      <span>Phone: </span>{formatPhoneNumber(invoiceContact?.phone)}<br />
+                      <span>Address: </span>{invoiceContact?.address}<br />
+                      <span>Location: </span>{invoiceContact?.city}, {invoiceContact?.region}, {invoiceContact?.country} {invoiceContact?.postcode}<br />
+                    </h6>
+                  </div>
+                  <div className="section">
+                    <h5>
+                      Schedule Details
+                      <i
+                        className="fas fa-pen"
+                        onClick={() => setSlidePosition(2)}
+                      />
+                    </h5>
+                    <h6>
+                      <span>Shedule Title: </span>
+                      {scheduleTitle}
+                    </h6>
+                    <h6>
+                      <span>Day of the Month: </span>
+                      {dayOfMonth}
+                    </h6>
+                    <h6>
+                      <span>Time of Day: </span>
+                      {timeOfDay}
+                    </h6>
+                    <h6>
+                      <span>Email Subject: </span>
+                      {emailSubject}
+                    </h6>
+                    <h6>
+                      <span>Email Message:</span><br />
+                    </h6>
+                    <p>{truncateText(emailMessage, 100)}</p>
+                  </div>
+                  <div className="btn-group">
+                    {
+                      !editMode ?
+                        <AppButton
+                          label="Create Scheduled Invoice"
+                          onClick={createScheduledInvoice}
+                          rightIcon="far fa-arrow-right"
+                        /> :
+                        <>
+                          <AppButton
+                            label="Save Changes"
+                            onClick={updateScheduledInvoice}
+                          />
+                          <AppButton
+                            label="Delete Scheduled Invoice"
+                            onClick={deleteScheduledInvoice}
+                            buttonType="invertedRedBtn"
+                          />
+                        </>
+                    }
+                  </div>
+                </div>
+              </SlideElement>
+              {slideNav}
+            </SlideContainer>
+          </div>
+          <InvoicePreviewModal
+            invoiceData={invoiceData}
+            showInvoicePreview={showInvoicePreview}
+            setShowInvoicePreview={setShowInvoicePreview}
+            invoicePaperRef={invoicePaperRef}
+          />
+        </div> :
+        <>You do not have access to view this page</> :
+      <ProContent />
   )
 }
