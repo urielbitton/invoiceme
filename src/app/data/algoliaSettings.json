@@ -129,6 +129,14 @@
   },
   {
     "label": "Invoices",
+    "sublabel": "Display Tax Label",
+    "settingID": "taxLabel",
+    "tags": [],
+    "pageURL": "/settings/invoices",
+    "icon": "fas fa-file-invoice-dollar"
+  },
+  {
+    "label": "Invoices",
     "sublabel": "Enter invoice notes",
     "settingID": "invoiceNotes",
     "tags": [],

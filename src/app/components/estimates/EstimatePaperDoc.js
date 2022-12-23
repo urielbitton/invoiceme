@@ -2,7 +2,6 @@ import {
   Document, Image, Link, Page, StyleSheet,
   Text, View, Font
 } from "@react-pdf/renderer"
-import { useUserEstimateSettings } from "app/hooks/userHooks"
 import { convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency, formatPhoneNumber } from "app/utils/generalUtils"
 import React from 'react'
@@ -11,9 +10,8 @@ export default function EstimatePaperDoc(props) {
 
   const { estimate, myBusiness, taxNumbers, estimateItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
-    myUser } = props
+    myUser, estSettings } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
-  const estSettings = useUserEstimateSettings(myUser?.userID)
 
   const headersArr = [
     'Item #',

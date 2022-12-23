@@ -1,7 +1,7 @@
 import { useUserNotifSettings } from "app/hooks/userHooks"
 import { deleteScheduledInvoiceService } from "app/services/invoiceServices"
 import { StoreContext } from "app/store/store"
-import { convertClassicDateAndTime, displayThStNdRd } from "app/utils/dateUtils"
+import { convertClassicDateAndTime, displayThStNdRd, militaryTimeToAMPM } from "app/utils/dateUtils"
 import React, { useContext } from 'react'
 import { useNavigate } from "react-router-dom"
 import AppButton from "../ui/AppButton"
@@ -31,8 +31,6 @@ export function ScheduledInvoiceCard(props) {
   }
 
   const deleteSchedule = () => {
-    const confirm = window.confirm("Are you sure you want to delete this schedule?")
-    if (confirm) {
       setPageLoading(true)
       deleteScheduledInvoiceService(
         myUserID,
@@ -44,7 +42,6 @@ export function ScheduledInvoiceCard(props) {
       .then(() => {
         navigate('/settings/scheduled-invoices')
       })
-    }
   }
 
   return <div className="scheduled-invoice-card">
@@ -63,11 +60,11 @@ export function ScheduledInvoiceCard(props) {
         <h5>Schedule</h5>
         <h6>
           <i className="fas fa-calendar-alt" />
-          Every month on the {dayOfMonth}{displayThStNdRd(dayOfMonth)}
+          Every month on the {displayThStNdRd(dayOfMonth)}
         </h6>
         <h6>
           <i className="fas fa-clock" />
-          {timeOfDay}:00{timeOfDay > 12 ? "PM" : "AM"}
+          {militaryTimeToAMPM(`${timeOfDay}:00`)}
         </h6>
         <h6>
           <i className="fas fa-history" />

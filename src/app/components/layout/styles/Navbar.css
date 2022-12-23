@@ -3,7 +3,7 @@
   height: var(--navbarHeight);
   background: var(--primary);
   box-shadow: var(--primaryShadow);
-  z-index: 1100;
+  z-index: 9100;
   border-radius: 0 0 12px 12px;
   display: flex;
   flex-direction: column;

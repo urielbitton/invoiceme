@@ -5,7 +5,7 @@
 }
 
 .settings-page .page-title-bar {
-  z-index: 1000;
+  z-index: 5000;
 }
 .settings-page .page-title-bar .appInput input {
   width: 300px;

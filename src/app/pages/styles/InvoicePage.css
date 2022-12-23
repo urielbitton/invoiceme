@@ -113,6 +113,11 @@
   font-size: 13px;
   color: #444;
 }
+.invoice-details-modal .details-section a {
+  font-size: 13px;
+  color: var(--primary);
+  text-decoration: underline;
+}
 
 
 @media (max-width: 1200px) {

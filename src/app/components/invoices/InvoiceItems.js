@@ -127,7 +127,7 @@ export default function InvoiceItems(props) {
         editItemID !== item.itemID ?
           <>
             <div><h6>{item.name}</h6></div>
-            <div><h6>{invoiceCurrency?.symbol}{item.price}</h6></div>
+            <div><h6>{invoiceCurrency?.symbol}{formatCurrency(item.price)}</h6></div>
             <div><h6>{item.quantity}</h6></div>
             <div><h6>{item.taxRate}%</h6></div>
             <div><h6>{invoiceCurrency?.symbol}{formatCurrency(item.total?.toFixed(2))}</h6></div>

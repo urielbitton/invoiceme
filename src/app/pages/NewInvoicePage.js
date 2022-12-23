@@ -114,7 +114,6 @@ export default function NewInvoicePage() {
       .then(() => {
         setPageLoading(false)
         navigate('/invoices')
-        setToasts(successToast('Invoice created successfully.'))
       })
       .catch(err => {
         setPageLoading(false)

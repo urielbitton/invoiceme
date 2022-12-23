@@ -85,7 +85,7 @@ export default function NewContactPage() {
           regionCode: region.split(',')[1],
           countryCode: country.split(',')[1],
           postcode, companyName, isFavorite, notes,
-          photoURL: uploadedImg ? fileURLS[0]?.downloadURL : null
+          photoURL: uploadedImg ? fileURLS[0]?.downloadURL : editContact?.photoURL || null
         },
         setPageLoading,
         setToasts,

@@ -16,7 +16,8 @@ export default function PaymentsGeneral() {
   const { myUser, stripeCustomerPortalLink, setPageLoading,
     setToasts } = useContext(StoreContext)
   const [paymentsLimit, setPaymentsLimit] = useState(10)
-  const payments = useCustomerPayments(myUser?.stripe.stripeCustomerID, paymentsLimit)
+  const [loading, setLoading] = useState(false)
+  const payments = useCustomerPayments(myUser?.stripe.stripeCustomerID, setLoading, paymentsLimit)
 
   const paymentsList = payments?.data?.map((payment) => {
     return <AppItemRow
@@ -65,7 +66,8 @@ export default function PaymentsGeneral() {
     })
   }
 
-  return payments?.data?.length ? (
+  return !loading ?
+  payments?.data?.length ? (
     <div className="payments-content">
       <AppTable
         headers={[
@@ -94,5 +96,9 @@ export default function PaymentsGeneral() {
       btnLabel='New Payment'
       btnLink='/payments/new'
       btnIcon="fal fa-plus"
-    />
+    /> :
+    <div className="payments-loading">
+      <i className="fas fa-spinner fa-spin" />
+      <h6>Loading payment information</h6>
+    </div>
 }

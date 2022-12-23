@@ -12,7 +12,7 @@ export default function InvoicePaper(props) {
   const { myUser, myUserID } = useContext(StoreContext)
   const { invoice, myBusiness, taxNumbers, invoiceItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
-    invoicePaperRef } = props
+    invoicePaperRef, isSchedule } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
   const invSettings = useUserInvoiceSettings(myUserID)
 
@@ -26,7 +26,7 @@ export default function InvoicePaper(props) {
       <h6>{invoice?.currency?.symbol}{formatCurrency(item?.price?.toFixed(2))}</h6>
       <h6>{item?.quantity}</h6>
       <h6>{item?.taxRate}%</h6>
-      <h6>{invoice?.currency?.symbol}{item?.total?.toFixed(2)}</h6>
+      <h6>{invoice?.currency?.symbol}{formatCurrency(item?.total?.toFixed(2))}</h6>
     </div>
   })
 
@@ -75,7 +75,7 @@ export default function InvoicePaper(props) {
             className="right"
           >
             <h3>Invoice</h3>
-            <h5>#{invoice?.invoiceNumber}</h5>
+            <h5>{isSchedule ? 'Invoice Number: #INV-' : ''}#{invoice?.invoiceNumber}</h5>
             <h5>Invoice Date: {convertClassicDate(invoice?.dateCreated.toDate())}</h5>
             {
               invSettings?.showDueDate &&
@@ -121,18 +121,18 @@ export default function InvoicePaper(props) {
         className="totals-section"
       >
         <h6>
-          <span>Tax Rate</span>
+          <span>Tax Rate {invSettings?.taxLabel?.length ? `(${invSettings.taxLabel})` : null}</span>
           <span>{calculatedTaxRate}%</span>
         </h6>
         <h6>
           <span>Subtotal</span>
-          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedSubtotal)}</span>
+          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedSubtotal.toFixed(2))}</span>
         </h6>
         <h6
           className="totals"
         >
           <span>Total</span>
-          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedTotal)} {invoice?.currency?.value}</span>
+          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedTotal.toFixed(2))} {invoice?.currency?.value}</span>
         </h6>
       </div>
       {

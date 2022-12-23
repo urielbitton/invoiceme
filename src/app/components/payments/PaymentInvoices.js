@@ -13,7 +13,8 @@ export default function PaymentsInvoices() {
 
   const { myUser } = useContext(StoreContext)
   const [invoicesLimit, setInvoicesLimit] = useState(10)
-  const invoices = useCustomerInvoices(myUser?.stripe?.stripeCustomerID, invoicesLimit)
+  const [loading, setLoading] = useState(false)
+  const invoices = useCustomerInvoices(myUser?.stripe?.stripeCustomerID, setLoading, invoicesLimit)
 
   const invoicesList = invoices?.data?.map((invoice) => {
     return <AppItemRow
@@ -40,7 +41,8 @@ export default function PaymentsInvoices() {
     />
   })
 
-  return invoicesList?.data?.length ? (
+  return !loading ?
+  invoicesList?.data?.length ? (
     <div className="payments-content">
       <AppTable
         headers={[
@@ -67,5 +69,9 @@ export default function PaymentsInvoices() {
     <EmptyPage
       label="No account invoices found"
       sublabel="No account invoices were found for this customer"
-    />
+    /> :
+    <div className="payments-loading">
+      <i className="fas fa-spinner fa-spin" />
+      <h6>Loading payment information</h6>
+    </div>
 }

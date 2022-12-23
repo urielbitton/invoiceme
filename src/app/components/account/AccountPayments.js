@@ -16,9 +16,10 @@ export default function AccountPayments() {
   const { myUser, myUserID, setPageLoading, myMemberType,
     myUserName, stripeCustomerPortalLink, setToasts } = useContext(StoreContext)
   const [accountLink, setAccountLink] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
   const detailsSubmitted = searchParams.get('details_submitted') === 'true'
-  const customer = useStripeCustomer(myUser?.stripe?.stripeCustomerID)
+  const customer = useStripeCustomer(myUser?.stripe?.stripeCustomerID, setLoading)
   const navigate = useNavigate()
   const isBusiness = myMemberType === 'business'
 

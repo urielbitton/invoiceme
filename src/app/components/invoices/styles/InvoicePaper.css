@@ -56,7 +56,7 @@
 .invoice-paper-container .billto-section {
   width: 100%;
   padding: 20px;
-  background: var(--bg);
+  background: #fafafa;
   margin-top: 40px;
   display: flex;
   align-items: center;
@@ -134,7 +134,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 200px;
+  width: 250px;
 }
 .invoice-paper-container .totals-section h6:first-child {
   border-top: 1px solid var(--inputBorderColor);
@@ -183,10 +183,4 @@
 .invoice-paper-container .foot-notes small a {
   color: var(--primary);
   text-decoration: underline;
-}
-
-.invoice-paper-container .tax-numbers:hover {
-  background: var(--extraLightPrimary);
-  border-radius: 5px;
-  cursor: text;
 }

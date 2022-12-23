@@ -65,6 +65,9 @@
   background: var(--extraLightPrimary);
   cursor: default;
 }
+.app-file-uploader .uploaded-files-container .file-item img {
+  height: 50px;
+}
 .app-file-uploader .uploaded-files-container .file-item .text {
   display: flex;
   align-items: center;

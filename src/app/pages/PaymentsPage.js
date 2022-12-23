@@ -28,7 +28,6 @@ export default function PaymentsPage() {
     setPageLoading(true)
     createCustomerService(
       myUser, 
-      myUserID, 
       {
         name: myUserName,
         email: myUser?.email,

@@ -22,11 +22,6 @@ export default function FileUploader(props) {
       className="file-item"
       key={i}
     >
-      {
-        file?.file?.type.includes("image") ?
-        <img src={file?.src} /> :
-        file?.file?.type.includes('video') ?
-        <video autoPlay src={file?.src} controls loop /> :
         <div className="text">
           <IconContainer
             icon={fileTypeConverter(file?.file?.type)?.icon}
@@ -36,11 +31,16 @@ export default function FileUploader(props) {
             round={false}
             style={{border: "1px solid var(--inputBorderColor)"}}
           />
+          {
+            file?.file?.type.includes("image") ?
+            <img src={file?.src} /> :
+            file?.file?.type.includes('video') &&
+            <video autoPlay src={file?.src} /> 
+          }
           <h6 title={file?.file?.name}>
             {truncateText(file?.file?.name, truncateFilenameAmpount)}&emsp;{convertBytesToKbMbGb(file?.file?.size,0)}
           </h6>
         </div>
-      }
       <i 
         className="fal fa-times remove-icon"
         onClick={() => setUploadedFiles(uploadedFiles?.filter((_, j) => j !== i))}

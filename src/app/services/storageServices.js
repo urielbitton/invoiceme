@@ -30,6 +30,29 @@ export const uploadMultipleFilesToFireStorage = (files, storagePath, fileNames, 
   })
 }
 
+export const uploadBase64ToFireStorage = (base64, storagePath) => {
+  return new Promise((resolve, reject) => {
+    const storageRef = storage.ref(storagePath)
+    const uploadTask = storageRef.child('scheduled-invoice-base64').putString(base64, 'data_url', {contentType: 'application/pdf'})
+    uploadTask.on('state_changed', (snapshot) => {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+      console.log('Upload is ' + progress + '% done')
+    }, (error) => {
+      console.log(error)
+      reject(error)
+    }, () => {
+      uploadTask.snapshot.ref.getDownloadURL()
+      .then(downloadURL => {
+        resolve(downloadURL)
+      })
+      .catch(error => {
+        console.log(error)
+        reject(error)
+      })
+    })
+  })
+}
+
 export const deleteMultipleStorageFiles = (storagePath, filenames) => {
   return new Promise((resolve, reject) => {
     if(!filenames?.length) return resolve()

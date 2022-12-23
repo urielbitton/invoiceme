@@ -34,6 +34,7 @@ export default function InvoicesSettings() {
   const [taxName, setTaxName] = useState('')
   const [taxNumber, setTaxNumber] = useState('')
   const [taxRate, setTaxRate] = useState(0)
+  const [taxLabel, setTaxLabel] = useState('')
   const [thankYouMessage, setThankYouMessage] = useState("Thank you for your business.")
   const [showInvoiceMeTag, setShowInvoiceMeTag] = useState(true)
   const allowAddTax = taxName && taxNumber && taxRate
@@ -54,6 +55,7 @@ export default function InvoicesSettings() {
     showClientCountry !== myUserInvoiceSettings?.showClientCountry ||
     showClientCompanyName !== myUserInvoiceSettings?.showClientCompanyName ||
     showMyTaxNumbers !== myUserInvoiceSettings?.showMyTaxNumbers ||
+    taxLabel !== myUserInvoiceSettings?.taxLabel ||
     showNotes !== myUserInvoiceSettings?.showNotes ||
     invoiceNotes !== myUserInvoiceSettings?.invoiceNotes ||
     thankYouMessage !== myUserInvoiceSettings?.thankYouMessage ||
@@ -107,6 +109,7 @@ export default function InvoicesSettings() {
         showClientCountry,
         showClientCompanyName,
         showMyTaxNumbers,
+        taxLabel,
         showNotes,
         invoiceNotes,
         thankYouMessage,
@@ -158,6 +161,7 @@ export default function InvoicesSettings() {
       setShowClientCountry(myUserInvoiceSettings?.showClientCountry ?? false)
       setShowClientCompanyName(myUserInvoiceSettings?.showClientCompanyName ?? false)
       setShowMyTaxNumbers(myUserInvoiceSettings?.showMyTaxNumbers ?? true)
+      setTaxLabel(myUserInvoiceSettings?.taxLabel ?? '')
       setShowNotes(myUserInvoiceSettings?.showNotes ?? true)
       setInvoiceNotes(myUserInvoiceSettings?.invoiceNotes ?? '')
       setThankYouMessage(myUserInvoiceSettings?.thankYouMessage ?? 'Thank you for your business.')
@@ -335,6 +339,16 @@ export default function InvoicesSettings() {
         <AppTextarea
           value={invoiceNotes}
           onChange={e => setInvoiceNotes(e.target.value)}
+        />
+      </SettingsSection>
+      <SettingsSection
+        label="Tax rate label"
+        sublabel="Display a custom tax rate label on invoices subtotal totals (e.g. VAT, GST, etc.)"
+        className="invoiceTaxLabel"
+      >
+        <AppInput
+          value={taxLabel}
+          onChange={e => setTaxLabel(e.target.value)}
         />
       </SettingsSection>
       <SettingsSection

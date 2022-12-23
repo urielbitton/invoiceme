@@ -5,6 +5,7 @@ import { NavLink, Route, Routes, useLocation } from "react-router-dom"
 import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
 import AppButton from "../ui/AppButton"
 import AppTabsBar from "../ui/AppTabsBar"
+import EmptyPage from "../ui/EmptyPage"
 import ScheduledEvents from "./ScheduledEvents"
 import { ScheduledInvoiceCard } from "./ScheduledInvoiceCard"
 import SettingsTitles from "./SettingsTitles"
@@ -46,7 +47,7 @@ export default function ScheduledInvoicesSettings() {
         noSpread
         spacedOut={15}
       >
-        <NavLink 
+        <NavLink
           to=""
           className={location.pathname !== '/settings/scheduled-invoices' ? 'not-active' : ''}
         >
@@ -59,8 +60,19 @@ export default function ScheduledInvoicesSettings() {
       <div className="scheduled-routes">
         <Routes>
           <Route path="" element={
-            <div className="scheduled-invoices-grid">{scheduledInvoicesList}</div>
-            } 
+            <div className="scheduled-invoices-grid">
+              {
+                scheduledInvoicesList?.length > 0 ?
+                  scheduledInvoicesList :
+                  <EmptyPage
+                    label="No Scheduled invoices found"
+                    sublabel="You have not created any scheduled invoices yet."
+                    btnLink="/settings/scheduled-invoices/new"
+                    btnIcon="fal fa-plus"
+                  />
+              }
+            </div>
+          }
           />
           <Route path="events" element={<ScheduledEvents />} />
         </Routes>

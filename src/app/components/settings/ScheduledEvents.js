@@ -2,7 +2,7 @@ import { errorToast, successToast } from "app/data/toastsTemplates"
 import { useScheduledEvents } from "app/hooks/userHooks"
 import { deleteDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
-import { convertClassicDate, convertClassicDateAndTime } from "app/utils/dateUtils"
+import { convertClassicDate, convertClassicDateAndTime, convertClassicTime } from "app/utils/dateUtils"
 import React, { useContext, useState } from 'react'
 import { useNavigate } from "react-router-dom"
 import AppButton from "../ui/AppButton"
@@ -23,10 +23,11 @@ export default function ScheduledEvents() {
     return <AppItemRow
       key={index}
       item1={<span title={convertClassicDateAndTime(event?.dateRan?.toDate())}>{convertClassicDate(event?.dateRan?.toDate())}</span>}
-      item2={event.scheduleID}
-      item3={event.name}
-      item4={event.status || 'N/A'}
-      item5={event.type}
+      item2={convertClassicTime(event?.dateRan?.toDate())}
+      item3={event.scheduleID}
+      item4={event.name}
+      item5={event.status || 'N/A'}
+      item6={event.type}
       actions={<>
         <IconContainer
           icon="fas fa-eye"
@@ -67,6 +68,7 @@ export default function ScheduledEvents() {
       <AppTable
         headers={[
           'Date Ran',
+          'Time Ran',
           'Schedule ID',
           'Name',
           'Status',

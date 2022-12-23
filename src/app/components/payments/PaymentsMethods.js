@@ -1,7 +1,7 @@
 import { useAttachedPaymentMethods } from "app/hooks/paymentHooks"
 import { StoreContext } from "app/store/store"
 import { convertClassicUnixDate } from "app/utils/dateUtils"
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import AppItemRow from "../ui/AppItemRow"
 import AppTable from "../ui/AppTable"
 import EmptyPage from "../ui/EmptyPage"
@@ -10,7 +10,8 @@ import IconContainer from "../ui/IconContainer"
 export default function PaymentsMethods() {
 
   const { myUser, stripeCustomerPortalLink } = useContext(StoreContext)
-  const paymentMethods = useAttachedPaymentMethods(myUser?.stripe?.stripeCustomerID)
+  const [loading, setLoading] = useState(false)
+  const paymentMethods = useAttachedPaymentMethods(myUser?.stripe?.stripeCustomerID, setLoading)
 
   const paymentMethodsList = paymentMethods?.data?.map((method) => {
     return <AppItemRow
@@ -32,7 +33,8 @@ export default function PaymentsMethods() {
     />
   })
 
-  return paymentMethods?.data?.length ? (
+  return !loading ?
+  paymentMethods?.data?.length ? (
     <div className="payments-content">
       <AppTable
         headers={[
@@ -51,5 +53,9 @@ export default function PaymentsMethods() {
     <EmptyPage
       label="No Payment methods found"
       sublabel="No payment methods were found for this customer"
-    />
+    /> :
+    <div className="payments-loading">
+      <i className="fas fa-spinner fa-spin" />
+      <h6>Loading payment information</h6>
+    </div>
 }

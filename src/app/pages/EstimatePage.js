@@ -7,14 +7,14 @@ import { StoreContext } from "app/store/store"
 import { downloadHtmlElementAsImage } from "app/utils/fileUtils"
 import { formatCurrency, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import './styles/InvoicePage.css'
 import { useEstimate } from "app/hooks/estimateHooks"
 import { deleteEstimateService, sendEstimateService } from "app/services/estimatesServices"
 import EstimatePaper from "app/components/estimates/EstimatePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
 import { infoToast, successToast } from "app/data/toastsTemplates"
-import { useUserEstimateSettings } from "app/hooks/userHooks"
+import { useUserEstimateSettings, useUserNotifSettings } from "app/hooks/userHooks"
 import AppModal from "app/components/ui/AppModal"
 import { convertClassicDate } from "app/utils/dateUtils"
 import { PDFDownloadLink } from "@react-pdf/renderer"
@@ -42,6 +42,7 @@ export default function EstimatePage() {
   const calculatedTaxRate = estimate?.items?.every(item => item.taxRate === estimate?.items[0].taxRate) ? estimate?.items[0].taxRate : null
   const estimatePaperRef = useRef(null)
   const navigate = useNavigate()
+  const notifsSettings = useUserNotifSettings(myUserID)
   const estSettings = useUserEstimateSettings(myUserID)
 
   const allowSendEstimate = estimateItems.length > 0 &&
@@ -65,13 +66,13 @@ export default function EstimatePage() {
         estimate.estimateNumber,
         setPageLoading,
         setToasts,
-        estSettings.showOutgoingEstimateNotifs
+        notifsSettings.showOutgoingEstimateNotifs
       )
     }
   }
 
   const deleteEstimate = () => {
-    deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, estSettings.showOutgoingEstimateNotifs)
+    deleteEstimateService(myUserID, estimateID, setPageLoading, setToasts, notifsSettings.showOutgoingEstimateNotifs)
   }
 
   const downloadAsImage = () => {
@@ -97,6 +98,7 @@ export default function EstimatePage() {
       calculatedTaxRate={calculatedTaxRate}
       calculatedTotal={calculatedTotal}
       myUser={myUser}
+      estSettings={estSettings}
     />
   }
 
@@ -186,6 +188,8 @@ export default function EstimatePage() {
                   label="Download As"
                   leftIcon="fas fa-arrow-to-bottom"
                   rightIcon="far fa-angle-down"
+                  buttonType="white"
+                  dropdownPosition="place-left-bottom"
                   showMenu={showDownloadMenu}
                   setShowMenu={setShowDownloadMenu}
                   items={[
@@ -200,8 +204,6 @@ export default function EstimatePage() {
                       onClick: () => downloadAsImage()
                     }
                   ]}
-                  buttonType="white"
-                  dropdownPosition="place-left-top"
                 />
                 <AppButton
                   label="Print"
@@ -273,8 +275,7 @@ export default function EstimatePage() {
             <h4>Tax Numbers</h4>
             <p>
               <i className="far fa-info-circle" />&nbsp;
-              To edit tax numbers for this estimate only, hover over the tax numbers
-              on the estimate sheet on this page and type a new value.
+              To edit tax numbers visit your invoices settings page <Link to="/settings/invoices?goTo=enterTaxInfo">here</Link>.
             </p>
           </div>
         </AppModal>

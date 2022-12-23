@@ -2,7 +2,6 @@ import {
   Document, Image, Link, Page, StyleSheet,
   Text, View, Font
 } from "@react-pdf/renderer"
-import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { convertClassicDate } from "app/utils/dateUtils"
 import { formatCurrency, formatPhoneNumber } from "app/utils/generalUtils"
 import React from 'react'
@@ -11,22 +10,22 @@ export default function InvoicePaperDoc(props) {
 
   const { invoice, myBusiness, taxNumbers, invoiceItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
-    myUser } = props
+    myUser, invSettings } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
-  const invSettings = useUserInvoiceSettings(myUser?.userID)
+  const smallFlexBasis = 70
 
   const headersArr = [
     'Item #',
     'Service',
     'Price',
-    'Quantity',
+    'Qty.',
     'Tax Rate',
     'Total'
   ]
 
   const headersList = headersArr?.map((header, index) => {
     return <Text
-      style={styles.tableHeaderH6}
+      style={[styles.tableHeaderH6, (index === 0 || index === 3) ? {flexBasis: smallFlexBasis} : {}]}
       key={index}
     >
       {header}
@@ -38,12 +37,12 @@ export default function InvoicePaperDoc(props) {
       style={index === invoiceItems.length - 1 ? styles.invoiceItemRowLast : styles.invoiceItemRow}
       key={index}
     >
-      <Text style={styles.invoiceItemRowH6}>{(index + 1)}</Text>
+      <Text style={[styles.invoiceItemRowH6, {flexBasis: smallFlexBasis}]}>{(index + 1)}</Text>
       <Text style={styles.invoiceItemRowH6}>{item?.name}</Text>
       <Text style={styles.invoiceItemRowH6}>{invoice?.currency.symbol}{formatCurrency(item?.price?.toFixed(2))}</Text>
-      <Text style={styles.invoiceItemRowH6}>{item?.quantity}</Text>
+      <Text style={[styles.invoiceItemRowH6, {flexBasis: smallFlexBasis}]}>{item?.quantity}</Text>
       <Text style={styles.invoiceItemRowH6}>{item?.taxRate}%</Text>
-      <Text style={styles.invoiceItemRowH6}>{invoice?.currency.symbol}{item?.total?.toFixed(2)}</Text>
+      <Text style={styles.invoiceItemRowH6}>{invoice?.currency.symbol}{formatCurrency(item?.total?.toFixed(2))}</Text>
     </View>
   })
 
@@ -52,7 +51,7 @@ export default function InvoicePaperDoc(props) {
       style={styles.headerH5}
       key={index}
     >
-      {taxNum.name}: {taxNum.number}
+      {taxNum?.name}: {taxNum?.number}
     </Text>
   })
 
@@ -126,16 +125,18 @@ export default function InvoicePaperDoc(props) {
           </View>
           <View style={styles.totalsSection}>
             <View style={[styles.totalsSectionRow, styles.totalsSectionRowFirst]}>
-              <Text style={styles.totalsSectionRowText}>Tax Rate</Text>
+              <Text style={styles.totalsSectionRowText}>Tax Rate {invSettings?.taxLabel?.length ? `(${invSettings.taxLabel})` : null}</Text>
               <Text style={styles.totalsSectionRowText}>{calculatedTaxRate}%</Text>
             </View>
             <View style={styles.totalsSectionRow}>
               <Text style={styles.totalsSectionRowText}>Subtotal</Text>
-              <Text style={styles.totalsSectionRowText}>{invoice?.currency?.symbol}{formatCurrency(calculatedSubtotal)}</Text>
+              <Text style={styles.totalsSectionRowText}>{invoice?.currency?.symbol}{formatCurrency(calculatedSubtotal.toFixed(2))}</Text>
             </View>
             <View style={styles.totalsSectionRow}>
               <Text style={[styles.totalsSectionRowText, styles.totalsSectionRowh4]}>Total</Text>
-              <Text style={[styles.totalsSectionRowText, styles.totalsSectionRowh4]}>{invoice?.currency?.symbol}{formatCurrency(calculatedTotal)} {invoice?.currency?.value}</Text>
+              <Text style={[styles.totalsSectionRowText, styles.totalsSectionRowh4]}>
+                {invoice?.currency?.symbol}{formatCurrency(calculatedTotal.toFixed(2))} {invoice?.currency?.value}
+              </Text>
             </View>
           </View>
           {
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: 200,
+    width: 220,
     marginBottom: 5
   },
   totalsSectionRowText: {
@@ -383,7 +384,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   footNotesH6: {
-    fontSize: 11 + addFontSize,
+    fontSize: 10 + addFontSize,
     color: darkGrayText,
     fontWeight: 600,
   },

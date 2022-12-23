@@ -1,13 +1,11 @@
 import { currencies, timeOfDaysOptions } from "app/data/general"
 import { useScheduledInvoice, useUserScheduledInvoices } from "app/hooks/invoiceHooks"
 import { StoreContext } from "app/store/store"
+import { pdf } from '@react-pdf/renderer'
 import {
   convertDateToInputFormat, convertInputDateToDateAndTimeFormat,
   dayOfMonthNumbers
 } from "app/utils/dateUtils"
-import {
-  Document, Page, Text
-} from "@react-pdf/renderer"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from "react-router-dom"
 import InvoiceContact from "../invoices/InvoiceContact"
@@ -27,12 +25,14 @@ import InvoicePreviewModal from "../invoices/InvoicePreviewModal"
 import ProContent from "../ui/ProContent"
 import {
   createScheduledInvoiceService, deleteScheduledInvoiceService,
-  renderPdfToStringService,
   updateScheduledInvoiceService
 } from "app/services/invoiceServices"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
-import { useUserNotifSettings } from "app/hooks/userHooks"
+import { useUserInvoiceSettings, useUserNotifSettings } from "app/hooks/userHooks"
 import InvoicePaperDoc from "../invoices/InvoicePaperDoc"
+import { blobToBase64 } from "app/utils/fileUtils"
+import { displayThStNdRd } from "app/utils/dateUtils"
+import PreventTabClose from "../ui/PreventTabClose"
 
 export default function CreateScheduledInvoice() {
 
@@ -42,8 +42,6 @@ export default function CreateScheduledInvoice() {
   const [scheduleTitle, setScheduleTitle] = useState('')
   const [invoiceTitle, setInvoiceTitle] = useState('')
   const [invoiceNumber, setInvoiceNumber] = useState('')
-  const [invoiceDate, setInvoiceDate] = useState(convertDateToInputFormat(new Date()))
-  const [invoiceDueDate, setInvoiceDueDate] = useState(convertDateToInputFormat(new Date()))
   const [invoiceCurrency, setInvoiceCurrency] = useState(currencies[0])
   const [invoiceNotes, setInvoiceNotes] = useState('')
   const [taxRate1, setTaxRate1] = useState(0)
@@ -86,11 +84,25 @@ export default function CreateScheduledInvoice() {
   const dayOfMonthOptions = dayOfMonthNumbers()
   const maxScheduledInvoicesNum = 5
   const notifSettings = useUserNotifSettings(myUserID)
+  const invSettings = useUserInvoiceSettings(myUserID)
+
+  const creatingSchedule = invoiceTitle.length || 
+  scheduleTitle.length || 
+  invoiceNumber.length || 
+  invoiceCurrency.length || 
+  invoiceNotes.length || 
+  invoiceItems.length || 
+  invoiceContact || 
+  dayOfMonth || 
+  timeOfDay || 
+  emailMessage.length || 
+  emailSubject.length || 
+  activeSchedule
 
   const invoice = {
     invoiceNumber,
-    dateCreated: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDate))),
-    dateDue: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDueDate))),
+    dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+    dateDue: firebase.firestore.Timestamp.fromDate(new Date()),
     invoiceTo: invoiceContact,
     currency: invoiceCurrency,
     notes: invoiceNotes,
@@ -100,6 +112,20 @@ export default function CreateScheduledInvoice() {
     taxRate2,
     subtotal: calculatedSubtotal,
     total: calculatedTotal,
+  }
+
+  const PDFDoc = () => {
+    return <InvoicePaperDoc
+      invoice={invoice}
+      myBusiness={invoice?.myBusiness}
+      taxNumbers={myUser?.taxNumbers}
+      invoiceItems={invoiceItems}
+      calculatedSubtotal={calculatedSubtotal}
+      calculatedTaxRate={calculatedTaxRate}
+      calculatedTotal={calculatedTotal}
+      myUser={myUser}
+      invSettings={invSettings}
+    />
   }
 
   const allowSlide2 = invoiceTitle?.length > 0 &&
@@ -116,8 +142,6 @@ export default function CreateScheduledInvoice() {
     invoiceTitle &&
     invoiceNumber &&
     invoiceCurrency &&
-    invoiceDate &&
-    invoiceDueDate &&
     invoiceContact &&
     invoiceItems?.length > 0 &&
     dayOfMonth &&
@@ -174,44 +198,52 @@ export default function CreateScheduledInvoice() {
   }
 
   const createScheduledInvoice = () => {
-    const confirm = window.confirm('Are you sure you want to create this scheduled invoice?')
+    const confirm = window.confirm(`Are you sure you want to create this scheduled invoice? `+
+    `It will be sent automatically every ${displayThStNdRd(+dayOfMonth)} of the month at `+
+     `${timeOfDaysOptions?.find(time => time.value === timeOfDay).label}.`)
     if (!confirm) return setToasts(infoToast('Scheduled invoice not created.'))
     if (!!!allowCreateSchedule)
       return setToasts(infoToast("Please fill in all required fields."))
     if (userScheduledInvoices?.length > (maxScheduledInvoicesNum - 1))
       return setToasts(errorToast(`You can only have ${maxScheduledInvoicesNum} scheduled invoices at a time.`))
     setPageLoading(true)
-    createScheduledInvoiceService(
-      myUser,
-      invoiceDate,
-      invoiceDueDate,
-      invoiceNumber,
-      invoiceCurrency,
-      invoiceContact,
-      invoiceItems,
-      invoiceNotes,
-      calculatedSubtotal,
-      taxRate1,
-      taxRate2,
-      invoiceTitle,
-      calculatedTotal,
-      dayOfMonth,
-      timeOfDay,
-      scheduleTitle,
-      emailMessage,
-      activeSchedule,
-      '', //pdfString
-      notifSettings.showScheduleNotifs
-    )
-      .then(() => {
-        setPageLoading(false)
-        setToasts(successToast('Scheduled Invoice Created.'))
-        navigate('/settings/scheduled-invoices')
-      })
-      .catch(err => {
-        setPageLoading(false)
-        console.log(err)
-        setToasts(errorToast('Error creating scheduled invoice.'))
+    pdf(<PDFDoc />).toBlob()
+      .then((blob) => {
+        blobToBase64(blob)
+          .then((base64) => {
+            return createScheduledInvoiceService(
+              myUser,
+              invoiceNumber,
+              invoiceCurrency,
+              invoiceContact,
+              invoiceItems,
+              invoiceNotes,
+              calculatedSubtotal,
+              taxRate1,
+              taxRate2,
+              invoiceTitle,
+              calculatedTotal,
+              dayOfMonth,
+              timeOfDay,
+              scheduleTitle,
+              emailSubject,
+              emailMessage,
+              activeSchedule,
+              base64,
+              notifSettings.showScheduleNotifs,
+              setPageLoading
+            )
+              .then(() => {
+                setPageLoading(false)
+                setToasts(successToast('Scheduled Invoice Created.'))
+                navigate('/settings/scheduled-invoices')
+              })
+              .catch(err => {
+                setPageLoading(false)
+                console.log(err)
+                setToasts(errorToast('Error creating scheduled invoice. Please try again. If the problem persists, please contact us for assistance.'))
+              })
+          })
       })
   }
 
@@ -231,8 +263,8 @@ export default function CreateScheduledInvoice() {
           title: invoiceTitle,
           invoiceNumber,
           invoiceOwnerID: myUserID,
-          dateCreated: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDate))),
-          dateDue: firebase.firestore.Timestamp.fromDate(new Date(convertInputDateToDateAndTimeFormat(invoiceDueDate))),
+          dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+          dateDue: firebase.firestore.Timestamp.fromDate(new Date()),
           invoiceTo: invoiceContact,
           currency: invoiceCurrency,
           myBusiness: myUser?.myBusiness,
@@ -271,8 +303,6 @@ export default function CreateScheduledInvoice() {
     if (!editSchedule) return
     setInvoiceTitle(editSchedule.invoiceTemplate.title)
     setInvoiceNumber(editSchedule.invoiceTemplate.invoiceNumber)
-    setInvoiceDate(convertDateToInputFormat(editSchedule.invoiceTemplate.dateCreated?.toDate()))
-    setInvoiceDueDate(convertDateToInputFormat(editSchedule.invoiceTemplate.dateDue?.toDate()))
     setInvoiceContact(editSchedule.invoiceTemplate.invoiceTo)
     setInvoiceItems(editSchedule.invoiceTemplate.items)
     setInvoiceNotes(editSchedule.invoiceTemplate.notes)
@@ -334,20 +364,6 @@ export default function CreateScheduledInvoice() {
                     value={invoiceCurrency}
                     onChange={(e) => setInvoiceCurrency(currencies.find(currency => currency.value === e.target.value))}
                   />
-                  <div className="split-row">
-                    <AppInput
-                      label="Invoice Date"
-                      type="date"
-                      value={invoiceDate}
-                      onChange={(e) => setInvoiceDate(e.target.value)}
-                    />
-                    <AppInput
-                      label="Invoice Due Date"
-                      type="date"
-                      value={invoiceDueDate}
-                      onChange={(e) => setInvoiceDueDate(e.target.value)}
-                    />
-                  </div>
                   <div className="split-row">
                     <AppInput
                       label="Tax Rate 1"
@@ -445,13 +461,13 @@ export default function CreateScheduledInvoice() {
                     label="Day of The Month"
                     options={dayOfMonthOptions}
                     value={dayOfMonth}
-                    onChange={(e) => setDayOfMonth(e.target.value)}
+                    onChange={(e) => setDayOfMonth(+e.target.value)}
                   />
                   <AppSelect
                     label="Time of Day"
                     options={timeOfDaysOptions}
                     value={timeOfDay}
-                    onChange={(e) => setTimeOfDay(e.target.value)}
+                    onChange={(e) => setTimeOfDay(+timeOfDaysOptions?.find(time => time.value === +e.target.value).value)}
                   />
                   <AppInput
                     label="Email Subject"
@@ -580,12 +596,14 @@ export default function CreateScheduledInvoice() {
               </SlideElement>
               {slideNav}
             </SlideContainer>
+            <PreventTabClose preventClose={creatingSchedule} />
           </div>
           <InvoicePreviewModal
             invoiceData={invoiceData}
             showInvoicePreview={showInvoicePreview}
             setShowInvoicePreview={setShowInvoicePreview}
             invoicePaperRef={invoicePaperRef}
+            isSchedule
           />
         </div> :
         <>You do not have access to view this page</> :

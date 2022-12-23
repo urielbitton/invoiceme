@@ -625,7 +625,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
           myBusiness: data.invoiceTemplate.myBusiness,
           notes: data.invoiceTemplate.notes,
           partOfTotal: false,
-          status: data.invoiceTemplate.status,
+          status: data.invoiceTemplate.status || 'unpaid',
           taxNumbers: data.invoiceTemplate.taxNumbers,
           taxRate1: data.invoiceTemplate.taxRate1,
           taxRate2: data.invoiceTemplate.taxRate2,
@@ -666,7 +666,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
                       subject: data.emailSubject,
                       html: data.emailMessage,
                       attachments: [{
-                        content: Buffer.from(data.invoicePaperHTML).toString('base64'),
+                        content: data.pdfBase64,
                         filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
                         type: 'application/pdf',
                         disposition: 'attachment'
@@ -708,6 +708,11 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
 
 
 //Schedules Options
+exports.testScheduled2 = functions.https.onCall((data, context) => {
+  return runScheduledInvoices(22, 0)
+    .then(() => console.log('Scheduled invoices ran successfully.'))
+    .catch((err) => console.log('Scheduled invoice error', err))
+})
 
 // Every hour between 7am and 9pm
 exports.runScheduledInvoicesHourly = functions.pubsub

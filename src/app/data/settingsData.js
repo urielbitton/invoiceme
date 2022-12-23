@@ -49,6 +49,7 @@ export const settingsDocsArr = [
     showClientEmail: false,
     showClientCompanyName: false,
     showMyTaxNumbers: true,
+    taxLabel: '',
     showNotes: true,
     estimateNotes: '',
     thankYouMessage: 'Thank you for your business!',

@@ -23,6 +23,7 @@ import './styles/ContactPage.css'
 import EmptyPage from "app/components/ui/EmptyPage"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserNotifSettings } from "app/hooks/userHooks"
+import { functions } from "app/firebase/fire"
 
 export default function ContactPage() {
 
@@ -68,14 +69,14 @@ export default function ContactPage() {
 
   const sendEmail = () => {
     if (!emailSubject || !emailMessage)
-      return setToasts(infoToast('Please fill in all fields'))
+      return setToasts(infoToast('Please fill in all fields.'))
     setLoading(true)
     sendAppEmail(
       myUser?.email,
       contact?.email,
       emailSubject,
       emailMessage,
-      emailFiles.map(file => file.file)
+      emailFiles
     )
       .then(() => {
         setLoading(false)
@@ -86,6 +87,7 @@ export default function ContactPage() {
       .catch(err => {
         setLoading(false)
         setToasts(errorToast('Error sending email. Please try again later.'))
+        console.log(err)
       })
   }
 
@@ -97,6 +99,12 @@ export default function ContactPage() {
         setShowSMSModal(false)
         resetInputFields()
       })
+  }
+  
+  const runSchedule = () => {
+    functions.httpsCallable('testScheduled2')()
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
   }
 
   return (
@@ -110,7 +118,7 @@ export default function ContactPage() {
             />
           </div>
           <div className="side intro">
-            <h4>{contact.name}</h4>
+            <h4 onClick={() => runSchedule()}>{contact.name}</h4>
             <h5>{contact.companyName}</h5>
             <div className="btn-group">
               <AppButton

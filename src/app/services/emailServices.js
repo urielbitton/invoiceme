@@ -6,13 +6,49 @@ export const sendSgEmail = (from, to, subject, html, files, isType) => {
   return convertFilesToBase64(files)
     .then((base64s) => {
       return functions.httpsCallable('sendEmailWithAttachment')({
-        from: 'info@atomicsdigital.com' || from,
+        from: 'info@atomicsdigital.com',
         to: to,
         subject: subject,
         html: html,
         ...(files.length > 0 && {
           attachments: [
             ...files.map((file, i) => {
+              return {
+                content: base64s[i],
+                filename: file.name,
+                type: file.type,
+                disposition: 'attachment'
+              }
+            })
+          ]
+        })
+      })
+        .then((result) => {
+          console.log({ result, files })
+          return sendFireEmail(from, to, subject, html, files, isType)
+        })
+        .catch((error) => console.log(error))
+    })
+    .catch((error) => console.log(error))
+}
+
+export const sendInvoiceSgEmail = (from, to, subject, html, invoiceFilename, pdfBase64, files, isType) => {
+  return convertFilesToBase64(files)
+    .then((base64s) => {
+      return functions.httpsCallable('sendEmailWithAttachment')({
+        from: 'info@atomicsdigital.com',
+        to: to,
+        subject: subject,
+        html: html,
+        ...((files.length > 0 || pdfBase64) && {
+          attachments: [
+            {
+              content: pdfBase64,
+              filename: `${invoiceFilename}.pdf`,
+              type: 'application/pdf',
+              disposition: 'attachment'
+            },
+            ...files?.map((file, i) => {
               return {
                 content: base64s[i],
                 filename: file.name,
@@ -54,7 +90,7 @@ export const sendAppEmail = (from, to, subject, message, files) => {
     to,
     subject,
     message,
-    files.map(file => file.file),
+    files.map(file => file.file)
   )
 }
 

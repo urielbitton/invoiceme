@@ -1,4 +1,4 @@
-import { successToast } from "app/data/toastsTemplates"
+import { errorToast, successToast } from "app/data/toastsTemplates"
 import { db, functions } from "app/firebase/fire"
 import {
   convertInputDateToDateAndTimeFormat,
@@ -6,8 +6,9 @@ import {
   getYearsBetween
 } from "app/utils/dateUtils"
 import { deleteDB, getRandomDocID, setDB, updateDB } from "./CrudDB"
-import { sendHtmlToEmailAsPDF } from "./emailServices"
+import { sendAppEmail, sendHtmlToEmailAsPDF, sendInvoiceSgEmail, sendSgEmail } from "./emailServices"
 import { createNotification } from "./notifServices"
+import { uploadBase64ToFireStorage } from "./storageServices"
 
 const catchError = (err, setLoading) => {
   setLoading(false)
@@ -147,7 +148,10 @@ export const createInvoiceService = (userID, myBusiness, taxNumbers, invoiceCurr
       )
       setToasts(successToast("Invoice created successfully"))
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err)
+      setToasts(errorToast("There was an error creating the invoice. Please try again."))
+    })
 }
 
 export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotalRevenue,
@@ -195,19 +199,19 @@ export const deleteInvoiceService = (myUserID, invoiceID, setLoading, setToasts,
   }
 }
 
-export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement, invoiceFilename, uploadedFiles,
+export const sendInvoiceService = (from, to, subject, emailHTML, base64, invoiceFilename, uploadedFiles,
   myUserID, invoiceID, invoiceNumber, setLoading, setToasts, notify) => {
   const confirm = window.confirm("Send invoice to client?")
   const isType = 'invoice'
   if (confirm) {
     setLoading(true)
-    return sendHtmlToEmailAsPDF(
+    return sendInvoiceSgEmail(
       from,
       to,
       subject,
       emailHTML,
-      pdfHTMLElement,
       invoiceFilename,
+      base64,
       uploadedFiles.map(file => file.file),
       isType
     )
@@ -233,17 +237,17 @@ export const sendInvoiceService = (from, to, subject, emailHTML, pdfHTMLElement,
   }
 }
 
-export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDate, invoiceNumber,
+export const createScheduledInvoiceService = (myUser, invoiceNumber,
   invoiceCurrency, invoiceContact, invoiceItems, invoiceNotes, calculatedSubtotal, taxRate1, taxRate2,
-  invoiceTitle, calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailMessage, isActive, 
-  invoicePaperHTML, notify
+  invoiceTitle, calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailSubject, emailMessage, isActive, 
+  base64, notify, setLoading
   ) => {
   const pathName = 'scheduledInvoices'
   const docID = getRandomDocID(pathName)
   const invoiceTemplate = {
     currency: invoiceCurrency || { name: 'Canadian Dollar', value: 'CAD', symbol: '$' },
-    dateCreated: convertInputDateToDateAndTimeFormat(invoiceDate),
-    dateDue: convertInputDateToDateAndTimeFormat(invoiceDueDate),
+    dateCreated: new Date(),
+    dateDue: new Date(),
     invoiceNumber: `INV-${invoiceNumber}`,
     invoiceOwnerID: myUser.userID,
     invoiceTo: invoiceContact,
@@ -270,22 +274,27 @@ export const createScheduledInvoiceService = (myUser, invoiceDate, invoiceDueDat
     lastPaid: null,
     title: scheduleTitle,
     emailMessage,
+    emailSubject,
     invoiceTemplate,
-    invoicePaperHTML,
     scheduleID: docID,
     ownerID: myUser.userID,
+    pdfBase64: base64,
   }
   return setDB(pathName, docID, data)
-    .then(() => {
-      notify && createNotification(
-        myUser.userID,
-        'Scheduled Invoice Created',
-        `Scheduled invoice ${scheduleTitle} has been created.`,
-        'fas fa-clock',
-        `/settings/scheduled-invoices/new?scheduleID=${docID}&edit=true&mode=view`
-      )
-    })
-    .catch(err => console.log(err))
+  .then(() => {
+    notify && createNotification(
+      myUser.userID,
+      'Scheduled Invoice Created',
+      `Scheduled invoice ${scheduleTitle} has been created.`,
+      'fas fa-clock',
+      `/settings/scheduled-invoices/new?scheduleID=${docID}&edit=true&mode=view`
+    )
+    setLoading(false)
+  })
+  .catch(err => {
+    console.log(err)
+    setLoading(false)
+  })
 }
 
 export const updateScheduledInvoiceService = (scheduleID, updatedProps, setLoading, notify) => {
@@ -321,10 +330,4 @@ export const deleteScheduledInvoiceService = (myUserID, scheduleID, setLoading, 
       setToasts(successToast("Scheduled invoice deleted."))
     })
     .catch(err => catchError(err, setLoading))
-}
-
-export const renderPdfToStringService = (htmlElement) => {
-  return functions.httpsCallable('pdfRenderToString')({ htmlElement })
-    .then(res => res.data)  
-    .catch(err => console.log(err))
 }

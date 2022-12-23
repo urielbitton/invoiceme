@@ -170,6 +170,13 @@ export const getTimeAgo = (date) => {
     return convertClassicDate(date)
   }
 
+export const militaryTimeToAMPM = (time) => {
+  const [hours, minutes] = time.split(':')
+  const hoursIn12H = hours % 12 || 12
+  const ampm = hours < 12 || hours === 24 ? 'AM' : 'PM'
+  return `${hoursIn12H}:${minutes} ${ampm}`
+}
+
 export const convertAlgoliaDate = (date) => {
   return date?._seconds ? new Date(date?._seconds * 1000) : date?.toDate()
 }
@@ -334,10 +341,10 @@ export const splitMonthDocsIntoDays = (docs, dateKey) => {
 export const displayThStNdRd = (num) => {
   if(num > 3 && num < 21) return 'th'
   switch (num % 10) {
-    case 1:  return "st"
-    case 2:  return "nd"
-    case 3:  return "rd"
-    default: return "th"
+    case 1:  return `${num}st`
+    case 2:  return `${num}nd`
+    case 3:  return `${num}rd`
+    default: return `${num}th`
   }
 }
 
