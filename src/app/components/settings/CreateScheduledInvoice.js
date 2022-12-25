@@ -125,6 +125,7 @@ export default function CreateScheduledInvoice() {
       calculatedTotal={calculatedTotal}
       myUser={myUser}
       invSettings={invSettings}
+      dayOfMonth={dayOfMonth}
     />
   }
 
@@ -603,7 +604,7 @@ export default function CreateScheduledInvoice() {
             showInvoicePreview={showInvoicePreview}
             setShowInvoicePreview={setShowInvoicePreview}
             invoicePaperRef={invoicePaperRef}
-            isSchedule
+            isScheduled
           />
         </div> :
         <>You do not have access to view this page</> :

@@ -11,7 +11,7 @@ export default function InvoiceRow(props) {
 
   const { myUserID, setPageLoading, myUser, setToasts } = useContext(StoreContext)
   const { invoiceID, title, invoiceNumber, total, items, invoiceTo,
-    dateCreated, isPaid, currency } = props.invoice
+    dateCreated, isPaid, currency, isScheduled } = props.invoice
   const { notifSettings } = props
   const navigate = useNavigate()
 
@@ -41,7 +41,7 @@ export default function InvoiceRow(props) {
 
   return (
     <AppItemRow
-      item1={`#${truncateText(invoiceNumber, 14)}`}
+      item1={<>{isScheduled && <i className="fas fa-clock"/>} #{truncateText(invoiceNumber, 16)}</>}
       item2={truncateText(title, 16)}
       item3={truncateText(invoiceTo.name, 16)}
       item4={items.length}

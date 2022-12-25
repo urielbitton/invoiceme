@@ -1,6 +1,7 @@
+import { successToast } from "app/data/toastsTemplates"
 import { db, functions } from "app/firebase/fire"
 import { convertFilesToBase64, saveHTMLToPDFAsBlob } from "app/utils/fileUtils"
-import { getRandomDocID, setDB } from "./CrudDB"
+import { getRandomDocID, setDB, updateDB } from "./CrudDB"
 
 export const sendSgEmail = (from, to, subject, html, files, isType) => {
   return convertFilesToBase64(files)
@@ -137,6 +138,11 @@ export const getUnreadEmails = (myEmail, setUnreadEmails) => {
     .onSnapshot((snapshot) => {
       setUnreadEmails(snapshot.docs.map((doc) => doc.data()))
     })
+}
+
+export const updateEmailService = (emailID, data) => {
+  return updateDB('mail', emailID, data)
+  .catch(err => console.log(err))
 }
 
 export const createSupportTicketService = (userID, subject, message, email) => {

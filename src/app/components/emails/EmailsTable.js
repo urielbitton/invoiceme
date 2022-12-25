@@ -10,7 +10,7 @@ import IconContainer from "../ui/IconContainer"
 
 export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal }) {
 
-  const { setPageLoading, setToasts } = useContext(StoreContext)
+  const { setPageLoading, setToasts, myUser } = useContext(StoreContext)
   
   const markAsRead = (email) => {
     updateDB('mail', email.emailID, { 
@@ -49,7 +49,7 @@ export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal 
     return <AppItemRow
       key={index}
       item1={<>
-        {!email.isRead && <i className="fas fa-circle"/>}
+        {(!email.isRead && email.from !== myUser?.email) && <i className="fas fa-circle"/>}
         {truncateText(email.from, 20)}
       </>}
       item2={email.to}

@@ -2,7 +2,7 @@ import {
   Document, Image, Link, Page, StyleSheet,
   Text, View, Font
 } from "@react-pdf/renderer"
-import { convertClassicDate } from "app/utils/dateUtils"
+import { convertClassicDate, displayThStNdRd } from "app/utils/dateUtils"
 import { formatCurrency, formatPhoneNumber } from "app/utils/generalUtils"
 import React from 'react'
 
@@ -10,7 +10,7 @@ export default function InvoicePaperDoc(props) {
 
   const { invoice, myBusiness, taxNumbers, invoiceItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
-    myUser, invSettings } = props
+    myUser, invSettings, dayOfMonth } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
   const smallFlexBasis = 70
 
@@ -88,11 +88,13 @@ export default function InvoicePaperDoc(props) {
               >
                 <Text style={styles.headerRightH3}>Invoice</Text>
                 <Text style={styles.headerH5}>#{invoice?.invoiceNumber}</Text>
-                <Text style={styles.headerH5}>Invoice Date: {convertClassicDate(invoice?.dateCreated.toDate())}</Text>
+                <Text style={styles.headerH5}>
+                  Invoice Date: {!dayOfMonth ? convertClassicDate(invoice?.dateCreated.toDate()) : displayThStNdRd(dayOfMonth) + ' of the month'}
+                </Text>
                 {
                   invSettings?.showDueDate &&
                   <Text style={styles.headerH5}>
-                    Date Due: <Text style={styles.headerH5Span}>{convertClassicDate(invoice?.dateDue.toDate())}</Text>
+                    Date Due: <Text style={styles.headerH5Span}>Same Day</Text>
                   </Text>
                 }
               </View>

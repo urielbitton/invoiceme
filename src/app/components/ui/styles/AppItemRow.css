@@ -32,6 +32,9 @@
 .app-item-row .row-item input {
   width: 13px;
 }
+.app-item-row .row-item .fa-clock {
+  color: var(--primary);
+}
 
 .app-item-row .actions-row {
   display: flex;

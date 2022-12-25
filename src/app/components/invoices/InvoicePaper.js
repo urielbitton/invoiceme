@@ -12,7 +12,7 @@ export default function InvoicePaper(props) {
   const { myUser, myUserID } = useContext(StoreContext)
   const { invoice, myBusiness, taxNumbers, invoiceItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
-    invoicePaperRef, isSchedule } = props
+    invoicePaperRef, isScheduled } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
   const invSettings = useUserInvoiceSettings(myUserID)
 
@@ -75,7 +75,7 @@ export default function InvoicePaper(props) {
             className="right"
           >
             <h3>Invoice</h3>
-            <h5>{isSchedule ? 'Invoice Number: #INV-' : ''}#{invoice?.invoiceNumber}</h5>
+            <h5>{isScheduled ? 'Invoice Number: #INV-' : ''}#{invoice?.invoiceNumber}</h5>
             <h5>Invoice Date: {convertClassicDate(invoice?.dateCreated.toDate())}</h5>
             {
               invSettings?.showDueDate &&

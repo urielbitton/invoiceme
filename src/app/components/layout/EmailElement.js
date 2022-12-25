@@ -15,21 +15,25 @@ export default function EmailElement(props) {
     isRead } = props.email
   const navigate = useNavigate()
 
-  const markAsRead = (read) => {
+  const toggleRead = (e, read, navToEmails) => {
+    e.stopPropagation()
     updateDB('mail', emailID, {
       isRead: read 
+    })
+    .then(() => {
+      if(!navToEmails) return
+      navigate(`/emails`)
     })
     .catch(err => {
       console.log(err)
       setToasts(errorToast('An error occured. Please try again.'))
     })
-    navigate(`/emails`)
   }
 
   return (
     <div 
       className={`notif-element ${!isRead ? 'unread' : ''}`} 
-      onClick={() => markAsRead(true)}
+      onClick={(e) => toggleRead(e, true, true)}
       key={emailID}
     >
       <div className="left">
@@ -51,10 +55,7 @@ export default function EmailElement(props) {
         </div>  
         <div 
           className={`read-reciept ${isRead ? "read" : ""}`} 
-          onClick={(e) => {
-            e.stopPropagation()
-            markAsRead(false)
-          }}
+          onClick={(e) => toggleRead(e, !isRead, false)}
         />
         { files?.length > -1 && <i className="fal fa-paperclip" />}
       </div>

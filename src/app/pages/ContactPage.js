@@ -100,12 +100,6 @@ export default function ContactPage() {
         resetInputFields()
       })
   }
-  
-  const runSchedule = () => {
-    functions.httpsCallable('testScheduled2')()
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
-  }
 
   return (
     contact ? (
@@ -118,7 +112,7 @@ export default function ContactPage() {
             />
           </div>
           <div className="side intro">
-            <h4 onClick={() => runSchedule()}>{contact.name}</h4>
+            <h4>{contact.name}</h4>
             <h5>{contact.companyName}</h5>
             <div className="btn-group">
               <AppButton

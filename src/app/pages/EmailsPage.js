@@ -9,7 +9,7 @@ import PageTitleBar from "app/components/ui/PageTitleBar"
 import { showXResultsOptions } from "app/data/general"
 import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useEmailsByType, useUnreadEmails } from "app/hooks/emailHooks"
-import { sendAppEmail } from "app/services/emailServices"
+import { sendAppEmail, updateEmailService } from "app/services/emailServices"
 import { StoreContext } from "app/store/store"
 import { convertClassicDateAndTime } from "app/utils/dateUtils"
 import React, { useContext, useEffect, useState } from 'react'
@@ -42,6 +42,19 @@ export default function EmailsPage() {
     setSubject('')
     setMessage('')
     setFiles([])
+  }
+
+  const markAsUnRead = () => {
+    updateEmailService(activeEmail?.emailID, { 
+      isRead: false
+    })
+    .then(() => {
+      setToasts(successToast('Email marked as unread'))
+    })
+    .catch(err => {
+      setToasts(errorToast('Error marking email as unread'))
+      console.log(err)
+    })
   }
 
   const sendEmail = () => {
@@ -149,6 +162,7 @@ export default function EmailsPage() {
                 setShowEmailModal={setShowEmailModal}
               />} />
             </Routes>
+            <br/>
             {
               emailsLimit <= emails.length &&
               <AppButton
@@ -206,6 +220,14 @@ export default function EmailsPage() {
           <h6>
             Date: <span>{convertClassicDateAndTime(activeEmail?.dateSent?.toDate())}</span>
           </h6>
+          <label className="read-label">
+            <input 
+              type="checkbox"
+              checked={!activeEmail?.isRead}
+              onChange={() => markAsUnRead()}
+              />
+            <h6>Mark as unread</h6>
+          </label>
         </div>
         <div className="body">
           <p>{activeEmail?.html.replaceAll('</br>', '\n')}</p>

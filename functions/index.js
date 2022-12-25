@@ -707,20 +707,16 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
 }
 
 
-//Schedules Options
-exports.testScheduled2 = functions.https.onCall((data, context) => {
-  return runScheduledInvoices(22, 0)
-    .then(() => console.log('Scheduled invoices ran successfully.'))
-    .catch((err) => console.log('Scheduled invoice error', err))
-})
+//Scheduled invoices
 
 // Every hour between 7am and 9pm
 exports.runScheduledInvoicesHourly = functions.pubsub
   .schedule('0 7-21 * * *')
+  .timeZone('America/Toronto')
   .onRun((context) => {
     const dayOfMonth = new Date().getUTCDate()
     const timeOfDay = new Date().getUTCHours()
-    return runScheduledInvoices(dayOfMonth, timeOfDay)
+    return runScheduledInvoices(dayOfMonth, timeOfDay-5)
       .then(() => console.log('Scheduled invoices ran successfully.'))
       .catch((err) => console.log('Scheduled invoice error', err))
   })
@@ -803,6 +799,7 @@ function checkOverdueInvoices() {
 
 exports.notifyOverdueInvoices = functions.pubsub
   .schedule('0 9 * * *')
+  .timeZone('America/Toronto')
   .onRun((context) => {
     return checkOverdueInvoices()
       .then(() => console.log('Overdue invoices checked successfully.'))

@@ -1,3 +1,4 @@
+import { functions } from "app/firebase/fire"
 import { useEmailsByType, useUnreadEmails } from "app/hooks/emailHooks"
 import { useAllNotifications, useUnreadNotifications } from "app/hooks/notificationHooks"
 import { StoreContext } from "app/store/store"
@@ -36,6 +37,12 @@ export default function Navbar() {
     />
   })
 
+  const runSched = () => {
+    functions.httpsCallable('testScheduled2')()
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+  }
+
   useEffect(() => {
     if (showMenu !== null) {
       window.onclick = () => setShowMenu(null)
@@ -44,7 +51,7 @@ export default function Navbar() {
   }, [showMenu])
 
   return (
-    <nav className={`navbar ${compactNav ? 'compact-nav' : ''}`}>
+    <nav className={`navbar ${compactNav ? 'compact-nav' : ''}`} onClick={() => runSched()}>
       <div className="topbar">
         <div className="left">
           <NavSearch />

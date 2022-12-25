@@ -7,7 +7,7 @@ export default function InvoicePreviewModal(props) {
 
   const { myUser } = useContext(StoreContext)
   const { showInvoicePreview, setShowInvoicePreview, invoiceData,
-    invoicePaperRef, isSchedule } = props
+    invoicePaperRef, isScheduled } = props
 
   return (
     <div className={`invoice-preview-modal ${showInvoicePreview ? 'show' : ''}`}>
@@ -24,7 +24,7 @@ export default function InvoicePreviewModal(props) {
         calculatedTaxRate={invoiceData?.taxRate1 + invoiceData?.taxRate2}
         calculatedTotal={invoiceData?.total}
         invoicePaperRef={invoicePaperRef}
-        isSchedule={isSchedule}
+        isScheduled={isScheduled}
       />
     </div>
   )

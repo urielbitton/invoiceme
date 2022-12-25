@@ -1,3 +1,6 @@
+.emails-page .app-tabs-bar {
+  background: var(--bg);
+}
 .emails-page .emails-page-routes {
   margin-top: 20px;
 }
@@ -29,6 +32,20 @@
 .email-modal-portal .header h6 span {
   color: var(--grayText);
   font-weight: 500;
+}
+.email-modal-portal .header .read-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.email-modal-portal .header .read-label h6 {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--darkGrayText);
+}
+.email-modal-portal .header .read-label input {
+  width: 15px;
 }
 .email-modal-portal .body {
   padding: 15px;
