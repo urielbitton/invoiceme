@@ -734,7 +734,7 @@ function checkOverdueInvoices() {
         const data = invoice.data()
         const docRef = firestore.collection('invoices').doc(data.invoiceID)
         batch.update(docRef, {
-          status: 'Overdue',
+          status: 'overdue',
         })
         const notifID = getRandomDocID(`users/${data.invoiceOwnerID}/notifications`)
         const notifRef = firestore.collection('users').doc(data.invoiceOwnerID).collection('notifications').doc(notifID)

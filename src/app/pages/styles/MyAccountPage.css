@@ -58,6 +58,11 @@
   font-size: 14px;
   font-weight: 600;
 }
+.account-page .account-content .appInput .fa-info-circle {
+  margin-left: 8px;
+  top: 2px;
+  color: var(--grayText);
+}
 
 .account-page .account-content .account-section.delete-account {
   border: 1px solid var(--red);

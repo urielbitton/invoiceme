@@ -109,7 +109,15 @@ export default function AccountBusiness() {
           }
         </div>
         <AppInput
-          label="Business Name"
+          label={
+            <>
+              Business Name 
+              <i 
+                className="fas fa-info-circle"
+                title="This is the name that will appear on your invoices under your logo"
+              />
+            </>
+          }
           placeholder="InvoiceMe"
           value={businessName}
           onChange={e => setBusinessName(e.target.value)}
