@@ -2,7 +2,7 @@ import { errorToast, infoToast } from "app/data/toastsTemplates"
 import { deleteDB, updateDB } from "app/services/CrudDB"
 import { StoreContext } from "app/store/store"
 import { convertClassicDate } from "app/utils/dateUtils"
-import { truncateText } from "app/utils/generalUtils"
+import { cleanHtml, truncateText } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import AppItemRow from "../ui/AppItemRow"
 import AppTable from "../ui/AppTable"
@@ -54,7 +54,7 @@ export default function EmailsTable({ emails, setActiveEmail, setShowEmailModal 
       </>}
       item2={email.to}
       item3={email.subject}
-      item4={truncateText(email.html.replaceAll('</br>', ' '), 40)}
+      item4={truncateText(cleanHtml(email.html), 40)}
       item5={email?.files?.length > 0 ?<>
         <i className="fas fa-paperclip"/>&nbsp;
         {email.files.length} file{email.files.length !== 1 ? 's' : ''}</> : 'No files'

@@ -8,6 +8,7 @@ import PaidUnpaidChart from "app/components/stats/PaidUnpaidChart"
 import RevenueChart from "app/components/stats/RevenueChart"
 import AppButton from "app/components/ui/AppButton"
 import { AppSelect } from "app/components/ui/AppInputs"
+import DropdownButton from "app/components/ui/DropdownButton"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import PageTitleBar from "app/components/ui/PageTitleBar"
 import { recentsListOptions } from "app/data/general"
@@ -18,16 +19,19 @@ import { useInvoices } from "app/hooks/invoiceHooks"
 import { useCurrentYearInvoices, useCurrentMonthInvoices, 
   useCurrentYearEstimates, useCurrentMonthEstimates, 
   useCurrentYearContacts, useCurrentMonthContacts } from "app/hooks/statsHooks"
+import { sendHtmlToEmailAsPDF } from "app/services/emailServices"
 import { StoreContext } from "app/store/store"
-import { getNumOfDaysInMonth } from "app/utils/dateUtils"
+import { getNumOfDaysInMonth, monthNames } from "app/utils/dateUtils"
+import { downloadHtmlElementAsImage, domToPDFDownload } from "app/utils/fileUtils"
 import { displayGreeting } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useState } from 'react'
 import './styles/Homepage.css'
 
 export default function HomePage() {
 
-  const { setCompactNav, myUser, myUserID } = useContext(StoreContext)
+  const { setCompactNav, myUser, myUserID, setPageLoading } = useContext(StoreContext)
   const date = new Date()
+  const [showExportMenu, setShowExportMenu] = useState(false)
   const [revenueMode, setRevenueMode] = useState('year')
   const [recentsView, setRecentsView] = useState('invoices')
   const [paidTimeMode, setPaidTimeMode] = useState('year')
@@ -60,6 +64,43 @@ export default function HomePage() {
       dashbox={dashbox}
     />
   })
+
+  const downloadImgStats = () => {
+    downloadHtmlElementAsImage(
+      document.querySelector('.homepage'),
+      `invoice_me_stats${selectedYear}-${selectedMonth}.png`
+    )
+  }
+
+  const downloadPDFStats = () => {
+      domToPDFDownload(
+      document.querySelector('.homepage'),
+      `invoice_me_stats${selectedYear}-${selectedMonth}.pdf`,
+      true
+    )
+  }
+
+  const sendStatsToEmail = () => {
+    setPageLoading(true)
+    sendHtmlToEmailAsPDF(
+      'info@atomicsdigital.com', 
+      myUser?.email, 
+      'Invoice Me Stats', 
+      `Hi ${myUser?.firstName}, <br/><br/>Here are your extended stats for `+
+      `${monthNames[selectedMonth]} ${selectedYear}.<br/><br/>The Invoice Me Team`, 
+      document.querySelector('.homepage'),
+      `invoice_me_stats${selectedYear}-${selectedMonth}.pdf`,
+      [], 
+      null
+    )
+    .then(() => {
+      setPageLoading(false)
+    })
+    .catch(err => {
+      console.log(err)
+      setPageLoading(false)
+    })
+  }
 
   useEffect(() => {
     setCompactNav(true)
@@ -108,9 +149,35 @@ export default function HomePage() {
         </div>
         <div className="more-stats">
           <AppButton
-            label="More Stats"
+            label="More Stats" 
             url="/my-account/extended-stats"
             rightIcon="fal fa-chart-bar"
+          />
+          <DropdownButton
+            label="Export Stats"
+            iconRight="fal fa-file-export"
+            showMenu={showExportMenu}
+            setShowMenu={setShowExportMenu}
+            className="export-btn"
+            dropdownPosition="place-left-bottom"
+            rightIcon="fal fa-chevron-down"
+            items={[
+              { 
+                label: "Download As Image", 
+                icon: "fas fa-image", 
+                onClick: () => downloadImgStats()
+              },
+              { 
+                label: "Download As PDF", 
+                icon: "fas fa-file-pdf", 
+                onClick: () => downloadPDFStats()
+              },
+              { 
+                label: "Send To My Email", 
+                icon: "fas fa-envelope", 
+                onClick: () => sendStatsToEmail()
+              },
+            ]}
           />
         </div>
         <div className="invoices-section full-width">

@@ -23,6 +23,7 @@ export default function InvoicePreviewModal(props) {
         calculatedSubtotal={invoiceData?.subtotal}
         calculatedTaxRate={invoiceData?.taxRate1 + invoiceData?.taxRate2}
         calculatedTotal={invoiceData?.total}
+        dayOfMonth={invoiceData?.dayOfMonth}
         invoicePaperRef={invoicePaperRef}
         isScheduled={isScheduled}
       />

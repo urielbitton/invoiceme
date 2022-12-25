@@ -3,6 +3,13 @@
   flex-direction: column;
   margin-top: 20px;
 }
+.account-stats .page-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
 .account-stats > h4 {
   color: var(--darkGrayText);
   font-weight: 600;

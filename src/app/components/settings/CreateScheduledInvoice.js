@@ -86,18 +86,18 @@ export default function CreateScheduledInvoice() {
   const notifSettings = useUserNotifSettings(myUserID)
   const invSettings = useUserInvoiceSettings(myUserID)
 
-  const creatingSchedule = invoiceTitle.length || 
-  scheduleTitle.length || 
-  invoiceNumber.length || 
-  invoiceCurrency.length || 
-  invoiceNotes.length || 
-  invoiceItems.length || 
-  invoiceContact || 
-  dayOfMonth || 
-  timeOfDay || 
-  emailMessage.length || 
-  emailSubject.length || 
-  activeSchedule
+  const creatingSchedule = invoiceTitle.length ||
+    scheduleTitle.length ||
+    invoiceNumber.length ||
+    invoiceCurrency.length ||
+    invoiceNotes.length ||
+    invoiceItems.length ||
+    invoiceContact ||
+    dayOfMonth ||
+    timeOfDay ||
+    emailMessage.length ||
+    emailSubject.length ||
+    activeSchedule
 
   const invoice = {
     invoiceNumber,
@@ -194,14 +194,20 @@ export default function CreateScheduledInvoice() {
       taxRate1: editSchedule?.invoiceTemplate?.taxRate1 || taxRate1,
       taxRate2: editSchedule?.invoiceTemplate?.taxRate2 || taxRate2,
       subtotal: editSchedule?.invoiceTemplate?.subTotal || calculatedSubtotal,
-      total: editSchedule?.invoiceTemplate?.total || calculatedTotal
+      total: editSchedule?.invoiceTemplate?.total || calculatedTotal,
+      dayOfMonth: editSchedule?.dayOfMonth || dayOfMonth,
     })
   }
 
+  const catchError = (err) => {
+    console.log(err)
+    setToasts(errorToast('Error updating scheduled invoice. Please try again.'))
+  }
+
   const createScheduledInvoice = () => {
-    const confirm = window.confirm(`Are you sure you want to create this scheduled invoice? `+
-    `It will be sent automatically every ${displayThStNdRd(+dayOfMonth)} of the month at `+
-     `${timeOfDaysOptions?.find(time => time.value === timeOfDay).label}.`)
+    const confirm = window.confirm(`Are you sure you want to create this scheduled invoice? ` +
+      `It will be sent automatically every ${displayThStNdRd(+dayOfMonth)} of the month at ` +
+      `${timeOfDaysOptions?.find(time => time.value === timeOfDay).label}.`)
     if (!confirm) return setToasts(infoToast('Scheduled invoice not created.'))
     if (!!!allowCreateSchedule)
       return setToasts(infoToast("Please fill in all required fields."))
@@ -228,7 +234,7 @@ export default function CreateScheduledInvoice() {
               timeOfDay,
               scheduleTitle,
               emailSubject,
-              emailMessage,
+              emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
               activeSchedule,
               base64,
               notifSettings.showScheduleNotifs,
@@ -239,51 +245,55 @@ export default function CreateScheduledInvoice() {
                 setToasts(successToast('Scheduled Invoice Created.'))
                 navigate('/settings/scheduled-invoices')
               })
-              .catch(err => {
-                setPageLoading(false)
-                console.log(err)
-                setToasts(errorToast('Error creating scheduled invoice. Please try again. If the problem persists, please contact us for assistance.'))
-              })
+              .catch(err => catchError(err))
           })
       })
   }
 
   const updateScheduledInvoice = () => {
-    updateScheduledInvoiceService(
-      editInvoiceID,
-      {
-        ...editSchedule,
-        isActive: activeSchedule,
-        dayOfMonth: +dayOfMonth,
-        timeOfDay: +timeOfDay,
-        title: scheduleTitle,
-        emailSubject,
-        emailMessage,
-        invoiceTemplate: {
-          ...editSchedule?.invoiceTemplate,
-          title: invoiceTitle,
-          invoiceNumber,
-          invoiceOwnerID: myUserID,
-          dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
-          dateDue: firebase.firestore.Timestamp.fromDate(new Date()),
-          invoiceTo: invoiceContact,
-          currency: invoiceCurrency,
-          myBusiness: myUser?.myBusiness,
-          notes: invoiceNotes,
-          taxRate1: +taxRate1,
-          taxRate2: +taxRate2,
-          items: invoiceItems,
-          subtotal: +calculatedSubtotal,
-          total: +calculatedTotal
-        }
-      },
-      setPageLoading,
-      notifSettings.showScheduleNotifs
-    )
-      .then(() => {
-        setToasts(successToast('Scheduled Invoice Updated.'))
-        navigate('/settings/scheduled-invoices')
+    pdf(<PDFDoc />).toBlob()
+      .then((blob) => {
+        blobToBase64(blob)
+          .then((base64) => {
+            updateScheduledInvoiceService(
+              editInvoiceID,
+              {
+                isActive: activeSchedule,
+                dayOfMonth: +dayOfMonth,
+                timeOfDay: +timeOfDay,
+                title: scheduleTitle,
+                emailSubject,
+                emailMessage: emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
+                pdfBase64: base64,
+                invoiceTemplate: {
+                  title: invoiceTitle,
+                  invoiceNumber,
+                  invoiceOwnerID: myUserID,
+                  dateCreated: firebase.firestore.Timestamp.fromDate(new Date()),
+                  dateDue: firebase.firestore.Timestamp.fromDate(new Date()),
+                  invoiceTo: invoiceContact,
+                  currency: invoiceCurrency,
+                  myBusiness: myUser?.myBusiness,
+                  notes: invoiceNotes,
+                  taxRate1: +taxRate1,
+                  taxRate2: +taxRate2,
+                  items: invoiceItems,
+                  subtotal: +calculatedSubtotal,
+                  total: +calculatedTotal
+                }
+              },
+              setPageLoading,
+              notifSettings.showScheduleNotifs
+            )
+              .then(() => {
+                setToasts(successToast('Scheduled Invoice Updated.'))
+                navigate('/settings/scheduled-invoices')
+              })
+              .catch(err => catchError(err))
+          })
+          .catch(err => catchError(err))
       })
+      .catch(err => catchError(err))
   }
 
   const deleteScheduledInvoice = () => {

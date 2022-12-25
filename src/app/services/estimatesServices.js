@@ -4,7 +4,7 @@ import { convertInputDateToDateAndTimeFormat,
   dateToMonthName, 
   getYearsBetween} from "app/utils/dateUtils"
 import { deleteDB, getRandomDocID, setDB, updateDB } from "./CrudDB"
-import { sendHtmlToEmailAsPDF } from "./emailServices"
+import { sendHtmlToEmailAsPDF, sendInvoiceSgEmail } from "./emailServices"
 import { createNotification } from "./notifServices"
 
 const catchError = (err, setLoading) => {
@@ -165,38 +165,39 @@ export const deleteEstimateService = (myUserID, estimateID, setLoading, setToast
     }
 }
 
-export const sendEstimateService = (from, to, subject, emailHTML, pdfHTMLElement, estimateFilename, uploadedFiles,
+export const sendEstimateService = (from, to, subject, emailHTML, base64, estimateFilename, uploadedFiles,
   myUserID, estimateID, estimateNumber, setLoading, setToasts, notify) => {
     const confirm = window.confirm("Send estimate to client?")
     const isType = 'estimate'
     if(confirm) {
-      setLoading(true)
-      return sendHtmlToEmailAsPDF(
+      return sendInvoiceSgEmail(
         from,
         to,
         subject,
         emailHTML,
-        pdfHTMLElement,
         estimateFilename,
+        base64,
         uploadedFiles.map(file => file.file),
         isType
       )
-      .then(() => {
-        updateDB(`users/${myUserID}/estimates`, estimateID, {
-          isSent: true, 
+        .then(() => {
+          updateDB(`users/${myUserID}/estimates`, estimateID, {
+            isSent: true,
+          })
+            .then(() => {
+              setLoading(false)
+              setToasts(successToast("Estimate sent to client."))
+              notify && createNotification(
+                myUserID,
+                'Estimate sent to client',
+                `Estimate ${estimateNumber} has been sent to ${to}.`,
+                'fas fa-paper-plane',
+                `/estimates/${estimateID}`
+              )
+                .catch(err => console.log(err))
+            })
+            .catch(err => console.log(err))
         })
-        .catch(err => console.log(err))
-        notify && createNotification(
-          myUserID,
-          'Estimate sent to client',
-          `Estimate ${estimateNumber} has been sent to ${to}.`,
-          'fas fa-paper-plane',
-          `/estimates/${estimateID}`
-        )
-        .catch(err => console.log(err))
-        setLoading(false)
-        setToasts(successToast("Estimate sent to client."))
-      })
-      .catch(err => catchError(err, setLoading))
+        .catch(err => catchError(err, setLoading))
     }
 }

@@ -26,7 +26,8 @@ export function ScheduledInvoiceCard(props) {
       subtotal: invoiceTemplate?.subtotal,
       taxRate1: invoiceTemplate?.taxRate1,
       taxRate2: invoiceTemplate?.taxRate2,
-      total: invoiceTemplate?.total
+      total: invoiceTemplate?.total,
+      dayOfMonth: dayOfMonth,
     })
   }
 

@@ -69,6 +69,7 @@ export const sendInvoiceSgEmail = (from, to, subject, html, invoiceFilename, pdf
     .catch((error) => console.log(error))
 }
 
+
 export const sendHtmlToEmailAsPDF = (from, to, subject, emailHtml, pdfHTMLElement, filename, attachments, isType) => {
   return saveHTMLToPDFAsBlob(pdfHTMLElement, filename)
     .then((file) => {

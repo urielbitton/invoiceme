@@ -71,6 +71,10 @@
 .dropdown-button .dropdown-item:hover {
   background: var(--primary);
 }
+.dropdown-button .dropdown-item span,
+.dropdown-button .dropdown-item i {
+  color: var(--darkGrayText);
+}
 .dropdown-button .dropdown-item:hover i,
 .dropdown-button .dropdown-item:hover span {
   color: #fff;

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { truncateText } from "app/utils/generalUtils"
+import { cleanHtml, truncateText } from "app/utils/generalUtils"
 import { convertClassicDate, getTimeAgo } from "app/utils/dateUtils"
 import { useNavigate } from "react-router-dom"
 import { updateDB } from "app/services/CrudDB"
@@ -50,7 +50,7 @@ export default function EmailElement(props) {
         <div className="texts">
           <small>{truncateText(from, 30)}</small>
           <small>{truncateText(subject, 30)}</small>
-          <p>{truncateText(html.replaceAll('</br>', ' '), 60)}</p>
+          <p>{truncateText(cleanHtml(html), 60)}</p>
           <small title={convertClassicDate(dateSent?.toDate())}>{getTimeAgo(dateSent?.toDate())}</small>
         </div>  
         <div 

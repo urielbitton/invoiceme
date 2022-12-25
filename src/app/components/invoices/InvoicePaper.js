@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useUserInvoiceSettings } from "app/hooks/userHooks"
 import { StoreContext } from "app/store/store"
-import { convertClassicDate } from "app/utils/dateUtils"
+import { convertClassicDate, displayThStNdRd } from "app/utils/dateUtils"
 import { formatCurrency, formatPhoneNumber } from "app/utils/generalUtils"
 import React, { useContext } from 'react'
 import AppTable from "../ui/AppTable"
@@ -12,7 +12,7 @@ export default function InvoicePaper(props) {
   const { myUser, myUserID } = useContext(StoreContext)
   const { invoice, myBusiness, taxNumbers, invoiceItems,
     calculatedSubtotal, calculatedTaxRate, calculatedTotal,
-    invoicePaperRef, isScheduled } = props
+    invoicePaperRef, isScheduled, dayOfMonth } = props
   const myTaxNumbers = taxNumbers || myUser?.taxNumbers
   const invSettings = useUserInvoiceSettings(myUserID)
 
@@ -76,11 +76,11 @@ export default function InvoicePaper(props) {
           >
             <h3>Invoice</h3>
             <h5>{isScheduled ? 'Invoice Number: #INV-' : ''}#{invoice?.invoiceNumber}</h5>
-            <h5>Invoice Date: {convertClassicDate(invoice?.dateCreated.toDate())}</h5>
+            <h5>Invoice Date: {!isScheduled ? convertClassicDate(invoice?.dateCreated.toDate()) : `${displayThStNdRd(dayOfMonth)} of the month`}</h5>
             {
               invSettings?.showDueDate &&
               <h5>
-                Date Due: <span>{convertClassicDate(invoice?.dateDue.toDate())}</span>
+                Date Due: <span>{!isScheduled ? convertClassicDate(invoice?.dateDue.toDate()) : 'Same day'}</span>
               </h5>
             }
           </div>
@@ -126,13 +126,13 @@ export default function InvoicePaper(props) {
         </h6>
         <h6>
           <span>Subtotal</span>
-          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedSubtotal.toFixed(2))}</span>
+          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedSubtotal?.toFixed(2))}</span>
         </h6>
         <h6
           className="totals"
         >
           <span>Total</span>
-          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedTotal.toFixed(2))} {invoice?.currency?.value}</span>
+          <span>{invoice?.currency?.symbol}{formatCurrency(calculatedTotal?.toFixed(2))} {invoice?.currency?.value}</span>
         </h6>
       </div>
       {

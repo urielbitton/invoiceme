@@ -4,7 +4,7 @@ import DropdownButton from "app/components/ui/DropdownButton"
 import FileUploader from "app/components/ui/FileUploader"
 import HelmetTitle from "app/components/ui/HelmetTitle"
 import { StoreContext } from "app/store/store"
-import { downloadHtmlElementAsImage } from "app/utils/fileUtils"
+import { blobToBase64, downloadHtmlElementAsImage } from "app/utils/fileUtils"
 import { formatCurrency, validateEmail } from "app/utils/generalUtils"
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from "react-router-dom"
@@ -13,11 +13,11 @@ import { useEstimate } from "app/hooks/estimateHooks"
 import { deleteEstimateService, sendEstimateService } from "app/services/estimatesServices"
 import EstimatePaper from "app/components/estimates/EstimatePaper"
 import EmptyPage from "app/components/ui/EmptyPage"
-import { infoToast, successToast } from "app/data/toastsTemplates"
+import { errorToast, infoToast, successToast } from "app/data/toastsTemplates"
 import { useUserEstimateSettings, useUserNotifSettings } from "app/hooks/userHooks"
 import AppModal from "app/components/ui/AppModal"
 import { convertClassicDate } from "app/utils/dateUtils"
-import { PDFDownloadLink } from "@react-pdf/renderer"
+import { PDFDownloadLink, pdf } from "@react-pdf/renderer"
 import EstimatePaperDoc from "app/components/estimates/EstimatePaperDoc"
 
 export default function EstimatePage() {
@@ -52,23 +52,32 @@ export default function EstimatePage() {
   const sendEstimate = () => {
     if (!allowSendEstimate) return setToasts(infoToast('Please fill in all fields.'))
     const confirm = estimate?.isSent ? window.confirm('This estimate has already been sent, would you like to send it again?') : true
-    if (confirm) {
-      sendEstimateService(
-        myUser?.email,
-        contactEmail,
-        emailSubject,
-        emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
-        document.querySelector('.invoice-page .invoice-paper-container'),
-        `${estimate.estimateNumber}.pdf`,
-        uploadedFiles,
-        myUserID,
-        estimateID,
-        estimate.estimateNumber,
-        setPageLoading,
-        setToasts,
-        notifsSettings.showOutgoingEstimateNotifs
-      )
-    }
+    if (!confirm) return setToasts(infoToast('Estimate not sent.'))
+      pdf(<PaperDoc />).toBlob()
+      .then((blob) => {
+        blobToBase64(blob)
+        .then((base64) => {
+          sendEstimateService(
+            myUser?.email,
+            contactEmail,
+            emailSubject,
+            emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
+            base64,
+            `${estimate.estimateNumber}.pdf`,
+            uploadedFiles,
+            myUserID,
+            estimateID,
+            estimate.estimateNumber,
+            setPageLoading,
+            setToasts,
+            notifsSettings.showOutgoingEstimateNotifs
+          )
+        })
+        .catch((err) => {
+          console.log(err)
+          setToasts(errorToast('Error sending invoice. Please try again.'))
+        })
+      })
   }
 
   const deleteEstimate = () => {

@@ -82,6 +82,7 @@ export default function ScheduledInvoicesSettings() {
         showInvoicePreview={showInvoicePreview}
         setShowInvoicePreview={setShowInvoicePreview}
         invoicePaperRef={invoicePaperRef}
+        isScheduled
       />
     </div>
   )

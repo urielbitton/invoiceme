@@ -260,3 +260,7 @@ export const cap = (string) => {
 export const upper = (string) => {
   return string.toUpperCase()
 }
+
+export const cleanHtml = (html) => {
+  return html.replace(/<[^>]*>?/gm, ' ')
+}

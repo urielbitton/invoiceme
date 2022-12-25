@@ -92,3 +92,9 @@
   color: #777;
   font-size: 11px;
 }
+
+.homepage .more-stats {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}

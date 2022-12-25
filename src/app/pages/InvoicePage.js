@@ -75,7 +75,7 @@ export default function InvoicePage() {
             myUser?.email,
             contactEmail,
             emailSubject,
-            emailMessage,
+            emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
             base64,
             `${invoice.invoiceNumber}.pdf`,
             uploadedFiles,
