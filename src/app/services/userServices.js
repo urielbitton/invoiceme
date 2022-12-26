@@ -185,7 +185,7 @@ export const deleteStripeAccountService = (userID, customerID) => {
 }
 
 export const getScheduledEventsByUserID = (userID, setEvents, limit) => {
-  db.collection('scheduledEvents')
+  db.collectionGroup('scheduledEvents')
     .where('ownerID', '==', userID)
     .orderBy('dateRan', 'desc')
     .limit(limit)

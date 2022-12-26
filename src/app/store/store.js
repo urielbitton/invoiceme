@@ -13,7 +13,7 @@ const StoreContextProvider = ({children}) => {
   const [themeColor, setThemeColor] = useState(localStorage.getItem('themeColor') || "#178fff")
   const [contentScrollBottom, setContentScrollBottom] = useState(false)
   const [windowIsFocused, setWindowIsFocused] = useState(false)
-  const [pageLoading, setPageLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(false) 
   const myUserID = user?.uid
   const myUserImg = myUser?.photoURL
   const myUserName = `${myUser?.firstName} ${myUser?.lastName}`

@@ -591,7 +591,7 @@ exports.capturePaymentIntent = functions
 //Scheduled functions
 
 function runScheduledInvoices(dayOfMonth, timeOfDay) {
-  return firestore.collection('scheduledInvoices')
+  return firestore.collectionGroup('scheduledInvoices')
     .where('dayOfMonth', '==', dayOfMonth)
     .where('timeOfDay', '==', timeOfDay)
     .where('isActive', '==', true)
@@ -608,8 +608,8 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
         const path = `users/${data.ownerID}/invoices`
         const docID = getRandomDocID(path)
         const docRef = firestore.collection(path).doc(docID)
-        const eventsDocID = getRandomDocID('scheduledEvents')
-        const eventsDocRef = firestore.collection('scheduledEvents').doc(eventsDocID)
+        const eventsDocID = getRandomDocID(`users/${data.ownerID}/scheduledEvents`)
+        const eventsDocRef = firestore.collection('users').doc(data.ownerID).collection('scheduledEvents').doc(eventsDocID)
         invoicesBatch.set(docRef, {
           currency: data.invoiceTemplate.currency,
           dateCreated: new Date(),
@@ -651,7 +651,7 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
               const invoicesBatch = firestore.batch()
               scheduledInvoices.forEach(schedule => {
                 const data = schedule.data()
-                const docRef = firestore.collection('scheduledInvoices').doc(data.scheduleID)
+                const docRef = firestore.collection('users').doc(data.ownerID).collection('scheduledInvoices').doc(data.scheduleID)
                 invoicesBatch.update(docRef, {
                   lastRan: now,
                 })
@@ -732,20 +732,9 @@ function checkOverdueInvoices() {
       const batch = firestore.batch()
       invoices.forEach(invoice => {
         const data = invoice.data()
-        const docRef = firestore.collection('invoices').doc(data.invoiceID)
+        const docRef = firestore.collection('users').doc(data.invoiceOwnerID).collection('invoices').doc(data.invoiceID)
         batch.update(docRef, {
           status: 'overdue',
-        })
-        const notifID = getRandomDocID(`users/${data.invoiceOwnerID}/notifications`)
-        const notifRef = firestore.collection('users').doc(data.invoiceOwnerID).collection('notifications').doc(notifID)
-        batch.set(notifRef, {
-          notificationID: notifID,
-          dateCreated: new Date(),
-          isRead: false,
-          title: 'Invoice Overdue',
-          text: `Your invoice ${data.title} is now overdue. You can view it here.`,
-          icon: 'fas fa-invoice-dollar',
-          url: `/invoices/${data.invoiceID}`,
         })
       })
       return batch.commit()
@@ -761,18 +750,17 @@ function checkOverdueInvoices() {
               subject: 'Invoice Overdue',
               html: `Hi ${invoiceOwner.data().firstName},<br/><p>Your invoice ${data.title} is now overdue. ` +
                 `You can view the invoice <a href="https://invoiceme.pro/invoices/${data.invoiceID}">here</a>.` +
-                `</p><br/><p>Thanks,<br/>The InvoiceMe Team</p>`
+                `</p><p>Thanks,<br/>The InvoiceMe Team</p>`
             }
             if (invoiceOwnerEmailSettings.data().unpaidInvoicesEmail) {
               return sgMail.send(msg)
                 .then(() => {
-                  console.log('Overdue email sent to users.')
                   if (invoiceOwnerNotifsSettings.data().overdueNotifs) {
                     return createNotification(
                       data.invoiceOwnerID,
                       'Invoice Overdue',
                       `Your invoice ${data.title} is now overdue. You can view it here.`,
-                      'fas fa-invoice-dollar',
+                      'fas fa-file-invoice-dollar',
                       `/invoices/${data.invoiceID}`
                     )
                       .catch((err) => console.log(err))
@@ -785,12 +773,16 @@ function checkOverdueInvoices() {
                 data.invoiceOwnerID,
                 'Invoice Overdue',
                 `Your invoice ${data.title} is now overdue. You can view it here.`,
-                'fas fa-invoice-dollar',
+                'fas fa-file=invoice-dollar',
                 `/invoices/${data.invoiceID}`
               )
                 .catch((err) => console.log(err))
             }
           }))
+          .then(() => {
+            console.log('Overdue email sent to users.')
+          })
+          .catch((err) => console.log(err))
         })
         .catch((err) => console.log(err))
     })
@@ -806,9 +798,8 @@ exports.notifyOverdueInvoices = functions.pubsub
       .catch((err) => console.log('Overdue invoice check error', err))
   })
 
-
 exports.checkExpiredSubscriptions = functions.pubsub
-  .schedule('0 9 * * *')
+  .schedule('0 7 * * *')
   .onRun((context) => {
     const day = new Date().getUTCDate()
     return firestore.collection('users')

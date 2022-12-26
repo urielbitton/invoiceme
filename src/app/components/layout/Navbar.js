@@ -37,12 +37,6 @@ export default function Navbar() {
     />
   })
 
-  const runSched = () => {
-    functions.httpsCallable('testScheduled2')()
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
-  }
-
   useEffect(() => {
     if (showMenu !== null) {
       window.onclick = () => setShowMenu(null)
@@ -51,7 +45,7 @@ export default function Navbar() {
   }, [showMenu])
 
   return (
-    <nav className={`navbar ${compactNav ? 'compact-nav' : ''}`} onClick={() => runSched()}>
+    <nav className={`navbar ${compactNav ? 'compact-nav' : ''}`}>
       <div className="topbar">
         <div className="left">
           <NavSearch />

@@ -53,7 +53,7 @@ export default function ScheduledEvents() {
   const deleteEvent = (eventID) => {
     const confirm = window.confirm("Are you sure you want to delete this event? This action cannot be undone.")
     if(!confirm) return
-    deleteDB(`scheduledEvents`, eventID)
+    deleteDB(`users/${myUserID}/scheduledEvents`, eventID)
     .then(() => {
       setToasts(successToast("Event deleted."))
     })

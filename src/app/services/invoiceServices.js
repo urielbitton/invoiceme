@@ -74,7 +74,7 @@ export const getInvoicesByContactEmail = (userID, email, setInvoices) => {
 }
 
 export const getScheduledInvoicesByUserID = (userID, setInvoices) => {
-  db.collection('scheduledInvoices')
+  db.collectionGroup('scheduledInvoices')
     .where('ownerID', '==', userID)
     .orderBy('dateCreated', 'desc')
     .onSnapshot(snapshot => {
@@ -83,7 +83,7 @@ export const getScheduledInvoicesByUserID = (userID, setInvoices) => {
 }
 
 export const getScheduledInvoiceByUserID = (userID, scheduleID, setInvoice) => {
-  db.collection('scheduledInvoices')
+  db.collectionGroup('scheduledInvoices')
     .where('ownerID', '==', userID)
     .where('scheduleID', '==', scheduleID)
     .onSnapshot(snapshot => {
@@ -242,7 +242,7 @@ export const createScheduledInvoiceService = (myUser, invoiceNumber,
   invoiceTitle, calculatedTotal, dayOfMonth, timeOfDay, scheduleTitle, emailSubject, emailMessage, isActive, 
   base64, notify, setLoading
   ) => {
-  const pathName = 'scheduledInvoices'
+  const pathName = `users/${myUser.userID}/scheduledInvoices`
   const docID = getRandomDocID(pathName)
   const invoiceTemplate = {
     currency: invoiceCurrency || { name: 'Canadian Dollar', value: 'CAD', symbol: '$' },
@@ -297,13 +297,13 @@ export const createScheduledInvoiceService = (myUser, invoiceNumber,
   })
 }
 
-export const updateScheduledInvoiceService = (scheduleID, updatedProps, setLoading, notify) => {
+export const updateScheduledInvoiceService = (myUser, scheduleID, updatedProps, setLoading, notify) => {
   setLoading(true)
-  return updateDB(`scheduledInvoices`, scheduleID, updatedProps)
+  return updateDB(`users/${myUser.userID}/scheduledInvoices`, scheduleID, updatedProps)
     .then(() => {
       setLoading(false)
       notify && createNotification(
-        updatedProps.ownerID,
+        myUser.userID,
         'Scheduled Invoice Updated',
         `Scheduled invoice ${updatedProps.title} has been updated.`,
         'fas fa-clock',
@@ -317,7 +317,7 @@ export const deleteScheduledInvoiceService = (myUserID, scheduleID, setLoading, 
   const confirm = window.confirm("Are you sure you want to delete this scheduled invoice?")
   if (!confirm) return
   setLoading(true)
-  return deleteDB(`scheduledInvoices`, scheduleID)
+  return deleteDB(`users/${myUserID}/scheduledInvoices`, scheduleID)
     .then(() => {
       setLoading(false)
       notify && createNotification(

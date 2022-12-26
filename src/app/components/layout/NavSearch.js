@@ -111,7 +111,10 @@ export default function NavSearch() {
   const allResultsList = resultsQueries
     ?.filter(result => result.hits?.length > 0)
     .map((result, i) => {
-      return <div className="nav-search-dropdown-section">
+      return <div 
+        className="nav-search-dropdown-section"
+        key={i}
+      >
         <h5 className="capitalize">{badgeSwitch(result.index)}</h5>
         {
           result.hits?.map((hit, i) => {

@@ -8,6 +8,7 @@ import Sidebar from "app/components/layout/Sidebar"
 import Navbar from "app/components/layout/Navbar"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import HelmetTitle from "app/components/ui/HelmetTitle"
+import PreventTabClose from "app/components/ui/PreventTabClose"
 
 export default function AppContainer() {
 
@@ -34,6 +35,7 @@ export default function AppContainer() {
         <RoutesContainer />
       </div>
       <PageLoader loading={pageLoading} />
+      <PreventTabClose preventClose={pageLoading} />
     </div>
   )
 }

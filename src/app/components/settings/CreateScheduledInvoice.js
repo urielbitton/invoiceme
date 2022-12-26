@@ -256,6 +256,7 @@ export default function CreateScheduledInvoice() {
         blobToBase64(blob)
           .then((base64) => {
             updateScheduledInvoiceService(
+              myUser,
               editInvoiceID,
               {
                 isActive: activeSchedule,
@@ -266,6 +267,7 @@ export default function CreateScheduledInvoice() {
                 emailMessage: emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
                 pdfBase64: base64,
                 invoiceTemplate: {
+                  ...editSchedule?.invoiceTemplate,
                   title: invoiceTitle,
                   invoiceNumber,
                   invoiceOwnerID: myUserID,

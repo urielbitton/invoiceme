@@ -1,5 +1,4 @@
 import AuthSwitch from "app/auth/AuthSwitch"
-import AccountError from "app/components/ui/AccountError"
 import AppLoadingPage from "app/components/ui/AppLoadingPage"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
@@ -17,8 +16,6 @@ export default function AppSwitcher() {
         user ?
           (user?.emailVerified && myUser?.userID) ?
             <AppContainer /> :
-          !myUser?.userID ?
-            <AccountError /> :
           <VerifySwitcher /> :
           myUser === null ?
             <AppLoadingPage /> :

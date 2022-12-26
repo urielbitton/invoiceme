@@ -230,7 +230,7 @@ export default function EmailsPage() {
           </label>
         </div>
         <div className="body">
-          <p>{activeEmail?.html.replaceAll('</br>', '\n')}</p>
+          <p dangerouslySetInnerHTML={{__html: activeEmail?.html}} />
         </div>
         {
           activeEmail?.files?.length > 0 &&
