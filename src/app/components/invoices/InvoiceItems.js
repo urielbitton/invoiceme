@@ -217,7 +217,7 @@ export default function InvoiceItems(props) {
       <div className="invoice-table-actions">
         <small
           onClick={addInvoiceItem}
-          className={`add-invoice-item ${!itemName.length ? 'inactive' : ''}`}
+          className={`add-invoice-item ${(!itemName.length || editItemID !== null) ? 'inactive' : ''}`}
         >
           Add Item<i className="far fa-plus" />
         </small>

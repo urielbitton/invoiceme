@@ -243,6 +243,13 @@
 }
 
 
+
+@media (max-width: 460px) {
+  .settings-page .page-title-bar .settings-results {
+    width: 100%;
+  }
+}
+
 @media (max-width: 400px) {
   .settings-page .page-title-bar .right {
     width: 100%;
