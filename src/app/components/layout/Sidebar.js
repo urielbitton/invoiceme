@@ -5,7 +5,6 @@ import { menuLinks } from "app/data/menuLinks"
 import { NavLink, useLocation } from "react-router-dom"
 import AppButton from "../ui/AppButton"
 import { StoreContext } from "app/store/store"
-import { AppInput } from "../ui/AppInputs"
 
 export default function Sidebar() {
 
@@ -41,6 +40,27 @@ export default function Sidebar() {
           </div>
           <div className="menu">
             {navLinksList}
+          </div>
+          <div className="menu-btns">
+            <h5>Create</h5>
+            <AppButton
+              label="New Invoice"
+              url="/invoices/new"
+              buttonType="outlineBlueBtn"
+              leftIcon="fal fa-plus"
+              />
+            <AppButton
+              label="New Estimate"
+              url="/estimates/new"
+              buttonType="outlineBlueBtn"
+              leftIcon="fal fa-plus"
+              />
+            <AppButton
+              label="New Contact"
+              url="/contacts/new"
+              buttonType="outlineBlueBtn"
+              leftIcon="fal fa-plus"
+            />
           </div>
         </div>
         <div className="bottom">

@@ -429,8 +429,7 @@
   .navbar {
     height: var(--navbarHeightCompact);
   }
-  .navbar .appInput,
-  .navbar .dropdown-button {
+  .navbar .appInput {
     display: none;
   }
   .navbar .mobile-btn {
@@ -451,5 +450,19 @@
     min-width: 90vw;
     right: 0;
     left: auto;
+  }
+  .navbar .dropdown-button .dropdown-menu {
+    display: none;
+    position: fixed;
+    width: 100%;
+    top: 60px;
+    left: 0;
+    right: auto;
+  }
+}
+
+@media (max-width: 350px) {
+  .navbar .create-new-btn {
+    display: none;
   }
 }

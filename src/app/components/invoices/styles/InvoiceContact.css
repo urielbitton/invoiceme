@@ -27,6 +27,14 @@
   border-color: var(--inputBorderColor);
   font-size: 13px;
 }
+.contacts-search-results-container {
+  min-width: 1000px;
+  max-height: 500px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .contacts-search-results {
   display: flex;
   flex-direction: column;

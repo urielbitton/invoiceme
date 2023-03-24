@@ -1,6 +1,6 @@
 import { invoicesIndex } from "app/algolia"
 import { useInstantSearch } from "app/hooks/searchHooks"
-import { useUserInvoiceSettings, useUserNotifSettings } from "app/hooks/userHooks"
+import { useUserNotifSettings } from "app/hooks/userHooks"
 import { StoreContext } from "app/store/store"
 import React, { useContext } from 'react'
 import AppPagination from "../ui/AppPagination"

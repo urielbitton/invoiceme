@@ -204,7 +204,7 @@ export default function InvoiceContact(props) {
       }
       {
         query.length > 0 && searchResults.length > 0 ?
-          <>
+          <div className="contacts-search-results-container">
             <h5>My Contacts</h5>
             <div className="contacts-search-results">
               {contactsList}
@@ -215,14 +215,14 @@ export default function InvoiceContact(props) {
               numOfPages={numOfPages}
               dimensions="25px"
             />
-          </> :
+          </div> :
           contactSettings?.showFavorites &&
-          <>
+          <div className="contacts-search-results-container">
             <h5>Favorite Contacts</h5>
             <div className="contacts-search-results favorite-contacts">
               {favoritesList}
             </div>
-          </>
+          </div>
       }
       <AppButton
         label="New Contact"

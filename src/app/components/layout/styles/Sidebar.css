@@ -92,6 +92,18 @@
   display: none;
 }
 
+.menu-btns {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+.menu-btns > h5 {
+  color: var(--darkGrayText);
+}
+.menu-btns button {
+  width: 140px
+}
+
 @media (max-width: 700px) {
   .sidebar {
     position: fixed;
@@ -111,6 +123,9 @@
     display: block;
   }
   .sidebar .appInput {
+    display: flex;
+  }
+  .menu-btns {
     display: flex;
   }
 }
