@@ -120,7 +120,7 @@ export default function EstimatePaper(props) {
       >
         <h6>
           <span>Tax Rate</span>
-          <span>{calculatedTaxRate}%</span>
+          <span>${(calculatedSubtotal * (calculatedTaxRate/100)).toFixed(2)} ({calculatedTaxRate}%)</span>
         </h6>
         <h6>
           <span>Subtotal</span>
