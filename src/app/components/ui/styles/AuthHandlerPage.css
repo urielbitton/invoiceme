@@ -68,3 +68,11 @@
   margin-top: 20px;
   width: 300px;
 }
+.auth-handler-page .password-section small {
+  font-size: 12px;
+  color: var(--grayText);
+  font-weight: 600;
+}
+.auth-handler-page .password-section small:hover {
+  text-decoration: underline;
+}

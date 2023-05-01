@@ -11,12 +11,17 @@ export default function ResetPasswordHandler({oobCode}) {
 
   const { setToasts } = useContext(StoreContext)
   const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const auth = firebase.auth()
   const navigate = useNavigate()
 
   const handleResetPassword = (oobCode) => {
-    if(newPassword.length < 5) return setToasts(infoToast('Password must be at least 5 characters long.'))
+    if(newPassword.length < 5) 
+    return setToasts(infoToast('Password must be at least 5 characters long.'))
+    if(newPassword !== confirmPassword)
+      return setToasts(infoToast('Passwords do not match.'))
     setLoading(true)
     auth.verifyPasswordResetCode(oobCode)
     .then((email) => {
@@ -55,11 +60,18 @@ export default function ResetPasswordHandler({oobCode}) {
       customComponent={
         <div className="password-section">
           <input 
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="New password"
             value={newPassword}
             onChange={e => setNewPassword(e.target.value)}
           />
+          <input 
+            type={showPassword ? "text" : "password"}
+            placeholder="Confirm password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+          />
+          <small onClick={() => setShowPassword(prev => !prev)}>Show Password</small>
           <AppButton
             label="Reset password"
             onClick={() => handleResetPassword(oobCode)}
