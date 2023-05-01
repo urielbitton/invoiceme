@@ -13,7 +13,7 @@ export default function FileUploader(props) {
   const { setToasts } = useContext(StoreContext)
   const { inputRef, isDragging, setIsDragging, uploadedFiles, setUploadedFiles,
     maxFileSize, icon, text, accept="image/*, application/*",
-    truncateFilenameAmpount=25 } = props
+    truncateFilenameAmount=25 } = props
   const [loading, setLoading] = useState(false)
   const preventClose = !!uploadedFiles?.length || loading
 
@@ -38,7 +38,7 @@ export default function FileUploader(props) {
             <video autoPlay src={file?.src} /> 
           }
           <h6 title={file?.file?.name}>
-            {truncateText(file?.file?.name, truncateFilenameAmpount)}&emsp;{convertBytesToKbMbGb(file?.file?.size,0)}
+            {truncateText(file?.file?.name, truncateFilenameAmount)}&emsp;{convertBytesToKbMbGb(file?.file?.size,0)}
           </h6>
         </div>
       <i 

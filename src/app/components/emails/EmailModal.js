@@ -108,7 +108,7 @@ export default function EmailModal(props) {
           maxFileSize={maxFileSize}
           icon="fas fa-paperclip"
           text="Attach Files"
-          truncateFilenameAmpount={60}
+          truncateFilenameAmount={60}
         />
       </form>
     </AppModal>

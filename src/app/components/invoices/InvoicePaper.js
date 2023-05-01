@@ -122,7 +122,7 @@ export default function InvoicePaper(props) {
       >
         <h6>
           <span>Tax Rate {invSettings?.taxLabel?.length ? `(${invSettings.taxLabel})` : null}</span>
-          <span>{calculatedTaxRate}%</span>
+          <span>${(calculatedSubtotal * (calculatedTaxRate/100)).toFixed(2)} ({calculatedTaxRate}%)</span>
         </h6>
         <h6>
           <span>Subtotal</span>
