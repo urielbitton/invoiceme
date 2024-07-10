@@ -47,7 +47,7 @@ export default function InvoicePaper(props) {
     >
       <header>
         {
-          invSettings.showMyLogo &&
+          invSettings.showMyLogo && (myBusiness?.logo || invoice?.myBusiness?.logo) &&
           <img
             src={invoice?.myBusiness?.logo || myBusiness?.logo}
             alt="Logo"
@@ -63,12 +63,14 @@ export default function InvoicePaper(props) {
             {invSettings.showMyAddress && <h5>{invoice?.myBusiness?.address || myBusiness?.address}</h5>}
             {invSettings.showMyPhone && <h5>{formatPhoneNumber(invoice?.myBusiness?.phone || myBusiness?.phone)}</h5>}
             {invSettings.showMyEmail && <h5>{invoice?.myBusiness?.email || myBusiness?.email}</h5>}
-            <h5>
+            { invoice?.myBusiness &&
+              <h5>
               {invoice?.myBusiness?.city || myBusiness?.city},&nbsp;
               {invoice?.myBusiness?.region || myBusiness?.region},&nbsp;
               {invSettings.showMyCountry ? `${invoice?.myBusiness?.country || myBusiness?.country} ` : null}
               {invoice?.myBusiness?.postcode || myBusiness?.postcode}
             </h5>
+            }
             {invSettings.showMyTaxNumbers && taxNumbersList}
           </div>
           <div
