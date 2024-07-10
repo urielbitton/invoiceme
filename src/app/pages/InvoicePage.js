@@ -39,7 +39,7 @@ export default function InvoicePage() {
   const invoice = useInvoice(myUserID, invoiceID)
   const calculatedSubtotal = invoice?.items?.reduce((acc, item) => (acc + (item.price * item.quantity)), 0)
   const calculatedTotal = invoice?.items?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
-  const calculatedTaxRate = invoice?.items?.every(item => item.taxRate === invoice?.items[0].taxRate) ? invoice?.items[0].taxRate : null
+  const calculatedTaxRate = invoice?.items?.every(item => item.taxRate === invoice?.items[0]?.taxRate) ? invoice?.items[0]?.taxRate : null
   const invoicePaperRef = useRef(null)
   const navigate = useNavigate()
   const notifSettings = useUserNotifSettings(myUserID)
@@ -77,11 +77,11 @@ export default function InvoicePage() {
             emailSubject,
             emailMessage.replace(/\r\n|\r|\n/g, "</br>"),
             base64,
-            `${invoice.invoiceNumber}.pdf`,
+            `${invoice?.invoiceNumber}.pdf`,
             uploadedFiles,
             myUserID,
             invoiceID,
-            invoice.invoiceNumber,
+            invoice?.invoiceNumber,
             setPageLoading,
             setToasts,
             notifSettings.showOutgoingInvoicesNotifs
@@ -107,7 +107,7 @@ export default function InvoicePage() {
     const downloadAsImage = () => {
       downloadHtmlElementAsImage(
         document.querySelector('.invoice-paper-container'),
-        `${invoice.invoiceNumber}.png`,
+        `${invoice?.invoiceNumber}.png`,
       )
     }
 
@@ -151,13 +151,13 @@ export default function InvoicePage() {
     return (
       invoice ?
         <div className="invoice-page">
-          <HelmetTitle title={`Invoice #${invoice.invoiceNumber}`} />
+          <HelmetTitle title={`Invoice #${invoice?.invoiceNumber}`} />
           <div className="page-content">
             <div className="send-container">
               <div className="top">
                 <h3>Send Invoice</h3>
                 {
-                  invoice.isSent &&
+                  invoice?.isSent &&
                   <h5>
                     <span><i className="fas fa-paper-plane" />Invoice Sent</span>
                     <i className="far fa-check" />
@@ -316,7 +316,7 @@ export default function InvoicePage() {
             style={{ display: 'none' }}
             className="pdf-download-link"
             document={<PaperDoc />}
-            fileName={`${invoice.invoiceNumber}.pdf`}
+            fileName={`${invoice?.invoiceNumber}.pdf`}
           >
             {({ loading }) => loading ? 'Loading' : 'PDF Download'}
           </PDFDownloadLink>

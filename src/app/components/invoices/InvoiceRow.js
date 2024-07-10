@@ -43,7 +43,7 @@ export default function InvoiceRow(props) {
     <AppItemRow
       item1={<>{isScheduled && <i className="fas fa-clock"/>} #{truncateText(invoiceNumber, 16)}</>}
       item2={truncateText(title, 16)}
-      item3={truncateText(invoiceTo.name, 16)}
+      item3={truncateText(invoiceTo?.name, 16)}
       item4={items.length}
       item5={`${currency?.symbol}${formatCurrency(total?.toFixed(2))}`}
       item6={<span title={convertClassicDateAndTime(convertAlgoliaDate(dateCreated))}>{convertClassicDate(convertAlgoliaDate(dateCreated))}</span>}

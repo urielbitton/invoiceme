@@ -101,13 +101,13 @@ export default function EstimatePaperDoc(props) {
           <View style={styles.billToSection}>
             <View>
               <Text style={styles.billtoSectionH4}>Bill To</Text>
-              {estSettings.showClientName && <Text style={styles.billtoSectionH5}>{estimate?.estimateTo.name}</Text>}
-              {estSettings.showClientAddress && <Text style={styles.billtoSectionH5}>{estimate?.estimateTo.address}</Text>}
-              {estSettings.showClientPhone && <Text style={styles.billtoSectionH5}>{formatPhoneNumber(estimate?.estimateTo.phone)}</Text>}
-              {estSettings.showClientEmail && <Text style={styles.billtoSectionH5}>{estimate?.estimateTo.email}</Text>}
+              {estSettings.showClientName && <Text style={styles.billtoSectionH5}>{estimate?.estimateTo?.name}</Text>}
+              {estSettings.showClientAddress && <Text style={styles.billtoSectionH5}>{estimate?.estimateTo?.address}</Text>}
+              {estSettings.showClientPhone && <Text style={styles.billtoSectionH5}>{formatPhoneNumber(estimate?.estimateTo?.phone)}</Text>}
+              {estSettings.showClientEmail && <Text style={styles.billtoSectionH5}>{estimate?.estimateTo?.email}</Text>}
               <Text style={styles.billtoSectionH5}>
-                {estimate?.estimateTo.city}, {estimate?.estimateTo.region},&nbsp;
-                {estSettings.showClientCountry && estimate?.estimateTo.country} {estimate?.estimateTo.postcode}
+                {estimate?.estimateTo?.city}, {estimate?.estimateTo?.region},&nbsp;
+                {estSettings.showClientCountry && estimate?.estimateTo?.country} {estimate?.estimateTo?.postcode}
               </Text>
             </View>
             <View />

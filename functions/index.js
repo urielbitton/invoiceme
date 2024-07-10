@@ -661,13 +661,13 @@ function runScheduledInvoices(dayOfMonth, timeOfDay) {
                   return Promise.all(scheduledInvoices.docs.map((doc) => {
                     const data = doc.data()
                     const msg = {
-                      to: data.invoiceTemplate.invoiceTo.email,
+                      to: data?.invoiceTemplate?.invoiceTo?.email,
                       from: 'info@atomicsdigital.com',
                       subject: data.emailSubject,
                       html: data.emailMessage,
                       attachments: [{
                         content: data.pdfBase64,
-                        filename: `${data.invoiceTemplate.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
+                        filename: `${data.invoiceTemplate?.invoiceNumber}-${monthNum}-${dayOfMonth}-${year}.pdf`,
                         type: 'application/pdf',
                         disposition: 'attachment'
                       }]

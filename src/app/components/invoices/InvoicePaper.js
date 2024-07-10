@@ -91,13 +91,13 @@ export default function InvoicePaper(props) {
       >
         <div className="side">
           <h4>Bill To</h4>
-          {invSettings.showClientName && <h5>{invoice?.invoiceTo.name}</h5>}
-          {invSettings.showClientAddress && <h5>{invoice?.invoiceTo.address}</h5>}
-          {invSettings.showClientPhone && <h5>{formatPhoneNumber(invoice?.invoiceTo.phone)}</h5>}
-          {invSettings.showClientEmail && <h5>{invoice?.invoiceTo.email}</h5>}
+          {invSettings.showClientName && <h5>{invoice?.invoiceTo?.name}</h5>}
+          {invSettings.showClientAddress && <h5>{invoice?.invoiceTo?.address}</h5>}
+          {invSettings.showClientPhone && <h5>{formatPhoneNumber(invoice?.invoiceTo?.phone)}</h5>}
+          {invSettings.showClientEmail && <h5>{invoice?.invoiceTo?.email}</h5>}
           <h5>
-            {invoice?.invoiceTo.city}, {invoice?.invoiceTo.region},&nbsp;
-            ({invSettings.showClientCountry && invoice?.invoiceTo.country}) {invoice?.invoiceTo.postcode}
+            {invoice?.invoiceTo?.city}, {invoice?.invoiceTo?.region},&nbsp;
+            ({invSettings.showClientCountry && invoice?.invoiceTo?.country}) {invoice?.invoiceTo?.postcode}
           </h5>
         </div>
         <div className="side" />

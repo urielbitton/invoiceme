@@ -103,12 +103,12 @@ export default function InvoicePaperDoc(props) {
           <View style={styles.billToSection}>
             <View>
               <Text style={styles.billtoSectionH4}>Bill To</Text>
-              {invSettings.showClientName && <Text style={styles.billtoSectionH5}>{invoice?.invoiceTo.name}</Text>}
-              {invSettings.showClientAddress && <Text style={styles.billtoSectionH5}>{invoice?.invoiceTo.address}</Text>}
-              {invSettings.showClientPhone && <Text style={styles.billtoSectionH5}>{formatPhoneNumber(invoice?.invoiceTo.phone)}</Text>}
+              {invSettings.showClientName && <Text style={styles.billtoSectionH5}>{invoice?.invoiceTo?.name}</Text>}
+              {invSettings.showClientAddress && <Text style={styles.billtoSectionH5}>{invoice?.invoiceTo?.address}</Text>}
+              {invSettings.showClientPhone && <Text style={styles.billtoSectionH5}>{formatPhoneNumber(invoice?.invoiceTo?.phone)}</Text>}
               <Text style={styles.billtoSectionH5}>
-                {invoice?.invoiceTo.city}, {invoice?.invoiceTo.region},&nbsp;
-                {invSettings.showClientCountry && invoice?.invoiceTo.country} {invoice?.invoiceTo.postcode}
+                {invoice?.invoiceTo?.city}, {invoice?.invoiceTo?.region},&nbsp;
+                {invSettings.showClientCountry && invoice?.invoiceTo?.country} {invoice?.invoiceTo?.postcode}
               </Text>
             </View>
             <View />

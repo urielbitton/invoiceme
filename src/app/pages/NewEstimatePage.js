@@ -57,10 +57,7 @@ export default function NewEstimatePage() {
 
   const allowCreateEstimate = estimateName?.length > 0 &&
     estimateNumber?.length > 0 &&
-    estimateDueDate?.length > 0 &&
-    estimateCurrency &&
-    estimateItems?.length > 0 &&
-    estimateContact
+    estimateItems?.length > 0
 
   const navItemInfoRender = {
     label: <small

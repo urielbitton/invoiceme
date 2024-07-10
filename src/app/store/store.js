@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { auth } from 'app/firebase/fire'
 import { getUserByID } from "app/services/userServices"
+import { getNumOfDaysInMonth } from 'app/utils/dateUtils'
 
 // @ts-ignore
 export const StoreContext = createContext()
@@ -9,6 +10,13 @@ const StoreContextProvider = ({children}) => {
  
   const user = auth.currentUser
   const [myUser, setMyUser] = useState(null) 
+
+  const date = new Date()
+  const monthStart = new Date(date.getFullYear(), date.getMonth(), 1)
+  const monthEnd = new Date(date.getFullYear(), date.getMonth(), getNumOfDaysInMonth(date))
+  const yearStart = new Date(date.getFullYear(), 0, 1)
+  const yearEnd = new Date(date.getFullYear(), 11, 31)
+
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkmode') === "true" ? true : false)
   const [themeColor, setThemeColor] = useState(localStorage.getItem('themeColor') || "#178fff")
   const [contentScrollBottom, setContentScrollBottom] = useState(false)
@@ -74,7 +82,8 @@ const StoreContextProvider = ({children}) => {
     themeColor, setThemeColor,
     showMobileSidebar, setShowMobileSidebar,
     stripeCustomerPortalLink, businessMemberPlanID,
-    toasts, setToasts
+    toasts, setToasts,
+    monthStart, monthEnd, yearStart, yearEnd
   }}>
     {children}
   </StoreContext.Provider>

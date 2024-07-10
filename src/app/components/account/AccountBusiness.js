@@ -75,15 +75,15 @@ export default function AccountBusiness() {
 
   useEffect(() => {
     if(myBusiness) {
-      setBusinessAddress(myBusiness.address)
-      setBusinessLogo(myBusiness.logo)
-      setBusinessName(myBusiness.name)
-      setBusinessPhone(myBusiness.phone)
-      setBusinessRegion(`${myUser.region},${myUser.regionCode}`)
-      setBusinessCountry(`${myUser.country},${myUser.countryCode}`)
-      setBusinessCity(myBusiness.city)
-      setBusinessPostcode(myBusiness.postcode)
-      setBusinessEmail(myBusiness.email)
+      setBusinessAddress(myBusiness?.address)
+      setBusinessLogo(myBusiness?.logo)
+      setBusinessName(myBusiness?.name)
+      setBusinessPhone(myBusiness?.phone)
+      setBusinessRegion(`${myUser?.region},${myUser?.regionCode}`)
+      setBusinessCountry(`${myUser.country},${myUser?.countryCode}`)
+      setBusinessCity(myBusiness?.city)
+      setBusinessPostcode(myBusiness?.postcode)
+      setBusinessEmail(myBusiness?.email)
     }
   },[myBusiness])
 

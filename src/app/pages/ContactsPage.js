@@ -14,7 +14,8 @@ import EmptyPage from "app/components/ui/EmptyPage"
 
 export default function ContactsPage() {
 
-  const { myUser, myUserID, setNavItem1, setNavItem2, setNavItemInfo } = useContext(StoreContext)
+  const { myUser, myUserID, setNavItem1, setNavItem2, 
+    setNavItemInfo, monthStart, monthEnd } = useContext(StoreContext)
   const [searchString, setSearchString] = useState("")
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -27,8 +28,6 @@ export default function ContactsPage() {
   const limitsNum = 10
   const [contactsLimit, setContactsLimit] = useState(limitsNum)
   const date = new Date()
-  const monthStart = `${date.getMonth() + 1}, 01, ${date.getFullYear()}`
-  const monthEnd = `${date.getMonth() + 1}, ${getNumOfDaysInMonth(date)}, ${date.getFullYear()}`
   const dbContacts = useYearMonthOrAllContacts(myUserID, selectedYear, selectedMonth, contactsLimit)
   const thisMonthContacts = useCurrentMonthContacts(monthStart, monthEnd)
   const yearSelectOptions = useContactYearOptions()

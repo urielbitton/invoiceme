@@ -32,7 +32,7 @@ export default function NewInvoicePage() {
   const [taxRate2, setTaxRate2] = useState(null)
   const [status, setStatus] = useState('unpaid')
   const [invoiceItems, setInvoiceItems] = useState([])
-  const [invoiceContact, setInvoiceContact] = useState(null)
+  const [invoiceContact, setInvoiceContact] = useState({name: '', email: '', phone: '', address: '', city: '', region: '', country: '', postcode: ''})
   const [invoiceNotes, setInvoiceNotes] = useState("")
   const [itemName, setItemName] = useState("")
   const [itemPrice, setItemPrice] = useState(0)
@@ -56,12 +56,7 @@ export default function NewInvoicePage() {
   const calculatedTotal = invoiceItems?.reduce((acc, item) => (acc + ((item.price + (item.price * item.taxRate / 100)) * item.quantity)), 0)
   const notifSettings = useUserNotifSettings(myUserID)
 
-  const allowCreateInvoice = invoiceName &&
-    invoiceNumber &&
-    invoiceDueDate &&
-    invoiceCurrency &&
-    invoiceItems &&
-    invoiceContact
+  const allowCreateInvoice = invoiceName && invoiceItems
 
   const statusOptions = [
     { value: 'unpaid', label: 'Unpaid' },

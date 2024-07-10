@@ -29,7 +29,9 @@ import './styles/Homepage.css'
 
 export default function HomePage() {
 
-  const { setCompactNav, myUser, myUserID, setPageLoading } = useContext(StoreContext)
+  const { setCompactNav, myUser, myUserID, setPageLoading,
+    monthStart, monthEnd, yearStart, yearEnd
+   } = useContext(StoreContext)
   const date = new Date()
   const [showExportMenu, setShowExportMenu] = useState(false)
   const [revenueMode, setRevenueMode] = useState('year')
@@ -38,10 +40,6 @@ export default function HomePage() {
   const [statusesTimeMode, setStatusesTimeMode] = useState('year')
   const [selectedYear, setSelectedYear] = useState(date.getFullYear())
   const [selectedMonth, setSelectedMonth] = useState(date.getMonth())
-  const monthStart = `${date.getMonth() + 1}, 01, ${date.getFullYear()}`
-  const monthEnd = `${date.getMonth() + 1}, ${getNumOfDaysInMonth(date)}, ${date.getFullYear()}`
-  const yearStart = `01, 01, ${date.getFullYear()}`
-  const yearEnd = `12, 31, ${date.getFullYear()}`
   const thisMonthInvoices = useCurrentMonthInvoices(monthStart, monthEnd)
   const thisMonthEstimates = useCurrentMonthEstimates(monthStart, monthEnd)
   const thisMonthContacts = useCurrentMonthContacts(monthStart, monthEnd)

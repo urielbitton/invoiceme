@@ -15,7 +15,7 @@ import EmptyPage from "app/components/ui/EmptyPage"
 export default function InvoicesPage() {
 
   const { myUser, myUserID, setNavItem1, setNavItem2,
-    setNavItem3, setNavItemInfo } = useContext(StoreContext)
+    setNavItem3, setNavItemInfo, monthStart, monthEnd } = useContext(StoreContext)
   const yearSelectOptions = useInvoiceYearOptions()
   const [searchString, setSearchString] = useState("")
   const [query, setQuery] = useState('')
@@ -28,9 +28,6 @@ export default function InvoicesPage() {
   const [selectedMonth, setSelectedMonth] = useState('all')
   const limitsNum = 10
   const [invoicesLimit, setInvoicesLimit] = useState(limitsNum)
-  const date = new Date()
-  const monthStart = `${date.getMonth() + 1}, 01, ${date.getFullYear()}`
-  const monthEnd = `${date.getMonth() + 1}, ${getNumOfDaysInMonth(date)}, ${date.getFullYear()}`
   const dbInvoices = useYearMonthOrAllInvoices(myUserID, selectedYear, selectedMonth, invoicesLimit)
   const thisMonthInvoices = useCurrentMonthInvoices(monthStart, monthEnd)
   const paidInvoices = dbInvoices?.filter(invoice => invoice?.isPaid)

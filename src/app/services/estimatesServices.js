@@ -97,15 +97,15 @@ export const createEstimateService = (userID, myBusiness, taxNumbers, estimateCu
   const docID = getRandomDocID(path)
   const estimateData = {
     currency: estimateCurrency,
-    dateCreated: convertInputDateToDateAndTimeFormat(estimateDate),
-    dateDue: convertInputDateToDateAndTimeFormat(estimateDueDate),
+    dateCreated: new Date(),
+    dateDue: new Date(estimateDueDate),
     estimateID: docID,
     estimateNumber: `EST-${estimateNumber}`,
     estimateOwnerID: userID,
     estimateTo: estimateContact,
     isSent: false,
     items: estimateItems,
-    monthLabel: dateToMonthName(convertInputDateToDateAndTimeFormat(estimateDate)),
+    monthLabel: dateToMonthName(new Date(estimateDate)),
     myBusiness,
     notes: estimateNotes,
     taxNumbers,

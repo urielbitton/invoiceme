@@ -57,15 +57,15 @@ export default function EstimatePaper(props) {
           <div
             className="left"
           >
-            {estSettings?.showMyName && <h3>{estimate?.myBusiness?.name || myBusiness.name}</h3>}
-            {estSettings?.showMyAddress && <h5>{estimate?.myBusiness?.address || myBusiness.address}</h5>}
-            {estSettings?.showMyPhone && <h5>{formatPhoneNumber(estimate?.myBusiness?.phone || myBusiness.phone)}</h5>}
-            {estSettings?.showMyEmail && <h5>{estimate?.myBusiness?.email || myBusiness.email}</h5>}
+            {estSettings?.showMyName && <h3>{estimate?.myBusiness?.name || myBusiness?.name}</h3>}
+            {estSettings?.showMyAddress && <h5>{estimate?.myBusiness?.address || myBusiness?.address}</h5>}
+            {estSettings?.showMyPhone && <h5>{formatPhoneNumber(estimate?.myBusiness?.phone || myBusiness?.phone)}</h5>}
+            {estSettings?.showMyEmail && <h5>{estimate?.myBusiness?.email || myBusiness?.email}</h5>}
             <h5>
-              {estimate?.myBusiness?.city || myBusiness.city},&nbsp;
-              {estimate?.myBusiness?.region || myBusiness.region},&nbsp;
-              {estSettings?.showMyCountry ? `${estimate?.myBusiness?.country || myBusiness.country} ` : null}
-              {estimate?.myBusiness?.postcode || myBusiness.postcode}
+              {estimate?.myBusiness?.city || myBusiness?.city},&nbsp;
+              {estimate?.myBusiness?.region || myBusiness?.region},&nbsp;
+              {estSettings?.showMyCountry ? `${estimate?.myBusiness?.country || myBusiness?.country} ` : null}
+              {estimate?.myBusiness?.postcode || myBusiness?.postcode}
             </h5>
             {estSettings?.showMyTaxNumbers && taxNumbersList}
           </div>
@@ -89,13 +89,13 @@ export default function EstimatePaper(props) {
       >
         <div className="side">
           <h4>Bill To</h4>
-          { estSettings?.showClientName && <h5>{estimate?.estimateTo.name}</h5>}
-          { estSettings?.showClientAddress && <h5>{estimate?.estimateTo.address}</h5>}
-          { estSettings?.showClientPhone && <h5>{formatPhoneNumber(estimate?.estimateTo.phone)}</h5>}
+          { estSettings?.showClientName && <h5>{estimate?.estimateTo?.name}</h5>}
+          { estSettings?.showClientAddress && <h5>{estimate?.estimateTo?.address}</h5>}
+          { estSettings?.showClientPhone && <h5>{formatPhoneNumber(estimate?.estimateTo?.phone)}</h5>}
           { estSettings?.showClientEmail && <h5>{estimate?.estimateTo?.email}</h5>}
           <h5>
-            {estimate?.estimateTo.city}, {estimate?.estimateTo.region},&nbsp;
-            {estSettings?.showClientCountry && estimate?.estimateTo.country} {estimate?.estimateTo.postcode}
+            {estimate?.estimateTo?.city}, {estimate?.estimateTo?.region},&nbsp;
+            {estSettings?.showClientCountry && estimate?.estimateTo?.country} {estimate?.estimateTo?.postcode}
           </h5>
         </div>
         <div className="side" />

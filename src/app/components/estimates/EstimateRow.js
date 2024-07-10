@@ -23,7 +23,7 @@ export default function EstimateRow(props) {
     <AppItemRow
       item1={`#${truncateText(estimateNumber, 14)}`}
       item2={truncateText(title, 16)}
-      item3={truncateText(estimateTo.name, 16)}
+      item3={truncateText(estimateTo?.name, 16)}
       item4={items.length}
       item5={`${currency?.symbol}${formatCurrency(total)}`}
       item6={<span title={convertClassicDateAndTime(convertAlgoliaDate(dateCreated))}>{convertClassicDate(convertAlgoliaDate(dateCreated))}</span>}

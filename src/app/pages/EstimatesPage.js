@@ -14,7 +14,8 @@ import EmptyPage from "app/components/ui/EmptyPage"
 
 export default function EstimatesPage() {
 
-  const { myUser, myUserID, setNavItem1, setNavItem2, setNavItemInfo } = useContext(StoreContext)
+  const { myUser, myUserID, setNavItem1, 
+    setNavItem2, setNavItemInfo, monthStart, monthEnd } = useContext(StoreContext)
   const [searchString, setSearchString] = useState("")
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
@@ -27,8 +28,6 @@ export default function EstimatesPage() {
   const limitsNum = 10
   const [estimatesLimit, setEstimatesLimit] = useState(limitsNum)
   const date = new Date()
-  const monthStart = `${date.getMonth() + 1}, 01, ${date.getFullYear()}`
-  const monthEnd = `${date.getMonth() + 1}, ${getNumOfDaysInMonth(date)}, ${date.getFullYear()}`
   const dbEstimates = useYearMonthOrAllEstimates(myUserID, selectedYear, selectedMonth, estimatesLimit)
   const thisMonthEstimates = useCurrentMonthEstimates(monthStart, monthEnd)
   const yearSelectOptions = useEstimateYearOptions()

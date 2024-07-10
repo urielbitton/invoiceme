@@ -117,8 +117,8 @@ export const createInvoiceService = (userID, myBusiness, taxNumbers, invoiceCurr
   const docID = getRandomDocID(path)
   const invoiceData = {
     currency: invoiceCurrency,
-    dateCreated: convertInputDateToDateAndTimeFormat(invoiceDate),
-    dateDue: convertInputDateToDateAndTimeFormat(invoiceDueDate),
+    dateCreated: new Date(),
+    dateDue: new Date(invoiceDueDate),
     invoiceID: docID,
     invoiceNumber: `INV-${invoiceNumber}`,
     invoiceOwnerID: userID,
@@ -126,7 +126,7 @@ export const createInvoiceService = (userID, myBusiness, taxNumbers, invoiceCurr
     isPaid: status === 'paid',
     isSent: false,
     items: invoiceItems,
-    monthLabel: dateToMonthName(convertInputDateToDateAndTimeFormat(invoiceDate)),
+    monthLabel: dateToMonthName(new Date(invoiceDate)),
     myBusiness,
     notes: invoiceNotes,
     status,
