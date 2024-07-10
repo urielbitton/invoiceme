@@ -168,7 +168,7 @@ export const updateInvoiceService = (myUserID, invoiceID, updatedProps, newTotal
           notify && createNotification(
             myUserID,
             'Invoice Updated',
-            `Invoice ${updatedProps.title} (${updatedProps.invoiceNumber}) has been updated.`,
+            `Invoice ${updatedProps?.title} (${updatedProps?.invoiceNumber}) has been updated.`,
             'fas fa-file-invoice-dollar',
             `/invoices/${invoiceID}`
           )

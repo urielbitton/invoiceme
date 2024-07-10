@@ -129,8 +129,7 @@ export default function NewInvoicePage() {
     const updatedProps = {
       title: invoiceName,
       invoiceNumber,
-      dateCreated: convertInputDateToDateAndTimeFormat(invoiceDate),
-      dateDue: convertInputDateToDateAndTimeFormat(invoiceDueDate),
+      dateDue: new Date(invoiceDueDate),
       currency: invoiceCurrency,
       invoiceTo: invoiceContact,
       items: invoiceItems,

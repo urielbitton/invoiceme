@@ -117,8 +117,7 @@ export default function NewEstimatePage() {
     const updatedProps = {
       title: estimateName,
       estimateNumber,
-      dateCreated: convertInputDateToDateAndTimeFormat(estimateDate),
-      dateDue: convertInputDateToDateAndTimeFormat(estimateDueDate),
+      dateDue: new Date(estimateDueDate),
       currency: estimateCurrency,
       estimateTo: estimateContact,
       items: estimateItems,
