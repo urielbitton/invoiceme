@@ -45,7 +45,7 @@ export default function EstimatePaper(props) {
     >
       <header>
         {
-          estSettings?.showMyLogo &&
+          estSettings?.showMyLogo && (myBusiness?.logo || estimate?.myBusiness?.logo) &&
           <img
             src={estimate?.myBusiness?.logo || myBusiness?.logo}
             alt="Logo"
@@ -61,12 +61,13 @@ export default function EstimatePaper(props) {
             {estSettings?.showMyAddress && <h5>{estimate?.myBusiness?.address || myBusiness?.address}</h5>}
             {estSettings?.showMyPhone && <h5>{formatPhoneNumber(estimate?.myBusiness?.phone || myBusiness?.phone)}</h5>}
             {estSettings?.showMyEmail && <h5>{estimate?.myBusiness?.email || myBusiness?.email}</h5>}
-            <h5>
+            { estimate?.myBusiness &&
+              <h5>
               {estimate?.myBusiness?.city || myBusiness?.city},&nbsp;
               {estimate?.myBusiness?.region || myBusiness?.region},&nbsp;
               {estSettings?.showMyCountry ? `${estimate?.myBusiness?.country || myBusiness?.country} ` : null}
               {estimate?.myBusiness?.postcode || myBusiness?.postcode}
-            </h5>
+            </h5>}
             {estSettings?.showMyTaxNumbers && taxNumbersList}
           </div>
           <div
